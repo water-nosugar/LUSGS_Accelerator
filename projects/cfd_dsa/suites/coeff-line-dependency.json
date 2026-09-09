@@ -1,0 +1,29 @@
+{
+  "campaign": "coeff-line-dependency",
+  "common_args": [
+    "--bench-iters=3",
+    "--coefficient-update-interval=2",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event", "--lu5-model=event",
+    "--coeff-validation=full", "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1", "--coeff-stream-dinv-consumer=direct",
+    "--coeff-stream-lbar-consumer=direct", "--coeff-stream-ubar-consumer=direct",
+    "--coeff-stream-line-autonomous=1", "--coeff-stream-window=8",
+    "--coeff3-schedule=frontier-aware", "--lusgs-lines=1", "--lusgs-cells=17",
+    "--coeff-preprocess-trace-enable=1"
+  ],
+  "cases": [
+    {"name": "baseline", "target": "lusgs-step2", "args": ["--coeff-line-base-ahead=0", "--coeff-line-early-backward=0"]},
+    {"name": "base-only", "target": "lusgs-step2", "args": ["--coeff-line-base-ahead=1", "--coeff-line-early-backward=0"]},
+    {"name": "early-only", "target": "lusgs-step2", "args": ["--coeff-line-base-ahead=0", "--coeff-line-early-backward=1"]},
+    {"name": "both", "target": "lusgs-step2", "args": []},
+    {"name": "one-cell", "target": "lusgs-step2", "args": ["--lusgs-cells=1", "--coeff-stream-window=1"]},
+    {"name": "two-cell-window1", "target": "lusgs-step2", "args": ["--lusgs-cells=2", "--coeff-stream-window=1"]},
+    {"name": "lines4", "target": "lusgs-step2", "args": ["--lusgs-lines=4", "--lusgs-interleave=4"]},
+    {"name": "slow-drain-baseline", "target": "lusgs-step2", "args": ["--coeff-line-base-ahead=0", "--coeff-line-early-backward=0", "--coeff-drain-lat=40", "--coeff-output-buffer-depth=1"]},
+    {"name": "slow-drain", "target": "lusgs-step2", "args": ["--coeff-drain-lat=40", "--coeff-output-buffer-depth=1"]},
+    {"name": "dma-single-sweep", "target": "lusgs-step2", "args": ["--coeff-spm-model=dma", "--bench-iters=1"]},
+    {"name": "reuse8-baseline", "target": "lusgs-step2", "args": ["--bench-iters=8", "--coefficient-update-interval=8", "--coeff-line-base-ahead=0", "--coeff-line-early-backward=0"]},
+    {"name": "reuse8", "target": "lusgs-step2", "args": ["--bench-iters=8", "--coefficient-update-interval=8"]}
+  ]
+}

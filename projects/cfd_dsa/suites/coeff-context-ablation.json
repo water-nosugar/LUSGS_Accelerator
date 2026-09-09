@@ -1,0 +1,257 @@
+{
+  "campaign": "coeff-context-ablation",
+  "common_args": [
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-line-mvm-model=serial",
+    "--coeff3-div-mode=divide",
+    "--coeff-line-base-ahead=1",
+    "--coeff-line-early-backward=1",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1",
+    "--coeff-stream-dinv-consumer=direct",
+    "--coeff-stream-lbar-consumer=direct",
+    "--coeff-stream-ubar-consumer=direct",
+    "--coeff-stream-line-autonomous=1",
+    "--coeff-stream-window=8",
+    "--coeff3-schedule=frontier-aware",
+    "--lusgs-lines=1",
+    "--lusgs-cells=17",
+    "--lusgs-interleave=1",
+    "--coeff-preprocess-trace-enable=1",
+    "--coeff-resource-stats=1",
+    "--lu5-pending-depth=2",
+    "--coeff3-pending-depth=2",
+    "--coeff-input-slots=2",
+    "--coeff-output-buffer-depth=4",
+    "--lu5-div-count=1",
+    "--lu5-mulsub-count=1",
+    "--lu5-div-lat=12",
+    "--lu5-div-ii=12",
+    "--lu5-mul-lat=3",
+    "--lu5-sub-lat=4",
+    "--coeff3-div-count=1",
+    "--coeff-mulsub-count=1",
+    "--coeff3-div-lat=12",
+    "--coeff3-div-ii=4",
+    "--coeff-mul-lat=3",
+    "--coeff-sub-lat=4",
+    "--coeff3-rhs-lanes=15",
+    "--lu-forwarding=1",
+    "--lu-solve-early-start=1",
+    "--coeff-column-fma-count=1",
+    "--coeff-column-fma-latency=4",
+    "--coeff-column-fma-ii=1",
+    "--coeff-column-fma-queue-depth=5",
+    "--forward-combine-count=1",
+    "--forward-combine-latency=1",
+    "--forward-combine-ii=1",
+    "--forward-combine-queue-depth=2",
+    "--coeff-spm-model=internal",
+    "--coeff-spm-layout=legacy",
+    "--coeff-spm-banks=4",
+    "--coeff-spm-read-ports=1",
+    "--coeff-spm-write-ports=1",
+    "--coeff-spm-outstanding=4",
+    "--coeff-drain-width=40",
+    "--coeff-drain-ports=1",
+    "--coeff-drain-lat=1",
+    "--coeff-drain-outstanding=4",
+    "--coeff-drain-queue-depth=4"
+  ],
+  "cases": [
+    {
+      "name": "cold-l1-t1",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=1",
+        "--coeff3-count=1"
+      ]
+    },
+    {
+      "name": "cold-l1-t2",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=1",
+        "--coeff3-count=2"
+      ]
+    },
+    {
+      "name": "cold-l1-t4",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=1",
+        "--coeff3-count=4"
+      ]
+    },
+    {
+      "name": "cold-l2-t1",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=2",
+        "--coeff3-count=1"
+      ]
+    },
+    {
+      "name": "cold-l2-t2",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=2",
+        "--coeff3-count=2"
+      ]
+    },
+    {
+      "name": "cold-l2-t4",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=2",
+        "--coeff3-count=4"
+      ]
+    },
+    {
+      "name": "cold-l4-t1",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=4",
+        "--coeff3-count=1"
+      ]
+    },
+    {
+      "name": "cold-l4-t2",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=4",
+        "--coeff3-count=2"
+      ]
+    },
+    {
+      "name": "cold-l4-t4",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=4",
+        "--coeff3-count=4"
+      ]
+    },
+    {
+      "name": "mixed-l1-t1",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=1",
+        "--coeff3-count=1"
+      ]
+    },
+    {
+      "name": "mixed-l1-t2",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=1",
+        "--coeff3-count=2"
+      ]
+    },
+    {
+      "name": "mixed-l1-t4",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=1",
+        "--coeff3-count=4"
+      ]
+    },
+    {
+      "name": "mixed-l2-t1",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=2",
+        "--coeff3-count=1"
+      ]
+    },
+    {
+      "name": "mixed-l2-t2",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=2",
+        "--coeff3-count=2"
+      ]
+    },
+    {
+      "name": "mixed-l2-t4",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=2",
+        "--coeff3-count=4"
+      ]
+    },
+    {
+      "name": "mixed-l4-t1",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=4",
+        "--coeff3-count=1"
+      ]
+    },
+    {
+      "name": "mixed-l4-t2",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=4",
+        "--coeff3-count=2"
+      ]
+    },
+    {
+      "name": "mixed-l4-t4",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--lu5-count=4",
+        "--coeff3-count=4"
+      ]
+    },
+    {
+      "name": "cold-observer-off",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--coefficient-update-interval=1",
+        "--lu5-count=1",
+        "--coeff3-count=1",
+        "--coeff-resource-stats=0"
+      ]
+    }
+  ]
+}

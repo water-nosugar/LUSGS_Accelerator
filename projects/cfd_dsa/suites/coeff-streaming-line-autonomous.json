@@ -1,0 +1,82 @@
+{
+  "campaign": "coeff-streaming-line-autonomous",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1",
+    "--coeff-stream-dinv-consumer=direct",
+    "--coeff-stream-lbar-consumer=direct",
+    "--coeff-stream-line-autonomous=1",
+    "--coeff-stream-window=8",
+    "--lusgs-cells=17"
+  ],
+  "cases": [
+    {
+      "name": "c1-line-forward-1x17",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-ubar-consumer=off",
+        "--coeff3-schedule=round-robin-ready",
+        "--lusgs-lines=1"
+      ]
+    },
+    {
+      "name": "c2-b5-1x17",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-ubar-consumer=direct",
+        "--coeff3-schedule=frontier-aware",
+        "--lusgs-lines=1"
+      ]
+    },
+    {
+      "name": "c2-b5-lines2",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-ubar-consumer=direct",
+        "--coeff3-schedule=frontier-aware",
+        "--lusgs-lines=2",
+        "--lusgs-interleave=2"
+      ]
+    },
+    {
+      "name": "c2-b5-lines4",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-ubar-consumer=direct",
+        "--coeff3-schedule=frontier-aware",
+        "--lusgs-lines=4",
+        "--lusgs-interleave=4"
+      ]
+    },
+    {
+      "name": "c2-b5-lines8",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-ubar-consumer=direct",
+        "--coeff3-schedule=frontier-aware",
+        "--lusgs-lines=8",
+        "--lusgs-interleave=8"
+      ]
+    },
+    {
+      "name": "c2-b5-packet-double-buffer-lines4",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-ubar-consumer=direct",
+        "--coeff3-schedule=frontier-aware",
+        "--lusgs-lines=4",
+        "--lusgs-interleave=4",
+        "--coeff-spm-model=packet",
+        "--coeff-spm-layout=row-striped",
+        "--coeff-input-slots=4",
+        "--coeff-spm-outstanding=8",
+        "--coeff-drain-outstanding=8"
+      ]
+    }
+  ]
+}

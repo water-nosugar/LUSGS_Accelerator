@@ -1,0 +1,18 @@
+{
+  "campaign": "coeff-streaming-boundary-mask",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--coeff-stream-window=4",
+    "--lusgs-lines=1"
+  ],
+  "cases": [
+    {"name": "dinv-only-1x1", "target": "lusgs-step2", "args": ["--lusgs-cells=1"]},
+    {"name": "head-tail-1x2", "target": "lusgs-step2", "args": ["--lusgs-cells=2"]},
+    {"name": "head-interior-tail-1x17", "target": "lusgs-step2", "args": ["--lusgs-cells=17"]},
+    {"name": "long-line-1x64", "target": "lusgs-step2", "args": ["--lusgs-cells=64"]}
+  ]
+}

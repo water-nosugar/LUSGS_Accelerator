@@ -1,0 +1,323 @@
+// ================================================================
+// custom_cfd.isa — CFD DSA Instruction Decoder (v4.0 SPM + Cross-Domain Regs)
+// ================================================================
+//
+// NEW ARCHITECTURE (v4.0):
+//   - SPM (Scratchpad Memory): Local SRAM, 40-byte stride
+//   - dotp_row: Write to X16-X20 (integer regs), zero RAW dependencies
+//   - pack_acc: Harvest X16-X20 -> Z register
+//
+// All CFD instructions use the CLEAN reserved encoding space:
+//   [31:27] = 00000  [26:25] = 00
+//
+// Instruction Encodings (v4.0):
+//
+//   lmat5_spm (SPM direct access, 40-byte stride):
+//     [31:27]=00000 [26:25]=00 [24]=0 [23:21]=row [20]=0(SPM mode)
+//     [9:5]=rs1 [4:0]=zd
+//     Result: reads 5 FP64 from SPM at (X[rs1] + row*40), pads to 64B
+//
+//   dotp_row (v4.0: write to X[16+lane_id]):
+//     [31:27]=00000 [26:25]=00 [24]=1 [23]=0
+//     [14:10]=zra [9:5]=zrb [4:0]=lane_id(0-4)
+//     Writes FP64 result to X[16+lane_id] via bit-cast
+//
+//   pack_acc (v4.0: new instruction):
+//     [31:27]=00000 [26:25]=00 [24]=1 [23]=1 [4:0]=zd
+//     [9:5]=xn (base register for X[16+lane_id] reads)
+//     Harvests X[xn]..X[xn+4] -> Z[zd] as 5 FP64 values
+//     Current implementation constrains xn==16 (fixed harvest window X16..X20)
+//
+//   patha_pack_sub5 (Step2-core fused update):
+//     [24:23]=11 [22:20]=000 [19:15]=00001 [14:10]=xbase
+//     [9:5]=10000 [4:0]=zd
+//     Computes Z[zd] = mem5[X[xbase]] - PathAInternalResult and consumes the same
+//     dependency-token window/internal result slot as pack_acc.
+//
+//   cfdsme_fmopa5_step (deprecated old Path C):
+//     [31:27]=00000 [26:25]=00 [24:23]=11 [22]=1 [21]=0
+//     [20:18]=k(0..4) [17:15]=101 [14:10]=zcol [9:5]=zvec [4:0]=0
+//     Old fixed-ZA[:,0] accumulator encoding.  It is no longer decoded as a
+//     legal default Path C instruction.
+//
+//   cfdsme_za_outer5_step (new Path C: selected-column outer-product):
+//     [31:27]=00000 [26:25]=00 [24:23]=11 [22]=1 [21]=0
+//     [20:18]=k(0..4) [17:15]=110 [14:10]=zcol [9:5]=zvec [4:0]=0
+//     Conceptually forms outer = zcol * zvec^T, selects outer[:,k], and writes
+//       k=0: ZA[0:4,0] = zcol*x[0]
+//       k>0: ZA[0:4,k] = ZA[0:4,k-1] + zcol*x[k]
+//
+//   cfdsme_mvm5_pipe_step (Path B: ZA spatial partial-sum pipeline):
+//     [31:27]=00000 [26:25]=00 [24:23]=11 [22]=1 [21]=1
+//     [20:18]=k(0..4) [17:15]=110 [14:10]=zcol [9:5]=zvec [4:0]=0
+//     k=0 writes ZA[0:4,0] = zcol*x[0]; k>0 writes
+//       ZA[0:4,k] = ZA[0:4,k-1] + zcol*x[k]
+//
+//   Path A streaming DSA (Path A-only; does not alter lmat5_spm):
+//     [24:23]=11 [22]=0 [21:20]=01 patha_stream_ld5
+//       [19]=slot [18:16]=field(0..5; 5=vector) [14:10]=xbase
+//     [24:23]=11 [22]=0 [21:20]=10 patha_dotp_stream
+//       [19]=slot [18:16]=lane(0..4)
+//     [24:23]=11 [22]=0 [21:20]=11 patha_store5_result
+//       [19]=slot [14:10]=xbase
+//     [24:23]=11 [22]=0 [21:20]=11 patha_store_drain
+//       [18:15]=1111 [14:10]=xbase
+//
+//   trsv5_lu_spm (Step2 TRSV5; independent of Path A buffers):
+//     [24:23]=11 [22]=0 [21:20]=00
+//       [19:15]=xlu [14:10]=xrhs [9:5]=00000 [4:0]=zd
+//     Reads LU[5][5] FP64 from X[xlu], RHS[5] FP64 from X[xrhs],
+//     writes result lanes 0..4 to Z[zd].
+//
+//   trsv5_lu_spm_zrhs (Step2-core forwarded TRSV5):
+//     [24:23]=11 [22]=0 [21:20]=00
+//       [19:15]=xlu [14:10]=zrhs [9:5]=10001 [4:0]=zd
+//     Reads LU[5][5] FP64 from X[xlu] and RHS[5] from Z[zrhs],
+//     writes result lanes 0..4 to Z[zd].  Used for pack_sub -> TRSV RHS
+//     forwarding; the original SPM-RHS TRSV encoding remains valid.
+//
+//   trsm5_mrhs_spm (LU-SGS coefficient preprocessing):
+//     [24:23]=11 [22]=0 [21:20]=00
+//       [19:15]=xlu [14:10]=xrhs [9:5]=xout [4:0]=11101
+//     Solves D*X=RHS by applying the exact TRSV5 sequence to each RHS column.
+//
+//   trsm5_inv_lbar_spm (optimized coefficient preprocessing):
+//     [19:15]=x21(LU) [14:10]=x22(C) [9:5]=x23(DINV) [4:0]=x24(LBAR)
+//     Generates I internally and solves D*DINV=I plus D*LBAR=C while reading
+//     LU only once.  Fixed registers make the encoding disjoint.
+//
+//   trsm5_coeff3_spm (raw-input three-batch coefficient preprocessing):
+//     exact encoding fields [19:15]=20 [14:10]=21 [9:5]=22 [4:0]=23
+//     Fixed x10..x15 addresses carry LU/L/U and D_inv/L_bar/U_bar.  Identity
+//     is generated internally; x26/x25 carry input/completion tokens.
+//
+//   vec5_sub_z:
+//     [24:23]=11 [22]=0 [21:20]=00
+//       [19:15]=zsrc0 [14:10]=zsrc1 [9:5]=10110 [4:0]=zd
+//
+//   cfd_lusgs_launch / cfd_lusgs_wait (Step3 macro controller):
+//     [24:23]=11 [22]=0 [21:20]=00
+//       launch: [19:15]=11111 [14:10]=xdesc [9:5]=00001 [4:0]=xtok
+//       wait:   [19:15]=11110 [14:10]=xtok  [9:5]=00010 [4:0]=xstatus
+//     The [19:15] function tags are disjoint from pack_acc (tag 00000) and
+//     from TRSV5's legal x21..x24 base register range.
+//
+//   cfd_coeff_pre_launch / cfd_coeff_pre_wait (event preprocessing):
+//       launch: [19:15]=11101 [14:10]=xdesc [9:5]=00011 [4:0]=xtok
+//       wait:   [19:15]=11100 [14:10]=xtok  [9:5]=00100 [4:0]=xstatus
+//     These exact tags precede generic TRSV decoding and leave all coarse
+//     coefficient instructions unchanged.
+//
+//   Arm SME ZERO/MOVA/SMSTART/SMSTOP use the normal Arm SME decoder.
+//   This file deliberately does not decode CFD prototype ZA management ops.
+// ================================================================
+
+output header {{
+#include "arch/arm/insts/cfd_dsa.hh"
+}};
+
+output decoder {{
+namespace Aarch64
+{
+
+StaticInstPtr
+decodeCustomCFD(ExtMachInst machInst)
+{
+    // All CFD instructions share [31:27]=00000, [26:25]=00
+    if (bits(machInst, 31, 25) != 0) {
+        return new Unknown64(machInst);
+    }
+
+    // ─── CFD-SME step class: [24:23]=11, [22]=1 ────────────────
+    // This avoids the existing dotp_row [24:23]=10 and pack_acc [22]=0.
+    // Old smemvm_prefetch5_spm/smemvm_exec5 and prototype ZERO/MOVA
+    // encodings are no longer legal here.
+    if (bits(machInst, 24, 23) == 0b11 && bits(machInst, 22, 22) == 1) {
+        uint8_t pathb_pipe = bits(machInst, 21, 21);
+
+        if (pathb_pipe == 0) {
+            // New Path C selected-column outer-product step.  The old
+            // cfdsme_fmopa5_step guard [17:15]=101 is intentionally illegal
+            // here so the fixed ZA[:,0] Path C is not the default path.
+            uint8_t k = bits(machInst, 20, 18);
+            if (k > 4)
+                return new Unknown64(machInst);
+            if (bits(machInst, 17, 15) != 0b110 || bits(machInst, 4, 0) != 0)
+                return new Unknown64(machInst);
+            uint8_t zcol = bits(machInst, 14, 10);
+            uint8_t zvec = bits(machInst, 9, 5);
+            return new DSACFDSMEZaOuter5Step(machInst, zcol, zvec, k);
+        }
+
+        // Path B ZA spatial partial-sum pipeline.  Guard bits [17:15]=110
+        // keep the removed REDUCE5 prototype illegal.
+        uint8_t k = bits(machInst, 20, 18);
+        if (k > 4)
+            return new Unknown64(machInst);
+        if (bits(machInst, 17, 15) != 0b110 || bits(machInst, 4, 0) != 0)
+            return new Unknown64(machInst);
+        uint8_t zcol = bits(machInst, 14, 10);
+        uint8_t zvec = bits(machInst, 9, 5);
+        return new DSACFDSMEMvm5PipeStep(machInst, zcol, zvec, k);
+
+        return new Unknown64(machInst);
+    }
+
+    // ─── lmat5_spm: [24]=0 ──────────────────────────────────────
+    if (bits(machInst, 24, 24) == 0) {
+        // Guard bit [20]=0 for SPM mode, [20]=1 for legacy cache mode
+        uint8_t is_spm_mode = (bits(machInst, 20, 20) == 0);
+        uint8_t row = bits(machInst, 23, 21);
+        if (row > 4)
+            return new Unknown64(machInst);
+        uint8_t zd  = bits(machInst, 4, 0);
+        uint8_t rs1 = bits(machInst, 9, 5);
+        if (is_spm_mode) {
+            // Scheme-B uses x21/x22 for matrix bases and x23/x24 for vector bases.
+            // Restricting rs1 avoids decoding all-zero padding words as valid CFD ops.
+            if (rs1 < 21 || rs1 > 24)
+                return new Unknown64(machInst);
+            if (cfdUseLocalSpmPort())
+                return new DSALmatRowSPMLocal(machInst, zd, rs1, row);
+            // Generic timing SPM mode: 40-byte uncacheable memory request
+            return new DSALmatRowSPM(machInst, zd, rs1, row);
+        } else {
+            // Legacy cache mode (unchanged)
+            return new DSALmatRow(machInst, zd, rs1, row);
+        }
+    }
+
+    // ─── Compute instructions: [24]=1 ────────────────────────────
+    if (bits(machInst, 24, 23) == 0b11 && bits(machInst, 22, 22) == 0) {
+        uint8_t subop = bits(machInst, 21, 20);
+          if (subop == 0b00) {
+              uint8_t tag = bits(machInst, 19, 15);
+              uint8_t field = bits(machInst, 9, 5);
+              if (tag == 21 && bits(machInst, 14, 10) == 22 &&
+                  field == 23 && bits(machInst, 4, 0) == 24) {
+                  return new DSATrsm5InvLbarSPM(machInst, 21, 22, 23, 24);
+              }
+              if (tag == 20 && bits(machInst, 14, 10) == 21 &&
+                  field == 22 && bits(machInst, 4, 0) == 23) {
+                  return new DSATrsm5Coeff3SPM(machInst);
+              }
+              if (bits(machInst, 4, 0) == 0b11101) {
+                  uint8_t rhs_base = bits(machInst, 14, 10);
+                  uint8_t out_base = field;
+                  if (tag >= 21 && tag <= 24 &&
+                      rhs_base >= 21 && rhs_base <= 24 &&
+                      out_base >= 21 && out_base <= 24)
+                      return new DSATrsm5MrhsSPM(machInst, tag, rhs_base,
+                                                 out_base);
+                  return new Unknown64(machInst);
+              }
+              if (field == 0b10110) {
+                  uint8_t zsrc1 = bits(machInst, 14, 10);
+                  uint8_t zd = bits(machInst, 4, 0);
+                  return new DSAVec5SubZ(machInst, zd, tag, zsrc1);
+              }
+              if (tag == 0b00001 && field == 0b10000) {
+                  uint8_t base = bits(machInst, 14, 10);
+                  uint8_t zd = bits(machInst, 4, 0);
+                  return new DSAPackSubAcc(machInst, zd, base, field);
+              }
+              if (field == 0b10010 || field == 0b10100) {
+                  uint8_t line = bits(machInst, 19, 15);
+                  uint8_t cell = bits(machInst, 14, 10);
+                  uint8_t zd = bits(machInst, 4, 0);
+                  return new DSALineBufRead5(machInst, zd, line, cell,
+                                             field == 0b10010);
+              }
+              if (field == 0b10011 || field == 0b10101) {
+                  uint8_t line = bits(machInst, 19, 15);
+                  uint8_t cell = bits(machInst, 14, 10);
+                  uint8_t zsrc = bits(machInst, 4, 0);
+                  return new DSALineBufWrite5(machInst, zsrc, line, cell,
+                                              field == 0b10011);
+              }
+              if (tag == 0b11111 && field == 0b00001) {
+                uint8_t desc = bits(machInst, 14, 10);
+                uint8_t token = bits(machInst, 4, 0);
+                return new DSALusgsLaunch(machInst, token, desc);
+            }
+            if (tag == 0b11110 && field == 0b00010) {
+                uint8_t token = bits(machInst, 14, 10);
+                uint8_t status = bits(machInst, 4, 0);
+                return new DSALusgsWait(machInst, status, token);
+            }
+            if (tag == 0b11101 && field == 0b00011) {
+                uint8_t desc = bits(machInst, 14, 10);
+                uint8_t token = bits(machInst, 4, 0);
+                return new DSACoeffPreprocessLaunch(machInst, token, desc);
+            }
+            if (tag == 0b11100 && field == 0b00100) {
+                uint8_t token = bits(machInst, 14, 10);
+                uint8_t status = bits(machInst, 4, 0);
+                return new DSACoeffPreprocessWait(machInst, status, token);
+            }
+            if (tag == 0b11011 && field == 0b00101) {
+                uint8_t token = bits(machInst, 14, 10);
+                uint8_t status = bits(machInst, 4, 0);
+                return new DSACoeffPreprocessCancel(machInst, status, token);
+            }
+            uint8_t lu_base = tag;
+            uint8_t rhs_base = bits(machInst, 14, 10);
+            uint8_t zd = bits(machInst, 4, 0);
+            if (field == 0b10001 &&
+                lu_base >= 21 && lu_base <= 24)
+                return new DSATrsv5LuZRHS(machInst, zd, lu_base, rhs_base);
+            if (field == 0 &&
+                lu_base >= 21 && lu_base <= 24 &&
+                rhs_base >= 21 && rhs_base <= 24)
+                return new DSATrsv5LuSPM(machInst, zd, lu_base, rhs_base);
+        }
+        if (subop != 0) {
+            uint8_t slot = bits(machInst, 19, 19);
+            if (subop == 0b01) {
+                uint8_t field = bits(machInst, 18, 16);
+                uint8_t base = bits(machInst, 14, 10);
+                if (field > 5 || bits(machInst, 15, 15) != 0 ||
+                    bits(machInst, 9, 0) != 0)
+                    return new Unknown64(machInst);
+                if (base < 21 || base > 24)
+                    return new Unknown64(machInst);
+                return new DSAPathAStreamLoad5(machInst, slot, field, base);
+            }
+            if (subop == 0b10) {
+                uint8_t lane = bits(machInst, 18, 16);
+                if (lane > 4 || bits(machInst, 15, 0) != 0)
+                    return new Unknown64(machInst);
+                return new DSAPathADotpStream(machInst, slot, lane);
+            }
+            if (subop == 0b11) {
+                uint8_t base = bits(machInst, 14, 10);
+                if (bits(machInst, 18, 15) == 0b1111 &&
+                    bits(machInst, 9, 0) == 0)
+                    return new DSAPathAStoreDrain(machInst, base);
+                if (bits(machInst, 18, 15) != 0 || bits(machInst, 9, 0) != 0)
+                    return new Unknown64(machInst);
+                return new DSAPathAStore5Result(machInst, slot, base);
+            }
+        }
+    }
+
+    if (bits(machInst, 23, 23) == 0) {
+        // dotp_row (v4.0): write to X[16+lane_id]
+        uint8_t zra     = bits(machInst, 14, 10);
+        uint8_t zrb     = bits(machInst, 9, 5);
+        uint8_t lane_id = bits(machInst, 4, 0);
+        if (lane_id > 4)
+            return new Unknown64(machInst);
+        return new DSADotpRow(machInst, zra, zrb, lane_id);
+    } else {
+        // pack_acc (v4.0): harvest X[xn]..X[xn+4] -> Z[zd]
+        uint8_t zd = bits(machInst, 4, 0);
+        uint8_t xn = bits(machInst, 9, 5);
+        if (xn != 16)
+            return new Unknown64(machInst);
+        return new DSAPackAcc(machInst, zd, xn);
+    }
+}
+
+} // namespace Aarch64
+}}; // output decoder

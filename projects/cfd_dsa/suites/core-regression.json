@@ -1,0 +1,64 @@
+{
+  "campaign": "core-regression",
+  "cases": [
+    {
+      "name": "patha-64",
+      "target": "patha",
+      "args": ["--bench-iters=64"]
+    },
+    {
+      "name": "pathb-64",
+      "target": "pathb",
+      "args": ["--bench-iters=64"]
+    },
+    {
+      "name": "pathc-64",
+      "target": "pathc",
+      "args": ["--bench-iters=64"]
+    },
+    {
+      "name": "trsv5-512",
+      "target": "trsv5",
+      "args": ["--trsv5-solves=512"]
+    },
+    {
+      "name": "decode-exclusive",
+      "target": "common",
+      "args": ["--binary=build/cfd_dsa/aarch64/test_cfd_dsa_decode_exclusive_arm", "--bench-iters=1"]
+    },
+    {
+      "name": "lusgs-step1-1x17",
+      "target": "lusgs-step1",
+      "args": ["--lusgs-lines=1", "--lusgs-cells=17"]
+    },
+    {
+      "name": "lusgs-step2-1x17",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-lines=1", "--lusgs-cells=17"]
+    },
+    {
+      "name": "lusgs-step2-stream-1x17",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=1",
+        "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+        "--coeff-preprocess-model=event",
+        "--lu5-model=event",
+        "--coeff-validation=full",
+        "--coeff-stream-window=4",
+        "--lusgs-lines=1",
+        "--lusgs-cells=17"
+      ]
+    },
+    {
+      "name": "lusgs-step3-1x17",
+      "target": "lusgs-step3",
+      "args": ["--lusgs-lines=1", "--lusgs-cells=17"]
+    },
+    {
+      "name": "lusgs-step4c-1x64",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-lines=1", "--lusgs-cells=64"]
+    }
+  ]
+}

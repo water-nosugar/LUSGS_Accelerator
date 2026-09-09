@@ -1,0 +1,1059 @@
+{
+  "applied": true,
+  "count": 150,
+  "generated_at": "2026-07-05T15:31:57.190762+00:00",
+  "records": [
+    {
+      "bytes": 139986316,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/m5out",
+      "original_path": "m5out",
+      "stats": "present"
+    },
+    {
+      "bytes": 442856,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_decode",
+      "original_path": "m5out_reg_decode",
+      "stats": "present"
+    },
+    {
+      "bytes": 447778,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_decode_step4b",
+      "original_path": "m5out_reg_decode_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 649204,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_patha",
+      "original_path": "m5out_reg_patha",
+      "stats": "present"
+    },
+    {
+      "bytes": 659048,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_patha_step4b",
+      "original_path": "m5out_reg_patha_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 647744,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_pathc",
+      "original_path": "m5out_reg_pathc",
+      "stats": "present"
+    },
+    {
+      "bytes": 657588,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_pathc_step4b",
+      "original_path": "m5out_reg_pathc_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 674081,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step1",
+      "original_path": "m5out_reg_step1",
+      "stats": "present"
+    },
+    {
+      "bytes": 683925,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step1_1x17_step4b",
+      "original_path": "m5out_reg_step1_1x17_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 691820,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step1_8x64_step4b",
+      "original_path": "m5out_reg_step1_8x64_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 660846,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step2",
+      "original_path": "m5out_reg_step2",
+      "stats": "present"
+    },
+    {
+      "bytes": 670690,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step2_1x17_step4b",
+      "original_path": "m5out_reg_step2_1x17_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 690376,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step2_8x64_step4b",
+      "original_path": "m5out_reg_step2_8x64_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 648595,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step3",
+      "original_path": "m5out_reg_step3",
+      "stats": "present"
+    },
+    {
+      "bytes": 658439,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step3_1x17_step4b",
+      "original_path": "m5out_reg_step3_1x17_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 663125,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step3_8x64_stageC_step4b",
+      "original_path": "m5out_reg_step3_8x64_stageC_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 663125,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step3_8x64_step4b",
+      "original_path": "m5out_reg_step3_8x64_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_step4a_1x17_step4b",
+      "original_path": "m5out_reg_step4a_1x17_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 663191,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_trsv1",
+      "original_path": "m5out_reg_trsv1",
+      "stats": "present"
+    },
+    {
+      "bytes": 669054,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_trsv17",
+      "original_path": "m5out_reg_trsv17",
+      "stats": "present"
+    },
+    {
+      "bytes": 678898,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_trsv17_step4b",
+      "original_path": "m5out_reg_trsv17_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 673035,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_trsv1_step4b",
+      "original_path": "m5out_reg_trsv1_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 672750,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_trsv512",
+      "original_path": "m5out_reg_trsv512",
+      "stats": "present"
+    },
+    {
+      "bytes": 682594,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_reg_trsv512_step4b",
+      "original_path": "m5out_reg_trsv512_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 354008,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_results",
+      "original_path": "m5out_results",
+      "stats": "missing"
+    },
+    {
+      "bytes": 667902,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_1x64_final",
+      "original_path": "m5out_step4_1x64_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 675883,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_bad_align",
+      "original_path": "m5out_step4_bad_align",
+      "stats": "present"
+    },
+    {
+      "bytes": 675883,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_bad_flags",
+      "original_path": "m5out_step4_bad_flags",
+      "stats": "present"
+    },
+    {
+      "bytes": 675183,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_bad_shape",
+      "original_path": "m5out_step4_bad_shape",
+      "stats": "present"
+    },
+    {
+      "bytes": 675885,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_bad_stride",
+      "original_path": "m5out_step4_bad_stride",
+      "stats": "present"
+    },
+    {
+      "bytes": 675883,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_bad_token",
+      "original_path": "m5out_step4_bad_token",
+      "stats": "present"
+    },
+    {
+      "bytes": 675173,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_busy",
+      "original_path": "m5out_step4_busy",
+      "stats": "present"
+    },
+    {
+      "bytes": 676889,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_error_then_legal",
+      "original_path": "m5out_step4_error_then_legal",
+      "stats": "present"
+    },
+    {
+      "bytes": 675726,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_lifecycle",
+      "original_path": "m5out_step4_lifecycle",
+      "stats": "present"
+    },
+    {
+      "bytes": 674833,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_missing_q",
+      "original_path": "m5out_step4_missing_q",
+      "stats": "present"
+    },
+    {
+      "bytes": 676646,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_overlap",
+      "original_path": "m5out_step4_overlap",
+      "stats": "present"
+    },
+    {
+      "bytes": 676045,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_snapshot",
+      "original_path": "m5out_step4_snapshot",
+      "stats": "present"
+    },
+    {
+      "bytes": 674839,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_spm_capacity",
+      "original_path": "m5out_step4_spm_capacity",
+      "stats": "present"
+    },
+    {
+      "bytes": 674839,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_spm_capacity2",
+      "original_path": "m5out_step4_spm_capacity2",
+      "stats": "present"
+    },
+    {
+      "bytes": 675199,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_unsupported_stage",
+      "original_path": "m5out_step4_unsupported_stage",
+      "stats": "present"
+    },
+    {
+      "bytes": 674760,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_watchdog",
+      "original_path": "m5out_step4_watchdog",
+      "stats": "present"
+    },
+    {
+      "bytes": 674812,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_wrong_launch",
+      "original_path": "m5out_step4_wrong_launch",
+      "stats": "present"
+    },
+    {
+      "bytes": 674311,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4_wrong_wait",
+      "original_path": "m5out_step4_wrong_wait",
+      "stats": "present"
+    },
+    {
+      "bytes": 666001,
+      "category": "baseline",
+      "destination": "results/cfd_dsa/baselines/lusgs/step4a/1x64",
+      "original_path": "m5out_step4a_1x64_post",
+      "stats": "present"
+    },
+    {
+      "bytes": 660020,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_1x1",
+      "original_path": "m5out_step4b_1x1",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_1x17",
+      "original_path": "m5out_step4b_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 660979,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_1x2",
+      "original_path": "m5out_step4b_1x2",
+      "stats": "present"
+    },
+    {
+      "bytes": 660979,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_1x3",
+      "original_path": "m5out_step4b_1x3",
+      "stats": "present"
+    },
+    {
+      "bytes": 666001,
+      "category": "baseline",
+      "destination": "results/cfd_dsa/baselines/lusgs/step4b/1x64",
+      "original_path": "m5out_step4b_1x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 685678,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_lifecycle",
+      "original_path": "m5out_step4b_lifecycle",
+      "stats": "present"
+    },
+    {
+      "bytes": 685307,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_overlap",
+      "original_path": "m5out_step4b_overlap",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_sens_dotpcount2",
+      "original_path": "m5out_step4b_sens_dotpcount2",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_sens_dotplat5",
+      "original_path": "m5out_step4b_sens_dotplat5",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_sens_matldcount1",
+      "original_path": "m5out_step4b_sens_matldcount1",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_sens_packcount2",
+      "original_path": "m5out_step4b_sens_packcount2",
+      "stats": "present"
+    },
+    {
+      "bytes": 661005,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_sens_slot1",
+      "original_path": "m5out_step4b_sens_slot1",
+      "stats": "present"
+    },
+    {
+      "bytes": 684434,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_snapshot",
+      "original_path": "m5out_step4b_snapshot",
+      "stats": "present"
+    },
+    {
+      "bytes": 684712,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_watchdog",
+      "original_path": "m5out_step4b_watchdog",
+      "stats": "present"
+    },
+    {
+      "bytes": 684442,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_wrong_launch",
+      "original_path": "m5out_step4b_wrong_launch",
+      "stats": "present"
+    },
+    {
+      "bytes": 684935,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4b_wrong_wait",
+      "original_path": "m5out_step4b_wrong_wait",
+      "stats": "present"
+    },
+    {
+      "bytes": 679242,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_1x1",
+      "original_path": "m5out_step4c_1x1",
+      "stats": "present"
+    },
+    {
+      "bytes": 679916,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_1x17",
+      "original_path": "m5out_step4c_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 684403,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_1x64",
+      "original_path": "m5out_step4c_1x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 679493,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_backpressure",
+      "original_path": "m5out_step4c_backpressure",
+      "stats": "present"
+    },
+    {
+      "bytes": 0,
+      "category": "failed",
+      "destination": "results/cfd_dsa/failed/legacy/m5out_step4c_backpressure_final",
+      "original_path": "m5out_step4c_backpressure_final",
+      "stats": "empty"
+    },
+    {
+      "bytes": 680696,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/backpressure",
+      "original_path": "m5out_step4c_backpressure_final2",
+      "stats": "present"
+    },
+    {
+      "bytes": 457794,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/decode",
+      "original_path": "m5out_step4c_finalreg_decode",
+      "stats": "present"
+    },
+    {
+      "bytes": 674863,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/patha",
+      "original_path": "m5out_step4c_finalreg_patha",
+      "stats": "present"
+    },
+    {
+      "bytes": 673932,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/pathc",
+      "original_path": "m5out_step4c_finalreg_pathc",
+      "stats": "present"
+    },
+    {
+      "bytes": 700997,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step1_1",
+      "original_path": "m5out_step4c_finalreg_step1_1",
+      "stats": "present"
+    },
+    {
+      "bytes": 709098,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step1_8",
+      "original_path": "m5out_step4c_finalreg_step1_8",
+      "stats": "present"
+    },
+    {
+      "bytes": 689984,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step2_1",
+      "original_path": "m5out_step4c_finalreg_step2_1",
+      "stats": "present"
+    },
+    {
+      "bytes": 710015,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step2_8",
+      "original_path": "m5out_step4c_finalreg_step2_8",
+      "stats": "present"
+    },
+    {
+      "bytes": 672281,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step3_1",
+      "original_path": "m5out_step4c_finalreg_step3_1",
+      "stats": "present"
+    },
+    {
+      "bytes": 676997,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step3_8",
+      "original_path": "m5out_step4c_finalreg_step3_8",
+      "stats": "present"
+    },
+    {
+      "bytes": 687619,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step4a",
+      "original_path": "m5out_step4c_finalreg_step4a",
+      "stats": "present"
+    },
+    {
+      "bytes": 687610,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/step4b",
+      "original_path": "m5out_step4c_finalreg_step4b",
+      "stats": "present"
+    },
+    {
+      "bytes": 695986,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/regression/trsv512",
+      "original_path": "m5out_step4c_finalreg_trsv512",
+      "stats": "present"
+    },
+    {
+      "bytes": 675940,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_pagefault_smoke",
+      "original_path": "m5out_step4c_pagefault_smoke",
+      "stats": "present"
+    },
+    {
+      "bytes": 700994,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg2_step1_1x17",
+      "original_path": "m5out_step4c_reg2_step1_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 709095,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg2_step1_8x64",
+      "original_path": "m5out_step4c_reg2_step1_8x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 689981,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg2_step2_1x17",
+      "original_path": "m5out_step4c_reg2_step2_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 710012,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg2_step2_8x64",
+      "original_path": "m5out_step4c_reg2_step2_8x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 672278,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg2_step3_1x17",
+      "original_path": "m5out_step4c_reg2_step3_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 676994,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg2_step3_8x64",
+      "original_path": "m5out_step4c_reg2_step3_8x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 698341,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/bad-request-id",
+      "original_path": "m5out_step4c_reg_badreq_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 451032,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_decode",
+      "original_path": "m5out_step4c_reg_decode",
+      "stats": "present"
+    },
+    {
+      "bytes": 697979,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/duplicate-completion",
+      "original_path": "m5out_step4c_reg_duplicate_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 699010,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/error-then-legal",
+      "original_path": "m5out_step4c_reg_errorlegal_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 665556,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_patha",
+      "original_path": "m5out_step4c_reg_patha",
+      "stats": "present"
+    },
+    {
+      "bytes": 664096,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_pathc",
+      "original_path": "m5out_step4c_reg_pathc",
+      "stats": "present"
+    },
+    {
+      "bytes": 697156,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/stale-generation",
+      "original_path": "m5out_step4c_reg_stale_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 690433,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step1_1x17",
+      "original_path": "m5out_step4c_reg_step1_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 698328,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step1_8x64",
+      "original_path": "m5out_step4c_reg_step1_8x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 677198,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step2_1x17",
+      "original_path": "m5out_step4c_reg_step2_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 696884,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step2_8x64",
+      "original_path": "m5out_step4c_reg_step2_8x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 664947,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step3_1x17",
+      "original_path": "m5out_step4c_reg_step3_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 669633,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step3_8x64",
+      "original_path": "m5out_step4c_reg_step3_8x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 692845,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step4a_1x64",
+      "original_path": "m5out_step4c_reg_step4a_1x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 692834,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_step4b_1x64",
+      "original_path": "m5out_step4c_reg_step4b_1x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 687857,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x1",
+      "original_path": "m5out_step4c_reg_step4c_1x1",
+      "stats": "present"
+    },
+    {
+      "bytes": 688409,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x17",
+      "original_path": "m5out_step4c_reg_step4c_1x17",
+      "stats": "present"
+    },
+    {
+      "bytes": 688124,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x2",
+      "original_path": "m5out_step4c_reg_step4c_1x2",
+      "stats": "present"
+    },
+    {
+      "bytes": 688585,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x3",
+      "original_path": "m5out_step4c_reg_step4c_1x3",
+      "stats": "present"
+    },
+    {
+      "bytes": 198360,
+      "category": "failed",
+      "destination": "results/cfd_dsa/failed/legacy/m5out_step4c_reg_step4c_1x50000",
+      "original_path": "m5out_step4c_reg_step4c_1x50000",
+      "stats": "empty"
+    },
+    {
+      "bytes": 198370,
+      "category": "failed",
+      "destination": "results/cfd_dsa/failed/legacy/m5out_step4c_reg_step4c_1x50000_512m",
+      "original_path": "m5out_step4c_reg_step4c_1x50000_512m",
+      "stats": "empty"
+    },
+    {
+      "bytes": 693176,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x50000",
+      "original_path": "m5out_step4c_reg_step4c_1x50000_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 690893,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x512",
+      "original_path": "m5out_step4c_reg_step4c_1x512",
+      "stats": "present"
+    },
+    {
+      "bytes": 692950,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/correctness/1x64",
+      "original_path": "m5out_step4c_reg_step4c_1x64",
+      "stats": "present"
+    },
+    {
+      "bytes": 679543,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_trsv1",
+      "original_path": "m5out_step4c_reg_trsv1",
+      "stats": "present"
+    },
+    {
+      "bytes": 685406,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_trsv17",
+      "original_path": "m5out_step4c_reg_trsv17",
+      "stats": "present"
+    },
+    {
+      "bytes": 696553,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_trsv50000",
+      "original_path": "m5out_step4c_reg_trsv50000",
+      "stats": "present"
+    },
+    {
+      "bytes": 696553,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_trsv50000_final",
+      "original_path": "m5out_step4c_reg_trsv50000_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 689102,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_reg_trsv512",
+      "original_path": "m5out_step4c_reg_trsv512",
+      "stats": "present"
+    },
+    {
+      "bytes": 676066,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/vector/lane1-q1-omega1",
+      "original_path": "m5out_step4c_reg_vec_l1_q1_o1",
+      "stats": "present"
+    },
+    {
+      "bytes": 676072,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/vector/lane2-q2-omega0.5",
+      "original_path": "m5out_step4c_reg_vec_l2_q2_o05",
+      "stats": "present"
+    },
+    {
+      "bytes": 676086,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/vector/lane5-q4-omega-0.25",
+      "original_path": "m5out_step4c_reg_vec_l5_q4_on025",
+      "stats": "present"
+    },
+    {
+      "bytes": 698355,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/watchdog",
+      "original_path": "m5out_step4c_reg_watchdog_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 696124,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/wrong-launch",
+      "original_path": "m5out_step4c_reg_wronglaunch_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 697039,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/faults/wrong-wait",
+      "original_path": "m5out_step4c_reg_wrongwait_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/div16",
+      "original_path": "m5out_step4c_sens_div16",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/div4",
+      "original_path": "m5out_step4c_sens_div4",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/div8",
+      "original_path": "m5out_step4c_sens_div8",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/fmacount1",
+      "original_path": "m5out_step4c_sens_fmacount1",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/fmacount2",
+      "original_path": "m5out_step4c_sens_fmacount2",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/fmacount4",
+      "original_path": "m5out_step4c_sens_fmacount4",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/fmalat3",
+      "original_path": "m5out_step4c_sens_fmalat3",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/fmalat4",
+      "original_path": "m5out_step4c_sens_fmalat4",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/fmalat5",
+      "original_path": "m5out_step4c_sens_fmalat5",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/forward0",
+      "original_path": "m5out_step4c_sens_forward0",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/lanes1",
+      "original_path": "m5out_step4c_sens_lanes1",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/lanes2",
+      "original_path": "m5out_step4c_sens_lanes2",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/lanes5",
+      "original_path": "m5out_step4c_sens_lanes5",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/sublat1",
+      "original_path": "m5out_step4c_sens_sublat1",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/sublat3",
+      "original_path": "m5out_step4c_sens_sublat3",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/sublat5",
+      "original_path": "m5out_step4c_sens_sublat5",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/trsvq1",
+      "original_path": "m5out_step4c_sens_trsvq1",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/trsvq2",
+      "original_path": "m5out_step4c_sens_trsvq2",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/trsvq4",
+      "original_path": "m5out_step4c_sens_trsvq4",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/veccount1",
+      "original_path": "m5out_step4c_sens_veccount1",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/veccount2",
+      "original_path": "m5out_step4c_sens_veccount2",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/vecq1",
+      "original_path": "m5out_step4c_sens_vecq1",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/vecq2",
+      "original_path": "m5out_step4c_sens_vecq2",
+      "stats": "present"
+    },
+    {
+      "bytes": 680484,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/vecq4",
+      "original_path": "m5out_step4c_sens_vecq4",
+      "stats": "present"
+    },
+    {
+      "bytes": 0,
+      "category": "failed",
+      "destination": "results/cfd_dsa/failed/legacy/m5out_step4c_trace_final",
+      "original_path": "m5out_step4c_trace_final",
+      "stats": "empty"
+    },
+    {
+      "bytes": 728681,
+      "category": "campaign",
+      "destination": "results/cfd_dsa/campaigns/2026-07-01-step4c/trace/basic",
+      "original_path": "m5out_step4c_trace_final2",
+      "stats": "present"
+    },
+    {
+      "bytes": 690145,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_trsv_watchdog_final",
+      "original_path": "m5out_step4c_trsv_watchdog_final",
+      "stats": "present"
+    },
+    {
+      "bytes": 679493,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_vec_lane1",
+      "original_path": "m5out_step4c_vec_lane1",
+      "stats": "present"
+    },
+    {
+      "bytes": 679953,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_vec_lane2",
+      "original_path": "m5out_step4c_vec_lane2",
+      "stats": "present"
+    },
+    {
+      "bytes": 679957,
+      "category": "archive",
+      "destination": "results/cfd_dsa/archive/legacy-2026-07-05/top-level/m5out_step4c_vec_lane5",
+      "original_path": "m5out_step4c_vec_lane5",
+      "stats": "present"
+    }
+  ],
+  "schema_version": 1,
+  "total_bytes": 237706260
+}

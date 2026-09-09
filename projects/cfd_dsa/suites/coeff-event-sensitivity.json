@@ -1,0 +1,47 @@
+{
+  "campaign": "coeff-event-sensitivity",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=raw-compare",
+    "--lusgs-lines=8",
+    "--lusgs-cells=256",
+    "--lusgs-interleave=4",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=performance",
+    "--pretransform-validate=fast"
+  ],
+  "cases": [
+    {"name": "rhs-lanes-1", "target": "lusgs-step2", "args": ["--coeff3-rhs-lanes=1"]},
+    {"name": "rhs-lanes-3", "target": "lusgs-step2", "args": ["--coeff3-rhs-lanes=3"]},
+    {"name": "rhs-lanes-5", "target": "lusgs-step2", "args": ["--coeff3-rhs-lanes=5"]},
+    {"name": "rhs-lanes-15", "target": "lusgs-step2", "args": ["--coeff3-rhs-lanes=15"]},
+
+    {"name": "div-count-1", "target": "lusgs-step2", "args": ["--coeff3-div-count=1"]},
+    {"name": "div-count-2", "target": "lusgs-step2", "args": ["--coeff3-div-count=2"]},
+    {"name": "div-count-5", "target": "lusgs-step2", "args": ["--coeff3-div-count=5"]},
+    {"name": "div-lat-8-ii4", "target": "lusgs-step2", "args": ["--coeff3-div-lat=8", "--coeff3-div-ii=4"]},
+    {"name": "div-lat-12-ii4", "target": "lusgs-step2", "args": ["--coeff3-div-lat=12", "--coeff3-div-ii=4"]},
+    {"name": "div-lat-16-ii4", "target": "lusgs-step2", "args": ["--coeff3-div-lat=16", "--coeff3-div-ii=4"]},
+    {"name": "div-ii-1", "target": "lusgs-step2", "args": ["--coeff3-div-ii=1"]},
+    {"name": "div-ii-4", "target": "lusgs-step2", "args": ["--coeff3-div-ii=4"]},
+    {"name": "div-ii-12", "target": "lusgs-step2", "args": ["--coeff3-div-ii=12"]},
+
+    {"name": "mulsub-lanes-1", "target": "lusgs-step2", "args": ["--coeff-mulsub-count=1"]},
+    {"name": "mulsub-lanes-2", "target": "lusgs-step2", "args": ["--coeff-mulsub-count=2"]},
+    {"name": "mulsub-lanes-5", "target": "lusgs-step2", "args": ["--coeff-mulsub-count=5"]},
+    {"name": "mulsub-lanes-10", "target": "lusgs-step2", "args": ["--coeff-mulsub-count=10"]},
+
+    {"name": "pending-depth-1", "target": "lusgs-step2", "args": ["--lu5-pending-depth=1", "--coeff3-pending-depth=1"]},
+    {"name": "pending-depth-2", "target": "lusgs-step2", "args": ["--lu5-pending-depth=2", "--coeff3-pending-depth=2"]},
+    {"name": "pending-depth-4", "target": "lusgs-step2", "args": ["--lu5-pending-depth=4", "--coeff3-pending-depth=4"]},
+
+    {"name": "drain-40-p1-d1", "target": "lusgs-step2", "args": ["--coeff-drain-width=40", "--coeff-drain-ports=1", "--coeff-output-buffer-depth=1"]},
+    {"name": "drain-64-p1-d4", "target": "lusgs-step2", "args": ["--coeff-drain-width=64", "--coeff-drain-ports=1", "--coeff-output-buffer-depth=4"]},
+    {"name": "drain-64-p2-d8", "target": "lusgs-step2", "args": ["--coeff-drain-width=64", "--coeff-drain-ports=2", "--coeff-output-buffer-depth=8"]},
+
+    {"name": "input-slots-1", "target": "lusgs-step2", "args": ["--coeff-input-slots=1"]},
+    {"name": "input-slots-2", "target": "lusgs-step2", "args": ["--coeff-input-slots=2"]},
+    {"name": "input-slots-4", "target": "lusgs-step2", "args": ["--coeff-input-slots=4"]}
+  ]
+}

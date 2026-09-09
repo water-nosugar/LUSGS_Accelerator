@@ -1,0 +1,27 @@
+// ================================================================
+// cfd_dsa.isa — CFD DSA Instruction Class Declarations (v4.0)
+// ================================================================
+// NOTE: This file is a compatibility stub. The actual v4.0
+// implementation lives in:
+//   - arch/arm/insts/cfd_dsa.hh    (class declarations)
+//   - arch/arm/insts/cfd_dsa.cc    (execute/initiateAcc/completeAcc)
+//   - arch/arm/isa/formats/custom_cfd.isa (decoder dispatch)
+//
+// The cfd_dsa.cc file is compiled directly via SConscript as
+// Source("insts/cfd_dsa.cc", tags=['arm isa']).
+//
+// v4.0 Architecture:
+//   lmat5_spm: SPM direct access (40B stride, UNCACHEABLE)
+//   dotp_row:  Cross-domain write to X[16+lane_id] (int reg)
+//   pack_acc:  Harvest X[xn]..X[xn+4] -> Z[zd] (vec reg)
+// ================================================================
+
+output header {{
+#include "arch/arm/insts/cfd_dsa.hh"
+}};
+
+let {{
+// All CFD-DSA classes are now defined in cfd_dsa.hh
+// See that file for DSALmatRow, DSALmatRowSPM, DSADotpRow,
+// DSAPackAcc, DSAVsetZero, and DSAGetAcc.
+}};

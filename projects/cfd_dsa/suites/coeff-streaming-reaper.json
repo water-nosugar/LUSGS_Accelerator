@@ -1,0 +1,39 @@
+{
+  "campaign": "coeff-streaming-reaper",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=queue",
+    "--lusgs-lines=1",
+    "--lusgs-cells=17"
+  ],
+  "cases": [
+    {"name": "window-8-independent-reaper", "target": "lusgs-step2", "args": ["--coeff-stream-window=8"]},
+    {
+      "name": "detached-lifetime-slow-drain",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-window=4",
+        "--coeff-drain-lat=500",
+        "--coeff-output-buffer-depth=1",
+        "--coeff-drain-outstanding=1",
+        "--coeff-drain-queue-depth=1"
+      ]
+    },
+    {
+      "name": "single-output-packet-backpressure",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-stream-window=4",
+        "--coeff-spm-model=packet",
+        "--coeff-spm-banks=1",
+        "--coeff-spm-outstanding=1",
+        "--coeff-output-buffer-depth=1",
+        "--coeff-drain-outstanding=1"
+      ]
+    }
+  ]
+}

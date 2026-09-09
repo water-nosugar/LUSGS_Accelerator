@@ -1,0 +1,38 @@
+{
+  "campaign": "coeff-streaming-dinv-consumer",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1",
+    "--lusgs-lines=1"
+  ],
+  "cases": [
+    {"name": "shadow-1x1", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=shadow", "--lusgs-cells=1", "--coeff-stream-window=1"]},
+    {"name": "shadow-1x2", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=shadow", "--lusgs-cells=2", "--coeff-stream-window=2"]},
+    {"name": "shadow-1x17", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=shadow", "--lusgs-cells=17", "--coeff-stream-window=4"]},
+    {"name": "shadow-1x64", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=shadow", "--lusgs-cells=64", "--coeff-stream-window=4"]},
+    {"name": "direct-1x1", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=1", "--coeff-stream-window=1"]},
+    {"name": "direct-1x2", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=2", "--coeff-stream-window=2"]},
+    {"name": "direct-1x17", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-stream-window=4"]},
+    {"name": "direct-1x64", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=64", "--coeff-stream-window=4"]},
+    {"name": "direct-window-1", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-stream-window=1"]},
+    {"name": "direct-window-2", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-stream-window=2"]},
+    {"name": "direct-window-8", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-stream-window=8"]},
+    {"name": "queue-depth-1", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-queue-depth=1"]},
+    {"name": "queue-depth-2", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-queue-depth=2"]},
+    {"name": "queue-depth-10", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-queue-depth=10"]},
+    {"name": "latency-3", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-latency=3"]},
+    {"name": "latency-5", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-latency=5"]},
+    {"name": "ii-2", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-ii=2"]},
+    {"name": "latency-5-ii-2", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-column-fma-latency=5", "--coeff-column-fma-ii=2"]},
+    {"name": "r-input-outstanding-pressure", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-spm-model=packet", "--coeff-spm-outstanding=1"]},
+    {"name": "r-input-bank-pressure", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-spm-model=packet", "--coeff-spm-banks=1"]},
+    {"name": "base-output-ring-pressure", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-output-buffer-depth=1", "--coeff-drain-outstanding=1"]},
+    {"name": "cancel-generation", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=direct", "--lusgs-cells=17", "--coeff-cancel-test=1", "--coeff-column-fma-latency=1024"]},
+    {"name": "out-of-order-column-ready", "target": "lusgs-step2", "args": ["--coeff-stream-dinv-consumer=shadow", "--lusgs-cells=17", "--coeff3-schedule=ready-first", "--coeff-column-fma-queue-depth=1"]}
+  ]
+}

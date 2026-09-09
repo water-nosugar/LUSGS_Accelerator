@@ -1,0 +1,46 @@
+{
+  "campaign": "coeff-streaming-boundaries",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1",
+    "--coeff-stream-dinv-consumer=direct",
+    "--coeff-stream-lbar-consumer=direct",
+    "--coeff-stream-ubar-consumer=direct",
+    "--coeff-stream-line-autonomous=1",
+    "--coeff-stream-window=8",
+    "--coeff3-schedule=frontier-aware",
+    "--lusgs-lines=1",
+    "--lusgs-cells=17"
+  ],
+  "cases": [
+    {
+      "name": "stage6b-requestport-dma",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff-spm-model=dma",
+        "--coeff-spm-outstanding=8",
+        "--coeff-drain-outstanding=8"
+      ]
+    },
+    {
+      "name": "stage7-versioned-reuse-dirty-3s",
+      "target": "lusgs-step2",
+      "args": [
+        "--bench-iters=3",
+        "--coefficient-update-interval=2"
+      ]
+    },
+    {
+      "name": "stage8-reciprocal-fp64",
+      "target": "lusgs-step2",
+      "args": [
+        "--coeff3-div-mode=reciprocal"
+      ]
+    }
+  ]
+}

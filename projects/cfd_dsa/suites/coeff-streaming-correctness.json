@@ -1,0 +1,61 @@
+{
+  "campaign": "coeff-streaming-correctness",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--lusgs-lines=1"
+  ],
+  "cases": [
+    {
+      "name": "boundary-1x1-w4",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=1", "--coeff-stream-window=4"]
+    },
+    {
+      "name": "boundary-1x2-w4",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=2", "--coeff-stream-window=4"]
+    },
+    {
+      "name": "window-1-1x17",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=1"]
+    },
+    {
+      "name": "window-2-1x17",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=2"]
+    },
+    {
+      "name": "window-4-1x17",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=4"]
+    },
+    {
+      "name": "window-8-1x17",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=8"]
+    },
+    {
+      "name": "scale-1x64-w4",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=64", "--coeff-stream-window=4"]
+    },
+    {
+      "name": "packet-bank-backpressure",
+      "target": "lusgs-step2",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-stream-window=4",
+        "--coeff-spm-model=packet",
+        "--coeff-spm-banks=1",
+        "--coeff-spm-outstanding=1",
+        "--coeff-output-buffer-depth=1",
+        "--coeff-drain-outstanding=1"
+      ]
+    }
+  ]
+}

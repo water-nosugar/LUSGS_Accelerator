@@ -1,0 +1,50 @@
+{
+  "campaign": "step4c-sensitivity",
+  "cases": [
+    {
+      "name": "div-lat-4",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--trsv5-div-lat=4"]
+    },
+    {
+      "name": "div-lat-8",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--trsv5-div-lat=8"]
+    },
+    {
+      "name": "div-lat-16",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--trsv5-div-lat=16"]
+    },
+    {
+      "name": "fma-count-1",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--trsv5-fma-count=1"]
+    },
+    {
+      "name": "fma-count-2",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--trsv5-fma-count=2"]
+    },
+    {
+      "name": "fma-count-4",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--trsv5-fma-count=4"]
+    },
+    {
+      "name": "vec-lanes-1",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--vec5-lanes=1"]
+    },
+    {
+      "name": "vec-lanes-2",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--vec5-lanes=2"]
+    },
+    {
+      "name": "vec-lanes-5",
+      "target": "lusgs-step4",
+      "args": ["--lusgs-step4-stage=C", "--lusgs-cells=17", "--vec5-lanes=5"]
+    }
+  ]
+}

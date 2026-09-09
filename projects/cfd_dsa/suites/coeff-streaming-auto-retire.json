@@ -1,0 +1,46 @@
+{
+  "campaign": "coeff-streaming-auto-retire",
+  "common_args": [
+    "--bench-iters=1",
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--lusgs-lines=1"
+  ],
+  "cases": [
+    {"name": "boundary-1x1-w1", "target": "lusgs-step2", "args": ["--lusgs-cells=1", "--coeff-stream-window=1"]},
+    {"name": "boundary-1x2-w2", "target": "lusgs-step2", "args": ["--lusgs-cells=2", "--coeff-stream-window=2"]},
+    {"name": "line-1x17-w1", "target": "lusgs-step2", "args": ["--lusgs-cells=17", "--coeff-stream-window=1"]},
+    {"name": "line-1x17-w2", "target": "lusgs-step2", "args": ["--lusgs-cells=17", "--coeff-stream-window=2"]},
+    {"name": "line-1x17-w4", "target": "lusgs-step2", "args": ["--lusgs-cells=17", "--coeff-stream-window=4"]},
+    {"name": "line-1x17-w8", "target": "lusgs-step2", "args": ["--lusgs-cells=17", "--coeff-stream-window=8"]},
+    {"name": "scale-1x64-w4", "target": "lusgs-step2", "args": ["--lusgs-cells=64", "--coeff-stream-window=4"]},
+    {
+      "name": "slow-drain",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=4", "--coeff-drain-lat=500"]
+    },
+    {
+      "name": "output-ring-pressure",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=4", "--coeff-output-buffer-depth=1", "--coeff-drain-outstanding=1"]
+    },
+    {
+      "name": "outstanding-pressure",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=4", "--coeff-spm-model=packet", "--coeff-spm-outstanding=1"]
+    },
+    {
+      "name": "bank-conflict",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=4", "--coeff-spm-model=packet", "--coeff-spm-banks=1"]
+    },
+    {
+      "name": "cancel-regression-coexistence",
+      "target": "lusgs-step2",
+      "args": ["--lusgs-cells=17", "--coeff-stream-window=4", "--coeff-cancel-test=1"]
+    }
+  ]
+}
