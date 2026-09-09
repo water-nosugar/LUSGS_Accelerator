@@ -1,2 +1,2 @@
-# zhaoyanyi
-个人仓库，服创项目专用
+# CFD-LUSGS-Accelerator
+CFD-LUSGS算法加速器仓库
