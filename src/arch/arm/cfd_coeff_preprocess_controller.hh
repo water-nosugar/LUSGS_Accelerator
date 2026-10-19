@@ -77,12 +77,29 @@ enum CfdCoeffPreprocessFlags : uint64_t
     CFD_COEFF_PRE_LINE_BACKWARD_DIRECT = 1ull << 18,
     // Stage 7 cross-sweep contract. The guest publishes a coefficient
     // version in the parent line descriptor's cellId. CACHE_ENABLE permits
-    // reuse only on an exact {lineId, cell-count, version} hit; DIRTY forces
+    // reuse only on an exact {lineId, cell-count, version, base-mode} hit;
+    // DIRTY forces
     // a rebuild and atomically replaces that version after all child cells
     // complete. The controller never infers coefficient stability.
     CFD_COEFF_PRE_LINE_COEFF_CACHE = 1ull << 19,
     CFD_COEFF_PRE_LINE_COEFF_DIRTY = 1ull << 20,
+    // Single-line alternative: slot 0 solves D*b=R instead of the five
+    // identity RHS. No DInv is produced. Requires direct base/Lbar handoff.
+    // Cache keys distinguish LU/direct-base and DInv/inverse-base payloads.
+    CFD_COEFF_PRE_BASE_DIRECT_SOLVE = 1ull << 21,
+    CFD_COEFF_PRE_COMPACT_RECORD = 1ull << 22,
+    CFD_COEFF_PRE_PACKED_RECORD = 1ull << 23,
+    CFD_COEFF_PRE_WARM_SUMMARY = 1ull << 24,
 };
+
+constexpr uint64_t CfdLineSummaryMagic = 0x43464453554d3031ull;
+struct CfdCoeffLineSummary
+{
+    uint64_t magic = CfdLineSummaryMagic;
+    uint64_t generation = 0, cells = 0, completed = 0, errors = 0;
+    uint64_t digest = 0, firstIssue = 0, lastComplete = 0;
+};
+static_assert(sizeof(CfdCoeffLineSummary) == 64);
 
 // Guest-visible descriptor. Keep this layout mirrored in the Step2 benchmark.
 struct CfdCoeffPreprocessDescriptor
@@ -331,6 +348,32 @@ struct CfdCoeffPreprocessRecord
 };
 
 static_assert(sizeof(CfdCoeffPreprocessDescriptor) == 160);
+
+struct CfdCoeffCompactRecord
+{
+#define CFD_RECORD_FIELD(cpp, guest) uint64_t cpp;
+#include "arch/arm/cfd_compact_record_fields.inc"
+#undef CFD_RECORD_FIELD
+};
+static_assert(sizeof(CfdCoeffCompactRecord) == 320);
+
+struct CfdCoeffPackedRecord
+{
+#define CFD_PACKED_FIELD(type, cpp, guest) type cpp;
+#include "arch/arm/cfd_packed_record_fields.inc"
+#undef CFD_PACKED_FIELD
+};
+static_assert(sizeof(CfdCoeffPackedRecord) == 160);
+
+inline CfdCoeffCompactRecord
+cfdCompactRecord(const CfdCoeffPreprocessRecord &record)
+{
+    CfdCoeffCompactRecord compact{};
+#define CFD_RECORD_FIELD(cpp, guest) compact.cpp = record.cpp;
+#include "arch/arm/cfd_compact_record_fields.inc"
+#undef CFD_RECORD_FIELD
+    return compact;
+}
 
 bool cfdCoeffPreprocessEventEnabled();
 uint64_t cfdCoeffPreprocessLaunch(ExecContext *xc, Addr descriptorAddr);

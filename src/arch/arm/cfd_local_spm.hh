@@ -165,6 +165,7 @@ class CfdLocalSpm : public SimObject
         std::function<void(uint64_t)> completion);
     unsigned dmaChunkSize(
         ThreadContext *tc, Addr vaddr, unsigned requested) const;
+    uint64_t dmaOutstanding() const { return dmaLivePackets; }
 
   private:
     using ZaColumn = std::array<double, 5>;
@@ -321,6 +322,12 @@ class CfdLocalSpm : public SimObject
     PacketPtr dmaRetryPacket = nullptr;
     uint64_t nextDmaPacketId = 1;
     uint64_t dmaLivePackets = 0;
+    uint64_t dmaIssuePackets = 0, dmaIssueBytes = 0;
+    uint64_t dmaCyclePackets = 0, dmaCycleBytes = 0;
+    Tick dmaIssueCycle = MaxTick;
+    bool dmaWaitingRetry = false;
+    EventFunctionWrapper dmaSendEvent;
+    void sendBoundedDma();
 
     statistics::Scalar bytesRead;
     statistics::Scalar logicalBytesRead;

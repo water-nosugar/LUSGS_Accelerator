@@ -227,15 +227,6 @@ class CFD_DSA_LUSGS_CTRL_Engine(FUDesc):
     count = 1
 
 
-# CFD-SME restricted FMOPA engine. Each instruction models one strict
-# outer-product k-step with five effective FP64 FMA updates to ZA[0:4,0].
-class CFD_SME_FMOPA_Engine(FUDesc):
-    opList = [
-        OpDesc(opClass="CFDSMEFmopaStep", opLat=4, pipelined=True),
-    ]
-    count = 1
-
-
 # Path B ZA spatial partial-sum pipeline.  Each instruction advances one
 # 5-lane FMA stage and writes the next ZA column.
 class CFD_SME_PIPE_Engine(FUDesc):

@@ -1,0 +1,533 @@
+{
+  "roi_cycles": 20916,
+  "controller_cycles": 16107,
+  "issue_pct": {
+    "mul": 14.515428074750108,
+    "add": 15.90612777053455,
+    "div": 38.86508971254734
+  },
+  "empty_pct": 18.42677096914385,
+  "peak_bytes": 137688,
+  "reload_bytes": 0,
+  "max_abs": 5.551115123125783e-17,
+  "bank_read_pct": 15.777301794250947,
+  "bank_write_pct": 6.348171602408891,
+  "onchip": {
+    "banks": "4",
+    "grain": "8",
+    "read_ports": "1",
+    "write_ports": "1",
+    "latency": "1",
+    "depth": "32",
+    "samples": "16107",
+    "created": "1430",
+    "completed": "1430",
+    "cancelled": "0",
+    "live": "0",
+    "peak": "27",
+    "full": "0",
+    "conflicts": "6066"
+  },
+  "rhs": {
+    "capacity": "16",
+    "bytes": "1280",
+    "peak": "11",
+    "issued": "2232",
+    "completed": "2232",
+    "live": "0",
+    "stalls": "0"
+  },
+  "completion": {
+    "depth": "4",
+    "bytes": "2048",
+    "peak": "1",
+    "issued": "17",
+    "completed": "17",
+    "live": "0"
+  },
+  "phases": [
+    {
+      "window": {
+        "token": "1",
+        "cache_hit": 0,
+        "cycles": 5357,
+        "issued": {
+          "div": 1055,
+          "mul": 4850,
+          "add": 5010
+        },
+        "issue_utilization_pct": {
+          "mul": 18.107149523987307,
+          "add": 18.70449878663431,
+          "div": 78.77543401157364
+        },
+        "empty_cycles": 462,
+        "empty_pct": 8.624229979466119,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "265": 1,
+          "303": 1,
+          "264": 2,
+          "262": 11,
+          "210": 1
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 266,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": null,
+      "summary_response_cycle": null,
+      "summary_hidden_by_backward": null
+    },
+    {
+      "window": {
+        "token": "19",
+        "cache_hit": 1,
+        "cycles": 1791,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "issue_utilization_pct": {
+          "mul": 12.73031825795645,
+          "add": 14.517029592406477,
+          "div": 18.983807928531547
+        },
+        "empty_cycles": 417,
+        "empty_pct": 23.283082077051926,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "28": 1,
+          "86": 2,
+          "27": 5,
+          "85": 2,
+          "37": 2,
+          "63": 1,
+          "44": 1,
+          "56": 2
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 222,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": 534894,
+      "summary_response_cycle": 535000,
+      "summary_hidden_by_backward": true
+    },
+    {
+      "window": {
+        "token": "37",
+        "cache_hit": 1,
+        "cycles": 1791,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "issue_utilization_pct": {
+          "mul": 12.73031825795645,
+          "add": 14.517029592406477,
+          "div": 18.983807928531547
+        },
+        "empty_cycles": 417,
+        "empty_pct": 23.283082077051926,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "28": 1,
+          "86": 2,
+          "27": 5,
+          "85": 2,
+          "37": 2,
+          "63": 1,
+          "44": 1,
+          "56": 2
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 222,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": 551450,
+      "summary_response_cycle": 551556,
+      "summary_hidden_by_backward": true
+    },
+    {
+      "window": {
+        "token": "55",
+        "cache_hit": 1,
+        "cycles": 1793,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "issue_utilization_pct": {
+          "mul": 12.71611823759063,
+          "add": 14.500836586726157,
+          "div": 18.962632459564976
+        },
+        "empty_cycles": 419,
+        "empty_pct": 23.368655883993306,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "28": 1,
+          "86": 2,
+          "27": 5,
+          "85": 2,
+          "37": 2,
+          "63": 1,
+          "44": 1,
+          "56": 2
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 224,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": 566858,
+      "summary_response_cycle": 566964,
+      "summary_hidden_by_backward": true
+    },
+    {
+      "window": {
+        "token": "73",
+        "cache_hit": 1,
+        "cycles": 1791,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "issue_utilization_pct": {
+          "mul": 12.73031825795645,
+          "add": 14.517029592406477,
+          "div": 18.983807928531547
+        },
+        "empty_cycles": 417,
+        "empty_pct": 23.283082077051926,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "28": 1,
+          "86": 2,
+          "27": 5,
+          "85": 2,
+          "37": 2,
+          "63": 1,
+          "44": 1,
+          "56": 2
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 222,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": 582588,
+      "summary_response_cycle": 582694,
+      "summary_hidden_by_backward": true
+    },
+    {
+      "window": {
+        "token": "91",
+        "cache_hit": 1,
+        "cycles": 1793,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "issue_utilization_pct": {
+          "mul": 12.71611823759063,
+          "add": 14.500836586726157,
+          "div": 18.962632459564976
+        },
+        "empty_cycles": 419,
+        "empty_pct": 23.368655883993306,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "28": 1,
+          "86": 2,
+          "27": 5,
+          "85": 2,
+          "37": 2,
+          "63": 1,
+          "44": 1,
+          "56": 2
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 224,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": 597697,
+      "summary_response_cycle": 597803,
+      "summary_hidden_by_backward": true
+    },
+    {
+      "window": {
+        "token": "109",
+        "cache_hit": 1,
+        "cycles": 1791,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "issue_utilization_pct": {
+          "mul": 12.73031825795645,
+          "add": 14.517029592406477,
+          "div": 18.983807928531547
+        },
+        "empty_cycles": 417,
+        "empty_pct": 23.283082077051926,
+        "backward_cycles": 437,
+        "input_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "warm": {},
+        "handoff_gap_histogram": {
+          "28": 1,
+          "86": 2,
+          "27": 5,
+          "85": 2,
+          "37": 2,
+          "63": 1,
+          "44": 1,
+          "56": 2
+        }
+      },
+      "backward": {
+        "cycles": 437,
+        "math_active_cycles": 432,
+        "math_inactive_cycles": 5,
+        "wait_counters": {
+          "tile_wait": 0,
+          "output_queue_wait": 0
+        },
+        "wait_counters_additive": false
+      },
+      "startup": 222,
+      "numeric_ready_to_backward": 3,
+      "completion_tail": 183,
+      "status_response": 104,
+      "summary_issue_cycle": 612686,
+      "summary_response_cycle": 612792,
+      "summary_hidden_by_backward": true
+    }
+  ],
+  "dma": {
+    "packets": 953,
+    "bytes": 34960,
+    "bytes_per_packet": 36.68415529905561,
+    "queue_cycles": {
+      "count": 953,
+      "minimum": 0.0,
+      "mean": 0.9979307450157398,
+      "maximum": 44.002
+    },
+    "response_cycles": {
+      "count": 953,
+      "minimum": 50.0,
+      "mean": 91.43663798530955,
+      "maximum": 123.0
+    }
+  }
+}

@@ -1,0 +1,733 @@
+{
+  "schema_version": 1,
+  "campaign": "single-line-round4-isolated-recovery-20261019",
+  "provenance": [
+    "42d5b4f75bab9605994fbf29043e69ba5e6ea663b587140f59317c049c129fbe",
+    "8180650169a7089424d5349021ccf2e938f17e6498a082b84c4d0aa9d6e9bb53",
+    "1d6d2e4c7f745ab48066f3ad79908a94a02416cd92cddba6f0858bf329cbc452"
+  ],
+  "cases": {},
+  "recovery": {
+    "n1-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "206570",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "255854",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "5"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n2-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "211343",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "271728",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "7"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "5",
+          "depth": "4",
+          "issued": "5",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "5",
+          "depth": "4",
+          "issued": "5",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "10",
+          "depth": "4",
+          "issued": "10",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n17-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "257022",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "463005",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "28"
+        },
+        {
+          "children": "0",
+          "cycle": "643762",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "55"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "80",
+          "depth": "4",
+          "issued": "80",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "80",
+          "depth": "4",
+          "issued": "80",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "160",
+          "depth": "4",
+          "issued": "160",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "160",
+          "depth": "4",
+          "issued": "160",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "240",
+          "depth": "4",
+          "issued": "240",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n65-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "392880",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "1055354",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "76"
+        },
+        {
+          "children": "0",
+          "cycle": "1696029",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "151"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "320",
+          "depth": "4",
+          "issued": "320",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "320",
+          "depth": "4",
+          "issued": "320",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "640",
+          "depth": "4",
+          "issued": "640",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "640",
+          "depth": "4",
+          "issued": "640",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "960",
+          "depth": "4",
+          "issued": "960",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n1-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "207887",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "255885",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "5"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "5",
+          "depth": "4",
+          "issued": "5",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "5",
+          "depth": "4",
+          "issued": "5",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "10",
+          "depth": "4",
+          "issued": "10",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n2-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "212664",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "270318",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "7"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "15",
+          "depth": "4",
+          "issued": "15",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "15",
+          "depth": "4",
+          "issued": "15",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "30",
+          "depth": "4",
+          "issued": "30",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n17-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "255718",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "444770",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "28"
+        },
+        {
+          "children": "0",
+          "cycle": "569570",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "47"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "165",
+          "depth": "4",
+          "issued": "165",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "165",
+          "depth": "4",
+          "issued": "165",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "330",
+          "depth": "4",
+          "issued": "330",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "330",
+          "depth": "4",
+          "issued": "330",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "495",
+          "depth": "4",
+          "issued": "495",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n65-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "391476",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "994607",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "76"
+        },
+        {
+          "children": "0",
+          "cycle": "1432250",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "143"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "645",
+          "depth": "4",
+          "issued": "645",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "645",
+          "depth": "4",
+          "issued": "645",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "1290",
+          "depth": "4",
+          "issued": "1290",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "1290",
+          "depth": "4",
+          "issued": "1290",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        },
+        {
+          "completed": "1935",
+          "depth": "4",
+          "issued": "1935",
+          "live": "0",
+          "max": "3",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n17-direct-full-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "257615",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "439786",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "28"
+        },
+        {
+          "children": "0",
+          "cycle": "600428",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "55"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "80",
+          "depth": "4",
+          "issued": "80",
+          "live": "0",
+          "max": "1",
+          "stalls": "0"
+        },
+        {
+          "completed": "80",
+          "depth": "4",
+          "issued": "80",
+          "live": "0",
+          "max": "1",
+          "stalls": "0"
+        },
+        {
+          "completed": "160",
+          "depth": "4",
+          "issued": "160",
+          "live": "0",
+          "max": "1",
+          "stalls": "0"
+        },
+        {
+          "completed": "160",
+          "depth": "4",
+          "issued": "160",
+          "live": "0",
+          "max": "1",
+          "stalls": "0"
+        },
+        {
+          "completed": "240",
+          "depth": "4",
+          "issued": "240",
+          "live": "0",
+          "max": "1",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    },
+    "n17-inverse-full-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "256335",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "412821",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "28"
+        },
+        {
+          "children": "0",
+          "cycle": "518192",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "47"
+        }
+      ],
+      "cases": [
+        {
+          "completed": "0",
+          "depth": "4",
+          "issued": "0",
+          "live": "0",
+          "max": "0",
+          "stalls": "0"
+        },
+        {
+          "completed": "165",
+          "depth": "4",
+          "issued": "165",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "165",
+          "depth": "4",
+          "issued": "165",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "330",
+          "depth": "4",
+          "issued": "330",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "330",
+          "depth": "4",
+          "issued": "330",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        },
+        {
+          "completed": "495",
+          "depth": "4",
+          "issued": "495",
+          "live": "0",
+          "max": "2",
+          "stalls": "0"
+        }
+      ],
+      "result": "passed"
+    }
+  },
+  "comparison_pairs": []
+}

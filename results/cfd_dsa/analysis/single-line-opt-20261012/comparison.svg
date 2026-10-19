@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660">
+<rect width="1100" height="660" fill="#f8fafc"/>
+<style>text{font-family:DejaVu Sans,sans-serif;fill:#0f172a} .small{font-size:13px} .title{font-size:22px;font-weight:600}</style>
+<text x="36" y="38" class="title">Single-line LU-SGS: same 5 mul / 5 add / 1 div, divider II=4</text>
+<text x="36" y="66" class="small">N=17; cold=1 sweep; reuse=1 rebuild + 6 cache hits; timing DMA; bounded buffers</text>
+<text x="36" y="112" font-size="18" font-weight="600">cold-direct: 44.2% fewer whole-sweep cycles</text>
+<text x="36" y="158" class="small">Baseline</text>
+<rect x="122" y="139" width="350.0" height="27" rx="4" fill="#64748b"/>
+<text x="478.0" y="158" class="small">15,512</text>
+<text x="36" y="203" class="small">Optimized</text>
+<rect x="122" y="184" width="195.4" height="27" rx="4" fill="#0f766e"/>
+<text x="323.4" y="203" class="small">8,658</text>
+<text x="36" y="253" class="small">Arithmetic empty: 55.9% → 17.8%</text>
+<text x="36" y="276" class="small">Issue utilization mul/add/div: 16.3% / 16.8% / 70.9%</text>
+<text x="571" y="112" font-size="18" font-weight="600">cold-inverse: 43.0% fewer whole-sweep cycles</text>
+<text x="571" y="158" class="small">Baseline</text>
+<rect x="657" y="139" width="350.0" height="27" rx="4" fill="#64748b"/>
+<text x="1013.0" y="158" class="small">16,940</text>
+<text x="571" y="203" class="small">Optimized</text>
+<rect x="657" y="184" width="199.6" height="27" rx="4" fill="#0f766e"/>
+<text x="862.6" y="203" class="small">9,662</text>
+<text x="571" y="253" class="small">Arithmetic empty: 51.8% → 14.8%</text>
+<text x="571" y="276" class="small">Issue utilization mul/add/div: 18.4% / 18.9% / 77.5%</text>
+<text x="36" y="364" font-size="18" font-weight="600">reuse-direct: 69.3% fewer whole-sweep cycles</text>
+<text x="36" y="410" class="small">Baseline</text>
+<rect x="122" y="391" width="350.0" height="27" rx="4" fill="#64748b"/>
+<text x="478.0" y="410" class="small">77,834</text>
+<text x="36" y="455" class="small">Optimized</text>
+<rect x="122" y="436" width="107.4" height="27" rx="4" fill="#0f766e"/>
+<text x="235.4" y="455" class="small">23,876</text>
+<text x="36" y="505" class="small">Arithmetic empty: 68.8% → 26.0%</text>
+<text x="36" y="528" class="small">Issue utilization mul/add/div: 12.1% / 13.2% / 32.3%</text>
+<text x="571" y="364" font-size="18" font-weight="600">reuse-inverse: 60.5% fewer whole-sweep cycles</text>
+<text x="571" y="410" class="small">Baseline</text>
+<rect x="657" y="391" width="350.0" height="27" rx="4" fill="#64748b"/>
+<text x="1013.0" y="410" class="small">58,684</text>
+<text x="571" y="455" class="small">Optimized</text>
+<rect x="657" y="436" width="138.2" height="27" rx="4" fill="#0f766e"/>
+<text x="801.2" y="455" class="small">23,172</text>
+<text x="571" y="505" class="small">Arithmetic empty: 73.5% → 34.3%</text>
+<text x="571" y="528" class="small">Issue utilization mul/add/div: 14.6% / 15.7% / 29.0%</text>
+<text x="36" y="635" class="small">Utilization uses descriptor-to-visible-status windows. Extra RHS buffer, when enabled: 4 KiB, capacity charged.</text></svg>

@@ -1,0 +1,13 @@
+insufficient_capacity REJECTED
+invalid_buffer_count REJECTED
+invalid_tile REJECTED
+invalid_dma_width REJECTED
+interface_requires_tiles REJECTED
+fixture_requires_cache REJECTED
+single_line_only REJECTED
+optimized_timing_required REJECTED
+invalid_optimization_level REJECTED
+onchip_zero_ports REJECTED
+onchip_bad_grain REJECTED
+onchip_zero_queue REJECTED
+STORAGE_CONFIG_CHECK_PASS (12 invalid configurations)

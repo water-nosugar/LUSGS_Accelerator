@@ -1,3 +1,7 @@
+> 历史快照：自 2026-09-12 起冻结，不再维护当前默认值或主路径推荐。
+> 本文数字和方案状态仅适用于原文证据版本；现行入口见 [文档索引](README.md)。
+> 允许修复链接和注明勘误，不将新实验结果覆盖到旧报告。
+
 # CFD-DSA 各阶段方案、版本与保留/清理建议
 
 > 审计日期：2026-09-09
@@ -199,12 +203,15 @@ raw D/L/U/R
 
 ### 6.3 建议迁档后删除（Tier 3）
 
-- 根目录九个 `run_cfd_*.py` 兼容 shim；正式入口已经位于 `projects/cfd_dsa/configs/`；
-- `test_cfd_pathc_sme_step_perf.c` 这种只 include 新文件的 wrapper；
-- decoder 已拒绝的 `test_cfd_sme_step_perf.c` 与旧 `DSASmeFmopa5Step` 类；
-- `projects/cfd_dsa/**/__pycache__` 和 `*.pyc`；
+- 根目录九个 `run_cfd_*.py` 兼容 shim；**已于 2026-09-09 删除**；
+- `test_cfd_pathc_sme_step_perf.c` wrapper；**已删除**；
+- decoder 已拒绝的 `test_cfd_sme_step_perf.c`、旧 `DSACFDSMEFmopa5Step`
+  及其 FU/OpClass；**已删除**；
+- `DSAGetAcc`、`DSAVsetZero`、未 include 的 ISA stub 和 decoder 不可达 return；**已删除**；
+- `projects/cfd_dsa/**/__pycache__` 和 `*.pyc`；**已清理**；
 - 空 `stats.txt`、崩溃/超时结果和已经明确放入 `failed/` 的运行；
-- `results/lusgs_raw/`、`results/lusgs_optprep/` 等旧顶层结果，在有迁移清单后删除；
+- `results/lusgs_raw/`、`results/lusgs_optprep/` 等旧顶层结果，在迁移清单覆盖后删除；
+  当前 `migration-inventory.json` 未记录这两个前缀，且旧报告仍直接引用，因此本轮保留；
 - 名称带 `debug`、`final2`、`final3`、`final4`、`r2`、`r3` 且已被正式 campaign 完整取代的目录；
 - `results/cfd_dsa/runs/` 中不被文档引用、无独特配置、无失败诊断价值的开发运行；
 - 只记录旧结论且内容已并入规范文档的重复报告。
@@ -332,12 +339,14 @@ Step1、Step3、Step4、Path B、Path C 不再作为一级用户 profile 出现�
 | context 2/2 与 2/4 的实测范围 | [上下文消融](CFD_DSA_CONTEXT_ABLATION.md) |
 | 最新调度诊断与统计解释 | [调度拒绝与背压诊断](CFD_DSA_SCHEDULER_DIAGNOSTICS.md) |
 | Step3/4 控制器演进 | [完整历史报告](CFD_DSA_LUSGS_FULL_TECHNICAL_REPORT.md)及[Step4](CFD_DSA_LUSGS_STEP4.md) |
-| 结果迁档规范 | [RESULT_MANAGEMENT.md](RESULT_MANAGEMENT.md) |
+| 结果迁档规范 | [RESULT_LIFECYCLE.md](RESULT_LIFECYCLE.md) |
 
 ### 清理建议的严格含义
 
 本次没有完成逐文件 hash 去重和全部引用闭包审查，因此带 `final/debug/r2` 后缀的目录只属于**审查候选**，不能按名称批量删除。空 `stats.txt` 也只说明该运行没有完整统计，不能证明同目录 trace/simout 没有诊断价值。尤其 DMA dirty-rebuild 的失败证据和独立诊断 suite 应保留到问题修复并回归通过。
 
-根目录 shim 和 Path C wrapper 删除前须更新旧命令的引用；旧 FMOPA 类删除前须同时核查头文件、OpClass/FU、ISA include 和 squash 测试依赖。`configs/run_cfd_dsa.py` 是共享完整配置实现，**不是应删除的兼容 shim**；早期 Path A 文档对此有过时表述，以实际 `runpy` 调用链为准。
+根目录 shim、Path C wrapper 和旧 FMOPA 实现已完成引用闭包审查与清理。
+`configs/run_cfd_dsa.py` 是共享完整配置实现，**不是应删除的兼容 shim**；早期 Path A
+文档对此有过时表述，以实际 `runpy` 调用链为准。
 
-本文第 6–11 节的删除、迁移、重命名、提交和默认值调整均为后续建议；本次交付只新增说明文档与索引条目。
+实际执行范围、保留例外和验证记录见 `CFD_DSA_CLEANUP_REPORT_2026-09-09.md`。

@@ -1,0 +1,5 @@
+missing_spm_access REJECTED 
+premature_spm_ready REJECTED SPM access completed before its latency
+completion_credit_leak REJECTED 
+cached_registers_before_load REJECTED 
+ONCHIP_FAULT_CHECK_PASS (4 injected faults)

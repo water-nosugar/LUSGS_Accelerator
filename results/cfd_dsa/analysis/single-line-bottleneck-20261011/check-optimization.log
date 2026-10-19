@@ -1,0 +1,26 @@
+overlap-inverse-b1-w40 cycles 33092 reload 3840
+overlap-inverse-b2-w40 cycles 33164 reload 3840
+overlap-inverse-b1-w64 cycles 31646 reload 3840
+overlap-inverse-b2-w64 cycles 31822 reload 3840
+cache-one-inverse cycles 5632 reload 0
+cache-partial-inverse cycles 48800 reload 11520
+cache-allfit-inverse cycles 42976 reload 0
+cache-miss-inverse cycles 348314 reload 46080
+cache-version-inverse cycles 70254 reload 11520
+cache-serial-inverse cycles 49630 reload 11520
+cache-tree-inverse cycles 48584 reload 11520
+dma-pressure-inverse cycles 111468 reload 3840
+overlap-direct-b1-w40 cycles 33400 reload 3840
+overlap-direct-b2-w40 cycles 33278 reload 3840
+overlap-direct-b1-w64 cycles 31952 reload 3840
+overlap-direct-b2-w64 cycles 31936 reload 3840
+cache-one-direct cycles 7850 reload 0
+cache-partial-direct cycles 71214 reload 11520
+cache-allfit-direct cycles 65054 reload 0
+cache-miss-direct cycles 347350 reload 46080
+cache-version-direct cycles 81486 reload 11520
+cache-serial-direct cycles 71268 reload 11520
+cache-tree-direct cycles 71206 reload 11520
+dma-pressure-direct cycles 111652 reload 3840
+cache-contract-tiled cycles 0 reload 2400
+SINGLE_LINE_STORAGE_CHECK_PASS

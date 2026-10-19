@@ -1,9 +1,14 @@
+> 历史快照：自 2026-09-12 起冻结，不再维护当前默认值或主路径推荐。
+> 本文数字和方案状态仅适用于原文证据版本；现行入口见 [文档索引](README.md)。
+> 允许修复链接和注明勘误，不将新实验结果覆盖到旧报告。
+
 # gem5 ARM CFD-DSA LU-SGS 加速器完整技术报告
 
-> 审计日期：2026-07-01
+> 审计日期：2026-09-10
 > 工程目录：`/home/zyy/gem5`
-> 文档性质：基于当前代码、当前 stats 和既有回归记录的实现审计报告
-> 状态基线：Step1、Step2、Step3 functional macro-controller、Step4-A.1 event lifecycle、Step4-B Path A resource graph，以及 Step4-C event-driven TRSV5/Vector5 engines 已实现
+> 文档性质：基于清理后代码、当前 stats 和既有回归记录的综合实现审计报告
+> 当前主线：Step2 raw coefficient event streaming + C1/C2/B5 line wavefront；Step1/3/4 与 Path B/C 作为冻结回归/研究线保留
+> 可恢复基线：提交 `529f5a2ec5`，标签 `snapshot/cfd-dsa-cleanup-2026-09-10`
 
 ## 1. 摘要
 
@@ -17,17 +22,20 @@
 4. **Step4-A/A.1** 把任务移出 launch 调用栈，建立 poll/reap、token、descriptor snapshot、逐请求 event、pending table、completion validation、watchdog 和错误生命周期。
 5. **Step4-B** 已在 event controller 内把 Path A MVM 展开为 `6 MatLd + 5 Dotp + 1 Pack + 1 result-ready` 的子请求图。
 6. **Step4-C** 已把 TRSV5 展开为 load、5 divide、20 multiply-subtract 和 result response，把 Vector5 展开为可配置 queue/count/1-2-5 lane 的 COPY/SUB/AXPY engine。
+7. **Step2 coefficient streaming** 从 raw `D/L/U/R` 出发，以 event LU 和统一 5/15-RHS TRSM 生成 `Dinv/Lbar/Ubar`；B3/B4 在 controller 内生成 base 与 `dq_star`，C1 用 parent token 自治一条 line，C2/B5 直接消费 Ubar 并按 frontier-aware wavefront 完成反向传播。
 
-当前实现已经能够验证算法映射、ABI、任务生命周期和三个 controller 内计算资源图，但仍不是可流片硬件模型。Step3 的周期是解析调度结果；Step4-A.1/B/C 的周期是 gem5 event tick 差值。TRSV5 与 Vector5 已有 queue、busy、retry 和逐阶段 completion，SPM/DMA 仍未形成真实排队和竞争；`SETranslatingPortProxy` 的 functional 访问也不能等同于多 bank SRAM 端口时序。
+当前推荐继续开发的不是 Step4-D，而是 Step2 raw coefficient streaming 主线。该主线已同时支持 controller 内部 `packet` 仲裁模型和经 `CfdLocalSpm.dma_port` 发出的 timing `ReadReq/WriteReq`；但后者只是可竞争的 memory-side 请求路径，尚不等于具备 tile descriptor、burst 合并、三缓冲、IOMMU 和完整错误恢复的 DMA 子系统。Step3 的周期仍是解析调度结果，Step4-A.1/B/C 的周期仍是独立 event controller 的 tick 差值，不能与 coefficient streaming 的周期直接混成加速比。完整的当前状态见第 28 节。
 
-### 1.1 代码审计后的关键修正
+### 1.1 代码审计后的关键修正与当前结论
 
-任务说明与当前工作区之间存在四处需要显式修正的差异：
+任务说明、历史报告与当前工作区之间存在以下需要显式修正的差异：
 
 - **Step4-B 已实现，而不是“尚未完成”**。其完成范围是 controller 内部 Path A 子请求图；它尚未与 guest Path A 的全局 O3 FUPool 共享同一仲裁实例。
 - **Step4-C 已实现，而不是 fixed wrapper**。Stage C 热路径不再调用完整 TRSV/Vector helper；数值只在 divide/FMA/lane completion callback 更新。Stage A/B 兼容路径仍保留原 helper。
 - **当前 Step1/2/3/4 主路径不是原地修改下一 cell 的 RHS**。代码为当前 cell 构造 `rhs_prime = RHS[i] - C[i] * DQ_STAR[i-1]`。原地更新下一 RHS 是数学等价实现，本文单独说明，但不把它误写成当前事实。
 - **Step4-A.1 当前 1x64 记录是 1132 次 Busy poll**，对应 1133 条 wait 指令和 1 次成功 reap。旧材料中的 1133 次 Busy 来自不同记录口径或较早运行。
+- **Step4 不再是当前推荐主线。** 它保留用于 lifecycle、Path A/TRSV5/Vector5 event graph 回归；面向完整 raw 系数预处理和 line wavefront 的功能/性能开发集中在 Step2 coefficient controller。
+- **2026-09-09/10 已完成可恢复清理。** root compatibility runner、fixed-ZA/FMOPA 不可达实现、GetAcc/VsetZero、未 include 的 ISA stub 和 Python bytecode 已删除；软件 reference、Path A、TRSV5、off/shadow 对照、Step1/3/4 和 Path B/C 回归仍保留。
 
 ## 2. 研究背景与目标
 
@@ -989,7 +997,11 @@ $$
 
 本轮重新运行原 TRSV5 ISA 1/17/512/50000，均为 `TRSV5_PASS`；50000 次为 20374532 cycles，div/mul-sub=`250000/1000000`，误差为 0。Step4-C staged engine 经 macro-controller 覆盖到 50000 transactions，内部 div/FMA=`250000/1000000` 且误差为 0。
 
-## 21. Step4-D 至 Step4-F 规划
+## 21. Step4-D 至 Step4-F 历史规划
+
+本节保留 2026-07-01 时点的 Step4 路线图，便于解释已有参数和实验来源；它不再代表当前
+实施优先级。2026-09-10 的主线收敛和下一步建议见第 28、29 节。部分能力已经在另一条
+Step2 coefficient 路径上以不同实现完成，不能据此反推 Step4 controller 已具备同等能力。
 
 ### 21.1 Step4-B 的剩余工作
 
@@ -1086,11 +1098,11 @@ flowchart LR
 | --- | --- | --- |
 | 数学/功能 | 标准 block LU-SGS 映射、边界 cell、Q update | 更广泛 CFD 输入与异常数值验证 |
 | ISA | Path A、TRSV5、launch/wait、OpClass/FU/stats | 精确异常、中断和系统态协议 |
-| Controller | Step3 functional；Step4 token/event/pending/watchdog | 多 context、abort 完整恢复、真实全资源仲裁 |
+| Controller | Step2 coeff request/LU/TRSM/drain/C1/C2/B5；Step3 functional；Step4 token/event/pending/watchdog | 跨模块统一仲裁、完整 abort 恢复、RTL 映射 |
 | Path A | guest ISA/O3 路径；Step4-B 内部资源图 | guest/controller 共享实例、多 MVM overlap |
 | TRSV5 | Step2 coarse helper；Step4-C queue/divider/FMA event graph | 与其他模块共享资源、RTL 映射 |
 | Vector5 | Stage A/B helper；Step4-C queue/lane/结构竞争 | 与 SPM/其他 context 的系统仲裁 |
-| 存储 | Proxy functional access；96 KiB 容量检查 | bank/port/queue/conflict、DMA、coherence |
+| 存储 | coeff internal packet 的 bank/port/outstanding；`dma_port` timing ReadReq/WriteReq；Step4 Proxy functional access | 真实 SRAM 组织、coherence、完整 DMA descriptor/burst/三缓冲 |
 | 实现 | gem5 C++ 模型和测试 | RTL、综合、STA、PPA、DFT |
 
 ## 23. 流片风险与后续 RTL 工作
@@ -1108,7 +1120,7 @@ flowchart LR
 9. 当前多请求参数不能直接映射为真实 SRAM 多端口。
 10. 96 KiB 容量尚未计入 ECC、BIST、padding、metadata 和 Ping/Pong 实际开销。
 11. cache coherence、一致性域和 CPU/DSA 数据可见性协议尚未建模。
-12. DMA descriptor、burst、IOMMU/地址错误和完成语义尚未实现。
+12. coeff 路径虽已有 timing RequestPort，但 DMA descriptor、burst 合并、IOMMU/地址错误和完整完成语义尚未实现。
 13. reset、abort、timeout、partial writeback 和恢复尚未 RTL 化。
 14. NaN、Inf、denormal、舍入模式和 FP exception 尚未完整验证。
 15. 多 context ready/arbiter 逻辑可能形成关键路径。
@@ -1126,27 +1138,32 @@ flowchart LR
 6. **Step3 的 84.65625 cycles/full-cell 不是实际硬件周期。** 它来自 `modelSchedule()` 的资源/依赖公式。
 7. **Step4-A.1 有 event 不代表全部资源已有真实竞争。** Stage A 默认仍使用 fixed-latency wrapper + helper。
 8. **Step4-C 的计算资源事件化不等于 SPM 已事件化。** LU/RHS/DQ/Q 的数值访问仍依赖 Proxy，没有 bank/port 冲突。
-8. **contexts 参数增加不等于真正并行。** Step3 只改变统计；Step4 当前仍限制单 context。
-9. **functional SPM 读取不等于真实多 bank SPM。** `SETranslatingPortProxy` 没有表达 bank/port 冲突。
-10. **gem5 FU `opLat` 不等于 RTL 内部所有阶段已经实现。** 它只是调度器可见的延迟参数。
-11. **Step4-B 已完成不等于 Path A 系统级共享资源已经完成。** 当前图只存在于 event controller 内部。
-12. **slot depth=2 不自动产生双缓冲。** 需要至少两个同时存活的 parent MVM 才能证明 overlap。
+9. **contexts 参数增加不等于真正并行。** Step3 只改变统计；Step4 当前仍限制单 context。
+10. **functional SPM 读取不等于真实多 bank SPM。** `SETranslatingPortProxy` 没有表达 bank/port 冲突。
+11. **gem5 FU `opLat` 不等于 RTL 内部所有阶段已经实现。** 它只是调度器可见的延迟参数。
+12. **Step4-B 已完成不等于 Path A 系统级共享资源已经完成。** 当前图只存在于 event controller 内部。
+13. **slot depth=2 不自动产生双缓冲。** 需要至少两个同时存活的 parent MVM 才能证明 overlap。
+14. **coeff `packet` 不等于 timing DMA。** 前者是 controller-local event 仲裁；只有 `--coeff-spm-model=dma` 走 `dma_port` 的 gem5 timing 请求。
+15. **Step2 wrapper 默认值不等于推荐性能点。** wrapper 的 `all + coarse + software` 服务兼容回归；推荐性能实验必须显式选择 raw event streaming 与相应 C1/C2/B5 参数。
 
 ## 25. 代码审计索引
 
 | 主题 | 当前代码来源 |
 | --- | --- |
 | Step1 guest Path A 与扫描 | `projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step1.c` |
-| Step2 hardware TRSV5 | `projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c` |
+| Step2 hardware TRSV5、raw reference 与 streaming guest ABI | `projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c` |
 | TRSV5 数学顺序 | `src/arch/arm/cfd_trsv5_math.hh` |
 | TRSV5/launch/wait 指令 | `src/arch/arm/insts/cfd_dsa.cc`、`custom_cfd.isa` |
 | Descriptor、status、stats record | `src/arch/arm/cfd_lusgs_controller.hh` |
+| coeff descriptor、event LU/TRSM、B3/B4/C1/C2/B5 | `src/arch/arm/cfd_coeff_preprocess_controller.hh/.cc` |
 | Step3 functional controller/model | `src/arch/arm/cfd_lusgs_controller.cc` |
 | Step4-A.1/B/C controller 与三个 event engine | `src/arch/arm/cfd_lusgs_event_controller.cc` |
 | Vector5 helper | `src/arch/arm/cfd_lusgs_vec5.hh/.cc` |
 | SPM 与统计 | `src/arch/arm/cfd_local_spm.hh/.cc` |
 | OpClass/FU | `src/cpu/op_class.hh`、`src/cpu/o3/FuncUnitConfig.py` |
-| 参数和环境变量 | `projects/cfd_dsa/configs/run_cfd_dsa.py` |
+| 参数和环境变量 | `projects/cfd_dsa/configs/run_cfd_dsa.py`、`projects/cfd_dsa/configs/lusgs/run_cfd_lusgs_step2.py` |
+| 当前项目地图与逐文件索引 | `CFD_DSA_PROJECT_STRUCTURE.md`、`CFD_DSA_PROJECT_FILE_INDEX.md` |
+| 版本收敛与清理记录 | `CFD_DSA_VERSION_RETENTION_ANALYSIS.md`、`CFD_DSA_CLEANUP_REPORT_2026-09-09.md` |
 
 ## 26. 数据来源
 
@@ -1163,6 +1180,12 @@ flowchart LR
 | Step4-C 参数敏感性 | `results/cfd_dsa/campaigns/2026-07-01-step4c/sensitivity/*/stats.txt` |
 | Step4-C backpressure/trace/completion injection | `results/cfd_dsa/campaigns/2026-07-01-step4c/faults/`、`trace/` |
 | Step4 正常、错误、生命周期、wrong-path、overlap、watchdog 回归 | `CFD_DSA_LUSGS_STEP4.md` 与 `results/cfd_dsa/campaigns/2026-07-01-step4c/` |
+| coefficient event RHS15 div1/div2 正式回归 | `results/cfd_dsa/campaigns/coeff-event-packet-formal-s16/` |
+| C1 1×17/window8：12602 cycles，mismatch 0 | `results/cfd_dsa/campaigns/stage2-line-autonomous-20260728/w8-r3/` |
+| C2 1×17：9640 cycles，mismatch 0 | `results/cfd_dsa/campaigns/stage4-ubar-direct-20260728/lines1-r2/` |
+| B5 frontier-aware 4-line：29232 cycles，mismatch 0 | `results/cfd_dsa/campaigns/stage5-frontier-schedule-20260728/lines4/` |
+| timing DMA：604 request/response、10480 B read、7280 B write | `results/cfd_dsa/campaigns/coeff-streaming-boundaries-final4-20260728/stage6b-requestport-dma/` |
+| 清理后 10/10 核心回归 | `results/cfd_dsa/campaigns/cleanup-validation-2026-09-10/` |
 
 统计文件中部分 SimObject stats 会在不同 dump section 重复出现，本文只按一次任务语义计数。
 
@@ -1177,9 +1200,117 @@ flowchart LR
 - Proxy 没有被描述成真实 SPM bank/port。
 - 8x64 理论计数同时覆盖 Path A、TRSV divide/FMA 和 Vector5。
 - 当前单 line 递推依赖没有被 context/tile 概念掩盖。
+- Step2 coefficient controller 与 Step4 event controller 已明确分线，不把前者的 packet/DMA/C1/C2/B5 能力写成后者能力。
+- 清理后的删除对象均有 snapshot/tag 恢复入口，保留的失败结果被视为诊断证据而非垃圾文件。
 
-## 28. 总结
+## 28. 2026-09-10 当前实现补遗
 
-本工程已经从“CPU 调用现有 MVM”推进到“具有异步任务生命周期，并能展开 Path A、TRSV5、Vector5 三类计算资源的 LU-SGS event controller”。Step1 证明算法映射，Step2 验证专用 TRSV5，Step3 建立 descriptor 和 macro-controller，Step4-A.1 建立可靠 request lifecycle，Step4-B 展开 MVM，Step4-C 消除了 controller 热路径中的 TRSV/Vector fixed wrapper。
+前述 1–27 节保留了 Step1–4 的设计演进与历史实验语境。本节覆盖 2026-07-01 之后已经落地的
+raw coefficient event streaming 主线，并给出清理后的统一状态。若历史章节与本节对“当前”、
+“推荐”或“下一阶段”的表述冲突，以本节为准。
 
-下一阶段的优先级是 Step4-D 的真实 multi-bank SPM 端口，使三个计算 engine 进入可信的共享存储竞争环境。随后再引入依赖感知的多 context 调度和 Ping/Pong tile/DMA，才能把当前架构探索模型推进为可支撑 RTL 微架构选择的时序模型。
+### 28.1 当前推荐执行链
+
+```mermaid
+flowchart LR
+    IN[raw D/L/U/R] --> C1[C1 parent token<br/>line-autonomous window]
+    C1 --> ST[bounded child input staging]
+    ST --> LU[event Crout LU5]
+    LU --> TR[masked 5/15-RHS TRSM]
+    TR --> B3[B3 request-local base]
+    B3 --> B4[B4 Lbar ColumnFma5<br/>ForwardCombine publishes dq_star]
+    B4 --> C2[C2/B5 Ubar direct<br/>frontier-aware backward]
+    C2 --> OUT[dq / validation / stats]
+```
+
+主输入是 raw `D/L/U/R`，不是预先构造的 `LU_A/C/B_BAR`。controller 内部完成 Crout LU5、
+按 NEED mask 选择的 5/15-RHS TRSM、partial-ready 和独立 drain。B3 把 DInv 列留在 request-local
+storage 并生成 base；B4 用共享 `ColumnFma5` 消费 Lbar 与前一 cell `dq_star`，通过
+`ForwardCombine` 发布当前 `dq_star`；C1 由单个 parent token 按窗口自治展开一条 line；C2/B5
+继续用 Ubar 列在 controller 内完成反向传播。direct 模式因此跳过 DInv/Lbar matrix drain 和
+guest forward/backward Path A，off/shadow 模式只作为正确性与归因对照保留。
+
+Step2 wrapper 为兼容回归仍默认 `all + coarse + software`。性能实验必须显式选择
+`step2-pretransform-raw-optprep-stream`、event LU/TRSM、stream consumer 和 line consumer 参数；
+不能把 wrapper 默认运行误写成当前推荐架构点。
+
+B5 之后又加入两项默认开启的 line dependency 优化：`base-ahead` 允许缓存命中时提前准备
+后续 cell base，`early-backward` 在尾部 `dq_star` 与所需 Ubar 就绪后提前启动反向。另有显式
+实验开关 `--coeff-line-mvm-model=split`，把串行 ColumnFma5 拆为有界 product/add pipeline；
+它不是新 ISA，也不是生产默认。`lu5-count/coeff3-count` 代表活动 request context 额度，
+不能与算术 FU 的 `*-div-count/*-mulsub-count` 混用。1×17 fixed-resource 消融建议保留 1/1
+控制组，以 2/2 为较少 context 的实验基线、2/4 为性能参照；该结论尚不能外推到长 line、
+多 line 或 DMA。
+
+### 28.2 版本收敛状态
+
+| 方案/版本 | 当前定位 | 处理建议 |
+| --- | --- | --- |
+| software raw reference | 数学 golden | 保留；所有优化路径的数值基准 |
+| Path A direct 与 TRSV5 standalone | 基础计算与 ISA/FU 回归 | 保留并持续回归 |
+| Step2 raw coeff event + C1/C2/B5 | 当前功能/性能主线 | 保留并继续优化 |
+| B3/B4/C2 off、shadow、direct | 归因与位级/容差对照 | 三类均保留，不能只留 direct |
+| prepared Step2、dual、MRHS/coarse、linebuf/context | 兼容与功能回归 | 冻结接口，非必要不扩展 |
+| Step1、Step3、Step4-A/B/C | 历史分层与架构回归 | 保留为 frozen regression，不作为下一主线 |
+| Path B、Path C | 独立 ZA/SME 研究线 | 保留实验 benchmark 与 core case |
+| root runner shim、fixed-ZA/FMOPA、GetAcc/VsetZero、未 include ISA stub | 无调用/不可达/有替代实现 | 已删除；从 snapshot/tag 恢复 |
+| build、pycache、重复临时结果 | generated | pycache 已清理；结果必须先完成引用/manifest/诊断价值审查 |
+
+完整判定理由见 `CFD_DSA_VERSION_RETENTION_ANALYSIS.md`；实际删除项、保留项和恢复方式见
+`CFD_DSA_CLEANUP_REPORT_2026-09-09.md`。
+
+### 28.3 当前可复现实验点
+
+| 路径 | 规模/配置 | 结果 | 用途 |
+| --- | --- | --- | --- |
+| C1 line-autonomous | 1×17，window8 | 12602 cycles，mismatch 0 | parent/child line 生命周期基线 |
+| C2 Ubar direct | 1×17 | 9640 cycles，mismatch 0 | controller 内完整 forward/backward |
+| B5 frontier-aware | 4 line | 29232 cycles，mismatch 0 | 多 line wavefront 调度证据 |
+| packet double buffer | 4 line，row-striped | 1776 request/response；30106 cycles，mismatch 0 | bank/port/outstanding backpressure |
+| timing DMA | 1×17 | 604 request/response；10480 B read、7280 B write；374 retries | gem5 memory hierarchy 竞争路径 |
+
+这些数字来自不同模式和 campaign，只能在同配置、同统计窗口内比较。尤其 `packet` 与 `dma`
+不是两个仅名字不同的后端：前者是 `CfdLocalSpm` 内部 event 模型，后者会发出 gem5 timing
+request。full validation、初始化、软件 reference 和 guest 总周期也不能替代 controller 热区统计。
+
+### 28.4 SPM、DMA 与 version/dirty 边界
+
+当前 `--coeff-spm-model` 有三种语义：
+
+- `internal`：controller/SPM 本地时序，不表达 memory hierarchy 请求；
+- `packet`：使用 `issuePacket()` 模拟端口、bank、outstanding 和 backpressure；
+- `dma`：通过 `CfdLocalSpm.dma_port` 发出 timing `ReadReq/WriteReq` 并处理 retry/response。
+
+`dma` 已证明 coefficient request 可以进入真实 gem5 timing memory path，但尚无独立 DMA
+SimObject、tile descriptor、burst 合并、Ping/Pong 三缓冲或完整异常恢复。version/dirty 的发布者仍是
+guest 算法层；benchmark 在系数初始化/重建点维护该契约。DMA 多 sweep dirty-rebuild 仍有已知失败
+诊断；可复现在 `coeff-line-dma-rebuild-diagnostic.json`，原始日志位于
+`results/cfd_dsa/campaigns/line-dependency-20260908/{dma,dma-baseline-diagnostic}/`。
+这些失败证据必须保留，不能把单轮通过外推为生产级一致性闭包。
+
+### 28.5 清理后验证基线
+
+清理后完成了以下验证：
+
+- 11/11 保留 guest benchmark targets 重新构建；
+- `build/ARM/gem5.opt` 重新生成 ISA、重编译 OpClass/FU/C++ 并成功链接；
+- 10/10 core regression 通过，覆盖 Path A/B/C、TRSV5、decode-exclusive、Step1、Step2、
+  Step2 raw stream、Step3 和 Step4-C；
+- 删除对象的运行时引用检查和 `git diff --check` 通过。
+
+可复现结果在 `results/cfd_dsa/campaigns/cleanup-validation-2026-09-10/`。该 campaign 证明清理
+没有破坏保留路径，但不替代 coefficient streaming 的全部边界、cancel、fault injection、DMA
+dirty-rebuild 和长规模性能 campaign。
+
+## 29. 总结与后续优先级
+
+当前工程已经形成两条清晰分工的控制器路线：Step4 event controller 保存 LU-SGS sweep、
+Path A/TRSV5/Vector5 资源图与生命周期研究；Step2 coefficient controller 则承担 raw 系数预处理、
+event LU/TRSM、C1 line autonomy 和 C2/B5 wavefront，是应继续演进的主线。二者不应继续用
+“Step 编号更大即更先进”的方式排序。
+
+建议后续工作按以下顺序推进：先修复并封闭 DMA 多 sweep version/dirty 重建问题；再把现有 timing
+RequestPort 提升为可定义 burst、tile ownership 和 load/compute/store overlap 的 DMA/SPM 模型；随后在
+C1/C2/B5 主线上做多 line/context 的公平性、饥饿和跨 tile carry 验证；最后再依据稳定的资源与访存
+统计选择 RTL 中的 bank、divider、FMA 和缓冲规模。Step4-D/E/F 可继续作为历史设计参考，但不应绕开
+当前 coefficient 主线重新实现一套不兼容的存储与调度栈。

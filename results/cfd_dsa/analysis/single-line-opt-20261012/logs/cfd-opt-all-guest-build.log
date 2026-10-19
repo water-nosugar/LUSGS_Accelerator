@@ -1,0 +1,2 @@
++ aarch64-linux-gnu-gcc -O2 -static -Wall -Wextra -march=armv8-a+sve /home/zyy/gem5/projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c -o /home/zyy/gem5/build/cfd_dsa/aarch64/test_cfd_lusgs_patha_step2_arm -lm
+Built 1 benchmark(s) in /home/zyy/gem5/build/cfd_dsa/aarch64

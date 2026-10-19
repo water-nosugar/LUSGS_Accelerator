@@ -1,0 +1,1059 @@
+{
+  "schema_version": 1,
+  "campaign": "single-line-round4-isolated-cache-contract-20261019",
+  "provenance": [
+    "42d5b4f75bab9605994fbf29043e69ba5e6ea663b587140f59317c049c129fbe",
+    "8180650169a7089424d5349021ccf2e938f17e6498a082b84c4d0aa9d6e9bb53",
+    "6c4c58e85f047e7949d35b93cf82223063d3ca80ee36435de0ec7cbf935ed3b4"
+  ],
+  "cases": {
+    "changed-r-contract-per-cell": {
+      "roi_cycles": 0,
+      "controller_cycles": 9940,
+      "issue_pct": {
+        "mul": 7.706237424547283,
+        "add": 8.008048289738431,
+        "div": 30.985915492957748
+      },
+      "empty_pct": 50.08048289738431,
+      "peak_bytes": 123048,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 4.652917505030181,
+      "bank_write_pct": 6.099094567404427,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9940",
+        "created": "375",
+        "completed": "375",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "23",
+        "full": "0",
+        "conflicts": "1663"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "12",
+        "issued": "992",
+        "completed": "992",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "3",
+        "issued": "22",
+        "completed": "22",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1297,
+            "empty_cycles": 471,
+            "empty_pct": 36.31457208943716,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.33153430994603,
+              "div": 44.71858134155744,
+              "mul": 10.023130300693909
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 260,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 747,
+            "empty_cycles": 481,
+            "empty_pct": 64.3908969210174,
+            "handoff_gap_histogram": {
+              "28": 1,
+              "44": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 4.819277108433735,
+              "div": 8.032128514056225,
+              "mul": 4.28380187416332
+            },
+            "issued": {
+              "add": 180,
+              "div": 15,
+              "mul": 160
+            },
+            "token": "5",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 217,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 252,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1470,
+            "empty_cycles": 473,
+            "empty_pct": 32.17687074829932,
+            "handoff_gap_histogram": {
+              "316": 1,
+              "326": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 13.401360544217686,
+              "div": 55.78231292517007,
+              "mul": 13.129251700680273
+            },
+            "issued": {
+              "add": 985,
+              "div": 205,
+              "mul": 965
+            },
+            "token": "9",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 559,
+            "empty_cycles": 399,
+            "empty_pct": 71.37745974955277,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 6.976744186046512,
+              "div": 0.0,
+              "mul": 6.261180679785331
+            },
+            "issued": {
+              "add": 195,
+              "mul": 175
+            },
+            "token": "13",
+            "warm": {
+              "rhs_prefetch_pairs": 2,
+              "slot_peak": 3,
+              "write_overlap_pairs": 2
+            }
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 156,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1300,
+            "empty_cycles": 474,
+            "empty_pct": 36.46153846153846,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.307692307692308,
+              "div": 44.61538461538461,
+              "mul": 10.0
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "14",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1059,
+            "empty_cycles": 554,
+            "empty_pct": 52.31350330500472,
+            "handoff_gap_histogram": {
+              "190": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 6.798866855524079,
+              "div": 30.217186024551463,
+              "mul": 6.610009442870632
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "18",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 262,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 705,
+            "empty_cycles": 509,
+            "empty_pct": 72.19858156028369,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.8368794326241136,
+              "div": 5.673758865248227,
+              "mul": 2.5531914893617023
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "21",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 219,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1049,
+            "empty_cycles": 554,
+            "empty_pct": 52.81220209723546,
+            "handoff_gap_histogram": {
+              "193": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 6.863679694947569,
+              "div": 30.505243088655863,
+              "mul": 6.67302192564347
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "24",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 262,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1049,
+            "empty_cycles": 554,
+            "empty_pct": 52.81220209723546,
+            "handoff_gap_histogram": {
+              "193": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 6.863679694947569,
+              "div": 30.505243088655863,
+              "mul": 6.67302192564347
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "27",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 262,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 705,
+            "empty_cycles": 509,
+            "empty_pct": 72.19858156028369,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.8368794326241136,
+              "div": 5.673758865248227,
+              "mul": 2.5531914893617023
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "30",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 219,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        }
+      ],
+      "dma": {
+        "packets": 451,
+        "bytes": 19600,
+        "bytes_per_packet": 43.4589800443459,
+        "queue_cycles": {
+          "count": 451,
+          "minimum": 0.0,
+          "mean": 1.6252860310421287,
+          "maximum": 41.002
+        },
+        "response_cycles": {
+          "count": 451,
+          "minimum": 50.0,
+          "mean": 97.81378713968958,
+          "maximum": 120.0
+        }
+      }
+    },
+    "changed-r-contract-warm-summary": {
+      "roi_cycles": 0,
+      "controller_cycles": 9933,
+      "issue_pct": {
+        "mul": 7.711668176784456,
+        "add": 8.013691734621966,
+        "div": 31.007751937984494
+      },
+      "empty_pct": 50.04530353367563,
+      "peak_bytes": 123048,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 4.656196516661633,
+      "bank_write_pct": 6.103392731299708,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9933",
+        "created": "375",
+        "completed": "375",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "23",
+        "full": "0",
+        "conflicts": "1663"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "12",
+        "issued": "992",
+        "completed": "992",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "15",
+        "completed": "15",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1297,
+            "empty_cycles": 471,
+            "empty_pct": 36.31457208943716,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.33153430994603,
+              "div": 44.71858134155744,
+              "mul": 10.023130300693909
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 260,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 746,
+            "empty_cycles": 480,
+            "empty_pct": 64.343163538874,
+            "handoff_gap_histogram": {
+              "28": 1,
+              "44": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 4.825737265415549,
+              "div": 8.04289544235925,
+              "mul": 4.289544235924933
+            },
+            "issued": {
+              "add": 180,
+              "div": 15,
+              "mul": 160
+            },
+            "token": "5",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 217,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 251,
+          "status_response": 104,
+          "summary_issue_cycle": 289899,
+          "summary_response_cycle": 290004,
+          "summary_hidden_by_backward": false
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1470,
+            "empty_cycles": 473,
+            "empty_pct": 32.17687074829932,
+            "handoff_gap_histogram": {
+              "316": 1,
+              "326": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 13.401360544217686,
+              "div": 55.78231292517007,
+              "mul": 13.129251700680273
+            },
+            "issued": {
+              "add": 985,
+              "div": 205,
+              "mul": 965
+            },
+            "token": "9",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 559,
+            "empty_cycles": 399,
+            "empty_pct": 71.37745974955277,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 6.976744186046512,
+              "div": 0.0,
+              "mul": 6.261180679785331
+            },
+            "issued": {
+              "add": 195,
+              "mul": 175
+            },
+            "token": "13",
+            "warm": {
+              "rhs_prefetch_pairs": 2,
+              "slot_peak": 3,
+              "write_overlap_pairs": 2
+            }
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 156,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1300,
+            "empty_cycles": 474,
+            "empty_pct": 36.46153846153846,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.307692307692308,
+              "div": 44.61538461538461,
+              "mul": 10.0
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "14",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1059,
+            "empty_cycles": 554,
+            "empty_pct": 52.31350330500472,
+            "handoff_gap_histogram": {
+              "190": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 6.798866855524079,
+              "div": 30.217186024551463,
+              "mul": 6.610009442870632
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "18",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 262,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 702,
+            "empty_cycles": 506,
+            "empty_pct": 72.07977207977208,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.849002849002849,
+              "div": 5.698005698005698,
+              "mul": 2.5641025641025643
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "21",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 219,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 277,
+          "status_response": 104,
+          "summary_issue_cycle": 419493,
+          "summary_response_cycle": 419596,
+          "summary_hidden_by_backward": false
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1049,
+            "empty_cycles": 554,
+            "empty_pct": 52.81220209723546,
+            "handoff_gap_histogram": {
+              "193": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 6.863679694947569,
+              "div": 30.505243088655863,
+              "mul": 6.67302192564347
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "24",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 262,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1049,
+            "empty_cycles": 554,
+            "empty_pct": 52.81220209723546,
+            "handoff_gap_histogram": {
+              "193": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 6.863679694947569,
+              "div": 30.505243088655863,
+              "mul": 6.67302192564347
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "27",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 262,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 280,
+          "status_response": 104,
+          "summary_issue_cycle": null,
+          "summary_response_cycle": null,
+          "summary_hidden_by_backward": null
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 702,
+            "empty_cycles": 506,
+            "empty_pct": 72.07977207977208,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.849002849002849,
+              "div": 5.698005698005698,
+              "mul": 2.5641025641025643
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "30",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 219,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 277,
+          "status_response": 104,
+          "summary_issue_cycle": 501577,
+          "summary_response_cycle": 501680,
+          "summary_hidden_by_backward": false
+        }
+      ],
+      "dma": {
+        "packets": 433,
+        "bytes": 18672,
+        "bytes_per_packet": 43.122401847575055,
+        "queue_cycles": {
+          "count": 433,
+          "minimum": 0.0,
+          "mean": 1.6836120092378752,
+          "maximum": 41.002
+        },
+        "response_cycles": {
+          "count": 433,
+          "minimum": 50.0,
+          "mean": 97.84991224018476,
+          "maximum": 120.0
+        }
+      }
+    }
+  },
+  "recovery": {},
+  "comparison_pairs": []
+}

@@ -1,0 +1,24 @@
+insufficient_capacity REJECTED
+invalid_buffer_count REJECTED
+invalid_tile REJECTED
+invalid_dma_width REJECTED
+interface_requires_tiles REJECTED
+fixture_requires_cache REJECTED
+single_line_only REJECTED
+optimized_timing_required REJECTED
+invalid_optimization_level REJECTED
+onchip_zero_ports REJECTED
+onchip_bad_grain REJECTED
+onchip_zero_queue REJECTED
+coeff-spm-write-width_alignment REJECTED
+coeff-line-tile-dma-width_alignment REJECTED
+coeff-interface-width_alignment REJECTED
+backward_requires_onchip REJECTED
+invalid_rhs_depth REJECTED
+invalid_dma_latency REJECTED
+invalid_cache_policy REJECTED
+invalid_dma_packet_budget REJECTED
+invalid_dma_byte_budget REJECTED
+unaligned_dma_byte_budget REJECTED
+invalid_input_seed REJECTED
+STORAGE_CONFIG_CHECK_PASS (23 invalid configurations)

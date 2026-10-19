@@ -1,0 +1,24 @@
+test_real_oracle_preserves_hardware_outputs_on_success_and_error (test_reference_isolation.ReferenceIsolationTest) ... ok
+test_preserve_explicit_resource_settings (test_single_line.SingleLineScopeTests) ... ok
+test_reject_multiple_lines_even_with_duplicate_overrides (test_single_line.SingleLineScopeTests) ... ok
+test_scope_and_idempotence (test_single_line.SingleLineScopeTests) ... ok
+test_boundaries (test_single_line.StorageLedgerTests) ... ok
+test_numeric_completion_can_precede_visibility (test_single_line.VisibilityCheckerTests) ... ok
+test_reject_premature_visibility_lost_bytes_and_overflow (test_single_line.VisibilityCheckerTests) ... ok
+test_lu_and_mvm_cannot_oversubscribe_multiplier (test_single_line_cluster.ClusterTraceTests) ... ok
+test_lu_and_trsm_use_same_divider_ii (test_single_line_cluster.ClusterTraceTests) ... ok
+test_scalar_and_vector_share_five_lanes (test_single_line_cluster.ClusterTraceTests) ... ok
+test_vector_width_and_latency_are_physical (test_single_line_cluster.ClusterTraceTests) ... ok
+test_wrong_bank_and_hidden_bank_rejected (test_single_line_cluster.ClusterTraceTests) ... ok
+test_capacity_boundary_keeps_a_bounded_solve_cache (test_single_line_metrics.AccountingTests) ... ok
+test_completed_simulation_can_enter_resource_validation (test_single_line_metrics.AccountingTests) ... ok
+test_cumulative_snapshots_are_not_summed (test_single_line_metrics.AccountingTests) ... ok
+test_overlapping_operations_and_window_clipping (test_single_line_metrics.AccountingTests) ... ok
+test_provenance_failure_cannot_enter_resource_validation (test_single_line_metrics.AccountingTests) ... ok
+test_source_fingerprint_detects_uncommitted_content_changes (test_single_line_metrics.AccountingTests) ... ok
+test_wait_observations_do_not_double_count_the_phase (test_single_line_metrics.AccountingTests) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 2.145s
+
+OK

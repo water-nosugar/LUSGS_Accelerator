@@ -1,0 +1,17 @@
+l4-cold-direct-r1-t4 cycles 8658 error 5.551115123125783e-17
+l4-cold-inverse-r1-t4 cycles 9662 error 8.326672684688674e-17
+l4-reuse-inverse-r1-t4 cycles 23170 error 8.326672684688674e-17
+l4-reuse-direct-r1-t4-s4 cycles 23888 error 5.551115123125783e-17
+l5-cold-direct-r1-t4 cycles 8692 error 5.551115123125783e-17
+l5-cold-inverse-r1-t4 cycles 9666 error 8.326672684688674e-17
+l5-reuse-inverse-r1-t4 cycles 20030 error 8.326672684688674e-17
+l5-reuse-direct-r1-t4-s4 cycles 23792 error 5.551115123125783e-17
+l6-cold-direct-r1-t4 cycles 8480 error 5.551115123125783e-17
+l6-cold-inverse-r1-t4 cycles 9526 error 8.326672684688674e-17
+l6-reuse-inverse-r1-t4 cycles 19572 error 8.326672684688674e-17
+l6-reuse-direct-r1-t4-s4 cycles 22990 error 5.551115123125783e-17
+l7-cold-direct-r1-t4 cycles 8446 error 5.551115123125783e-17
+l7-cold-inverse-r1-t4 cycles 9502 error 8.326672684688674e-17
+l7-reuse-inverse-r1-t4 cycles 19546 error 8.326672684688674e-17
+l7-reuse-direct-r1-t4-s4 cycles 22704 error 5.551115123125783e-17
+SINGLE_LINE_OPT_CHECK_PASS 16 cases 64 sweeps

@@ -1,6 +1,7 @@
 #include "arch/arm/cfd_coeff_preprocess_controller.hh"
 
 #include <algorithm>
+#include <tuple>
 #include <array>
 #include <cmath>
 #include <cstdio>
@@ -34,6 +35,43 @@ constexpr unsigned MatrixBytes = N * N * sizeof(double);
 constexpr unsigned VectorBytes = N * sizeof(double);
 constexpr uint64_t DescriptorVersion = 1;
 
+static unsigned
+completionEntryBytes(unsigned level)
+{
+    return level >= 11 ? 512 : 1024;
+}
+
+static size_t
+recordBytes(uint64_t flags)
+{
+    return flags & CFD_COEFF_PRE_PACKED_RECORD ? sizeof(CfdCoeffPackedRecord) :
+           flags & CFD_COEFF_PRE_COMPACT_RECORD ? sizeof(CfdCoeffCompactRecord) :
+                                                 sizeof(CfdCoeffPreprocessRecord);
+}
+
+static CfdCoeffPackedRecord
+packedRecord(const CfdCoeffPreprocessRecord &record)
+{
+    CfdCoeffPackedRecord packed{};
+#define CFD_PACKED_FIELD(type, cpp, guest) \
+    if constexpr (sizeof(type) < sizeof(uint64_t)) \
+        panic_if(record.cpp > std::numeric_limits<type>::max(), "CFD packed record overflow: " #cpp); \
+    packed.cpp = record.cpp;
+#include "arch/arm/cfd_packed_record_fields.inc"
+#undef CFD_PACKED_FIELD
+    return packed;
+}
+
+static uint64_t
+recordDigest(const CfdCoeffPreprocessRecord &record)
+{
+    uint64_t digest=14695981039346656037ULL;
+#define CFD_RECORD_FIELD(cpp, guest) digest=(digest^record.cpp)*1099511628211ULL;
+#include "arch/arm/cfd_compact_record_fields.inc"
+#undef CFD_RECORD_FIELD
+    return digest;
+}
+
 uint64_t
 envU64(const char *name, uint64_t fallback)
 {
@@ -64,6 +102,8 @@ enum class RhsSchedule
     RoundRobinReady,
     ReadyFirst,
     FrontierAware,
+    RequestFrontierAging,
+    RhsFrontier,
 };
 
 enum class SpmLayout
@@ -88,6 +128,10 @@ RhsSchedule
 rhsScheduleFromEnv()
 {
     const char *value = std::getenv("GEM5_CFD_COEFF3_SCHEDULE");
+    if (value && std::strcmp(value, "rhs-frontier") == 0)
+        return RhsSchedule::RhsFrontier;
+    if (value && std::strcmp(value, "request-frontier-aging") == 0)
+        return RhsSchedule::RequestFrontierAging;
     if (value && std::strcmp(value, "step-major") == 0)
         return RhsSchedule::StepMajor;
     if (value && std::strcmp(value, "round-robin-ready") == 0)
@@ -152,6 +196,29 @@ struct EventEnv
     bool lineBaseAhead = true;
     bool lineEarlyBackward = true;
     bool lineMvmSplit = false;
+    bool lineMvmTree = false;
+    bool sharedCluster = false;
+    uint64_t clusterMulLatency = 3;
+    uint64_t clusterAddLatency = 4;
+    uint64_t clusterDivLatency = 12;
+    uint64_t clusterDivIi = 4;
+    uint32_t clusterProductDepth = 8;
+    bool tiledLine = false;
+    unsigned lineOptLevel = 0;
+    bool rhsRowParallel = false;
+    unsigned rhsProductDepth = 60;
+    unsigned completionDepth = 8, warmWriteDepth = 8;
+    bool onchipTiming = false;
+    unsigned onchipDepth = 64;
+    uint64_t onchipLatency = 1;
+    bool dmaOutputPriority = true;
+    bool adaptiveCache = false;
+    bool warmYFifo = false;
+    bool timedInterface = false;
+    uint32_t interfaceWidth = 64;
+    uint64_t lineSpmBytes = 131072;
+    uint32_t lineTileCells = 16;
+    uint32_t lineCacheCells = 0, tileBuffers = 1, tileDmaWidth = 40;
     bool resourceStats = false;
     uint64_t lineMulLatency = 3;
     uint64_t lineAddLatency = 4;
@@ -166,10 +233,42 @@ EventEnv
 readEnv()
 {
     EventEnv e;
+    e.tiledLine = envBool("GEM5_CFD_LINE_TILED", false);
+    e.lineOptLevel = envU64("GEM5_CFD_LINE_OPT_LEVEL", 0);
+    e.dmaOutputPriority = envBool("GEM5_CFD_DMA_OUTPUT_PRIORITY", true);
+    e.adaptiveCache = envBool("GEM5_CFD_ADAPTIVE_CACHE", false);
+    e.warmYFifo = envBool("GEM5_CFD_WARM_Y_FIFO", false);
+    e.rhsRowParallel = envBool("GEM5_CFD_RHS_ROW_PARALLEL", false);
+    e.rhsProductDepth = envU64("GEM5_CFD_RHS_PRODUCT_DEPTH",60);
+    panic_if(e.rhsProductDepth<1 || e.rhsProductDepth>60,"CFD RHS product depth outside 1..60");
+    e.completionDepth = envU64("GEM5_CFD_COMPLETION_DEPTH", 8);
+    e.warmWriteDepth = envU64("GEM5_CFD_WARM_WRITE_DEPTH", 8);
+    e.onchipTiming = envBool("GEM5_CFD_ONCHIP_TIMING", e.lineOptLevel >= 8);
+    e.onchipDepth = envU64("GEM5_CFD_ONCHIP_DEPTH", 64);
+    e.onchipLatency = envU64("GEM5_CFD_ONCHIP_LATENCY", 1);
+    e.timedInterface = envBool("GEM5_CFD_LINE_TIMED_INTERFACE", false);
+    e.interfaceWidth = envU64("GEM5_CFD_LINE_INTERFACE_WIDTH", 64);
+    e.lineSpmBytes = envU64("GEM5_CFD_LINE_SPM_BYTES", 131072);
+    e.lineTileCells = envU64("GEM5_CFD_LINE_TILE_CELLS", 16);
+    e.lineCacheCells = envU64("GEM5_CFD_LINE_CACHE_CELLS", 0);
+    e.tileBuffers = envU64("GEM5_CFD_LINE_TILE_BUFFERS", 1);
+    e.tileDmaWidth = envU64("GEM5_CFD_LINE_TILE_DMA_WIDTH", 40);
+    e.sharedCluster = envBool("GEM5_CFD_SHARED_CLUSTER", false);
+    e.clusterMulLatency = std::max<uint64_t>(1,
+        envU64("GEM5_CFD_CLUSTER_MUL_LAT", 3));
+    e.clusterAddLatency = std::max<uint64_t>(1,
+        envU64("GEM5_CFD_CLUSTER_ADD_LAT", 4));
+    e.clusterDivLatency = std::max<uint64_t>(1,
+        envU64("GEM5_CFD_CLUSTER_DIV_LAT", 12));
+    e.clusterDivIi = std::max<uint64_t>(1,
+        envU64("GEM5_CFD_CLUSTER_DIV_II", 4));
+    e.clusterProductDepth = std::max<uint64_t>(1,
+        envU64("GEM5_CFD_CLUSTER_PRODUCT_DEPTH", 8));
     e.resourceStats = envBool("GEM5_CFD_RESOURCE_STATS", false);
     e.lineBaseAhead = envBool("GEM5_CFD_LINE_BASE_AHEAD", true);
     e.lineEarlyBackward = envBool("GEM5_CFD_LINE_EARLY_BACKWARD", true);
     e.lineMvmSplit = envBool("GEM5_CFD_LINE_MVM_SPLIT", false);
+    e.lineMvmTree = envBool("GEM5_CFD_LINE_MVM_TREE", false);
     e.lineMulLatency = std::max<uint64_t>(1,
         envU64("GEM5_CFD_LINE_MUL_LAT", 3));
     e.lineAddLatency = std::max<uint64_t>(1,
@@ -327,7 +426,7 @@ enum class DrainType : uint8_t {
 };
 enum class OpKind : uint8_t {
     LuDiv, LuMul, LuSub, Div, Mul, Sub, ColumnFma, ForwardCombine,
-    LineProduct, LineAccumulate
+    LineProduct, LineAccumulate, SharedMul, SharedAdd, SharedDiv
 };
 
 enum class ColumnFmaTaskKind : uint8_t
@@ -349,11 +448,70 @@ struct RhsState
     std::array<double, N> value = {};
 };
 
+struct RhsRowProduct
+{
+    std::array<double, N> value{};
+    uint64_t token = 0;
+    unsigned rhs = 0;
+    bool valid = false;
+};
+static_assert(sizeof(RhsRowProduct) * 60 <= 4096);
+
+struct InterfaceTransfer
+{
+    Addr addr = 0;
+    bool write = false;
+    std::string kind;
+    bool interface = true;
+    uint64_t cell = 0;
+    std::vector<uint8_t> bytes;
+    uint64_t issued = 0, completed = 0;
+    uint64_t packetsIssued = 0, packetsCompleted = 0, lastResponse = 0;
+};
+
+struct ColdColumnProduct
+{
+    std::array<double, N> value{};
+    bool ready = false, addIssued = false, live = true;
+};
+
+struct OnchipAccess
+{
+    uint64_t id = 0, owner = 0, readyCycle = 0, eligibleCycle = 0;
+    Addr base = 0;
+    unsigned words = 0, stride = 8, next = 0, priority = 0;
+    bool write = false, active = true, done = false;
+    std::function<void()> completion;
+};
+static_assert(sizeof(OnchipAccess) + 128 <= 256);
+
+struct OnchipContext
+{
+    std::shared_ptr<OnchipAccess> inputRead;
+    std::shared_ptr<OnchipAccess> cacheRead;
+    bool cacheReadyTraced = false;
+    std::array<std::shared_ptr<OnchipAccess>, 3> commit;
+};
+static_assert(sizeof(OnchipContext) <= 128);
+
+struct DetachedRecord
+{
+    uint64_t owner = 0, token = 0, requestId = 0;
+    uint64_t generation = 0, lineId = 0, cell = 0;
+    std::shared_ptr<InterfaceTransfer> transfer;
+};
+static_assert(sizeof(DetachedRecord) + sizeof(InterfaceTransfer) +
+              sizeof(CfdCoeffCompactRecord) <= 1024);
+static_assert(sizeof(DetachedRecord) + sizeof(InterfaceTransfer) +
+              sizeof(CfdCoeffPackedRecord) + 128 <= 512,
+              "update packed completion reservation");
+
 struct Request
 {
     uint64_t token = 0;
     CfdCoeffPreprocessDescriptor desc = {};
     CfdCoeffPreprocessRecord record = {};
+    std::shared_ptr<InterfaceTransfer> recordTransfer;
     CfdCoeffPreprocessStatus status = CfdCoeffPreprocessStatus::Busy;
     RequestStage stage = RequestStage::WaitingSlot;
     int slot = -1;
@@ -396,6 +554,9 @@ struct Request
     std::array<double, N * N> lBar = {};
     std::array<double, N * N> uBar = {};
     bool baseConsumerEnabled = false;
+    bool directBaseSolve = false;
+    bool coefficientCacheReuse = false;
+    bool cacheUbarReload = false;
     bool directBaseBypass = false;
     bool rhsVectorReady = false;
     bool baseAccumulatorInitialized = false;
@@ -420,6 +581,9 @@ struct Request
     bool dqStarReadyLocal = false;
     bool dqStarPublishComplete = false;
     bool handoffProduced = false;
+    bool tileDataCommitted = false;
+    bool localTilePublished = false;
+    std::array<std::array<std::shared_ptr<ColdColumnProduct>, N>, 2> coldProducts;
     uint8_t lbarColumnReadyMask = 0;
     uint8_t lbarColumnQueuedMask = 0;
     uint8_t lbarColumnIssuedMask = 0;
@@ -438,6 +602,9 @@ struct Request
     int luK = 0;
     double luTemp = 0.0;
     double luProduct = 0.0;
+    std::array<double, N> luTemps{}, luProducts{};
+    uint8_t luDivIssued = 0, luDivCompleted = 0;
+    uint64_t luVisitedCycle = UINT64_MAX;
     std::array<RhsState, 15> rhs = {};
     std::array<double, N> reciprocal = {};
     std::array<bool, N> reciprocalReady = {};
@@ -456,6 +623,72 @@ struct LineMvmState
     std::array<bool, N> ready = {};
     std::array<std::array<double, N>, N> products = {};
     std::array<double, N> sum = {};
+    uint8_t treeIssued = 0, treeReady = 0;
+    std::array<std::array<double, N>, 4> partial = {};
+    uint64_t memoryCell = UINT64_MAX;
+    unsigned memoryKind = 3;
+    std::array<std::shared_ptr<OnchipAccess>, N> loads;
+    std::shared_ptr<OnchipAccess> yLoad;
+    std::array<std::array<double,N>,N> columnOperands{};
+    uint8_t loadedColumns = 0;
+};
+
+// Own the bytes until every timing response returns. issueDma uses dataStatic,
+// so callbacks retain this object even if a cancelled line is reaped.
+struct LineOutputWrite
+{
+    uint64_t cell = 0;
+    unsigned issued = 0;
+    unsigned completed = 0;
+    std::array<double, N> value = {};
+};
+
+// A tile owns DMA bytes through response completion. No array here grows with
+// line length; DRAM backing addresses live in the guest line descriptor.
+struct LineTile
+{
+    enum class Phase { Idle, Forward, Write, Resident, Read };
+    Phase phase = Phase::Forward;
+    unsigned storageIndex = 0;
+    uint64_t start = 0, count = 0, retired = 0;
+    std::array<uint64_t, 16> readyMask{};
+    uint64_t readyCount = 0;
+    std::vector<std::array<double, N>> y;
+    std::vector<std::array<double, N * N>> u;
+    uint64_t issued[2] = {}, completed[2] = {};
+};
+
+// Two register slots overlap a point's arithmetic with the next SPM read.
+struct BackwardOperand
+{
+    uint64_t cell = UINT64_MAX;
+    std::shared_ptr<LineTile> tile;
+    std::shared_ptr<OnchipAccess> yLoad;
+    std::array<std::shared_ptr<OnchipAccess>, N> columns;
+    std::array<double, N> y{};
+    std::array<std::array<double, N>, N> values{};
+    uint8_t readyColumns = 0, usedColumns = 0;
+    bool yReady = false;
+};
+static_assert(sizeof(BackwardOperand) <= 512);
+
+// Fixed input/base credits; opt level 5 separates the bounded write queue.
+struct WarmSlot
+{
+    uint64_t cell = 0;
+    bool valid = false, baseReady = false;
+    std::array<double, N> base{};
+    std::shared_ptr<InterfaceTransfer> rhs, y;
+    std::shared_ptr<OnchipAccess> rhsLoad;
+    std::shared_ptr<LineTile> tile;
+};
+
+struct WarmWrite
+{
+    std::shared_ptr<InterfaceTransfer> transfer;
+    std::shared_ptr<LineTile> tile;
+    std::shared_ptr<OnchipAccess> localStore, localRead;
+    bool localPublished = false;
 };
 
 struct LineRequest
@@ -468,12 +701,46 @@ struct LineRequest
     uint64_t nextCell = 0;
     uint64_t liveChildren = 0;
     uint64_t completedChildren = 0;
+    uint64_t committedChildren = 0;
     uint64_t coefficientVersion = 0;
     bool coefficientCacheEnabled = false;
     bool coefficientDirty = false;
     bool coefficientCacheHit = false;
+    std::shared_ptr<LineTile> tile, prefetchTile;
+    uint64_t cacheAllocated = 0;
+    std::shared_ptr<InterfaceTransfer> rhsTransfer, yTransfer, uTransfer;
+    std::array<double, N> cachedRhs = {}, previousY = {};
+    std::array<WarmSlot, 8> warm;
+    std::deque<WarmWrite> warmWrites;
+    uint64_t recordsPending = 0, recordDetachStalls = 0;
+    uint64_t warmInputStalls = 0, warmOutputStalls = 0;
+    uint64_t warmBaseStalls = 0, warmTileStalls = 0;
+    std::shared_ptr<OnchipAccess> tailRead;
+    std::array<BackwardOperand, 2> backwardOperands;
+    uint64_t backwardOperandAllocated = 0, backwardOperandReleased = 0;
+    std::array<double,N> backwardYOperand{};
+    uint64_t warmNextInput = 0, warmAheadInputs = 0, warmWritesMax = 0;
+    uint64_t cacheReadIssued = 0, cacheReadCompleted = 0;
+    uint64_t cacheWriteIssued = 0, cacheWriteCompleted = 0;
+    uint64_t tileWaitCycles = 0;
+    uint64_t tileReserve = 0, tileAllocated = 0;
+    uint64_t tileWriteIssued = 0, tileWriteCompleted = 0;
+    uint64_t tileReadIssued = 0, tileReadCompleted = 0;
+    uint64_t tilePacketsIssued = 0, tilePacketsCompleted = 0;
+    uint64_t tileLastResponse = 0, tileStalls = 0;
+    uint64_t tileForwardCount = 0, tileReloadCount = 0;
+    std::shared_ptr<InterfaceTransfer> statusTransfer;
+    std::shared_ptr<InterfaceTransfer> summaryTransfer;
+    CfdCoeffLineSummary summary;
+    uint64_t interfaceReadIssued = 0, interfaceReadCompleted = 0;
+    uint64_t interfaceWriteIssued = 0, interfaceWriteCompleted = 0;
+    uint64_t interfacePacketsIssued = 0, interfacePacketsCompleted = 0;
+    uint64_t interfaceLastResponse = 0;
+    std::array<double, N> backwardNext = {}, backwardValue = {};
     bool cachedForwardStarted = false;
     bool cachedForwardOpPending = false;
+    bool cachedFinishWaiting = false;
+    bool cachedSubtractReady = false;
     uint64_t cachedForwardCell = 0;
     uint8_t cachedForwardColumn = 0;
     uint8_t cachedForwardPhase = 0;
@@ -494,27 +761,47 @@ struct LineRequest
     uint64_t lineAdds = 0;
     uint64_t lineBufferedMax = 0;
     uint64_t lineBufferStalls = 0;
+    std::deque<std::shared_ptr<LineOutputWrite>> outputWrites;
+    uint64_t outputBytesIssued = 0;
+    uint64_t outputBytesCompleted = 0;
+    uint64_t outputPacketsIssued = 0;
+    uint64_t outputPacketsCompleted = 0;
+    uint64_t outputQueueMax = 0;
+    uint64_t outputQueueStalls = 0;
+    uint64_t outputOutstandingStalls = 0;
+    uint64_t outputLastResponseCycle = 0;
     bool backwardDirect = false;
     bool backwardStarted = false;
+    bool earlyBackward = false;
     bool backwardOpPending = false;
+    bool backwardFinishWaiting = false;
+    bool backwardSubtractReady = false;
     int64_t backwardCell = -1;
     uint8_t backwardColumn = 0;
     std::vector<std::array<double, N>> dqStar;
     std::vector<std::array<double, N>> dq;
     std::vector<std::array<double, N>> rhs;
     std::vector<std::array<double, N * N>> dInv;
+    std::vector<std::array<double, N * N>> lu;
     std::vector<std::array<double, N * N>> lBar;
     std::vector<std::array<double, N * N>> uBar;
     std::array<double, N> cachedBaseAccumulator = {};
     std::array<double, N> cachedCorrectionAccumulator = {};
     std::array<double, N> backwardAccumulator = {};
     bool terminal = false;
+    bool abortPending = false;
+    bool abortPublished = false;
 };
 
 struct LineCoeffCache
 {
+    bool valid = false;
+    bool hasUbar = true;
+    Addr ubarBacking = 0;
     uint64_t version = 0;
     uint64_t cells = 0;
+    bool directBaseSolve = false;
+    std::vector<std::array<double, N * N>> lu;
     std::vector<std::array<double, N * N>> dInv;
     std::vector<std::array<double, N * N>> lBar;
     std::vector<std::array<double, N * N>> uBar;
@@ -556,6 +843,13 @@ struct PendingOp
     uint64_t completeCycle = 0;
     OpKind kind = OpKind::Mul;
     std::function<void()> complete;
+    unsigned lanes = 1;
+};
+
+struct SharedVectorAdd
+{
+    std::array<double, N> product;
+    std::function<void(const std::array<double, N> &)> complete;
 };
 
 struct ResourcePool
@@ -646,10 +940,13 @@ class CfdCoeffPreprocessController
     ThreadContext *tc = nullptr;
     uint64_t nextToken = 1;
     uint64_t nextRequestId = 1;
+    uint64_t lastTiledGeneration = 0;
     bool configured = false;
     FILE *traceFp = nullptr;
     std::unordered_map<uint64_t, std::unique_ptr<Request>> requests;
     std::unordered_map<uint64_t, std::unique_ptr<LineRequest>> lineRequests;
+    std::unordered_map<uint64_t, std::shared_ptr<InterfaceTransfer>> pendingLineLaunches;
+    std::unordered_map<uint64_t, bool> cancelledLineLaunches;
     std::unordered_map<uint64_t, uint64_t> childLineTokens;
     std::unordered_map<uint64_t, LineCoeffCache> lineCoeffCaches;
     std::vector<bool> slots;
@@ -668,6 +965,24 @@ class CfdCoeffPreprocessController
     ResourcePool lineProduct;
     ResourcePool lineAccumulate;
     ResourcePool forwardCombine;
+    ResourcePool sharedMul, sharedAdd, sharedDiv;
+    std::array<RhsRowProduct, 60> rhsRowProducts;
+    uint64_t rowGroupsIssued = 0, rowGroupsCompleted = 0;
+    uint64_t rowGroupsPeak = 0, rowGroupsStalls = 0;
+    std::deque<SharedVectorAdd> sharedVectorAdds;
+    std::deque<DetachedRecord> detachedRecords;
+    uint64_t detachedPeak = 0, detachedIssued = 0, detachedCompleted = 0;
+    uint64_t detachedCursor = 0;
+    bool luBackgroundPass = false;
+    std::deque<std::shared_ptr<OnchipAccess>> onchipQueue;
+    std::unordered_map<uint64_t, OnchipContext> onchipContexts;
+    uint64_t onchipNextId = 1, onchipCreated = 0, onchipCompleted = 0, onchipCancelled = 0;
+    uint64_t onchipPeak = 0, onchipFull = 0, onchipConflicts = 0, onchipSamples = 0;
+    std::vector<uint64_t> onchipReads, onchipWrites;
+    uint64_t sharedVectorsLive = 0, sharedVectorsMax = 0;
+    uint64_t sharedVectorsIssued = 0, sharedVectorsCompleted = 0;
+    uint64_t sharedProductStalls = 0;
+    FILE *clusterTraceFp = nullptr;
     uint64_t columnFmaCursor = 0;
     std::unordered_map<uint64_t, ForwardDqHandoff> forwardHandoffs;
     std::unordered_map<uint64_t, uint64_t> liveGeneration;
@@ -681,40 +996,106 @@ class CfdCoeffPreprocessController
     void configure();
     void scheduleTick();
     void processTick();
-    std::array<ResourcePool *, 10> resourcePools();
+    std::array<ResourcePool *, 13> resourcePools();
     void beginResourceStats(uint64_t now);
     void endResourceStats(bool quiescent);
-    uint64_t launchDescriptor(const CfdCoeffPreprocessDescriptor &desc);
-    uint64_t launchLine(const CfdCoeffPreprocessDescriptor &desc);
+    uint64_t launchDescriptor(const CfdCoeffPreprocessDescriptor &desc,
+                             const LineCoeffCache *cached = nullptr);
+    uint64_t launchLine(const CfdCoeffPreprocessDescriptor &desc, uint64_t reservedToken = 0);
+    void processTimedLaunches();
+    void stepInterfaceTransfer(uint64_t owner, const std::shared_ptr<InterfaceTransfer> &transfer);
     void pumpLineRequests();
+    void initializeLineTile(LineRequest &line);
+    void processLineTiles();
+    void prepareLineCache(LineRequest &line);
+    bool prepareCachedRhs(LineRequest &line);
+    bool drainCachedCell(LineRequest &line);
+    void stepWarmTransfers(LineRequest &line);
+    void processDetachedRecords();
+    void abortLine(LineRequest &line, CfdCoeffPreprocessStatus status);
+    void processAbortedLines();
+    std::shared_ptr<OnchipAccess> startOnchip(uint64_t owner, Addr base, unsigned words,
+        unsigned stride, bool write, unsigned priority = 0, bool active = true);
+    void cancelOnchip(const std::shared_ptr<OnchipAccess> &access);
+    void processOnchip();
+    Addr tileOnchipAddr(const LineRequest &line, const LineTile &tile) const;
+    Addr warmOnchipAddr(const LineRequest &line, uint64_t cell) const;
+    bool warmRhsOnchipReady(LineRequest &line, WarmSlot &slot);
+    bool onchipColumnReady(LineRequest &line, unsigned context, unsigned column);
+    bool prepareOnchipCommit(Request &req);
+    bool cachedRegistersReady(Request &req);
+    void processBackwardOperands(LineRequest &line);
+    bool backwardOperandReady(LineRequest &line, unsigned column);
+    void releaseBackwardOperands(LineRequest &line);
+    bool backwardTileReadable(const LineTile &tile, uint64_t cell) const;
+    void markLocalTileReady(LineRequest &line, const std::shared_ptr<LineTile> &tile,
+                           uint64_t cell, uint64_t yJob, uint64_t uJob);
+    void processLocalTileResults();
+    bool startEarlyBackward(LineRequest &line);
+    void processEarlyLineTiles(LineRequest &line);
+    unsigned warmDepth(const LineRequest &line) const {
+        return std::min<uint64_t>(env.lineOptLevel >= 5 ? 8 : 4, line.window);
+    }
+    std::shared_ptr<LineTile> forwardTile(const LineRequest &line, uint64_t cell) const;
+    bool cachedUbar(const LineRequest &line) const {
+        return env.lineOptLevel >= 3 && line.coefficientCacheHit &&
+            lineCoeffCaches.at(line.desc.lineId).hasUbar;
+    }
+    bool warmSummary(const LineRequest &line) const {
+        return line.coefficientCacheHit &&
+            (line.desc.flags & CFD_COEFF_PRE_WARM_SUMMARY) &&
+            (line.desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE);
+    }
+    unsigned cacheMatrices(const LineRequest &line) const {
+        return line.cacheAllocated / (line.cells*MatrixBytes);
+    }
+    void beginTileRead(LineRequest &line, const std::shared_ptr<LineTile> &tile, uint64_t first);
+    void stepTileRead(LineRequest &line, const std::shared_ptr<LineTile> &tile);
+    void retireTileChild(LineRequest &line, const Request &req);
+    void commitTileChild(LineRequest &line, const Request &req);
+    void writeGuestRecord(const Request &req);
+    uint64_t tileIndex(const LineRequest &line, uint64_t cell) const;
     void retireLineChild(uint64_t childToken, const Request &req);
     void processLineCachedForward(uint64_t now);
     void processLineBaseAhead(uint64_t now);
     void finishCachedForwardCell(LineRequest &line);
     void publishLineValues();
+    bool stepLineSummary(LineRequest &line);
     void finishLineBackward(LineRequest &line);
     void finishLineBackwardCell(LineRequest &line);
+    void publishLineOutput(LineRequest &line, uint64_t cell);
+    void processLineOutputWrites();
     void advanceLineMvm(LineRequest &line, unsigned context,
         const std::array<double, N * N> &matrix,
         const std::array<double, N> &vector, uint8_t readyMask, uint64_t now,
         std::function<void(LineRequest &, const std::array<double, N> &)> done);
     void completeLineCachedForwardColumn(
-        uint64_t lineToken, uint8_t phase, uint8_t column, uint64_t now);
+        uint64_t lineToken, uint8_t phase, uint8_t column,
+        const std::array<double, N> &product, uint64_t now);
     void processLineBackward(uint64_t now);
     void completeLineBackwardColumn(uint64_t lineToken, uint8_t column,
+                                    const std::array<double, N> &product,
                                     uint64_t now);
     void completeOps(uint64_t now);
     void assignInputSlots(uint64_t now);
     void processInputs(uint64_t now);
     void startLuRequests(uint64_t now);
     void processLu(uint64_t now);
+    void processLuRows(Request &req, uint64_t now);
     void startSolveRequests(uint64_t now);
     void processSolve(uint64_t now);
+    bool issueSolveRhs(Request &req, unsigned index, uint64_t now);
+    bool issueSolveRows(Request &req, unsigned index, uint64_t now);
+    void releaseRhsRows(RhsRowProduct &slot);
+    void discardRhsRows(Request &req);
+    void finalizeSolveRequest(Request &req, uint64_t now);
     void processColumnFma(uint64_t now);
+    void processColdColumns(uint64_t now);
+    void releaseColdProduct(const std::shared_ptr<ColdColumnProduct> &product);
+    void discardColdProducts(Request &req);
     void completeColumnFma(uint64_t token, uint64_t generation,
                            ColumnFmaTaskKind kind, unsigned column,
-                           const std::array<double, N> &matrixColumn,
-                           double scalar, uint64_t now);
+                           const std::array<double, N> &product, uint64_t now);
     void processForwardHandoffs(uint64_t now);
     void produceForwardHandoff(Request &req, uint64_t now);
     void processForwardCombines(uint64_t now);
@@ -726,6 +1107,15 @@ class CfdCoeffPreprocessController
     void accountActivity();
     bool issue(ResourcePool &pool, OpKind kind, uint64_t now,
                std::function<void()> complete);
+    bool issueLanes(ResourcePool &pool, OpKind kind, uint64_t now,
+                    unsigned lanes, OpKind caller,
+                    std::function<void()> complete);
+    bool issueColumnMvm(const std::array<double, N> &column, double scalar,
+                        uint64_t now,
+                        std::function<void(const std::array<double, N> &)> done);
+    void processSharedVectorAdds(uint64_t now);
+    void traceCluster(const char *pool, unsigned lanes, OpKind caller,
+                      uint64_t now, uint64_t latency);
     bool enqueueDrain(Request &req, DrainType type, uint64_t now);
     void finishDrain(DrainTask &task, uint64_t now);
     void completeInputPacket(uint64_t token, unsigned bytes,
@@ -750,6 +1140,7 @@ class CfdCoeffPreprocessController
     void publishProgress(Request &req);
     SETranslatingPortProxy proxy() const;
     Request *find(uint64_t token);
+    std::vector<Request *> admissionOrder() const;
     void trace(const Request &req, const char *engine, const char *stage,
                int batch = -1, int column = -1, int k = -1, int row = -1,
                const char *note = "", const char *requester = "",
@@ -786,6 +1177,39 @@ CfdCoeffPreprocessController::find(uint64_t token)
 {
     auto it = requests.find(token);
     return it == requests.end() ? nullptr : it->second.get();
+}
+
+std::vector<Request *>
+CfdCoeffPreprocessController::admissionOrder() const
+{
+    std::vector<Request *> candidates;
+    candidates.reserve(requests.size());
+    for (const auto &[token, req] : requests)
+        candidates.push_back(req.get());
+    if (env.lineOptLevel) {
+        // The finite single-line window has monotonically increasing cells.
+        // Oldest cell first is the actual recurrence frontier, at every
+        // admission stage; no ordering depends on host hash iteration.
+        std::sort(candidates.begin(), candidates.end(), [](auto *a, auto *b) {
+            return std::tie(a->desc.cellId, a->record.requestId) <
+                   std::tie(b->desc.cellId, b->record.requestId);
+        });
+    }
+    return candidates;
+}
+
+void
+CfdCoeffPreprocessController::writeGuestRecord(const Request &req)
+{
+    if (req.desc.flags & CFD_COEFF_PRE_PACKED_RECORD) {
+        const auto packed=packedRecord(req.record);
+        proxy().writeBlob(req.desc.recordAddr,&packed,sizeof(packed));
+    } else if (req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) {
+        const auto compact = cfdCompactRecord(req.record);
+        proxy().writeBlob(req.desc.recordAddr, &compact, sizeof(compact));
+    } else {
+        proxy().writeBlob(req.desc.recordAddr, &req.record, sizeof(req.record));
+    }
 }
 
 CfdSpmMatrix
@@ -902,6 +1326,9 @@ CfdCoeffPreprocessController::configure()
     init(lineAccumulate, 1, env.lineAddLatency, 1);
     init(forwardCombine, env.forwardCombineCount, env.forwardCombineLatency,
          env.forwardCombineIi);
+    init(sharedMul, N, env.clusterMulLatency, 1);
+    init(sharedAdd, N, env.clusterAddLatency, 1);
+    init(sharedDiv, 1, env.clusterDivLatency, env.clusterDivIi);
     configured = true;
 }
 
@@ -918,6 +1345,27 @@ CfdCoeffPreprocessController::issue(
     ResourcePool &pool, OpKind kind, uint64_t now,
     std::function<void()> complete)
 {
+    if (env.sharedCluster) {
+        switch (kind) {
+          case OpKind::LuDiv: case OpKind::Div:
+            return issueLanes(sharedDiv, OpKind::SharedDiv, now, 1, kind,
+                              std::move(complete));
+          case OpKind::LuMul: case OpKind::Mul:
+            return issueLanes(sharedMul, OpKind::SharedMul, now, 1, kind,
+                              std::move(complete));
+          case OpKind::LuSub: case OpKind::Sub:
+            return issueLanes(sharedAdd, OpKind::SharedAdd, now, 1, kind,
+                              std::move(complete));
+          case OpKind::LineProduct:
+            return issueLanes(sharedMul, OpKind::SharedMul, now, N, kind,
+                              std::move(complete));
+          case OpKind::LineAccumulate: case OpKind::ForwardCombine:
+            return issueLanes(sharedAdd, OpKind::SharedAdd, now, N, kind,
+                              std::move(complete));
+          default:
+            panic("CFD unshared operation in shared cluster");
+        }
+    }
     if (env.resourceStats) {
         pool.attemptedNow = true;
         pool.attempts++;
@@ -938,6 +1386,10 @@ CfdCoeffPreprocessController::issue(
     }
     return false;
 }
+
+#include "cfd_coeff_preprocess_cluster.inc"
+#include "cfd_coeff_preprocess_frontier.inc"
+#include "cfd_coeff_preprocess_rhs_rows.inc"
 
 void
 CfdCoeffPreprocessController::trace(
@@ -982,6 +1434,20 @@ CfdCoeffPreprocessController::launch(ExecContext *xc, Addr descriptorAddr)
 
     CfdCoeffPreprocessDescriptor desc = {};
     tc = xc->tcBase();
+    if (env.timedInterface) {
+        // This profile owns one line invocation and one descriptor staging slot.
+        if (!pendingLineLaunches.empty() || !lineRequests.empty() ||
+            !detachedRecords.empty() || !onchipQueue.empty())
+            return 0;
+        auto transfer = std::make_shared<InterfaceTransfer>();
+        transfer->addr = descriptorAddr;
+        transfer->kind = "descriptor";
+        transfer->bytes.resize(sizeof(desc));
+        const uint64_t token = nextToken++;
+        pendingLineLaunches.emplace(token, transfer);
+        scheduleTick();
+        return token;
+    }
     proxy().readBlob(descriptorAddr, &desc, sizeof(desc));
     if (desc.flags & CFD_COEFF_PRE_LINE_AUTONOMOUS)
         return launchLine(desc);
@@ -990,7 +1456,7 @@ CfdCoeffPreprocessController::launch(ExecContext *xc, Addr descriptorAddr)
 
 uint64_t
 CfdCoeffPreprocessController::launchDescriptor(
-    const CfdCoeffPreprocessDescriptor &desc)
+    const CfdCoeffPreprocessDescriptor &desc, const LineCoeffCache *cached)
 {
     if (requests.size() >= env.inputSlots + env.luPendingDepth +
                            env.solvePendingDepth + env.outputDepth)
@@ -1002,6 +1468,8 @@ CfdCoeffPreprocessController::launchDescriptor(
         desc.flags & CFD_COEFF_PRE_DINV_BASE_CONSUMER;
     const bool directBase =
         desc.flags & CFD_COEFF_PRE_DINV_DIRECT_BYPASS;
+    const bool directBaseSolve =
+        desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE;
     const bool lbarConsumer =
         desc.flags & CFD_COEFF_PRE_LBAR_FORWARD_CONSUMER;
     const bool directLbar =
@@ -1034,6 +1502,8 @@ CfdCoeffPreprocessController::launchDescriptor(
         (lbarConsumer && (!baseConsumer || !directBase || !autoRetire ||
                           !desc.reserved[3])) ||
         (directLbar && !lbarConsumer) ||
+        (directBaseSolve && (!baseConsumer || !directBase ||
+                             !directLbar || desc.lineId != 0)) ||
         (baseConsumer && (!coeff3 || !autoRetire || !needDInv ||
                           !desc.reserved[0] ||
                           (!directLbar && !desc.reserved[1]))) ||
@@ -1063,6 +1533,8 @@ CfdCoeffPreprocessController::launchDescriptor(
         (needLBar ? 2u : 0u) | (needUBar ? 4u : 0u);
     req->matrixDrainMask = req->requestedBatchMask;
     req->baseConsumerEnabled = baseConsumer;
+    req->directBaseSolve = directBaseSolve;
+    req->coefficientCacheReuse = cached != nullptr;
     req->directBaseBypass = directBase;
     req->lbarConsumerEnabled = lbarConsumer;
     req->directLbarBypass = directLbar;
@@ -1075,16 +1547,27 @@ CfdCoeffPreprocessController::launchDescriptor(
         const RhsMaskPlan &plan = RhsMaskPlans[req->requestedBatchMask];
         req->rhsEnabledMask = plan.rhsMask;
         req->rhsCount = plan.rhsCount;
+        if (directBaseSolve) {
+            // Preserve Lbar/Ubar slot numbers and their original arithmetic.
+            // Only the identity batch changes, from five RHS to one vector.
+            req->rhsEnabledMask = (req->rhsEnabledMask & ~0x001fu) | 1u;
+            req->rhsCount -= N - 1;
+        }
         req->record.maskTableLookups++;
     } else {
         req->rhsSlots = 5;
         req->rhsCount = 5;
         req->rhsEnabledMask = 0x001f;
     }
-    req->inputMatrices[req->inputMatrixCount++] = CfdSpmMatrix::D;
-    if (needUBar)
+    if (!cached)
+        req->inputMatrices[req->inputMatrixCount++] = CfdSpmMatrix::D;
+    if (needUBar && !cached)
         req->inputMatrices[req->inputMatrixCount++] = CfdSpmMatrix::U;
-    if (needLBar)
+    if (cached && !cached->hasUbar && needUBar) {
+        req->cacheUbarReload = true;
+        req->inputMatrices[req->inputMatrixCount++] = CfdSpmMatrix::U;
+    }
+    if (needLBar && !cached)
         req->inputMatrices[req->inputMatrixCount++] = CfdSpmMatrix::L;
     const unsigned inputBytes = req->inputMatrixCount * MatrixBytes +
         (baseConsumer ? VectorBytes : 0);
@@ -1097,6 +1580,33 @@ CfdCoeffPreprocessController::launchDescriptor(
     req->record.issueCycle = cycle();
     req->record.status = static_cast<uint64_t>(CfdCoeffPreprocessStatus::Busy);
     req->record.inputBytes = inputBytes;
+    if (cached) {
+        panic_if(!directBaseSolve || desc.cellId >= cached->cells,
+                 "CFD invalid internal LU cache reuse");
+        req->lu = cached->lu[desc.cellId];
+        req->lBar = cached->lBar[desc.cellId];
+        if (cached->hasUbar)
+            req->uBar = cached->uBar[desc.cellId];
+        req->requestedBatchMask = 1;
+        req->matrixDrainMask = 0;
+        if (env.tiledLine && needUBar && env.lineOptLevel < 3) {
+            req->requestedBatchMask |= 4;
+            req->matrixDrainMask = 4;
+            req->record.uBarReadyCycle = cycle();
+        }
+        req->rhsEnabledMask = 1;
+        req->rhsCount = 1;
+        req->luDone = req->luDrained = true;
+        req->drainQueued[static_cast<unsigned>(DrainType::Lu)] = true;
+        req->drainDone[static_cast<unsigned>(DrainType::Lu)] = true;
+        if (desc.cellId) {
+            req->lbarColumnReadyMask = 0x1f;
+            req->record.lbarColumnsReady = N;
+            req->record.lBarReadyCycle = cycle();
+            for (unsigned col = 0; col < N; ++col)
+                req->record.lBarColumnReadyCycle[col] = cycle();
+        }
+    }
     if (baseConsumer) {
         req->baseAccumulator.fill(0.0);
         req->baseAccumulatorInitialized = true;
@@ -1126,7 +1636,9 @@ CfdCoeffPreprocessController::launchDescriptor(
     const uint64_t token = req->token;
     const uint64_t generationKey =
         (desc.lineId * 0x9e3779b97f4a7c15ull) ^ desc.cellId;
-    auto generation = liveGeneration.find(generationKey);
+    // Finite autonomous lines validate one parent generation. Retaining one
+    // per-cell history entry would itself create unbounded resident metadata.
+    auto generation = env.tiledLine ? liveGeneration.end() : liveGeneration.find(generationKey);
     if (desc.generation == 0 ||
         (generation != liveGeneration.end() &&
          desc.generation <= generation->second)) {
@@ -1134,9 +1646,8 @@ CfdCoeffPreprocessController::launchDescriptor(
         req->status = CfdCoeffPreprocessStatus::GenerationMismatch;
         req->record.status = static_cast<uint64_t>(req->status);
         req->record.completeCycle = cycle();
-        proxy().writeBlob(desc.recordAddr, &req->record,
-                          sizeof(req->record));
-    } else {
+        writeGuestRecord(*req);
+    } else if (!env.tiledLine) {
         liveGeneration[generationKey] = desc.generation;
     }
     trace(*req, "controller", "REQUEST_ALLOC");
@@ -1147,7 +1658,7 @@ CfdCoeffPreprocessController::launchDescriptor(
 
 uint64_t
 CfdCoeffPreprocessController::launchLine(
-    const CfdCoeffPreprocessDescriptor &desc)
+    const CfdCoeffPreprocessDescriptor &desc, uint64_t reservedToken)
 {
     const uint64_t cells = desc.reserved[4];
     const uint64_t window = desc.reserved[1];
@@ -1164,6 +1675,8 @@ CfdCoeffPreprocessController::launchLine(
         desc.flags & CFD_COEFF_PRE_LINE_COEFF_CACHE;
     const bool coefficientDirty =
         desc.flags & CFD_COEFF_PRE_LINE_COEFF_DIRTY;
+    const bool directBaseSolve =
+        desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE;
     if (desc.version != DescriptorVersion || desc.size != sizeof(desc) ||
         (desc.flags & required) != required || !cells || !window ||
         window > 64 || !desc.dAddr || !desc.lAddr || !desc.uAddr ||
@@ -1173,6 +1686,8 @@ CfdCoeffPreprocessController::launchLine(
         (backwardDirect && !desc.reserved[2]) ||
         (cacheEnabled && (!backwardDirect || !desc.cellId)) ||
         (coefficientDirty && !cacheEnabled) ||
+        (directBaseSolve && (!backwardDirect ||
+                             desc.lineId != 0)) ||
         desc.generation == 0)
         return 0;
     const uint64_t addressFields[] = {
@@ -1185,9 +1700,17 @@ CfdCoeffPreprocessController::launchLine(
         if (addr & 7)
             return 0;
     }
+    if (env.tiledLine) {
+        if (desc.lineId != 0 || desc.generation <= lastTiledGeneration ||
+            std::any_of(lineRequests.begin(), lineRequests.end(),
+                        [](const auto &entry) { return !entry.second->terminal ||
+                            (entry.second->abortPending && !entry.second->abortPublished); }))
+            return 0;
+        lastTiledGeneration = desc.generation;
+    }
 
     auto line = std::make_unique<LineRequest>();
-    line->token = nextToken++;
+    line->token = reservedToken ? reservedToken : nextToken++;
     line->desc = desc;
     line->cells = cells;
     line->window = std::min<uint64_t>(window, cells);
@@ -1195,15 +1718,23 @@ CfdCoeffPreprocessController::launchLine(
     line->coefficientVersion = desc.cellId;
     line->coefficientCacheEnabled = cacheEnabled;
     line->coefficientDirty = coefficientDirty;
-    line->dqStar.resize(cells);
-    line->dq.resize(cells);
-    line->rhs.resize(cells);
-    line->dInv.resize(cells);
-    line->lBar.resize(cells);
-    line->uBar.resize(cells);
-    line->dqStarReady.resize(cells, false);
-    line->uBarReady.resize(cells, 0);
-    if (cacheEnabled && !coefficientDirty) {
+    if (env.tiledLine) {
+        initializeLineTile(*line);
+        prepareLineCache(*line);
+    } else {
+        line->dqStar.resize(cells);
+        line->dq.resize(cells);
+        line->rhs.resize(cells);
+        if (directBaseSolve)
+            line->lu.resize(cells);
+        else
+            line->dInv.resize(cells);
+        line->lBar.resize(cells);
+        line->uBar.resize(cells);
+        line->dqStarReady.resize(cells, false);
+        line->uBarReady.resize(cells, 0);
+    }
+    if (line->coefficientCacheEnabled && !coefficientDirty) {
         auto cached = lineCoeffCaches.find(desc.lineId);
         if (env.traceEnable) {
             std::fprintf(
@@ -1220,30 +1751,35 @@ CfdCoeffPreprocessController::launchLine(
                                      cached->second.cells : 0));
             std::fflush(stderr);
         }
-        if (cached != lineCoeffCaches.end() &&
+        if (cached != lineCoeffCaches.end() && cached->second.valid &&
             cached->second.version == desc.cellId &&
-            cached->second.cells == cells) {
+            cached->second.cells == cells &&
+            cached->second.directBaseSolve == directBaseSolve) {
             line->coefficientCacheHit = true;
-            line->baseRing.resize(line->window);
-            line->baseReady.resize(line->window, false);
-            std::fill(line->uBarReady.begin(), line->uBarReady.end(), 0x1f);
-            line->dInv = cached->second.dInv;
-            line->lBar = cached->second.lBar;
-            line->uBar = cached->second.uBar;
-            for (uint64_t cell = 0; cell < cells; ++cell) {
-                proxy().readBlob(
-                    desc.reserved[0] + cell * VectorBytes,
-                    line->rhs[cell].data(), VectorBytes);
+            if (!line->tile) {
+                line->baseRing.resize(line->window);
+                line->baseReady.resize(line->window, false);
+                std::fill(line->uBarReady.begin(), line->uBarReady.end(), 0x1f);
+                line->dInv = cached->second.dInv;
+                line->lu = cached->second.lu;
+                line->lBar = cached->second.lBar;
+                line->uBar = cached->second.uBar;
+                for (uint64_t cell = 0; !directBaseSolve && cell < cells; ++cell) {
+                    proxy().readBlob(
+                        desc.reserved[0] + cell * VectorBytes,
+                        line->rhs[cell].data(), VectorBytes);
+                }
             }
-            line->cachedForwardStarted = true;
+            line->cachedForwardStarted = !directBaseSolve;
         }
     }
     const uint64_t token = line->token;
     lineRequests.emplace(token, std::move(line));
     const uint64_t busy =
         static_cast<uint64_t>(CfdCoeffPreprocessStatus::Busy);
-    proxy().writeBlob(desc.dInvOutAddr, &busy, sizeof(busy));
-    if (!lineRequests.at(token)->coefficientCacheHit)
+    if (!env.timedInterface)
+        proxy().writeBlob(desc.dInvOutAddr, &busy, sizeof(busy));
+    if (!lineRequests.at(token)->coefficientCacheHit || directBaseSolve)
         pumpLineRequests();
     scheduleTick();
     return token;
@@ -1259,9 +1795,14 @@ CfdCoeffPreprocessController::pumpLineRequests()
         // A version-cache hit is executed by processLineCachedForward() and
         // processLineBackward().  It must never be expanded into coefficient
         // rebuild children by a later generic refill tick.
-        if (line.coefficientCacheHit)
+        const bool direct = line.desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE;
+        if (line.coefficientCacheHit && !direct)
             continue;
         while (!line.terminal && line.nextCell < line.cells &&
+               (!line.tile || (line.tile->phase == LineTile::Phase::Forward &&
+                 (line.nextCell < line.tile->start + line.tile->count ||
+                  (line.prefetchTile && line.prefetchTile->phase == LineTile::Phase::Forward &&
+                   line.nextCell < line.prefetchTile->start + line.prefetchTile->count)))) &&
                line.liveChildren < line.window &&
                requests.size() < capacity) {
             const uint64_t cell = line.nextCell;
@@ -1281,7 +1822,8 @@ CfdCoeffPreprocessController::pumpLineRequests()
             if (child.lBarOutAddr)
                 child.lBarOutAddr += cell * MatrixBytes;
             child.uBarOutAddr += cell * MatrixBytes;
-            child.recordAddr += cell * sizeof(CfdCoeffPreprocessRecord);
+            child.recordAddr += cell * recordBytes(child.flags);
+
             child.reserved[0] = line.desc.reserved[0] + cell * VectorBytes;
             child.reserved[1] = 0;
             child.reserved[2] = 0;
@@ -1296,7 +1838,9 @@ CfdCoeffPreprocessController::pumpLineRequests()
                 child.flags |= CFD_COEFF_PRE_NEED_LBAR;
             if (cell + 1 < line.cells)
                 child.flags |= CFD_COEFF_PRE_NEED_UBAR;
-            const uint64_t childToken = launchDescriptor(child);
+            const auto *cached = line.coefficientCacheHit ?
+                &lineCoeffCaches.at(line.desc.lineId) : nullptr;
+            const uint64_t childToken = launchDescriptor(child, cached);
             if (!childToken)
                 break;
             childLineTokens.emplace(childToken, lineToken);
@@ -1316,36 +1860,47 @@ CfdCoeffPreprocessController::retireLineChild(
     auto lineIt = lineRequests.find(owner->second);
     if (lineIt != lineRequests.end()) {
         LineRequest &line = *lineIt->second;
+        if (line.tile) {
+            retireTileChild(line, req);
+            childLineTokens.erase(owner);
+            return;
+        }
+        if (line.abortPending || req.status != CfdCoeffPreprocessStatus::Complete) {
+            if (req.status != CfdCoeffPreprocessStatus::Complete)
+                abortLine(line, req.status);
+            if (line.liveChildren)
+                line.liveChildren--;
+            line.completedChildren++;
+            childLineTokens.erase(owner);
+            return;
+        }
         const uint64_t cell = req.desc.cellId;
         if (cell < line.cells) {
             line.dqStar[cell] = req.dqStar;
-            line.dInv[cell] = req.dInv;
+            if (req.directBaseSolve)
+                line.lu[cell] = req.lu;
+            else
+                line.dInv[cell] = req.dInv;
             line.lBar[cell] = req.lBar;
             line.uBar[cell] = req.uBar;
             line.dqStarReady[cell] = req.dqStarReadyLocal;
-            line.uBarReady[cell] = (req.rhsDoneMask >> 10) & 0x1f;
+            if (!req.coefficientCacheReuse)
+                line.uBarReady[cell] = (req.rhsDoneMask >> 10) & 0x1f;
         }
         if (line.liveChildren)
             line.liveChildren--;
         line.completedChildren++;
-        if (req.status != CfdCoeffPreprocessStatus::Complete) {
-            // A terminal cell can leave the final forward handoff waiting
-            // for a non-existent successor.  It belongs to this line
-            // invocation and must not survive into a later coefficient
-            // version.
-            forwardHandoffs.erase(line.desc.lineId);
-            line.status = req.status;
-            line.terminal = true;
-            const uint64_t status = static_cast<uint64_t>(line.status);
-            proxy().writeBlob(
-                line.desc.dInvOutAddr, &status, sizeof(status));
-        } else if (line.completedChildren == line.cells) {
+        if (line.completedChildren == line.cells) {
             line.childrenRetiredCycle = cycle();
             forwardHandoffs.erase(line.desc.lineId);
-            if (line.coefficientCacheEnabled) {
+            if (line.coefficientCacheEnabled && !line.coefficientCacheHit) {
                 LineCoeffCache cache;
+                cache.valid = true;
                 cache.version = line.coefficientVersion;
                 cache.cells = line.cells;
+                cache.directBaseSolve =
+                    line.desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE;
+                cache.lu = line.lu;
                 cache.dInv = line.dInv;
                 cache.lBar = line.lBar;
                 cache.uBar = line.uBar;
@@ -1369,10 +1924,7 @@ CfdCoeffPreprocessController::retireLineChild(
                     line.backwardStartCycle = cycle();
                     line.backwardCell = static_cast<int64_t>(line.cells) - 2;
                     line.dq[line.cells - 1] = line.dqStar[line.cells - 1];
-                    proxy().writeBlob(
-                        line.desc.reserved[2] +
-                            (line.cells - 1) * VectorBytes,
-                        line.dq[line.cells - 1].data(), VectorBytes);
+                    publishLineOutput(line, line.cells - 1);
                 }
                 finishLineBackward(line);
             } else {
@@ -1388,9 +1940,13 @@ CfdCoeffPreprocessController::retireLineChild(
     childLineTokens.erase(owner);
 }
 
+#include "cfd_coeff_preprocess_tiles.inc"
+#include "cfd_coeff_preprocess_interface.inc"
+
 void
 CfdCoeffPreprocessController::completeLineCachedForwardColumn(
-    uint64_t lineToken, uint8_t phase, uint8_t column, uint64_t now)
+    uint64_t lineToken, uint8_t phase, uint8_t column,
+    const std::array<double, N> &product, uint64_t now)
 {
     auto it = lineRequests.find(lineToken);
     if (it == lineRequests.end())
@@ -1402,14 +1958,10 @@ CfdCoeffPreprocessController::completeLineCachedForwardColumn(
         column != line.cachedForwardColumn)
         return;
     const uint64_t cell = line.cachedForwardCell;
-    const auto &matrix =
-        phase == 0 ? line.dInv[cell] : line.lBar[cell];
-    const double scalar = phase == 0 ?
-        line.rhs[cell][column] : line.dqStar[cell - 1][column];
     auto &accumulator = phase == 0 ?
         line.cachedBaseAccumulator : line.cachedCorrectionAccumulator;
     for (unsigned row = 0; row < N; ++row)
-        accumulator[row] += matrix[row * N + column] * scalar;
+        accumulator[row] += product[row];
     line.cachedForwardOpPending = false;
     if (++line.cachedForwardColumn < N)
         return;
@@ -1427,9 +1979,69 @@ void
 CfdCoeffPreprocessController::finishCachedForwardCell(LineRequest &line)
 {
     const uint64_t cell = line.cachedForwardCell;
+    auto tile = line.tile ? forwardTile(line, cell) : nullptr;
+    panic_if(line.tile && !tile, "CFD warm result outside owned forward tiles");
+    if (env.sharedCluster && cell && !line.cachedSubtractReady) {
+        line.cachedFinishWaiting = true;
+        return;
+    }
+    line.cachedSubtractReady = false;
     for (unsigned row = 0; row < N; ++row)
-        line.dqStar[cell][row] = line.cachedBaseAccumulator[row] -
+        (line.tile ? tile->y[cell-tile->start][row] : line.dqStar[cell][row]) = line.cachedBaseAccumulator[row] -
             (cell ? line.cachedCorrectionAccumulator[row] : 0.0);
+    if (line.tile) {
+        tile->u[cell-tile->start] = lineCoeffCaches.at(line.desc.lineId).uBar[cell];
+        line.yTransfer = std::make_shared<InterfaceTransfer>();
+        line.yTransfer->interface = false;
+        line.yTransfer->cell = cell;
+        line.yTransfer->kind = "y";
+        line.yTransfer->write = true;
+        line.yTransfer->addr = line.desc.reserved[3] + cell * VectorBytes;
+        line.yTransfer->bytes.resize(VectorBytes);
+        std::memcpy(line.yTransfer->bytes.data(), tile->y[cell-tile->start].data(), VectorBytes);
+        if (cell+1 < line.cells && !cachedUbar(line)) {
+            line.uTransfer = std::make_shared<InterfaceTransfer>();
+            line.uTransfer->interface = false;
+            line.uTransfer->cell = cell;
+            line.uTransfer->kind = "ubar";
+            line.uTransfer->write = true;
+            line.uTransfer->addr = line.desc.uBarOutAddr + cell * MatrixBytes;
+            line.uTransfer->bytes.resize(MatrixBytes);
+            std::memcpy(line.uTransfer->bytes.data(), tile->u[cell-tile->start].data(), MatrixBytes);
+        }
+        if (env.lineOptLevel >= 3) {
+            auto &slot = line.warm[cell % warmDepth(line)];
+            panic_if(!slot.valid || slot.cell != cell || slot.y,
+                     "CFD warm slot ownership violation");
+            if (env.lineOptLevel >= 5) {
+                panic_if(line.warmWrites.size() >= env.warmWriteDepth,
+                         "CFD warm write credit was not reserved");
+                line.warmWrites.push_back({std::move(line.yTransfer), tile, {}, {}});
+                slot = WarmSlot{};
+                if (env.traceEnable)
+                    std::fprintf(stderr, "CFD_WARM_INPUT_RELEASE cycle=%llu token=%llu cell=%llu\n",
+                        (unsigned long long)cycle(), (unsigned long long)line.token,
+                        (unsigned long long)cell);
+            } else {
+                slot.y = std::move(line.yTransfer);
+                slot.tile = tile;
+                slot.baseReady = false;
+            }
+            line.previousY = tile->y[cell-tile->start];
+            line.cachedBaseAccumulator.fill(0.0);
+            line.cachedCorrectionAccumulator.fill(0.0);
+            line.cachedForwardPhase = 0;
+            line.cachedForwardColumn = 0;
+            line.cachedForwardCell++;
+            line.warmWritesMax = std::max<uint64_t>(line.warmWritesMax, env.lineOptLevel >= 5 ?
+                line.warmWrites.size() : std::count_if(line.warm.begin(), line.warm.end(),
+                              [](const auto &s) { return bool(s.y); }));
+            if (line.cachedForwardCell == line.cells)
+                line.cachedForwardStarted = false;
+            return;
+        }
+        return; // legacy commit waits for y/Ubar responses
+    }
     line.dqStarReady[cell] = true;
     proxy().writeBlob(
         line.desc.reserved[3] + cell * VectorBytes,
@@ -1446,9 +2058,7 @@ CfdCoeffPreprocessController::finishCachedForwardCell(LineRequest &line)
         line.backwardStartCycle = cycle();
         line.backwardCell = static_cast<int64_t>(line.cells) - 2;
         line.dq[line.cells - 1] = line.dqStar[line.cells - 1];
-        proxy().writeBlob(
-            line.desc.reserved[2] + (line.cells - 1) * VectorBytes,
-            line.dq[line.cells - 1].data(), VectorBytes);
+        publishLineOutput(line, line.cells - 1);
     }
 }
 
@@ -1464,7 +2074,46 @@ CfdCoeffPreprocessController::advanceLineMvm(
     const uint64_t epoch = state.epoch;
     // The feedback chain is still sequential.  Only independent products can
     // run ahead; products are rounded to double before ordered addition.
-    if (!state.addPending && state.added < N && state.ready[state.added]) {
+    if (env.lineMvmTree && state.issued == N &&
+        std::all_of(state.ready.begin(), state.ready.end(), [](bool v) { return v; })) {
+        // ((p0+p1)+(p2+p3))+p4: four five-lane adds, three dependent
+        // levels. The two first-level operations still compete for ONE bank.
+        for (unsigned node = 0; node < 4; ++node) {
+            const uint8_t bit = 1u << node;
+            if ((state.treeIssued & bit) ||
+                (node == 2 && (state.treeReady & 3) != 3) ||
+                (node == 3 && !(state.treeReady & 4)))
+                continue;
+            const auto left = node < 2 ? state.products[2 * node] :
+                state.partial[node == 2 ? 0 : 2];
+            const auto right = node < 2 ? state.products[2 * node + 1] :
+                (node == 2 ? state.partial[1] : state.products[4]);
+            if (!issue(lineAccumulate, OpKind::LineAccumulate, now,
+                [this, token, context, epoch, node, left, right, done] {
+                    auto it = lineRequests.find(token);
+                    if (it == lineRequests.end() || it->second->terminal)
+                        return;
+                    auto &line = *it->second;
+                    auto &state = line.mvm[context];
+                    if (state.epoch != epoch)
+                        return;
+                    for (unsigned row = 0; row < N; ++row)
+                        state.partial[node][row] = left[row] + right[row];
+                    state.treeReady |= 1u << node;
+                    if (node == 3) {
+                        const auto result = state.partial[node];
+                        state = LineMvmState{};
+                        state.epoch = epoch + 1;
+                        done(line, result);
+                    }
+                }))
+                break;
+            state.treeIssued |= bit;
+            line.lineAdds++;
+        }
+    }
+    if (!env.lineMvmTree && !state.addPending && state.added < N &&
+        state.ready[state.added]) {
         const unsigned col = state.added;
         if (issue(lineAccumulate, OpKind::LineAccumulate, now,
                   [this, token, context, epoch, col, done] {
@@ -1499,9 +2148,10 @@ CfdCoeffPreprocessController::advanceLineMvm(
     const unsigned col = state.issued;
     if (!(readyMask & (1u << col)))
         return;
+    if (!onchipColumnReady(line,context,col)) return;
     std::array<double, N> column;
     for (unsigned row = 0; row < N; ++row)
-        column[row] = matrix[row * N + col];
+        column[row] = env.onchipTiming ? state.columnOperands[col][row] : matrix[row * N + col];
     const double scalar = vector[col];
     if (!issue(lineProduct, OpKind::LineProduct, now,
                [this, token, context, epoch, col, column, scalar] {
@@ -1527,15 +2177,60 @@ CfdCoeffPreprocessController::processLineCachedForward(uint64_t now)
 {
     for (auto &[lineToken, linePtr] : lineRequests) {
         LineRequest &line = *linePtr;
+        if (line.tile && env.lineOptLevel >= 3 && line.coefficientCacheHit &&
+            !(line.desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE) && !line.terminal)
+            stepWarmTransfers(line);
+        if (line.tile && line.cachedForwardStarted) {
+            if (line.yTransfer || line.uTransfer) {
+                drainCachedCell(line);
+                continue;
+            }
+            if (!forwardTile(line, line.cachedForwardCell)) {
+                line.warmTileStalls++;
+                continue;
+            }
+            if (env.lineOptLevel >= 5 && line.warmWrites.size() >= env.warmWriteDepth) {
+                line.warmOutputStalls++;
+                continue;
+            }
+            if (!prepareCachedRhs(line))
+                continue;
+        }
+        if (line.cachedForwardStarted && !line.terminal &&
+            line.cachedFinishWaiting && !line.cachedForwardOpPending) {
+            if (issue(forwardCombine, OpKind::ForwardCombine, now,
+                [this, lineToken] {
+                    auto it = lineRequests.find(lineToken);
+                    if (it == lineRequests.end() || it->second->terminal)
+                        return;
+                    auto &line = *it->second;
+                    line.cachedForwardOpPending = false;
+                    line.cachedFinishWaiting = false;
+                    line.cachedSubtractReady = true;
+                    finishCachedForwardCell(line);
+                }))
+                line.cachedForwardOpPending = true;
+            continue;
+        }
         if (!line.cachedForwardStarted || line.terminal ||
             line.cachedForwardOpPending ||
             line.cachedForwardCell >= line.cells)
             continue;
-        if (env.lineBaseAhead) {
+        if (env.lineBaseAhead && (!line.tile || env.lineOptLevel >= 3)) {
             const auto slot = line.cachedForwardCell % line.window;
-            if (!line.baseReady[slot])
-                continue;
-            line.cachedBaseAccumulator = line.baseRing[slot];
+            if (line.tile) {
+                const auto &warm = line.warm[line.cachedForwardCell %
+                                            warmDepth(line)];
+                if (!warm.baseReady) {
+                    line.warmBaseStalls++;
+                    continue;
+                }
+                line.cachedBaseAccumulator = warm.base;
+            } else {
+                if (!line.baseReady[slot])
+                    continue;
+                line.cachedBaseAccumulator = line.baseRing[slot];
+            }
             if (!line.cachedForwardCell) {
                 finishCachedForwardCell(line);
                 continue;
@@ -1547,8 +2242,10 @@ CfdCoeffPreprocessController::processLineCachedForward(uint64_t now)
         if (env.lineMvmSplit) {
             const uint64_t cell = line.cachedForwardCell;
             advanceLineMvm(line, 0,
-                phase == 0 ? line.dInv[cell] : line.lBar[cell],
-                phase == 0 ? line.rhs[cell] : line.dqStar[cell - 1],
+                phase == 0 ? (line.tile ? lineCoeffCaches.at(line.desc.lineId).dInv[cell] : line.dInv[cell]) :
+                    (line.tile ? lineCoeffCaches.at(line.desc.lineId).lBar[cell] : line.lBar[cell]),
+                phase == 0 ? (line.tile ? line.cachedRhs : line.rhs[cell]) :
+                    (line.tile ? line.previousY : line.dqStar[cell - 1]),
                 0x1f, now, [this, phase](LineRequest &line, const auto &sum) {
                     if (phase == 0) {
                         line.cachedBaseAccumulator = sum;
@@ -1563,10 +2260,20 @@ CfdCoeffPreprocessController::processLineCachedForward(uint64_t now)
                 });
             continue;
         }
-        if (!issue(columnFma, OpKind::ColumnFma, now,
-                   [this, lineToken, phase, column] {
+        std::array<double, N> values;
+        if (!onchipColumnReady(line,0,column)) continue;
+        const auto cell = line.cachedForwardCell;
+        const auto &matrix = phase == 0 ?
+            (line.tile ? lineCoeffCaches.at(line.desc.lineId).dInv[cell] : line.dInv[cell]) :
+            (line.tile ? lineCoeffCaches.at(line.desc.lineId).lBar[cell] : line.lBar[cell]);
+        for (unsigned row = 0; row < N; ++row)
+            values[row] = env.onchipTiming ? line.mvm[0].columnOperands[column][row] : matrix[row * N + column];
+        const double scalar = phase == 0 ? (line.tile ? line.cachedRhs[column] : line.rhs[cell][column]) :
+            (line.tile ? line.previousY[column] : line.dqStar[cell - 1][column]);
+        if (!issueColumnMvm(values, scalar, now,
+                   [this, lineToken, phase, column](const auto &product) {
                        completeLineCachedForwardColumn(
-                           lineToken, phase, column, cycle());
+                           lineToken, phase, column, product, cycle());
                    }))
             continue;
         line.cachedForwardOpPending = true;
@@ -1582,38 +2289,66 @@ CfdCoeffPreprocessController::processLineBaseAhead(uint64_t now)
     // capacity, not another arithmetic unit.  Each sum retains column order.
     for (auto &[token, ptr] : lineRequests) {
         auto &line = *ptr;
-        if (!line.cachedForwardStarted || line.terminal || line.basePending ||
+        if ((line.tile && env.lineOptLevel < 3) || !line.cachedForwardStarted || line.terminal || line.basePending ||
             line.baseCell >= line.cells ||
             line.baseCell - line.cachedForwardCell >= line.window)
             continue;
         const uint64_t cell = line.baseCell;
         const uint8_t col = line.baseColumn;
+        std::array<double, N> rhs;
+        if (line.tile) {
+            auto &slot = line.warm[cell % warmDepth(line)];
+            if (!slot.valid || slot.cell != cell || slot.y ||
+                slot.rhs->completed != VectorBytes)
+                continue;
+            if (!warmRhsOnchipReady(line,slot)) continue;
+            std::memcpy(rhs.data(), slot.rhs->bytes.data(), VectorBytes);
+        } else {
+            rhs = line.rhs[cell];
+        }
+        const auto &matrix = line.tile ? lineCoeffCaches.at(line.desc.lineId).dInv[cell] :
+                                        line.dInv[cell];
         if (env.lineMvmSplit) {
             const auto before = line.lineProducts;
-            advanceLineMvm(line, 2, line.dInv[cell], line.rhs[cell], 0x1f,
-                now, [cell](LineRequest &line, const auto &sum) {
-                    line.baseRing[cell % line.window] = sum;
-                    line.baseReady[cell % line.window] = true;
+            advanceLineMvm(line, 2, matrix, rhs, 0x1f,
+                now, [this,cell](LineRequest &line, const auto &sum) {
+                    if (line.tile) {
+                        auto &slot = line.warm[cell % warmDepth(line)];
+                        panic_if(!slot.valid || slot.cell != cell, "CFD stale warm base");
+                        slot.base = sum;
+                        slot.baseReady = true;
+                    } else {
+                        line.baseRing[cell % line.window] = sum;
+                        line.baseReady[cell % line.window] = true;
+                    }
                     line.baseCell++;
                 });
             if (cell > line.cachedForwardCell)
                 line.baseAheadColumns += line.lineProducts - before;
             continue;
         }
-        if (!issue(columnFma, OpKind::ColumnFma, now, [this, token, cell, col] {
+        if (!onchipColumnReady(line,2,col)) continue;
+        std::array<double, N> values;
+        for (unsigned row = 0; row < N; ++row)
+            values[row] = env.onchipTiming ? line.mvm[2].columnOperands[col][row] : matrix[row * N + col];
+        if (!issueColumnMvm(values, rhs[col], now,
+            [this, token, cell, col](const auto &product) {
                 auto it = lineRequests.find(token);
                 if (it == lineRequests.end() || it->second->terminal)
                     return;
                 auto &line = *it->second;
-                auto &base = line.baseRing[cell % line.window];
+                auto &base = line.tile ? line.warm[cell % warmDepth(line)].base :
+                                        line.baseRing[cell % line.window];
                 if (!col)
                     base.fill(0.0);
                 for (unsigned row = 0; row < N; ++row)
-                    base[row] += line.dInv[cell][row * N + col] *
-                                 line.rhs[cell][col];
+                    base[row] += product[row];
                 line.basePending = false;
                 if (++line.baseColumn == N) {
-                    line.baseReady[cell % line.window] = true;
+                    if (line.tile)
+                        line.warm[cell % warmDepth(line)].baseReady = true;
+                    else
+                        line.baseReady[cell % line.window] = true;
                     line.baseColumn = 0;
                     line.baseCell++;
                 }
@@ -1638,7 +2373,7 @@ CfdCoeffPreprocessController::publishLineValues()
             continue;
         const auto &req = *r->second;
         auto &line = *p->second;
-        if (line.terminal || !line.backwardDirect ||
+        if (line.tile || line.terminal || !line.backwardDirect ||
             req.stage == RequestStage::Failed)
             continue;
         const auto cell = req.desc.cellId;
@@ -1661,17 +2396,43 @@ CfdCoeffPreprocessController::publishLineValues()
     }
     for (auto &[token, ptr] : lineRequests) {
         auto &line = *ptr;
-        if (line.terminal || !line.backwardDirect || line.backwardStarted ||
+        if (line.tile || line.terminal || !line.backwardDirect || line.backwardStarted ||
             !line.dqStarReady.back())
             continue;
         line.backwardStarted = true;
         line.backwardStartCycle = cycle();
         line.backwardCell = static_cast<int64_t>(line.cells) - 2;
         line.dq.back() = line.dqStar.back();
-        proxy().writeBlob(line.desc.reserved[2] +
-                         (line.cells - 1) * VectorBytes,
-                         line.dq.back().data(), VectorBytes);
+        publishLineOutput(line, line.cells - 1);
     }
+}
+
+bool
+CfdCoeffPreprocessController::stepLineSummary(LineRequest &line)
+{
+    if (!env.timedInterface || !warmSummary(line))
+        return true;
+    if (line.abortPending || line.summary.completed != line.cells)
+        return false;
+    panic_if(line.summary.errors, "CFD failed warm line summary");
+    if (!line.summaryTransfer) {
+        line.summary.generation = line.desc.generation;
+        line.summary.cells = line.cells;
+        line.summaryTransfer = std::make_shared<InterfaceTransfer>();
+        auto &t = *line.summaryTransfer;
+        t.addr = line.desc.recordAddr;
+        t.write = true;
+        t.kind = "line-summary";
+        t.bytes.resize(sizeof(line.summary));
+        std::memcpy(t.bytes.data(),&line.summary,sizeof(line.summary));
+        if (env.traceEnable)
+            std::fprintf(stderr,"CFD_RECORD_SUMMARY_SOURCE generation=%llu cells=%llu completed=%llu errors=%llu hash=%016llx\n",
+                (unsigned long long)line.summary.generation,(unsigned long long)line.cells,
+                (unsigned long long)line.summary.completed,(unsigned long long)line.summary.errors,
+                (unsigned long long)line.summary.digest);
+    }
+    stepInterfaceTransfer(line.token,line.summaryTransfer);
+    return line.summaryTransfer->completed == sizeof(line.summary);
 }
 
 void
@@ -1680,16 +2441,100 @@ CfdCoeffPreprocessController::finishLineBackward(LineRequest &line)
     if (line.terminal || !line.backwardStarted || line.backwardOpPending ||
         line.backwardCell >= 0)
         return;
-    if (!line.backwardDoneCycle)
+    if (!line.backwardDoneCycle) {
         line.backwardDoneCycle = cycle();
+        releaseBackwardOperands(line);
+    }
     // Numeric completion is not software-visible completion: all child
     // drains and stable completion records must still retire successfully.
-    if (!line.coefficientCacheHit && line.completedChildren != line.cells)
+    if ((!line.coefficientCacheHit ||
+         (line.desc.flags & CFD_COEFF_PRE_BASE_DIRECT_SOLVE)) &&
+        line.completedChildren != line.cells)
         return;
+    if (line.recordsPending)
+        return;
+    if (line.tile && (line.completedChildren != line.cells || !line.warmWrites.empty()))
+        return;
+    if (env.onchipTiming && std::any_of(onchipQueue.begin(),onchipQueue.end(),
+        [&line](const auto &a) { return a->owner == line.token; })) return;
+    // The internal feedback value may be ready long before its external
+    // write completes. Never publish Complete on numerical completion alone.
+    if (env.dmaSpm && (!line.outputWrites.empty() ||
+        line.outputBytesCompleted != line.cells * VectorBytes))
+        return;
+    if (env.timedInterface) {
+        if (!stepLineSummary(line))
+            return;
+        if (!line.statusTransfer) {
+            line.statusTransfer = std::make_shared<InterfaceTransfer>();
+            auto &transfer = *line.statusTransfer;
+            transfer.addr = line.desc.dInvOutAddr;
+            transfer.write = true;
+            transfer.kind = "status";
+            const uint64_t complete = static_cast<uint64_t>(CfdCoeffPreprocessStatus::Complete);
+            transfer.bytes.resize(sizeof(complete));
+            std::memcpy(transfer.bytes.data(), &complete, sizeof(complete));
+        }
+        stepInterfaceTransfer(line.token, line.statusTransfer);
+        if (line.statusTransfer->completed != line.statusTransfer->bytes.size())
+            return;
+    }
     line.status = CfdCoeffPreprocessStatus::Complete;
     line.terminal = true;
+    if (line.tile) {
+        panic_if(!line.dqStar.empty() || !line.dq.empty() || !line.rhs.empty() ||
+            !line.lu.empty() || !line.dInv.empty() || !line.lBar.empty() ||
+            !line.uBar.empty() || line.tileReadIssued != line.tileReadCompleted ||
+            line.tilePacketsIssued != line.tilePacketsCompleted ||
+            line.cacheReadIssued != line.cacheReadCompleted ||
+            line.cacheWriteIssued != line.cacheWriteCompleted,
+            "CFD finite tile completion has unbounded arrays or in-flight reads");
+        std::fprintf(stderr, "CFD_LINE_STORAGE token=%llu cells=%llu tile_cells=%u "
+            "forward_tiles=%llu reload_tiles=%llu reserved=%llu resident=%llu "
+            "capacity=%llu write_issued=%llu write_completed=%llu "
+            "read_issued=%llu read_completed=%llu packets_issued=%llu "
+            "packets_completed=%llu last_response=%llu stalls=%llu "
+            "host_line_arrays=0 cache_bytes=%llu buffers=%u data_wait=%llu "
+            "cache_read=%llu cache_write=%llu\n",
+            (unsigned long long)line.token, (unsigned long long)line.cells,
+            env.lineTileCells, (unsigned long long)line.tileForwardCount,
+            (unsigned long long)line.tileReloadCount, (unsigned long long)line.tileReserve,
+            (unsigned long long)line.tileAllocated, (unsigned long long)env.lineSpmBytes,
+            (unsigned long long)line.tileWriteIssued, (unsigned long long)line.tileWriteCompleted,
+            (unsigned long long)line.tileReadIssued, (unsigned long long)line.tileReadCompleted,
+            (unsigned long long)line.tilePacketsIssued, (unsigned long long)line.tilePacketsCompleted,
+            (unsigned long long)line.tileLastResponse, (unsigned long long)line.tileStalls,
+            (unsigned long long)line.cacheAllocated, env.tileBuffers,
+            (unsigned long long)line.tileWaitCycles,
+            (unsigned long long)line.cacheReadCompleted, (unsigned long long)line.cacheWriteCompleted);
+    }
     const uint64_t status = static_cast<uint64_t>(line.status);
-    proxy().writeBlob(line.desc.dInvOutAddr, &status, sizeof(status));
+    if (!env.timedInterface)
+        proxy().writeBlob(line.desc.dInvOutAddr, &status, sizeof(status));
+    if (env.timedInterface)
+        std::fprintf(stderr, "CFD_INTERFACE_SUMMARY token=%llu read_issued=%llu "
+            "read_completed=%llu write_issued=%llu write_completed=%llu "
+            "packets_issued=%llu packets_completed=%llu last_response=%llu "
+            "descriptor_bytes=%zu record_bytes=%zu status_bytes=8\n",
+            (unsigned long long)line.token,
+            (unsigned long long)line.interfaceReadIssued,
+            (unsigned long long)line.interfaceReadCompleted,
+            (unsigned long long)line.interfaceWriteIssued,
+            (unsigned long long)line.interfaceWriteCompleted,
+            (unsigned long long)line.interfacePacketsIssued,
+            (unsigned long long)line.interfacePacketsCompleted,
+            (unsigned long long)line.interfaceLastResponse,
+            sizeof(CfdCoeffPreprocessDescriptor),
+            recordBytes(line.desc.flags));
+    if (env.lineOptLevel >= 5)
+        std::fprintf(stderr,"CFD_LINE_LIFETIME phase=complete token=%llu records_pending=%llu record_stalls=%llu "
+            "warm_input_depth=%u warm_output_depth=%u warm_output_peak=%llu "
+            "warm_input_wait=%llu warm_base_wait=%llu warm_tile_wait=%llu warm_output_wait=%llu\n",
+            (unsigned long long)line.token,(unsigned long long)line.recordsPending,
+            (unsigned long long)line.recordDetachStalls,warmDepth(line),env.warmWriteDepth,
+            (unsigned long long)line.warmWritesMax,(unsigned long long)line.warmInputStalls,
+            (unsigned long long)line.warmBaseStalls,(unsigned long long)line.warmTileStalls,
+            (unsigned long long)line.warmOutputStalls);
     if (env.traceEnable) {
         // Hash the actual FP64 bit patterns, not formatted decimal values.
         uint64_t hash = 14695981039346656037ULL;
@@ -1702,29 +2547,48 @@ CfdCoeffPreprocessController::finishLineBackward(LineRequest &line)
                 }
             }
         }
+        char hashField[80];
+        if (line.tile)
+            std::snprintf(hashField, sizeof(hashField), "result_hash_source=guest");
+        else
+            std::snprintf(hashField, sizeof(hashField), "result_hash=%016llx",
+                          (unsigned long long)hash);
         std::fprintf(stderr, "CFD_LINE_SCHEDULE token=%llu cache_hit=%d "
                      "base_ahead_columns=%llu backward_start=%llu "
                      "backward_done=%llu visible_done=%llu "
-                     "children_retired=%llu result_hash=%016llx "
+                     "children_retired=%llu %s "
                      "line_products=%llu line_adds=%llu buffered_max=%llu "
-                     "buffer_stalls=%llu\n",
+                     "buffer_stalls=%llu output_bytes_issued=%llu "
+                     "output_bytes_completed=%llu output_packets_issued=%llu "
+                     "output_packets_completed=%llu output_queue_max=%llu "
+                     "output_queue_stalls=%llu output_outstanding_stalls=%llu "
+                     "output_last_response=%llu\n",
                      (unsigned long long)line.token, line.coefficientCacheHit,
                      (unsigned long long)line.baseAheadColumns,
                      (unsigned long long)line.backwardStartCycle,
                      (unsigned long long)line.backwardDoneCycle,
                      (unsigned long long)cycle(),
                      (unsigned long long)line.childrenRetiredCycle,
-                     (unsigned long long)hash,
+                     hashField,
                      (unsigned long long)line.lineProducts,
                      (unsigned long long)line.lineAdds,
                      (unsigned long long)line.lineBufferedMax,
-                     (unsigned long long)line.lineBufferStalls);
+                     (unsigned long long)line.lineBufferStalls,
+                     (unsigned long long)line.outputBytesIssued,
+                     (unsigned long long)line.outputBytesCompleted,
+                     (unsigned long long)line.outputPacketsIssued,
+                     (unsigned long long)line.outputPacketsCompleted,
+                     (unsigned long long)line.outputQueueMax,
+                     (unsigned long long)line.outputQueueStalls,
+                     (unsigned long long)line.outputOutstandingStalls,
+                     (unsigned long long)line.outputLastResponseCycle);
     }
 }
 
 void
 CfdCoeffPreprocessController::completeLineBackwardColumn(
-    uint64_t lineToken, uint8_t column, uint64_t now)
+    uint64_t lineToken, uint8_t column,
+    const std::array<double, N> &product, uint64_t now)
 {
     auto it = lineRequests.find(lineToken);
     if (it == lineRequests.end())
@@ -1733,11 +2597,9 @@ CfdCoeffPreprocessController::completeLineBackwardColumn(
     if (!line.backwardStarted || line.terminal || line.backwardCell < 0 ||
         column != line.backwardColumn)
         return;
-    const size_t cell = static_cast<size_t>(line.backwardCell);
-    const double scalar = line.dq[cell + 1][column];
     for (unsigned row = 0; row < N; ++row)
         line.backwardAccumulator[row] +=
-            line.uBar[cell][row * N + column] * scalar;
+            product[row];
     line.backwardOpPending = false;
     if (++line.backwardColumn < N)
         return;
@@ -1748,13 +2610,27 @@ CfdCoeffPreprocessController::completeLineBackwardColumn(
 void
 CfdCoeffPreprocessController::finishLineBackwardCell(LineRequest &line)
 {
+    if (env.sharedCluster && !line.backwardSubtractReady) {
+        line.backwardFinishWaiting = true;
+        return;
+    }
+    line.backwardSubtractReady = false;
     const size_t cell = static_cast<size_t>(line.backwardCell);
     for (unsigned row = 0; row < N; ++row)
-        line.dq[cell][row] =
-            line.dqStar[cell][row] - line.backwardAccumulator[row];
-    proxy().writeBlob(
-        line.desc.reserved[2] + cell * VectorBytes,
-        line.dq[cell].data(), VectorBytes);
+        if (line.tile)
+            line.backwardValue[row] = (env.onchipTiming ? line.backwardYOperand[row] :
+                                      line.tile->y[tileIndex(line, cell)][row]) -
+                                      line.backwardAccumulator[row];
+        else
+            line.dq[cell][row] =
+                line.dqStar[cell][row] - line.backwardAccumulator[row];
+    publishLineOutput(line, cell);
+    if (line.tile)
+        line.backwardNext = line.backwardValue;
+    if (env.traceEnable)
+        std::fprintf(stderr, "CFD_LINE_FEEDBACK token=%llu cell=%llu finish=%llu\n",
+            (unsigned long long)line.token, (unsigned long long)cell,
+            (unsigned long long)cycle());
     line.backwardAccumulator.fill(0.0);
     line.backwardColumn = 0;
     line.backwardCell--;
@@ -1762,10 +2638,82 @@ CfdCoeffPreprocessController::finishLineBackwardCell(LineRequest &line)
 }
 
 void
+CfdCoeffPreprocessController::publishLineOutput(
+    LineRequest &line, uint64_t cell)
+{
+    if (!env.dmaSpm) {
+        proxy().writeBlob(line.desc.reserved[2] + cell * VectorBytes,
+                         line.dq[cell].data(), VectorBytes);
+        return;
+    }
+    panic_if(line.outputWrites.size() >= env.drainQueueDepth,
+             "CFD line output queue reservation exceeded");
+    auto write = std::make_shared<LineOutputWrite>();
+    write->cell = cell;
+    write->value = line.tile ? line.backwardValue : line.dq[cell];
+    line.outputWrites.push_back(std::move(write));
+    line.outputQueueMax = std::max<uint64_t>(
+        line.outputQueueMax, line.outputWrites.size());
+}
+
+void
+CfdCoeffPreprocessController::processLineOutputWrites()
+{
+    if (!env.dmaSpm)
+        return;
+    CfdLocalSpm *spm = getCfdLocalSpm();
+    panic_if(!spm, "CFD line output DMA requires local SPM");
+    for (auto &[token, ptr] : lineRequests) {
+        auto &line = *ptr;
+        auto &queue = line.outputWrites;
+        // Responses may return out of order; retire only complete entries.
+        queue.erase(std::remove_if(queue.begin(), queue.end(),
+            [](const auto &write) { return write->completed == VectorBytes; }),
+            queue.end());
+        if (line.terminal)
+            continue;
+        auto candidate = std::find_if(queue.begin(), queue.end(),
+            [](const auto &write) { return write->issued < VectorBytes; });
+        if (candidate == queue.end())
+            continue;
+        auto write = *candidate;
+        const Addr addr = line.desc.reserved[2] +
+            write->cell * VectorBytes + write->issued;
+        const unsigned bytes = spm->dmaChunkSize(tc, addr,
+            std::min<unsigned>(env.drainWidth, VectorBytes - write->issued));
+        auto *data = reinterpret_cast<uint8_t *>(write->value.data()) +
+            write->issued;
+        const auto packet = spm->issueDma(tc, true, addr, bytes, data,
+            env.spmOutstanding, [this, token, write, bytes](uint64_t) {
+                write->completed += bytes;
+                auto it = lineRequests.find(token);
+                if (it == lineRequests.end())
+                    return;
+                auto &line = *it->second;
+                line.outputBytesCompleted += bytes;
+                line.outputPacketsCompleted++;
+                line.outputLastResponseCycle = cycle();
+            });
+        if (!packet.accepted) {
+            line.outputOutstandingStalls += packet.outstandingFull;
+            // Translation/chunk errors must not become an infinite retry.
+            panic_if(!packet.outstandingFull,
+                     "CFD line output DMA failed at address %#llx",
+                     (unsigned long long)addr);
+            continue;
+        }
+        write->issued += bytes;
+        line.outputBytesIssued += bytes;
+        line.outputPacketsIssued++;
+    }
+}
+
+void
 CfdCoeffPreprocessController::processLineBackward(uint64_t now)
 {
     for (auto &[lineToken, linePtr] : lineRequests) {
         LineRequest &line = *linePtr;
+        processBackwardOperands(line);
         if (!line.backwardStarted || line.terminal ||
             line.backwardOpPending)
             continue;
@@ -1773,12 +2721,40 @@ CfdCoeffPreprocessController::processLineBackward(uint64_t now)
             finishLineBackward(line);
             continue;
         }
+        if (line.tile && !backwardTileReadable(*line.tile,line.backwardCell)) {
+            line.tileStalls++;
+            continue;
+        }
+        // A line has one sequential backward producer. Reserving space before
+        // its next operation also bounds the eventual completion enqueue.
+        if (env.dmaSpm && line.outputWrites.size() >= env.drainQueueDepth) {
+            line.outputQueueStalls++;
+            continue;
+        }
+        if (line.backwardFinishWaiting) {
+            if (issue(forwardCombine, OpKind::ForwardCombine, now,
+                [this, lineToken] {
+                    auto it = lineRequests.find(lineToken);
+                    if (it == lineRequests.end() || it->second->terminal)
+                        return;
+                    auto &line = *it->second;
+                    line.backwardOpPending = false;
+                    line.backwardFinishWaiting = false;
+                    line.backwardSubtractReady = true;
+                    finishLineBackwardCell(line);
+                }))
+                line.backwardOpPending = true;
+            continue;
+        }
         if (env.lineMvmSplit) {
             const size_t cell = static_cast<size_t>(line.backwardCell);
-            if (!line.dqStarReady[cell])
+            if (!line.tile && !line.dqStarReady[cell])
                 continue;
-            advanceLineMvm(line, 1, line.uBar[cell], line.dq[cell + 1],
-                line.uBarReady[cell], now,
+            advanceLineMvm(line, 1,
+                cachedUbar(line) ? lineCoeffCaches.at(line.desc.lineId).uBar[cell] :
+                    line.tile ? line.tile->u[tileIndex(line, cell)] : line.uBar[cell],
+                line.tile ? line.backwardNext : line.dq[cell + 1],
+                line.tile ? 0x1f : line.uBarReady[cell], now,
                 [this](LineRequest &line, const auto &sum) {
                     line.backwardAccumulator = sum;
                     finishLineBackwardCell(line);
@@ -1786,13 +2762,20 @@ CfdCoeffPreprocessController::processLineBackward(uint64_t now)
             continue;
         }
         const uint8_t column = line.backwardColumn;
-        if (!line.dqStarReady[line.backwardCell] ||
-            !(line.uBarReady[line.backwardCell] & (1u << column)))
+        if (!onchipColumnReady(line,1,column)) continue;
+        if (!line.tile && (!line.dqStarReady[line.backwardCell] ||
+            !(line.uBarReady[line.backwardCell] & (1u << column))))
             continue;
-        if (!issue(columnFma, OpKind::ColumnFma, now,
-                   [this, lineToken, column] {
+        std::array<double, N> values;
+        for (unsigned row = 0; row < N; ++row)
+            values[row] = env.onchipTiming ? line.mvm[1].columnOperands[column][row] : (cachedUbar(line) ? lineCoeffCaches.at(line.desc.lineId).uBar[line.backwardCell] :
+                line.tile ? line.tile->u[tileIndex(line, line.backwardCell)] :
+                line.uBar[line.backwardCell])[row * N + column];
+        if (!issueColumnMvm(values, (line.tile ? line.backwardNext :
+                line.dq[line.backwardCell + 1])[column], now,
+                   [this, lineToken, column](const auto &product) {
                        completeLineBackwardColumn(
-                           lineToken, column, cycle());
+                           lineToken, column, product, cycle());
                    }))
             continue;
         line.backwardOpPending = true;
@@ -1802,10 +2785,12 @@ CfdCoeffPreprocessController::processLineBackward(uint64_t now)
 uint64_t
 CfdCoeffPreprocessController::wait(uint64_t token)
 {
+    if (pendingLineLaunches.count(token))
+        return static_cast<uint64_t>(CfdCoeffPreprocessStatus::Busy);
     auto lineIt = lineRequests.find(token);
     if (lineIt != lineRequests.end()) {
         LineRequest &line = *lineIt->second;
-        if (!line.terminal)
+        if (!line.terminal || (line.abortPending && !line.abortPublished))
             return static_cast<uint64_t>(CfdCoeffPreprocessStatus::Busy);
         const uint64_t status = static_cast<uint64_t>(line.status);
         lineRequests.erase(lineIt);
@@ -1818,10 +2803,10 @@ CfdCoeffPreprocessController::wait(uint64_t token)
         const bool activeLine = std::any_of(
             lineRequests.begin(), lineRequests.end(),
             [](const auto &entry) { return !entry.second->terminal; });
-        if (tickEvent.scheduled() && !activeRequest && !activeLine &&
+        if (tickEvent.scheduled() && pendingLineLaunches.empty() && !activeRequest && !activeLine &&
             pendingOps.empty() && columnFmaQueue.empty() &&
             forwardCombineQueue.empty() && drainQueue.empty() &&
-            activeDrains.empty())
+            activeDrains.empty() && detachedRecords.empty() && onchipQueue.empty())
             eventq()->deschedule(&tickEvent);
         return status;
     }
@@ -1858,24 +2843,23 @@ CfdCoeffPreprocessController::wait(uint64_t token)
 uint64_t
 CfdCoeffPreprocessController::cancel(uint64_t token)
 {
+    if (pendingLineLaunches.count(token)) {
+        cancelledLineLaunches[token] = true;
+        scheduleTick();
+        return static_cast<uint64_t>(CfdCoeffPreprocessStatus::CancelPending);
+    }
     auto lineIt = lineRequests.find(token);
     if (lineIt != lineRequests.end()) {
         LineRequest &line = *lineIt->second;
         if (line.terminal)
             return static_cast<uint64_t>(
                 CfdCoeffPreprocessStatus::AlreadyComplete);
-        line.terminal = true;
-        line.status = CfdCoeffPreprocessStatus::Cancelled;
-        const uint64_t status = static_cast<uint64_t>(line.status);
-        proxy().writeBlob(line.desc.dInvOutAddr, &status, sizeof(status));
-        std::vector<uint64_t> children;
-        for (const auto &[child, owner] : childLineTokens) {
-            if (owner == token)
-                children.push_back(child);
-        }
-        for (uint64_t child : children)
-            cancel(child);
-        return static_cast<uint64_t>(CfdCoeffPreprocessStatus::Cancelled);
+        // A completion word already accepted by memory cannot be revoked.
+        if (line.statusTransfer && line.statusTransfer->issued)
+            return static_cast<uint64_t>(CfdCoeffPreprocessStatus::AlreadyComplete);
+        abortLine(line, CfdCoeffPreprocessStatus::Cancelled);
+        scheduleTick();
+        return static_cast<uint64_t>(CfdCoeffPreprocessStatus::CancelPending);
     }
     Request *req = find(token);
     if (!req)
@@ -1919,10 +2903,13 @@ CfdCoeffPreprocessController::cancel(uint64_t token)
         req->record.correctionAccumulatorsCancelled = 1;
     req->stage = RequestStage::Failed;
     req->status = CfdCoeffPreprocessStatus::Cancelled;
+    discardColdProducts(*req);
+    discardRhsRows(*req);
     req->record.status = static_cast<uint64_t>(req->status);
     req->record.completeCycle = cycle();
     trace(*req, "controller", pending ? "CANCEL_PENDING" : "CANCEL_COMPLETE");
-    proxy().writeBlob(req->desc.recordAddr, &req->record, sizeof(req->record));
+    if (!env.timedInterface)
+        writeGuestRecord(*req);
     return static_cast<uint64_t>(pending ?
         CfdCoeffPreprocessStatus::CancelPending :
         CfdCoeffPreprocessStatus::Cancelled);
@@ -1945,7 +2932,7 @@ CfdCoeffPreprocessController::completeOps(uint64_t now)
 void
 CfdCoeffPreprocessController::assignInputSlots(uint64_t now)
 {
-    for (auto &[token, ptr] : requests) {
+    for (Request *ptr : admissionOrder()) {
         Request &req = *ptr;
         if (req.stage != RequestStage::WaitingSlot)
             continue;
@@ -1968,13 +2955,15 @@ CfdCoeffPreprocessController::assignInputSlots(uint64_t now)
 void
 CfdCoeffPreprocessController::processInputs(uint64_t now)
 {
-    for (auto &[token, ptr] : requests) {
+    for (Request *ptr : admissionOrder()) {
         Request &req = *ptr;
         if (req.stage != RequestStage::InputFetching)
             continue;
+        if (env.onchipTiming && req.coefficientCacheReuse) cachedRegistersReady(req);
         if (!req.inputCaptured) {
             if (!env.dmaSpm) {
-                proxy().readBlob(req.desc.dAddr, req.d.data(), MatrixBytes);
+                if (!req.coefficientCacheReuse)
+                    proxy().readBlob(req.desc.dAddr, req.d.data(), MatrixBytes);
                 if (batchRequested(req, 2))
                     proxy().readBlob(
                         req.desc.uAddr, req.upper.data(), MatrixBytes);
@@ -1999,6 +2988,15 @@ CfdCoeffPreprocessController::processInputs(uint64_t now)
         if (env.packetSpm || env.dmaSpm) {
             if (req.inputBytesIssued >= req.record.inputBytes &&
                 req.inputChunksCompleted >= req.inputChunksIssued) {
+                if (env.onchipTiming) {
+                    auto &load = onchipContexts[req.token].inputRead;
+                    if (!load) load = startOnchip(childLineTokens.at(req.token),
+                        req.slot*8192,req.record.inputBytes/8,8,false,2);
+                    if (!load || !load->done) continue;
+                    if (!cachedRegistersReady(req)) continue;
+                }
+                if (req.cacheUbarReload)
+                    req.uBar = req.upper;
                 req.record.inputDoneCycle = now;
                 if (req.baseConsumerEnabled) {
                     req.rhsVectorReady = true;
@@ -2047,7 +3045,7 @@ CfdCoeffPreprocessController::processInputs(uint64_t now)
                         matrixOffset;
                     break;
                   case CfdSpmMatrix::U:
-                    addr = req.desc.uAddr + matrixOffset;
+                    addr = (req.cacheUbarReload ? req.desc.uBarOutAddr : req.desc.uAddr) + matrixOffset;
                     data = reinterpret_cast<uint8_t *>(req.upper.data()) +
                         matrixOffset;
                     break;
@@ -2065,13 +3063,46 @@ CfdCoeffPreprocessController::processInputs(uint64_t now)
                 }
                 bytes = spm->dmaChunkSize(tc, addr, bytes);
             }
-            const uint64_t tok = token;
+            const uint64_t tok = req.token;
+            auto payload = env.dmaSpm && env.lineOptLevel >= 5 ?
+                std::make_shared<std::vector<uint8_t>>(bytes) : nullptr;
+            if (payload) {
+                panic_if(bytes > 64, "CFD DMA staging exceeds its reserved slot");
+                data = payload->data();
+            }
             auto packetMeta = std::make_shared<CfdSpmPacketIssue>();
+            auto local = env.onchipTiming ? startOnchip(childLineTokens.at(tok),
+                req.slot*8192+offset,(bytes+7)/8,8,true,2,false) : nullptr;
+            if (env.onchipTiming && !local) continue;
             auto completion =
-                [this, tok, bytes, addr, matrix, packetMeta](
+                [this, tok, bytes, addr, matrix, packetMeta, local, payload, matrixOffset](
                     uint64_t packetId) {
-                    completeInputPacket(tok, bytes, packetId, addr,
-                        packetMeta->bank, packetMeta->port, matrix);
+                    auto publish = [this,tok,bytes,packetId,addr,packetMeta,matrix,payload,matrixOffset] {
+                        if (payload) {
+                            if (auto *r = find(tok); r && r->stage != RequestStage::Failed) {
+                                uint8_t *dst = nullptr;
+                                switch (matrix) {
+                                  case CfdSpmMatrix::D:
+                                  case CfdSpmMatrix::Lu: dst = reinterpret_cast<uint8_t *>(r->d.data()); break;
+                                  case CfdSpmMatrix::L: dst = reinterpret_cast<uint8_t *>(r->lower.data()); break;
+                                  case CfdSpmMatrix::U: dst = reinterpret_cast<uint8_t *>(r->upper.data()); break;
+                                  case CfdSpmMatrix::RhsVector: dst = reinterpret_cast<uint8_t *>(r->rhsVector.data()); break;
+                                  default: panic("CFD invalid DMA input snapshot");
+                                }
+                                std::memcpy(dst+matrixOffset,payload->data(),bytes);
+                            }
+                        }
+                        completeInputPacket(tok,bytes,packetId,addr,packetMeta->bank,packetMeta->port,matrix);
+                    };
+                    if (local) {
+                        local->active = true;
+                        local->eligibleCycle = cycle()+1;
+                        local->completion = std::move(publish);
+                        if (env.traceEnable)
+                            std::fprintf(stderr,"CFD_ONCHIP_ACTIVATE cycle=%llu id=%llu\n",
+                                (unsigned long long)cycle(),(unsigned long long)local->id);
+                    }
+                    else publish();
                 };
             CfdSpmPacketIssue packet = env.dmaSpm ?
                 spm->issueDma(tc, false, addr, bytes, data,
@@ -2082,6 +3113,7 @@ CfdCoeffPreprocessController::processInputs(uint64_t now)
                     env.spmOutstanding, env.spmBanks,
                     env.spmBankGranularity, matrix, std::move(completion));
             if (!packet.accepted) {
+                cancelOnchip(local);
                 req.record.coeffSpmOutstandingStalls++;
                 trace(req, "spm", "SPM_PACKET_STALL_OUTSTANDING", -1,
                       -1, -1, -1, "write", "CoeffInput", 0, addr, bytes);
@@ -2170,11 +3202,25 @@ CfdCoeffPreprocessController::startLuRequests(uint64_t now)
             active++;
         else if (req->stage == RequestStage::LuQueued)
             queued++;
-    for (auto &[token, ptr] : requests) {
+    for (Request *ptr : admissionOrder()) {
         Request &req = *ptr;
         if (req.stage != RequestStage::InputReady &&
             req.stage != RequestStage::LuQueued)
             continue;
+        if (req.coefficientCacheReuse) {
+            if (req.slotOwned) {
+                slots[req.slot] = false;
+                req.slotOwned = false;
+                trace(req, "input", "INPUT_SLOT_RELEASE");
+            }
+            req.forwardStepReady.fill(true);
+            req.backwardStepReady.fill(true);
+            for (unsigned k = 0; k < N; ++k)
+                req.record.luStepReadyCycle[k] = now;
+            req.stage = RequestStage::LuReady;
+            trace(req, "lu", "LU_CACHE_REUSE");
+            continue;
+        }
         if (req.desc.flags & CFD_COEFF_PRE_PACKED_LU_INPUT) {
             if (req.slotOwned) {
                 slots[req.slot] = false;
@@ -2223,10 +3269,21 @@ CfdCoeffPreprocessController::startLuRequests(uint64_t now)
 void
 CfdCoeffPreprocessController::processLu(uint64_t now)
 {
+    Request *frontier = nullptr;
+    if (env.lineOptLevel >= 7) {
+        for (Request *r : admissionOrder())
+            if (!r->handoffProduced && r->stage != RequestStage::Complete &&
+                r->stage != RequestStage::Failed) { frontier = r; break; }
+    }
     for (auto &[token, ptr] : requests) {
         Request &req = *ptr;
         if (req.stage != RequestStage::LuActive)
             continue;
+        if (env.lineOptLevel >= 7) {
+            if ((&req == frontier) == luBackgroundPass) continue;
+            processLuRows(req, now);
+            continue;
+        }
         if (req.luWaiting) {
             req.record.stallDependency++;
             continue;
@@ -2423,7 +3480,8 @@ CfdCoeffPreprocessController::initializeRhs(Request &req)
         const unsigned col = rhsColumn(req, rhs);
         for (unsigned row = 0; row < N; ++row) {
             if (batch == 0)
-                state.value[row] = row == col ? 1.0 : 0.0;
+                state.value[row] = req.directBaseSolve ? req.rhsVector[row] :
+                    (row == col ? 1.0 : 0.0);
             else if (batch == 1)
                 state.value[row] = req.lower[row * N + col];
             else
@@ -2464,7 +3522,7 @@ CfdCoeffPreprocessController::startSolveRequests(uint64_t now)
             active++;
         else if (req->stage == RequestStage::SolveQueued)
             queued++;
-    for (auto &[token, ptr] : requests) {
+    for (Request *ptr : admissionOrder()) {
         Request &req = *ptr;
         if (req.solveStarted)
             continue;
@@ -2473,6 +3531,8 @@ CfdCoeffPreprocessController::startSolveRequests(uint64_t now)
         const bool normal = req.stage == RequestStage::LuReady ||
                             req.stage == RequestStage::SolveQueued;
         if (!early && !normal)
+            continue;
+        if (req.directBaseSolve && !req.rhsVectorReady)
             continue;
         if (normal &&
             !req.drainQueued[static_cast<unsigned>(DrainType::Lu)] &&
@@ -2537,9 +3597,6 @@ CfdCoeffPreprocessController::rhsDone(
     req.rhsCompleted++;
     const unsigned batch = rhsBatch(req, rhs);
     const unsigned col = rhsColumn(req, rhs);
-    auto &out = batch == 0 ? req.dInv : (batch == 1 ? req.lBar : req.uBar);
-    for (unsigned row = 0; row < N; ++row)
-        out[row * N + col] = state.value[row];
     for (double value : state.value) {
         if (!std::isfinite(value)) {
             markFailed(req, CfdCoeffPreprocessStatus::InternalError,
@@ -2547,16 +3604,29 @@ CfdCoeffPreprocessController::rhsDone(
             return;
         }
     }
+    trace(req, "solve", "RHS_COMPLETE", batch, col);
+    if (batch == 0 && req.directBaseSolve) {
+        req.baseAccumulator = state.value;
+        req.baseComputeComplete = true;
+        req.record.baseComputeReadyCycle = now;
+        req.record.baseAccumulatorsCompleted = 1;
+        trace(req, "solve", "DIRECT_BASE_READY", batch, col);
+    } else {
+        auto &out = batch == 0 ? req.dInv :
+            (batch == 1 ? req.lBar : req.uBar);
+        for (unsigned row = 0; row < N; ++row)
+            out[row * N + col] = state.value[row];
+    }
     req.batchCompleted[batch]++;
     if (!req.record.firstColumnCycle)
         req.record.firstColumnCycle = now;
-    if (batch == 0)
+    if (batch == 0 && !req.directBaseSolve)
         req.record.dInvColumnReadyCycle[col] = now;
     else if (batch == 1)
         req.record.lBarColumnReadyCycle[col] = now;
-    else
+    else if (batch == 2)
         req.record.uBarColumnReadyCycle[col] = now;
-    if (batch == 0 && req.baseConsumerEnabled) {
+    if (batch == 0 && req.baseConsumerEnabled && !req.directBaseSolve) {
         const uint8_t bit = 1u << col;
         if (req.dInvColumnReadyMask & bit) {
             req.record.dInvColumnsDuplicateRejected++;
@@ -2588,7 +3658,8 @@ CfdCoeffPreprocessController::rhsDone(
             req.record.lbarColumnsOutOfOrderHeld++;
         }
     }
-    if (batchRequested(req, 0) && req.batchCompleted[0] == 5 &&
+    if (!req.directBaseSolve && batchRequested(req, 0) &&
+        req.batchCompleted[0] == 5 &&
         !req.record.dInvReadyCycle) {
         req.record.dInvReadyCycle = now;
         trace(req, "solve", "DINV_READY", 0);
@@ -2614,8 +3685,7 @@ CfdCoeffPreprocessController::rhsDone(
 void
 CfdCoeffPreprocessController::completeColumnFma(
     uint64_t token, uint64_t generation, ColumnFmaTaskKind kind,
-    unsigned column, const std::array<double, N> &matrixColumn,
-    double scalar, uint64_t now)
+    unsigned column, const std::array<double, N> &product, uint64_t now)
 {
     Request *req = find(token);
     if (!req)
@@ -2673,7 +3743,7 @@ CfdCoeffPreprocessController::completeColumnFma(
     std::array<double, N> &accumulator = dInv ?
         req->baseAccumulator : req->lbarCorrectionAccumulator;
     for (unsigned row = 0; row < N; ++row)
-        accumulator[row] += matrixColumn[row] * scalar;
+        accumulator[row] += product[row];
     if (dInv) {
         req->dInvColumnConsumedMask |= bit;
         req->record.baseConsumedColumnMask = req->dInvColumnConsumedMask;
@@ -2694,9 +3764,8 @@ CfdCoeffPreprocessController::completeColumnFma(
     // each committed column so cancel/generation stress tests can observe a
     // genuinely partial in-order accumulator without making the 40 B base
     // visible before its modeled drain completes.
-    if (req->desc.flags & CFD_COEFF_PRE_STREAMING_AUTO_RETIRE)
-        proxy().writeBlob(req->desc.recordAddr, &req->record,
-                          sizeof(req->record));
+    if ((req->desc.flags & CFD_COEFF_PRE_STREAMING_AUTO_RETIRE) && !env.timedInterface)
+        writeGuestRecord(*req);
     if (dInv && req->nextDInvColumnToConsume == N) {
         req->baseComputeComplete = true;
         req->record.baseComputeReadyCycle = now;
@@ -2713,6 +3782,10 @@ CfdCoeffPreprocessController::completeColumnFma(
 void
 CfdCoeffPreprocessController::processColumnFma(uint64_t now)
 {
+    if (env.lineOptLevel >= 4) {
+        processColdColumns(now);
+        return;
+    }
     auto eligibleDInv = [](const Request &req) {
         if (!req.baseConsumerEnabled || !req.rhsVectorReady ||
             req.stage == RequestStage::Failed ||
@@ -2838,10 +3911,10 @@ CfdCoeffPreprocessController::processColumnFma(uint64_t now)
             columnFmaQueue.pop_front();
             continue;
         }
-        const bool accepted = issue(columnFma, OpKind::ColumnFma, now,
-            [this, task] {
+        const bool accepted = issueColumnMvm(task.matrixColumn, task.scalar, now,
+            [this, task](const auto &product) {
                 completeColumnFma(task.token, task.generation,
-                    task.kind, task.column, task.matrixColumn, task.scalar,
+                    task.kind, task.column, product,
                     cycle());
             });
         if (!accepted) {
@@ -3087,8 +4160,7 @@ CfdCoeffPreprocessController::processForwardCombines(uint64_t now)
             (req.desc.flags & CFD_COEFF_PRE_TEST_HOLD_DQSTAR_PUBLISH)) {
             // Test-only cancellation window: expose the internal phase in
             // the stable record while deliberately withholding publication.
-            proxy().writeBlob(req.desc.recordAddr, &req.record,
-                              sizeof(req.record));
+            writeGuestRecord(req);
             continue;
         }
         if (!req.directLbarBypass && req.desc.cellId &&
@@ -3107,12 +4179,286 @@ CfdCoeffPreprocessController::processForwardCombines(uint64_t now)
     }
 }
 
+bool
+CfdCoeffPreprocessController::issueSolveRhs(
+    Request &req, unsigned index, uint64_t now)
+{
+    RhsState &rhs = req.rhs[index];
+    if (!rhs.active || rhs.done || rhs.waiting)
+        return false;
+    const uint64_t tok = req.token;
+    const int k = rhs.k, i = rhs.i;
+    const bool consumesLuStep =
+        rhs.phase == RhsPhase::ForwardDiv ||
+        rhs.phase == RhsPhase::ForwardMul ||
+        rhs.phase == RhsPhase::LastDiv ||
+        rhs.phase == RhsPhase::BackwardMul;
+    bool selected = false;
+    if (env.rhsRowParallel && (rhs.phase == RhsPhase::ForwardMul ||
+        rhs.phase == RhsPhase::ForwardSub || rhs.phase == RhsPhase::BackwardMul ||
+        rhs.phase == RhsPhase::BackwardSub)) {
+        selected = issueSolveRows(req, index, now);
+    } else switch (rhs.phase) {
+      case RhsPhase::ForwardDiv:
+      case RhsPhase::LastDiv:
+        if (env.reciprocalSolve && req.reciprocalPending[k]) {
+            observe("rhs_reciprocal_dependency");
+            req.record.stallDependency++;
+            break;
+        }
+        rhs.waiting = true;
+        if (env.reciprocalSolve && req.reciprocalReady[k]) {
+            if (!issue(coeffMul, OpKind::Mul, now,
+                [this, tok, index, k] {
+                    Request *r = find(tok);
+                    if (!r) return;
+                    RhsState &s = r->rhs[index];
+                    volatile double v =
+                        s.value[k] * r->reciprocal[k];
+                    s.value[k] = v;
+                    s.waiting = false;
+                    if (k == 4) {
+                        s.k = 3;
+                        s.i = 4;
+                        s.phase = RhsPhase::BackwardMul;
+                    } else {
+                        s.i = k + 1;
+                        s.phase = RhsPhase::ForwardMul;
+                    }
+                })) {
+                rhs.waiting = false;
+                req.record.stallCoeffMulSub++;
+            } else {
+                req.record.coeffMulIssued++;
+                selected = true;
+                trace(req, "solve", "RECIP_MUL_ISSUE", index / 5,
+                      index % 5, k);
+            }
+        } else if (!issue(coeffDiv, OpKind::Div, now,
+            [this, tok, index, k] {
+                Request *r = find(tok);
+                if (!r) return;
+                RhsState &s = r->rhs[index];
+                if (env.reciprocalSolve) {
+                    volatile double reciprocal =
+                        1.0 / r->lu[k * N + k];
+                    r->reciprocal[k] = reciprocal;
+                    r->reciprocalReady[k] = true;
+                    r->reciprocalPending[k] = false;
+                    s.waiting = false;
+                    return;
+                }
+                volatile double v = s.value[k] / r->lu[k * N + k];
+                s.value[k] = v;
+                s.waiting = false;
+                if (k == 4) {
+                    s.k = 3;
+                    s.i = 4;
+                    s.phase = RhsPhase::BackwardMul;
+                } else {
+                    s.i = k + 1;
+                    s.phase = RhsPhase::ForwardMul;
+                }
+            })) {
+            rhs.waiting = false;
+            req.record.stallCoeffDivider++;
+        } else {
+            if (env.reciprocalSolve)
+                req.reciprocalPending[k] = true;
+            req.record.coeffDivIssued++;
+            selected = true;
+            trace(req, "solve",
+                  env.reciprocalSolve ? "RECIP_DIV_ISSUE" :
+                                        "DIV_ISSUE",
+                  index / 5, index % 5, k);
+        }
+        break;
+      case RhsPhase::ForwardMul:
+      case RhsPhase::BackwardMul:
+      {
+        const bool backward = rhs.phase == RhsPhase::BackwardMul;
+        rhs.waiting = true;
+        if (!issue(coeffMul, OpKind::Mul, now,
+            [this, tok, index, k, i, backward] {
+                Request *r = find(tok);
+                if (!r) return;
+                RhsState &s = r->rhs[index];
+                volatile double p = backward ?
+                    r->lu[k * N + i] * s.value[i] :
+                    r->lu[i * N + k] * s.value[k];
+                s.product = p;
+                s.waiting = false;
+                s.phase = backward ? RhsPhase::BackwardSub :
+                                     RhsPhase::ForwardSub;
+            })) {
+            rhs.waiting = false;
+            req.record.stallCoeffMulSub++;
+        } else {
+            req.record.coeffMulIssued++;
+            selected = true;
+        }
+        break;
+      }
+      case RhsPhase::ForwardSub:
+      case RhsPhase::BackwardSub:
+      {
+        const bool backward = rhs.phase == RhsPhase::BackwardSub;
+        rhs.waiting = true;
+        if (!issue(coeffSub, OpKind::Sub, now,
+            [this, tok, index, k, i, backward] {
+                Request *r = find(tok);
+                if (!r) return;
+                RhsState &s = r->rhs[index];
+                volatile double v = backward ?
+                    s.value[k] - s.product :
+                    s.value[i] - s.product;
+                if (backward)
+                    s.value[k] = v;
+                else
+                    s.value[i] = v;
+                s.waiting = false;
+                if (!backward) {
+                    s.i++;
+                    if (s.i < 5) {
+                        s.phase = RhsPhase::ForwardMul;
+                    } else {
+                        s.k++;
+                        s.phase = s.k == 4 ? RhsPhase::LastDiv :
+                                             RhsPhase::ForwardDiv;
+                    }
+                } else {
+                    s.i++;
+                    if (s.i < 5) {
+                        s.phase = RhsPhase::BackwardMul;
+                    } else if (s.k == 0) {
+                        s.phase = RhsPhase::Done;
+                    } else {
+                        s.k--;
+                        s.i = s.k + 1;
+                        s.phase = RhsPhase::BackwardMul;
+                    }
+                }
+            })) {
+            rhs.waiting = false;
+            req.record.stallCoeffMulSub++;
+        } else {
+            req.record.coeffSubIssued++;
+            selected = true;
+        }
+        break;
+      }
+      case RhsPhase::Done:
+        rhsDone(req, index, now);
+        selected = true;
+        break;
+    }
+    if (selected) {
+        observe("rhs_selected");
+        if (consumesLuStep && !req.luStepUsed[k]) {
+            req.luStepUsed[k] = true;
+            req.record.luStepFirstUseLatency[k] =
+                now - req.record.luStepReadyCycle[k];
+        }
+        const uint64_t wait = rhs.readySinceCycle ?
+            now - rhs.readySinceCycle : 0;
+        req.record.rhsWaitCycles += wait;
+        req.record.rhsMaxWaitCycles = std::max(
+            req.record.rhsMaxWaitCycles, wait);
+        const unsigned batch = rhsBatch(req, index);
+        if (batch == 0)
+            req.record.identityBatchWaitCycles += wait;
+        else if (batch == 1)
+            req.record.lBarBatchWaitCycles += wait;
+        else
+            req.record.uBarBatchWaitCycles += wait;
+        rhs.readySinceCycle = 0;
+        req.schedulerCursor = (index + 1) % req.rhsSlots;
+        req.record.schedulerSelections++;
+        req.record.rhsMaskUsefulIssues++;
+        trace(req, "scheduler", "SCHED_SELECT", index / 5,
+              index % 5, k, i);
+    }
+    if (!selected)
+        observe("rhs_candidate_not_selected");
+    return selected;
+}
+
+void
+CfdCoeffPreprocessController::finalizeSolveRequest(
+    Request &req, uint64_t now)
+{
+    if (req.stage == RequestStage::Failed ||
+        req.stage == RequestStage::Complete)
+        return;
+
+    if (req.luDone &&
+        !req.drainQueued[static_cast<unsigned>(DrainType::Lu)])
+        enqueueDrain(req, DrainType::Lu, now);
+    const bool partial = env.partialOutput ||
+        (req.desc.flags & CFD_COEFF_PRE_PARTIAL_OUTPUT);
+    if ((req.matrixDrainMask & 1u) && req.record.dInvReadyCycle &&
+        !req.drainQueued[static_cast<unsigned>(DrainType::DInv)] &&
+        (partial || req.solveDone))
+        enqueueDrain(req, DrainType::DInv, now);
+    if ((req.matrixDrainMask & 2u) && req.record.lBarReadyCycle &&
+        !req.drainQueued[static_cast<unsigned>(DrainType::LBar)] &&
+        (partial || req.solveDone))
+        enqueueDrain(req, DrainType::LBar, now);
+    if (batchRequested(req, 2) && req.record.uBarReadyCycle &&
+        !req.drainQueued[static_cast<unsigned>(DrainType::UBar)])
+        enqueueDrain(req, DrainType::UBar, now);
+    if (req.solveDone)
+        req.stage = RequestStage::DrainPending;
+}
+
 void
 CfdCoeffPreprocessController::processSolve(uint64_t now)
 {
-    for (auto &[token, ptr] : requests) {
+    std::vector<Request *> visit;
+    for (auto &[token, ptr] : requests)
+        visit.push_back(ptr.get());
+    if (env.rhsSchedule == RhsSchedule::RequestFrontierAging) {
+        auto oldestReady = [now](const Request *r) {
+            uint64_t age = 0;
+            for (const auto &s : r->rhs) {
+                if ((s.phase == RhsPhase::ForwardDiv ||
+                     s.phase == RhsPhase::ForwardMul ||
+                     s.phase == RhsPhase::LastDiv) &&
+                    !r->forwardStepReady[s.k])
+                    continue;
+                if (s.phase == RhsPhase::BackwardMul &&
+                    !r->backwardStepReady[s.k])
+                    continue;
+                if (s.active && !s.done && !s.waiting && s.readySinceCycle)
+                    age = std::max(age, now - s.readySinceCycle);
+            }
+            return age;
+        };
+        std::stable_sort(visit.begin(), visit.end(),
+            [&oldestReady](const Request *a, const Request *b) {
+                const auto aa = oldestReady(a), ba = oldestReady(b);
+                if ((aa > 64) != (ba > 64))
+                    return aa > 64;
+                if (aa > 64 && aa != ba)
+                    return aa > ba;
+                const bool af = !a->dqStarReadyLocal &&
+                    (a->desc.cellId == 0 || a->previousDqReady);
+                const bool bf = !b->dqStarReadyLocal &&
+                    (b->desc.cellId == 0 || b->previousDqReady);
+                if (af != bf)
+                    return af;
+                return a->desc.cellId < b->desc.cellId;
+            });
+    }
+    // Gather ready RHS from every active cell before consuming a shared FU.
+    // This keeps the existing per-request scheduler unchanged for other modes.
+    struct SolveCandidate { Request *req; unsigned index; };
+    const bool frontierMode = env.rhsSchedule == RhsSchedule::RhsFrontier;
+    std::vector<SolveCandidate> pending;
+    std::vector<std::pair<Request *, unsigned>> scanned;
+    for (Request *ptr : visit) {
         Request &req = *ptr;
-        if (!req.solveStarted)
+        if (!req.solveStarted || req.stage == RequestStage::Failed)
             continue;
         std::array<unsigned, 15> order = {};
         unsigned orderCount = 0;
@@ -3220,7 +4566,8 @@ CfdCoeffPreprocessController::processSolve(uint64_t now)
                         return lhs.readySinceCycle < rhs.readySinceCycle;
                     return a < b;
                 });
-        } else if (env.rhsSchedule == RhsSchedule::FrontierAware) {
+        } else if (env.rhsSchedule == RhsSchedule::FrontierAware ||
+                   env.rhsSchedule == RhsSchedule::RequestFrontierAging) {
             std::stable_sort(order.begin(), order.begin() + orderCount,
                 [&req, &phaseRank, now](unsigned a, unsigned b) {
                     const RhsState &lhs = req.rhs[a];
@@ -3247,203 +4594,17 @@ CfdCoeffPreprocessController::processSolve(uint64_t now)
                 });
         }
 
+        if (frontierMode) {
+            scanned.emplace_back(&req, orderCount);
+            for (unsigned j = 0; j < orderCount; ++j)
+                pending.push_back({&req, order[j]});
+            continue;
+        }
         bool anySelection = false;
         for (unsigned orderIndex = 0; orderIndex < orderCount; ++orderIndex) {
             const unsigned index = order[orderIndex];
-            RhsState &rhs = req.rhs[index];
-            if (!rhs.active || rhs.done)
-                continue;
-            const uint64_t tok = token;
-            const int k = rhs.k, i = rhs.i;
-            const bool consumesLuStep =
-                rhs.phase == RhsPhase::ForwardDiv ||
-                rhs.phase == RhsPhase::ForwardMul ||
-                rhs.phase == RhsPhase::LastDiv ||
-                rhs.phase == RhsPhase::BackwardMul;
-            bool selected = false;
-            switch (rhs.phase) {
-              case RhsPhase::ForwardDiv:
-              case RhsPhase::LastDiv:
-                if (env.reciprocalSolve && req.reciprocalPending[k]) {
-                    observe("rhs_reciprocal_dependency");
-                    req.record.stallDependency++;
-                    break;
-                }
-                rhs.waiting = true;
-                if (env.reciprocalSolve && req.reciprocalReady[k]) {
-                    if (!issue(coeffMul, OpKind::Mul, now,
-                        [this, tok, index, k] {
-                            Request *r = find(tok);
-                            if (!r) return;
-                            RhsState &s = r->rhs[index];
-                            volatile double v =
-                                s.value[k] * r->reciprocal[k];
-                            s.value[k] = v;
-                            s.waiting = false;
-                            if (k == 4) {
-                                s.k = 3;
-                                s.i = 4;
-                                s.phase = RhsPhase::BackwardMul;
-                            } else {
-                                s.i = k + 1;
-                                s.phase = RhsPhase::ForwardMul;
-                            }
-                        })) {
-                        rhs.waiting = false;
-                        req.record.stallCoeffMulSub++;
-                    } else {
-                        req.record.coeffMulIssued++;
-                        selected = true;
-                        trace(req, "solve", "RECIP_MUL_ISSUE", index / 5,
-                              index % 5, k);
-                    }
-                } else if (!issue(coeffDiv, OpKind::Div, now,
-                    [this, tok, index, k] {
-                        Request *r = find(tok);
-                        if (!r) return;
-                        RhsState &s = r->rhs[index];
-                        if (env.reciprocalSolve) {
-                            volatile double reciprocal =
-                                1.0 / r->lu[k * N + k];
-                            r->reciprocal[k] = reciprocal;
-                            r->reciprocalReady[k] = true;
-                            r->reciprocalPending[k] = false;
-                            s.waiting = false;
-                            return;
-                        }
-                        volatile double v = s.value[k] / r->lu[k * N + k];
-                        s.value[k] = v;
-                        s.waiting = false;
-                        if (k == 4) {
-                            s.k = 3;
-                            s.i = 4;
-                            s.phase = RhsPhase::BackwardMul;
-                        } else {
-                            s.i = k + 1;
-                            s.phase = RhsPhase::ForwardMul;
-                        }
-                    })) {
-                    rhs.waiting = false;
-                    req.record.stallCoeffDivider++;
-                } else {
-                    if (env.reciprocalSolve)
-                        req.reciprocalPending[k] = true;
-                    req.record.coeffDivIssued++;
-                    selected = true;
-                    trace(req, "solve",
-                          env.reciprocalSolve ? "RECIP_DIV_ISSUE" :
-                                                "DIV_ISSUE",
-                          index / 5, index % 5, k);
-                }
-                break;
-              case RhsPhase::ForwardMul:
-              case RhsPhase::BackwardMul:
-              {
-                const bool backward = rhs.phase == RhsPhase::BackwardMul;
-                rhs.waiting = true;
-                if (!issue(coeffMul, OpKind::Mul, now,
-                    [this, tok, index, k, i, backward] {
-                        Request *r = find(tok);
-                        if (!r) return;
-                        RhsState &s = r->rhs[index];
-                        volatile double p = backward ?
-                            r->lu[k * N + i] * s.value[i] :
-                            r->lu[i * N + k] * s.value[k];
-                        s.product = p;
-                        s.waiting = false;
-                        s.phase = backward ? RhsPhase::BackwardSub :
-                                             RhsPhase::ForwardSub;
-                    })) {
-                    rhs.waiting = false;
-                    req.record.stallCoeffMulSub++;
-                } else {
-                    req.record.coeffMulIssued++;
-                    selected = true;
-                }
-                break;
-              }
-              case RhsPhase::ForwardSub:
-              case RhsPhase::BackwardSub:
-              {
-                const bool backward = rhs.phase == RhsPhase::BackwardSub;
-                rhs.waiting = true;
-                if (!issue(coeffSub, OpKind::Sub, now,
-                    [this, tok, index, k, i, backward] {
-                        Request *r = find(tok);
-                        if (!r) return;
-                        RhsState &s = r->rhs[index];
-                        volatile double v = backward ?
-                            s.value[k] - s.product :
-                            s.value[i] - s.product;
-                        if (backward)
-                            s.value[k] = v;
-                        else
-                            s.value[i] = v;
-                        s.waiting = false;
-                        if (!backward) {
-                            s.i++;
-                            if (s.i < 5) {
-                                s.phase = RhsPhase::ForwardMul;
-                            } else {
-                                s.k++;
-                                s.phase = s.k == 4 ? RhsPhase::LastDiv :
-                                                     RhsPhase::ForwardDiv;
-                            }
-                        } else {
-                            s.i++;
-                            if (s.i < 5) {
-                                s.phase = RhsPhase::BackwardMul;
-                            } else if (s.k == 0) {
-                                s.phase = RhsPhase::Done;
-                            } else {
-                                s.k--;
-                                s.i = s.k + 1;
-                                s.phase = RhsPhase::BackwardMul;
-                            }
-                        }
-                    })) {
-                    rhs.waiting = false;
-                    req.record.stallCoeffMulSub++;
-                } else {
-                    req.record.coeffSubIssued++;
-                    selected = true;
-                }
-                break;
-              }
-              case RhsPhase::Done:
-                rhsDone(req, index, now);
-                selected = true;
-                break;
-            }
-            if (selected) {
-                observe("rhs_selected");
-                if (consumesLuStep && !req.luStepUsed[k]) {
-                    req.luStepUsed[k] = true;
-                    req.record.luStepFirstUseLatency[k] =
-                        now - req.record.luStepReadyCycle[k];
-                }
-                const uint64_t wait = rhs.readySinceCycle ?
-                    now - rhs.readySinceCycle : 0;
-                req.record.rhsWaitCycles += wait;
-                req.record.rhsMaxWaitCycles = std::max(
-                    req.record.rhsMaxWaitCycles, wait);
-                const unsigned batch = rhsBatch(req, index);
-                if (batch == 0)
-                    req.record.identityBatchWaitCycles += wait;
-                else if (batch == 1)
-                    req.record.lBarBatchWaitCycles += wait;
-                else
-                    req.record.uBarBatchWaitCycles += wait;
-                rhs.readySinceCycle = 0;
-                req.schedulerCursor = (index + 1) % req.rhsSlots;
-                req.record.schedulerSelections++;
-                req.record.rhsMaskUsefulIssues++;
+            if (issueSolveRhs(req, index, now))
                 anySelection = true;
-                trace(req, "scheduler", "SCHED_SELECT", index / 5,
-                      index % 5, k, i);
-            }
-            if (!selected)
-                observe("rhs_candidate_not_selected");
             if (req.stage == RequestStage::Failed) {
                 if (env.resourceStats)
                     diagnostics["rhs_aborted_unvisited"] +=
@@ -3451,33 +4612,73 @@ CfdCoeffPreprocessController::processSolve(uint64_t now)
                 break;
             }
         }
-
         if (orderCount && !anySelection) {
             req.record.schedulerNoSelection++;
             trace(req, "scheduler", "SCHED_NO_SELECTION");
         }
+        finalizeSolveRequest(req, now);
+    }
+    if (!frontierMode)
+        return;
 
+    uint64_t frontierCell = std::numeric_limits<uint64_t>::max();
+    for (const auto &[req, count] : scanned) {
+        if (req->dqStarReadyLocal || req->stage == RequestStage::Failed ||
+            (req->desc.cellId && !req->previousDqReady))
+            continue;
+        frontierCell = std::min(frontierCell, req->desc.cellId);
+    }
+    auto priority = [now, frontierCell](const SolveCandidate &candidate) {
+        const Request &req = *candidate.req;
+        const unsigned batch = rhsBatch(req, candidate.index);
+        const unsigned column = rhsColumn(req, candidate.index);
+        const bool current = req.desc.cellId == frontierCell;
+        if (current && batch == 1 && req.previousDqReady &&
+            !req.correctionComplete) {
+            if (column == req.nextLbarColumnToConsume)
+                return 0u;
+            return 2u;
+        }
+        if (current && batch == 0 && req.rhsVectorReady &&
+            !req.baseComputeComplete) {
+            if (column == req.nextDInvColumnToConsume)
+                return 1u;
+            return 3u;
+        }
+        const RhsState &rhs = req.rhs[candidate.index];
+        if (rhs.readySinceCycle && now - rhs.readySinceCycle > 256)
+            return 4u;
+        return 5u + batch;
+    };
+    std::stable_sort(pending.begin(), pending.end(),
+        [&priority](const SolveCandidate &a, const SolveCandidate &b) {
+            const unsigned ap = priority(a), bp = priority(b);
+            if (ap != bp)
+                return ap < bp;
+            if (a.req->desc.cellId != b.req->desc.cellId)
+                return a.req->desc.cellId < b.req->desc.cellId;
+            return a.index < b.index;
+        });
+    std::unordered_map<uint64_t, bool> selectedByToken;
+    for (const auto &candidate : pending) {
+        Request &req = *candidate.req;
         if (req.stage == RequestStage::Failed)
             continue;
-
-        if (req.luDone &&
-            !req.drainQueued[static_cast<unsigned>(DrainType::Lu)])
-            enqueueDrain(req, DrainType::Lu, now);
-        const bool partial = env.partialOutput ||
-            (req.desc.flags & CFD_COEFF_PRE_PARTIAL_OUTPUT);
-        if ((req.matrixDrainMask & 1u) && req.record.dInvReadyCycle &&
-            !req.drainQueued[static_cast<unsigned>(DrainType::DInv)] &&
-            (partial || req.solveDone))
-            enqueueDrain(req, DrainType::DInv, now);
-        if ((req.matrixDrainMask & 2u) && req.record.lBarReadyCycle &&
-            !req.drainQueued[static_cast<unsigned>(DrainType::LBar)] &&
-            (partial || req.solveDone))
-            enqueueDrain(req, DrainType::LBar, now);
-        if (batchRequested(req, 2) && req.record.uBarReadyCycle &&
-            !req.drainQueued[static_cast<unsigned>(DrainType::UBar)])
-            enqueueDrain(req, DrainType::UBar, now);
-        if (req.solveDone)
-            req.stage = RequestStage::DrainPending;
+        const unsigned rank = priority(candidate);
+        if (!issueSolveRhs(req, candidate.index, now))
+            continue;
+        selectedByToken[req.token] = true;
+        if (rank < 2)
+            observe("rhs_frontier_exact_issue");
+        else if (rank >= 4)
+            observe("rhs_frontier_background_issue");
+    }
+    for (const auto &[req, count] : scanned) {
+        if (count && !selectedByToken[req->token]) {
+            req->record.schedulerNoSelection++;
+            trace(*req, "scheduler", "SCHED_NO_SELECTION");
+        }
+        finalizeSolveRequest(*req, now);
     }
 }
 
@@ -3601,7 +4802,8 @@ CfdCoeffPreprocessController::publishProgress(Request &req)
         req.record.status = static_cast<uint64_t>(progress);
     // Coefficients are functionally written above.  The record publication is
     // therefore the release point observed by the guest's ordinary loads.
-    proxy().writeBlob(req.desc.recordAddr, &req.record, sizeof(req.record));
+    if (!env.timedInterface)
+        writeGuestRecord(req);
 }
 
 void
@@ -3704,10 +4906,18 @@ CfdCoeffPreprocessController::processDrains(uint64_t now)
             }
             const uint64_t tok = task.token;
             const DrainType type = task.type;
+            auto payload = env.dmaSpm && env.lineOptLevel >= 5 ?
+                std::make_shared<std::vector<uint8_t>>(bytes) : nullptr;
+            if (payload) {
+                panic_if(bytes > 64, "CFD DMA staging exceeds its reserved slot");
+                std::memcpy(payload->data(),data,bytes);
+                data = payload->data();
+            }
             auto packetMeta = std::make_shared<CfdSpmPacketIssue>();
             auto completion =
-                [this, tok, type, bytes, addr, matrix, packetMeta](
+                [this, tok, type, bytes, addr, matrix, packetMeta, payload](
                     uint64_t packetId) {
+                    (void)payload; // The FIFO snapshot survives request cancellation.
                     completeDrainPacket(tok, type, bytes, packetId, addr,
                         packetMeta->bank, packetMeta->port, matrix);
                 };
@@ -3830,6 +5040,7 @@ CfdCoeffPreprocessController::finishRequests(uint64_t now)
                    DrainType::CorrectionVector)])));
         if (!done)
             continue;
+        if (!prepareOnchipCommit(req)) continue;
         req.stage = RequestStage::Complete;
         req.status = CfdCoeffPreprocessStatus::Complete;
         req.record.status = static_cast<uint64_t>(req.status);
@@ -3837,9 +5048,15 @@ CfdCoeffPreprocessController::finishRequests(uint64_t now)
         if (req.slotOwned)
             slots[req.slot] = false;
         req.slotOwned = false;
-        proxy().writeBlob(req.desc.recordAddr, &req.record,
-                          sizeof(req.record));
+        if (!env.timedInterface)
+            writeGuestRecord(req);
         trace(req, "controller", "REQUEST_COMPLETE");
+        if (env.lineOptLevel >= 2 && env.tiledLine) {
+            auto &line = *lineRequests.at(childLineTokens.at(req.token));
+            commitTileChild(line, req);
+            req.tileDataCommitted = true;
+            trace(req, "controller", "TILE_DATA_COMMIT");
+        }
     }
 }
 
@@ -3856,14 +5073,98 @@ CfdCoeffPreprocessController::retireAutoRequests()
         req.record.autoRetired = 1;
         req.record.autoRetireError =
             req.status == CfdCoeffPreprocessStatus::Complete ? 0 : 1;
+        auto owner = childLineTokens.find(token);
+        if (owner != childLineTokens.end()) {
+            auto &line = *lineRequests.at(owner->second);
+            if (warmSummary(line) && !line.abortPending) {
+                auto &s = line.summary;
+                s.completed++;
+                s.errors += req.record.autoRetireError;
+                s.digest ^= recordDigest(req.record);
+                s.firstIssue = s.firstIssue ? std::min(s.firstIssue,req.record.issueCycle) : req.record.issueCycle;
+                s.lastComplete = std::max(s.lastComplete,req.record.completeCycle);
+                if (env.traceEnable)
+                    std::fprintf(stderr,"CFD_RECORD_DIGEST_SOURCE request=%llu generation=%llu hash=%016llx summary_owner=%llu\n",
+                        (unsigned long long)req.record.requestId,(unsigned long long)req.record.generation,
+                        (unsigned long long)recordDigest(req.record),(unsigned long long)line.token);
+                trace(req,"controller","REQUEST_SUMMARY");
+                trace(req,"controller","REQUEST_AUTO_RETIRE");
+                retireLineChild(token,req);
+                retired.push_back(token);
+                continue;
+            }
+        }
+        if (env.lineOptLevel >= 5) {
+            if (detachedRecords.size() >= env.completionDepth) {
+                lineRequests.at(childLineTokens.at(token))->recordDetachStalls++;
+                continue;
+            }
+            panic_if(!(req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD),
+                     "CFD detached completion requires the compact ABI");
+            auto transfer = std::make_shared<InterfaceTransfer>();
+            transfer->addr = req.desc.recordAddr;
+            transfer->write = true;
+            transfer->kind = "record";
+            transfer->cell = req.desc.cellId;
+            transfer->bytes.resize(recordBytes(req.desc.flags));
+            if (req.desc.flags & CFD_COEFF_PRE_PACKED_RECORD) {
+                const auto packed=packedRecord(req.record);
+                std::memcpy(transfer->bytes.data(),&packed,sizeof(packed));
+                if (env.traceEnable)
+                    std::fprintf(stderr,"CFD_RECORD_DIGEST_SOURCE request=%llu generation=%llu hash=%016llx\n",
+                        (unsigned long long)req.record.requestId,
+                        (unsigned long long)req.record.generation,
+                        (unsigned long long)recordDigest(req.record));
+            } else {
+                const auto compact=cfdCompactRecord(req.record);
+                std::memcpy(transfer->bytes.data(),&compact,sizeof(compact));
+            }
+            const uint64_t owner = childLineTokens.at(token);
+            detachedRecords.push_back({owner, token, req.record.requestId,
+                req.desc.generation, req.desc.lineId, req.desc.cellId, transfer});
+            lineRequests.at(owner)->recordsPending++;
+            detachedIssued++;
+            detachedPeak = std::max<uint64_t>(detachedPeak, detachedRecords.size());
+            trace(req, "controller", "REQUEST_DETACH");
+            retireLineChild(token, req);
+            retired.push_back(token);
+            continue;
+        }
         // This is the terminal release publication.  It happens after the
         // cycle's activity accounting and before request/token destruction.
-        proxy().writeBlob(req.desc.recordAddr, &req.record,
-                          sizeof(req.record));
+        if (env.timedInterface) {
+            if (!req.recordTransfer) {
+                req.recordTransfer = std::make_shared<InterfaceTransfer>();
+                auto &transfer = *req.recordTransfer;
+                transfer.addr = req.desc.recordAddr;
+                transfer.write = true;
+                transfer.kind = "record";
+                transfer.cell = req.desc.cellId;
+                if (req.desc.flags & CFD_COEFF_PRE_PACKED_RECORD) {
+                    const auto packed=packedRecord(req.record);
+                    transfer.bytes.resize(sizeof(packed));
+                    std::memcpy(transfer.bytes.data(),&packed,sizeof(packed));
+                } else if (req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) {
+                    const auto compact = cfdCompactRecord(req.record);
+                    transfer.bytes.resize(sizeof(compact));
+                    std::memcpy(transfer.bytes.data(), &compact, sizeof(compact));
+                } else {
+                    transfer.bytes.resize(sizeof(req.record));
+                    std::memcpy(transfer.bytes.data(), &req.record, sizeof(req.record));
+                }
+            }
+            stepInterfaceTransfer(childLineTokens.at(token), req.recordTransfer);
+            if (req.recordTransfer->completed != req.recordTransfer->bytes.size())
+                continue;
+        } else {
+            writeGuestRecord(req);
+        }
         trace(req, "controller", "REQUEST_AUTO_RETIRE");
         retireLineChild(token, req);
         retired.push_back(token);
     }
+    for (uint64_t token : retired)
+        onchipContexts.erase(token);
     for (uint64_t token : retired)
         requests.erase(token);
     pumpLineRequests();
@@ -3879,13 +5180,22 @@ CfdCoeffPreprocessController::markFailed(
         req.record.correctionAccumulatorsCancelled = 1;
     req.stage = RequestStage::Failed;
     req.status = status;
+    discardColdProducts(req);
+    discardRhsRows(req);
     req.record.status = static_cast<uint64_t>(status);
     req.record.completeCycle = cycle();
     if (req.slotOwned)
         slots[req.slot] = false;
     req.slotOwned = false;
-    proxy().writeBlob(req.desc.recordAddr, &req.record, sizeof(req.record));
+    if (!env.timedInterface)
+        writeGuestRecord(req);
     trace(req, "controller", "REQUEST_FAILED", -1, -1, -1, -1, note);
+    auto owner = childLineTokens.find(req.token);
+    if (owner != childLineTokens.end()) {
+        auto line = lineRequests.find(owner->second);
+        if (line != lineRequests.end())
+            abortLine(*line->second, status);
+    }
 }
 
 void
@@ -3982,80 +5292,12 @@ CfdCoeffPreprocessController::accountActivity()
     }
 }
 
-void
-CfdCoeffPreprocessController::beginResourceStats(uint64_t now)
-{
-    if (!env.resourceStats)
-        return;
-    for (auto *pool : resourcePools()) {
-        pool->issuedNow = 0;
-        pool->attemptedNow = false;
-        pool->samples++;
-        for (uint64_t next : pool->nextIssue)
-            pool->eligibleSlots += next <= now;
-    }
-}
-
-std::array<ResourcePool *, 10>
-CfdCoeffPreprocessController::resourcePools()
-{
-    // Same order as OpKind; count pending operations without double counting
-    // a pipeline-active cycle when latency > II.
-    static_assert(static_cast<unsigned>(OpKind::LineAccumulate) == 9);
-    return {&luDiv, &luMul, &luSub, &coeffDiv, &coeffMul, &coeffSub,
-            &columnFma, &forwardCombine, &lineProduct, &lineAccumulate};
-}
-
-void
-CfdCoeffPreprocessController::endResourceStats(bool quiescent)
-{
-    if (!env.resourceStats)
-        return;
-    std::array<uint64_t, 10> occupancy = {};
-    for (const auto &op : pendingOps)
-        occupancy[static_cast<unsigned>(op.kind)]++;
-    const auto pools = resourcePools();
-    const char *names[] = {"lu_div", "lu_mul", "lu_sub", "coeff_div",
-        "coeff_mul", "coeff_sub", "column_fma", "forward_combine",
-        "line_product", "line_accumulate"};
-    for (unsigned i = 0; i < pools.size(); ++i) {
-        auto &p = *pools[i];
-        p.issues += p.issuedNow;
-        p.issueCycles += p.issuedNow != 0;
-        p.blockedCycles += !p.issuedNow && p.attemptedNow;
-        p.noAttemptCycles += !p.issuedNow && !p.attemptedNow;
-        p.activeCycles += occupancy[i] != 0;
-        p.occupancySum += occupancy[i];
-        p.occupancyMax = std::max(p.occupancyMax, occupancy[i]);
-        if (!quiescent || (i >= 8 && !env.lineMvmSplit))
-            continue;
-        // Cumulative snapshots across controller-active windows.  Consumers
-        // select the last snapshot per pool, NOT the sum of snapshots.
-        std::fprintf(stderr, "CFD_RESOURCE_STATS pool=%s count=%zu lat=%llu "
-            "ii=%llu samples=%llu eligible_slots=%llu issued=%llu "
-            "issue_cycles=%llu blocked_cycles=%llu no_attempt_cycles=%llu "
-            "active_cycles=%llu occupancy_sum=%llu occupancy_max=%llu\n",
-            names[i], p.nextIssue.size(), (unsigned long long)p.latency,
-            (unsigned long long)p.ii, (unsigned long long)p.samples,
-            (unsigned long long)p.eligibleSlots, (unsigned long long)p.issues,
-            (unsigned long long)p.issueCycles,
-            (unsigned long long)p.blockedCycles,
-            (unsigned long long)p.noAttemptCycles,
-            (unsigned long long)p.activeCycles,
-            (unsigned long long)p.occupancySum,
-            (unsigned long long)p.occupancyMax);
-        std::fprintf(stderr, "CFD_ISSUE_DIAG pool=%s attempts=%llu "
-            "rejected=%llu rejected_after_issue=%llu\n", names[i],
-            (unsigned long long)p.attempts,
-            (unsigned long long)p.rejected,
-            (unsigned long long)p.rejectedAfterIssue);
-    }
-    if (quiescent) {
-        for (const auto &[reason, count] : diagnostics)
-            std::fprintf(stderr, "CFD_SCHED_DIAG reason=%s count=%llu\n",
-                reason.c_str(), (unsigned long long)count);
-    }
-}
+#include "cfd_coeff_preprocess_diagnostics.inc"
+#include "cfd_coeff_preprocess_lifecycle.inc"
+#include "cfd_coeff_preprocess_lu_rows.inc"
+#include "cfd_coeff_preprocess_onchip.inc"
+#include "cfd_coeff_preprocess_backward.inc"
+#include "cfd_coeff_preprocess_early.inc"
 
 void
 CfdCoeffPreprocessController::processTick()
@@ -4066,20 +5308,49 @@ CfdCoeffPreprocessController::processTick()
     drainPortsAvail = env.drainPorts;
     std::fill(spmBanksUsed.begin(), spmBanksUsed.end(), false);
     completeOps(now);
+    processOnchip();
+    processTimedLaunches();
     beginResourceStats(now);
     assignInputSlots(now);
     processInputs(now);
     startLuRequests(now);
-    processLu(now);
-    startSolveRequests(now);
-    processSolve(now);
+    if (env.sharedCluster) {
+        startSolveRequests(now);
+        // Ready feedback work gets the first opportunity to atomically take
+        // five lanes. Scalar preprocessing fills the remaining issue slots.
+        processSharedVectorAdds(now);
+    } else {
+        processLu(now);
+        startSolveRequests(now);
+        processSolve(now);
+    }
     processForwardHandoffs(now);
     processColumnFma(now);
     processForwardCombines(now);
     processLineCachedForward(now);
     publishLineValues();
+    processLocalTileResults();
+    // A resident solution is on the recurrence's output path. Give it the
+    // first chance at a newly freed DMA credit before background tile reads.
+    // Keep one output DMA issue opportunity per tick in either ordering.
+    const bool outputFirst = env.lineOptLevel >= 11 && env.dmaOutputPriority;
+    if (outputFirst)
+        processLineOutputWrites();
+    processLineTiles();
     processLineBackward(now);
+    if (!outputFirst)
+        processLineOutputWrites();
+    if (env.sharedCluster) {
+        processLu(now);
+        processSolve(now);
+        if (env.lineOptLevel >= 7) {
+            luBackgroundPass = true;
+            processLu(now);
+            luBackgroundPass = false;
+        }
+    }
     processLineBaseAhead(now);
+    processDetachedRecords();
     // A zero-wait adjacent request can consume a handoff produced by a head
     // cell or combine completion in the same modeled controller cycle.
     processForwardHandoffs(now);
@@ -4087,6 +5358,13 @@ CfdCoeffPreprocessController::processTick()
     finishRequests(now);
     accountActivity();
     retireAutoRequests();
+    // A summary describes retired forward requests. Ship it as soon as all
+    // records are present, overlapping backward arithmetic and result writes.
+    // Only the final status makes the whole sweep visible to software.
+    for (auto &[token, line] : lineRequests)
+        if (!line->terminal && warmSummary(*line))
+            stepLineSummary(*line);
+    processAbortedLines();
     bool active = false;
     for (auto &[token, req] : requests) {
         if (req->stage != RequestStage::Complete &&
@@ -4102,11 +5380,14 @@ CfdCoeffPreprocessController::processTick()
             break;
         }
     }
-    const bool more = active || activeLine || !pendingOps.empty() ||
-        !columnFmaQueue.empty() ||
+    const bool more = !pendingLineLaunches.empty() || active || activeLine || !pendingOps.empty() ||
+        !columnFmaQueue.empty() || !sharedVectorAdds.empty() ||
         !forwardCombineQueue.empty() ||
         !drainQueue.empty() ||
-        !activeDrains.empty();
+        !activeDrains.empty() || !detachedRecords.empty() || !onchipQueue.empty() ||
+        std::any_of(lineRequests.begin(), lineRequests.end(), [](const auto &entry) {
+            return entry.second->abortPending && !entry.second->abortPublished;
+        });
     endResourceStats(!more);
     if (more)
         scheduleTick();

@@ -1,5 +1,7 @@
 # LU/TRSM调度拒绝与背压诊断
 
+后续可切换策略实验见[跨request前沿优先与aging](CFD_DSA_REQUEST_FRONTIER_AGING.md)。
+
 ## 本轮边界
 
 以2/2为实验基线、2/4为性能参照；继续使用

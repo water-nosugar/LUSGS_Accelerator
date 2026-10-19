@@ -29,6 +29,7 @@ TARGETS = {
     "lusgs-step2": CONFIG_ROOT / "lusgs/run_cfd_lusgs_step2.py",
     "lusgs-step3": CONFIG_ROOT / "lusgs/run_cfd_lusgs_step3.py",
     "lusgs-step4": CONFIG_ROOT / "lusgs/run_cfd_lusgs_step4.py",
+    "lusgs-single-line": CONFIG_ROOT / "lusgs/run_cfd_lusgs_single_line.py",
 }
 SAFE_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 STAT_SUFFIXES = {
@@ -61,6 +62,15 @@ def write_manifest(path: Path, data: dict) -> None:
     temporary = path.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
     temporary.replace(path)
+
+
+def source_fingerprint() -> dict:
+    paths = set()
+    for pattern in ('src/arch/arm/cfd_*.cc','src/arch/arm/cfd_*.hh','src/arch/arm/cfd_*.inc',
+                    'projects/cfd_dsa/configs/**/*.py','projects/cfd_dsa/tools/*.py',
+                    'projects/cfd_dsa/benchmarks/lusgs/*.c','projects/cfd_dsa/benchmarks/lusgs/*.inc'):
+        paths.update(p for p in REPO.glob(pattern) if p.is_file())
+    return {str(p.relative_to(REPO)):file_sha256(p) for p in sorted(paths)}
 
 
 def numeric_value(text: str) -> int | float | str:
@@ -99,6 +109,7 @@ def main() -> int:
     parser.add_argument("--case", required=True)
     parser.add_argument("--gem5", type=Path,
                         default=REPO / "build/ARM/gem5.opt")
+    parser.add_argument("--acceptance", choices=('auto','none'), default='auto')
     parser.add_argument("config_args", nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
@@ -147,6 +158,11 @@ def main() -> int:
         "output_dir": str(output.relative_to(REPO)),
     }
     manifest_path = output / "manifest.json"
+    sources = source_fingerprint()
+    write_manifest(output/'sources.json',sources)
+    manifest['sources_file'] = 'sources.json'
+    manifest['sources_sha256'] = file_sha256(output/'sources.json')
+    manifest['acceptance_policy'] = args.acceptance
     write_manifest(manifest_path, manifest)
 
     environment = os.environ.copy()
@@ -163,10 +179,32 @@ def main() -> int:
     simout_text = simout.read_text(errors="replace") if simout.exists() else ""
     passed = (completed.returncode == 0 and stats.is_file() and
               stats.stat().st_size > 0 and "_FAIL" not in simout_text)
+    if args.target == "lusgs-single-line":
+        # simulate() reaching its tick limit returns zero without completing
+        # the guest. A successful sweep must publish an explicit final marker.
+        markers = {"LUSGS_STEP2_STREAMING_PASS", "LUSGS_CACHE_CONTRACT_PASS", "LUSGS_RECOVERY_CONTRACT_PASS"}
+        passed &= bool(markers.intersection(simout_text.splitlines()))
+    provenance_errors=[]
+    if source_fingerprint()!=sources:
+        provenance_errors.append('source contents changed during simulation')
+    if file_sha256(gem5)!=manifest['gem5_sha256']:
+        provenance_errors.append('gem5 binary changed during simulation')
+    resolved_path=output/'resolved_experiment.json'
+    resolved=json.loads(resolved_path.read_text()) if resolved_path.exists() else {}
+    if resolved:
+        manifest['resolved_config_file']='resolved_experiment.json'
+        manifest['guest_binary']=resolved['guest_binary']
+        manifest['guest_sha256']=resolved['guest_sha256']
+        if file_sha256(Path(resolved['guest_binary']))!=resolved['guest_sha256']:
+            provenance_errors.append('guest binary changed during simulation')
+    elif passed:
+        provenance_errors.append('configuration did not record the resolved guest binary')
+    manifest['provenance_errors']=provenance_errors
+    passed &= not provenance_errors
     metrics = extract_metrics(stats, simout_text)
     write_manifest(output / "metrics.json", metrics)
     manifest.update({
-        "status": "passed" if passed else "failed",
+        "status": "validating" if passed and args.acceptance == 'auto' and args.target == 'lusgs-single-line' else "passed" if passed else "failed",
         "return_code": completed.returncode,
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "stats_bytes": stats.stat().st_size if stats.exists() else 0,
@@ -174,6 +212,37 @@ def main() -> int:
         "metrics_file": "metrics.json",
     })
     write_manifest(manifest_path, manifest)
+    if passed and args.acceptance == 'auto' and args.target == 'lusgs-single-line':
+        options=resolved.get('options',{})
+        try:
+            if options.get('coeff_recovery_test'):
+                from check_single_line_recovery import check_recovery
+                checked=check_recovery(output)
+            elif options.get('coeff_line_storage')=='tiled':
+                from check_single_line_storage import check_case
+                checked=check_case(output)
+                # D2 compatibility cases have functional descriptors/status
+                # and no interface timing trace. Validate their storage and
+                # arithmetic without inventing a timed-interface window.
+                if options.get('coeff_interface_timing'):
+                    from check_single_line_opt import analyze
+                    checked=analyze(output,checked)
+            else:
+                checked=None
+            if checked is not None:
+                write_manifest(output/'acceptance.json',checked)
+                manifest['acceptance_status']='passed'
+            else:
+                manifest['acceptance_status']='not_applicable'
+        except (ValueError,AssertionError,KeyError,IndexError,OSError) as exc:
+            passed=False
+            manifest['status']='failed'
+            manifest['acceptance_status']='failed'
+            manifest['acceptance_error']=str(exc)
+            print('acceptance failed:',repr(exc),file=sys.stderr)
+        manifest['status']='passed' if passed else 'failed'
+        manifest['acceptance_finished_at']=datetime.now(timezone.utc).isoformat()
+        write_manifest(manifest_path,manifest)
     print(f"{manifest['status']}: {output.relative_to(REPO)}")
     return 0 if passed else (completed.returncode or 1)
 

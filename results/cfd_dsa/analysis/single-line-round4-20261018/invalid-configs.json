@@ -1,0 +1,94 @@
+{
+  "insufficient_capacity": {
+    "returncode": 1,
+    "expected_error": "finite SPM needs"
+  },
+  "invalid_buffer_count": {
+    "returncode": 1,
+    "expected_error": "tile buffers must"
+  },
+  "invalid_tile": {
+    "returncode": 1,
+    "expected_error": "finite tile requires"
+  },
+  "invalid_dma_width": {
+    "returncode": 1,
+    "expected_error": "tile buffers must"
+  },
+  "interface_requires_tiles": {
+    "returncode": 1,
+    "expected_error": "optimization requires tiled timing DMA"
+  },
+  "fixture_requires_cache": {
+    "returncode": 1,
+    "expected_error": "finite cache contract requires"
+  },
+  "single_line_only": {
+    "returncode": 1,
+    "expected_error": "single-line study requires"
+  },
+  "optimized_timing_required": {
+    "returncode": 1,
+    "expected_error": "optimization requires tiled timing DMA"
+  },
+  "invalid_optimization_level": {
+    "returncode": 1,
+    "expected_error": "--coeff-line-opt-level must be 0..11"
+  },
+  "onchip_zero_ports": {
+    "returncode": 1,
+    "expected_error": "onchip banks require"
+  },
+  "onchip_bad_grain": {
+    "returncode": 1,
+    "expected_error": "onchip banks require"
+  },
+  "onchip_zero_queue": {
+    "returncode": 1,
+    "expected_error": "onchip timing requires"
+  },
+  "coeff-spm-write-width_alignment": {
+    "returncode": 1,
+    "expected_error": "onchip DMA widths must be multiples of 8"
+  },
+  "coeff-line-tile-dma-width_alignment": {
+    "returncode": 1,
+    "expected_error": "onchip DMA widths must be multiples of 8"
+  },
+  "coeff-interface-width_alignment": {
+    "returncode": 1,
+    "expected_error": "onchip DMA widths must be multiples of 8"
+  },
+  "backward_requires_onchip": {
+    "returncode": 1,
+    "expected_error": "backward operand prefetch requires"
+  },
+  "invalid_rhs_depth": {
+    "returncode": 1,
+    "expected_error": "RHS product depth must"
+  },
+  "invalid_dma_latency": {
+    "returncode": 1,
+    "expected_error": "DMA cache latencies must"
+  },
+  "invalid_cache_policy": {
+    "returncode": 1,
+    "expected_error": "invalid cache, warm y source or record policy"
+  },
+  "invalid_dma_packet_budget": {
+    "returncode": 1,
+    "expected_error": "DMA issue packets must"
+  },
+  "invalid_dma_byte_budget": {
+    "returncode": 1,
+    "expected_error": "DMA issue packets must"
+  },
+  "unaligned_dma_byte_budget": {
+    "returncode": 1,
+    "expected_error": "DMA issue packets must"
+  },
+  "invalid_input_seed": {
+    "returncode": 1,
+    "expected_error": "positive uint64 seed"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "src/arch/arm/cfd_coeff_preprocess_controller.cc": "89993d909d579885fb531df2e18127a7d89261dbdd2cb1655486f4e867361aa5",
+  "src/arch/arm/cfd_coeff_preprocess_controller.hh": "f5e832f30b91103447c599a0996f0c2828670b492ae726c632029a04774d2be9",
+  "src/arch/arm/cfd_coeff_preprocess_tiles.inc": "efe55fd0bf629cfb4820df3190ec1af3d1d54b2c4a5f5adc7dc23707ec93a547",
+  "src/arch/arm/cfd_coeff_preprocess_cluster.inc": "fa4a23409b3cf2e0e265d0efedf2dd03107ddfb05ca7063855836a2bf1660ac6",
+  "projects/cfd_dsa/configs/run_cfd_dsa.py": "97124ac92a7130ed733dd46ae960d86b9eef63fc20af0a94b2d4c3d1da30b8af",
+  "projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c": "64d8692fb4af94908f47356acdaf61e02032deae5a3c132058d50967fc42707d",
+  "projects/cfd_dsa/benchmarks/lusgs/step2_streaming.inc": "065118c0d852597fde8971fab35bc85b49444dcc786e51e11487d6875fdbbdf6",
+  "projects/cfd_dsa/benchmarks/lusgs/step2_cli.inc": "b21a8deea3a164ed1ceb49bbc19b51b3ccd475f6bf520b3c1aa16a0cf95f19a1"
+}

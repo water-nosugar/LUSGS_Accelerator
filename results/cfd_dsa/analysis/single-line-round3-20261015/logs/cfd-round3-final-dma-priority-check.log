@@ -1,0 +1,3 @@
+direct output_wait 495 -> 14
+inverse output_wait 401 -> 104
+DMA_PRIORITY_CHECK_PASS (same resources, same FP64 work/results)

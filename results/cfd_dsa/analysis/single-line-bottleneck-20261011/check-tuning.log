@@ -1,0 +1,11 @@
+out8-inverse cycles 18016 reload 3840
+out16-inverse cycles 16894 reload 3840
+ctx1-out8-inverse cycles 19190 reload 3840
+tile8-out8-inverse cycles 18198 reload 3840
+tile16-out8-inverse cycles 17540 reload 3840
+out8-direct cycles 18076 reload 3840
+out16-direct cycles 15340 reload 3840
+ctx1-out8-direct cycles 19064 reload 3840
+tile8-out8-direct cycles 18338 reload 3840
+tile16-out8-direct cycles 17666 reload 3840
+SINGLE_LINE_STORAGE_CHECK_PASS

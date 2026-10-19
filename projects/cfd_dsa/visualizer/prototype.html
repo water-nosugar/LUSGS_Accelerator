@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CFD DSA · 微体系结构查看器</title>
+  <style>
+:root{color-scheme:dark;--bg:#0b1018;--surface:#101721;--raised:#17212e;--line:#273344;--text:#dce6f1;--muted:#93a3b7;--faint:#63748a;--cyan:#62d6d1;--blue:#80aefb;--amber:#edc37a;--green:#a6d6af;--font:Inter,"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 var(--font)}button,select,input{font:inherit}button,select{color:var(--text);background:var(--raised);border:1px solid var(--line);border-radius:6px}button{padding:7px 12px;cursor:pointer}button:hover{background:#223147;border-color:#52647d}button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}button.primary{background:var(--cyan);color:#092b2c;border-color:var(--cyan);font-weight:600}button.primary:hover{background:#95e6e1}button.quiet{background:transparent;border-color:transparent}button:disabled{opacity:.4;cursor:default}select{padding:6px 28px 6px 9px;max-width:100%}h1,h2,p{margin:0}h1{font-size:19px;font-weight:550;letter-spacing:.02em}h2{font-size:18px;font-weight:550}strong{font-weight:550}.mono,code{font-family:var(--mono);font-variant-numeric:tabular-nums}.muted{color:var(--muted)}.eyebrow,.section-label{font-size:10px;letter-spacing:.13em;color:var(--muted)}.workspace{display:grid;grid-template-columns:192px minmax(0,1fr);grid-template-rows:auto auto 1fr auto;min-height:100vh;max-width:1920px;margin:auto}.topbar{grid-column:1/-1;display:flex;align-items:center;gap:20px;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--surface)}.brand{display:flex;align-items:center;gap:11px}.brand-mark{font-size:33px;line-height:1;color:var(--cyan)}.brand strong{display:block;font-size:17px;letter-spacing:.11em}.brand-sub{display:block;font-size:11px;color:var(--muted)}.version{font-size:11px;color:var(--muted);border-left:1px solid var(--line);padding-left:20px}.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.runbar{grid-column:1/-1;padding:10px 24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);font-size:12px;background:#0e151f}.runbar>div{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.provenance{color:var(--amber);background:#332a1d;padding:2px 8px;border-radius:4px;font-size:11px}.provenance.recorded{color:var(--green);background:#1b3029}#time-domain{color:var(--muted);font-size:11px}.sidebar{background:var(--surface);border-right:1px solid var(--line);padding:24px 12px;display:flex;flex-direction:column;gap:13px}.section-label{padding:0 10px;font-size:11px}.view-button{display:flex;align-items:center;width:100%;gap:9px;border:none;background:transparent;border-radius:5px;padding:10px;color:var(--muted);text-align:left;font-size:13px}.view-button:hover,.module-button:hover{background:var(--raised)}.view-button.active{color:var(--cyan);background:#17302f}.view-button .view-number{font:11px var(--mono);color:var(--faint)}.view-button.active .view-number{color:var(--cyan)}.sidebar-divider{height:1px;background:var(--line);margin:5px 10px}.module-tree{display:flex;flex-direction:column;gap:3px}.module-button{display:flex;align-items:center;gap:8px;text-align:left;border:none;background:transparent;color:var(--muted);font-size:12px;padding:7px 10px;width:100%}.module-button.active{background:#1c2a3e;color:var(--text)}.tree-dot{width:5px;height:5px;border-radius:50%;background:var(--faint);flex-shrink:0}.module-button.active .tree-dot{background:var(--blue)}.sidebar-foot{margin-top:auto;padding:30px 10px 2px;color:var(--muted);font-size:11px;line-height:1.9}.foot-dot{display:inline-block;height:5px;width:5px;border-radius:50%;background:var(--cyan);margin-right:6px}.main{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 272px;grid-template-rows:auto auto}.diagram-section{min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}.diagram-toolbar{padding:19px 24px 15px;display:flex;gap:15px;justify-content:space-between;align-items:center}.entity-label{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}.entity-label select{font-size:12px}.canvas-wrap{height:480px;min-height:360px;position:relative;overflow:hidden;background-image:radial-gradient(#223046 .75px,transparent .75px);background-size:20px 20px}.canvas-wrap svg{display:block;width:100%;height:100%;touch-action:none;user-select:none;cursor:grab}.canvas-wrap svg.panning{cursor:grabbing}.canvas-controls{position:absolute;bottom:18px;right:20px;display:flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:7px;background:var(--surface);padding:3px}.canvas-controls button{border:none;background:transparent;padding:3px 9px;font-size:13px;min-width:28px}.canvas-controls span{color:var(--muted);font-size:11px;padding:0 6px;width:48px;text-align:center}.graph-message{position:absolute;bottom:22px;left:24px;color:var(--muted);font-size:11px;pointer-events:none}.diagram-legend{padding:10px 24px 14px;display:flex;gap:17px;flex-wrap:wrap;font-size:10px;color:var(--muted)}.diagram-legend>span{display:flex;align-items:center;gap:6px}.legend-dot{height:6px;width:6px;display:inline-block;border-radius:50%}.legend-dot.active{background:var(--cyan)}.legend-dot.waiting{background:var(--amber)}.legend-dot.selected{background:var(--blue)}.line-sample{width:20px;height:0;border-top:1px solid var(--muted)}.line-sample.control{border-top-style:dashed}.inspector{background:var(--surface);padding:22px 20px;min-width:0}.inspector-heading{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:13px}.type-tag{font-size:10px;color:var(--muted);padding:1px 5px;background:var(--raised);border-radius:3px}.inspector h2{font-size:18px;margin-bottom:8px}.inspector>p{font-size:12px;color:var(--muted);line-height:1.9}.detail-section{padding-top:16px;margin-top:16px;border-top:1px solid var(--line)}.detail-heading{font-size:11px;display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;color:var(--muted)}.detail-heading .mono{color:var(--text)}.state-line{display:flex;gap:7px;align-items:center;font-size:12px}.state-line.busy{color:var(--cyan)}.state-line.wait{color:var(--amber)}.state-line.empty{color:var(--muted)}.activity-line{font-size:11px;margin-top:6px;line-height:1.7;color:var(--muted)}.event-detail{background:var(--raised);padding:8px 9px;margin-top:9px;font-size:11px;line-height:1.7;border-radius:5px}.event-detail strong{display:block;color:var(--text)}dl{margin:0}dl>div{display:flex;justify-content:space-between;gap:14px;font-size:11px;margin:6px 0}dt{color:var(--muted)}dd{margin:0;text-align:right;font-family:var(--mono);overflow-wrap:anywhere}.evidence-note{font-size:11px;color:var(--muted);line-height:1.85}.inspector code{display:block;font-size:10px;color:var(--blue);overflow-wrap:anywhere;line-height:1.7}.wide-button{width:100%;margin-top:17px;font-size:12px}.timeline-section{grid-column:1/-1;border-top:1px solid var(--line);padding:18px 24px 15px;min-width:0;background:#0e151f}.timeline-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.timeline-toolbar h2{font-size:16px}#event-count{font-size:11px;font-weight:400;margin-left:7px}.replay-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.replay-controls button{padding:4px 9px;font-size:11px}.replay-controls label{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--muted);margin-left:6px}.replay-controls select{font-size:11px;padding:3px 6px}.scrubber-row{display:flex;align-items:center;gap:14px;margin:18px 0 9px}.scrubber-row output{font-size:13px;color:var(--cyan);min-width:102px}.scrubber-row input{flex:1;min-width:0;accent-color:var(--cyan);height:16px;cursor:pointer}.scrubber-row>span{font-size:11px}.timeline-chart{width:100%;overflow:hidden}.timeline-chart svg{display:block;width:100%;font-family:var(--font)}.timeline-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--muted);margin-top:8px;min-height:22px}.statusbar{grid-column:1/-1;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;border-top:1px solid var(--line);padding:8px 24px;color:var(--muted);font-size:10px;background:var(--surface)}.event-tooltip{position:fixed;z-index:20;pointer-events:none;max-width:300px;padding:10px 13px;background:#1c2939;border:1px solid #40526b;box-shadow:0 8px 22px #0005;border-radius:6px;font-size:12px;white-space:pre-line}.notice{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);max-width:90vw;z-index:30;background:#203346;color:var(--text);border:1px solid #4d6c88;padding:10px 17px;border-radius:7px;font-size:12px}.notice.error{background:#3b2622;border-color:#b88773}
+.graph-group-label{fill:var(--muted);font-size:13px;letter-spacing:1px}.graph-group-box{fill:#111c2980;stroke:#344357;stroke-width:1;stroke-dasharray:5 5}.graph-edge{fill:none;stroke:#546980;stroke-width:1.4}.graph-edge.control{stroke-dasharray:5 5;stroke:#647283}.graph-edge.tracked{stroke:var(--blue);stroke-width:2.2}.graph-edge.live{stroke:var(--cyan);stroke-width:2.6}.graph-edge.dim{opacity:.2}.edge-label{fill:var(--muted);font-size:12px;paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}.edge-dot{fill:var(--cyan)}.graph-node{cursor:pointer}.graph-node:focus{outline:none}.node-box{fill:#162131;stroke:#405169;stroke-width:1.1}.graph-node.selected .node-box{stroke:var(--blue);stroke-width:2}.graph-node.active .node-box{fill:#173132;stroke:var(--cyan)}.graph-node.waiting .node-box{fill:#30281e;stroke:var(--amber)}.graph-node.dim{opacity:.35}.graph-node:focus-visible .node-box{stroke:var(--cyan);stroke-width:3}.node-name{fill:var(--text);font-size:16px;font-weight:550}.node-subtitle{fill:var(--muted);font-size:12px}.node-status{fill:var(--cyan);font-size:12px;font-family:var(--mono)}.graph-node.waiting .node-status{fill:var(--amber)}.node-port{fill:var(--bg);stroke:#61758e;stroke-width:1.2}.node-open{fill:var(--blue);font-size:17px}.timeline-axis{fill:var(--muted);font-size:10px;font-family:var(--mono)}.timeline-label{fill:var(--muted);font-size:11px}.timeline-grid{stroke:#263243;stroke-width:1}.timeline-event{fill:var(--cyan);fill-opacity:.45;cursor:pointer;stroke:transparent;stroke-width:1}.timeline-event.transfer{fill:var(--blue)}.timeline-event.wait{fill:var(--amber);fill-opacity:.17;stroke:var(--amber);stroke-dasharray:3 2}.timeline-event.selected{fill-opacity:.95;stroke:var(--text)}.timeline-event.dim{fill-opacity:.08;stroke-opacity:.2}.timeline-event:focus-visible{outline:none;stroke:var(--text);stroke-width:2}.timeline-cursor{stroke:var(--cyan);stroke-width:1.3;pointer-events:none}.timeline-track{fill:#17212d}.timeline-hit{fill:transparent;cursor:crosshair}.event-caption{fill:var(--text);font-size:10px;pointer-events:none}
+.main{grid-template-rows:610px auto}.diagram-section .canvas-wrap{flex:1;min-height:300px}.inspector{overflow-y:auto}.diagram-toolbar,.diagram-legend{flex-shrink:0}
+@media(min-width:1600px){.canvas-wrap{height:560px}.main{grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:650px auto}.workspace{grid-template-columns:210px minmax(0,1fr)}}
+@media(max-width:1100px){.workspace{grid-template-columns:160px minmax(0,1fr)}.main{grid-template-columns:minmax(0,1fr) 240px}.diagram-toolbar{padding:17px 17px}.diagram-toolbar h1{font-size:17px}.entity-label{flex-direction:column;align-items:flex-start;gap:2px}.graph-message{display:none}.inspector{padding:20px 15px}.topbar{gap:12px}.version{padding-left:12px}.timeline-section{padding:17px}.diagram-legend{padding:12px 17px;gap:10px}.canvas-wrap{height:435px}}
+@media(max-width:850px){.workspace{display:block}.sidebar{padding:12px 18px;border-right:none;border-bottom:1px solid var(--line)}.sidebar>.section-label,.sidebar-divider,.module-tree,.sidebar-foot{display:none}#view-nav{display:flex;gap:6px}.view-button{justify-content:center;font-size:12px}.main{grid-template-columns:minmax(0,1fr) 240px}.canvas-wrap{height:450px}.topbar{padding:13px 18px;flex-wrap:wrap}.version{margin-left:auto}.top-actions{width:100%;justify-content:flex-end}.runbar{padding:10px 18px}#time-domain{display:none}.timeline-foot>.muted{display:none}}
+@media(max-width:650px){.main{display:flex;flex-direction:column}.diagram-section{border-right:none}.inspector{border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 18px;padding:18px;overflow:visible}.inspector-heading,.inspector h2,.inspector>p{grid-column:1/-1}.inspector .detail-section{margin-top:13px;padding-top:13px}.inspector code{font-size:11px}.inspector-heading{margin-bottom:5px}.inspector h2{font-size:17px}.inspector .wide-button{grid-column:1/-1}.diagram-section .canvas-wrap{flex:none;height:380px}.canvas-controls{right:16px;bottom:12px}.diagram-legend{font-size:11px;gap:9px 16px}.timeline-toolbar{gap:12px}.replay-controls{width:100%}.timeline-section{padding:16px}.timeline-foot{font-size:11px}.brand-sub{font-size:12px}.version{font-size:11px}.top-actions button{font-size:12px}.entity-label{font-size:11px}.statusbar{padding:9px 16px;font-size:11px}.statusbar>span:last-child{display:none}.scrubber-row{gap:8px}.scrubber-row output{min-width:85px;font-size:12px}.scrubber-row>span{font-size:10px}.inspector .detail-heading,.inspector .activity-line,.inspector dl>div,.inspector .evidence-note{font-size:12px}.eyebrow{font-size:11px}.replay-controls button{font-size:12px;min-height:36px}.view-button{padding:10px 4px;min-height:40px}.timeline-event{stroke-width:1.5}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+@media(max-width:650px){.graph-message{display:block;top:8px;bottom:auto;left:16px;background:var(--bg);padding:3px 7px;font-size:11px;max-width:calc(100% - 32px)}}
+.view-heading{min-width:0}.view-breadcrumb{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:4px}.breadcrumb-button{background:transparent;border:none;padding:0 4px 0 0;color:var(--muted);font-size:11px;text-align:left}.breadcrumb-button:hover{background:transparent;color:var(--cyan)}.breadcrumb-button:disabled{opacity:1;color:var(--text)}.view-breadcrumb:empty{display:none}.sidebar{align-self:start;position:sticky;top:0;max-height:calc(100vh - 130px)}.module-tree{overflow-y:auto;min-height:90px;flex:1}.tree-row{display:flex;align-items:center;min-width:0;flex-shrink:0}.tree-toggle{border:none;background:transparent;padding:3px 0;min-width:14px;width:14px;color:var(--muted);font-size:12px;flex-shrink:0}.tree-toggle:hover{background:transparent;color:var(--cyan)}.tree-toggle:disabled{opacity:.35}.tree-row .module-button{min-width:0;gap:6px;padding:6px 3px;font-size:11px}.tree-row .module-button>span:last-child{overflow-wrap:anywhere}.tree-row .tree-dot{width:4px;height:4px}.sidebar-foot{padding-top:15px}.node-children{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;max-height:210px;overflow-y:auto}.child-unit-button{text-align:left;padding:7px;font-size:11px;background:var(--raised);min-width:0;overflow-wrap:anywhere}.child-unit-button span{display:block}.child-unit-button small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.node-structure-status{fill:var(--muted);font-size:11px}.graph-owner-group{cursor:pointer}.graph-owner-group.selected .graph-group-box{stroke:var(--blue);stroke-width:2}.graph-owner-group.active .graph-group-box{stroke:var(--cyan)}.graph-owner-group:focus-visible{outline:none}.graph-owner-group:focus-visible .graph-group-box{stroke:var(--cyan);stroke-width:2.5}#detail-scope-note{color:var(--muted)}
+@media(max-width:850px){.sidebar{position:static;max-height:none}.view-breadcrumb{gap:3px}.breadcrumb-button{font-size:11px}}
+@media(max-width:650px){.diagram-toolbar{align-items:flex-start;gap:8px}.view-heading{max-width:65%}.diagram-toolbar h1{font-size:16px}.breadcrumb-button{font-size:11px}.node-children{max-height:260px}.child-unit-button{font-size:12px;min-height:44px}.child-unit-button small{font-size:11px}}
+
+</style>
+  <style>
+/* All rules are scoped to the independent architecture dialog. */
+.architecture-poster {
+  width: min(1500px, 96vw); max-width: 96vw; height: 94vh; height: 94dvh;
+  max-height: 94vh; margin: auto; padding: 0; color: #e1e4ec;
+  background: #141518; border: 1px solid #444b59; border-radius: 14px;
+  box-shadow: 0 24px 100px #0009; overflow: hidden;
+}
+.architecture-poster::backdrop { background: #080b13cb; }
+.architecture-poster[open] { display: flex; flex-direction: column; }
+.architecture-poster .poster-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 24px 16px; border-bottom: 1px solid #2e323c; }
+.architecture-poster .poster-kicker { color: #979dab; font-size: 11px; letter-spacing: .17em; }
+.architecture-poster h2 { margin: 5px 0 0; font-size: 22px; }
+.architecture-poster .poster-header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.architecture-poster button { min-height: 34px; padding: 7px 12px; background: #22252d; color: #d6dae5; border: 1px solid #3d4351; border-radius: 5px; cursor: pointer; }
+.architecture-poster button:hover { background: #303640; border-color: #8a93a6; }
+.architecture-poster button:focus-visible, .architecture-poster [data-poster-node]:focus-visible { outline: 2px solid #bd93d7; outline-offset: 3px; }
+.architecture-poster button[aria-pressed="true"] { color: #e9d2f6; border-color: #a768c7; background: #302139; }
+.architecture-poster button:disabled { opacity: .4; cursor: default; }
+.architecture-poster .poster-nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 12px 24px; border-bottom: 1px solid #2e323c; }
+.architecture-poster .poster-nav .poster-guide { color: #969eae; font-size: 12px; margin-left: auto; }
+.architecture-poster .poster-content { display: grid; grid-template-columns: minmax(0, 1fr) 252px; min-height: 0; flex: 1; }
+.architecture-poster .poster-board { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: #191a1e; }
+.architecture-poster .poster-breadcrumb { display: flex; align-items: center; gap: 6px; padding: 10px 18px; min-height: 44px; flex-wrap: wrap; }
+.architecture-poster .poster-breadcrumb button { font-size: 12px; min-height: 26px; padding: 3px 8px; background: transparent; border-color: transparent; }
+.architecture-poster .poster-breadcrumb span { color: #777e8f; }
+.architecture-poster .poster-scroll { min-height: 0; overflow: auto; flex: 1; padding: 0 16px 18px; }
+.architecture-poster .poster-drawing { width: 100%; }
+.architecture-poster .poster-drawing svg { display: block; height: auto; max-width: none; }
+.architecture-poster [data-poster-node] { cursor: pointer; }
+.architecture-poster [data-poster-node]:hover .poster-unit, .architecture-poster [data-poster-node]:focus-visible .poster-unit { stroke: #e4d3ee; stroke-width: 2; }
+.architecture-poster .poster-selected .poster-unit { stroke: #e4d3ee; stroke-width: 2; }
+.architecture-poster .poster-info { overflow-y: auto; padding: 20px 18px; border-left: 1px solid #2e323c; background: #181a20; }
+.architecture-poster .poster-info h3 { font-size: 18px; margin: 8px 0 12px; line-height: 1.5; }
+.architecture-poster .poster-info p { color: #aab1bf; line-height: 1.75; font-size: 12px; margin: 12px 0 20px; }
+.architecture-poster .poster-info-label { color: #8c95a7; font-size: 11px; letter-spacing: .05em; margin: 22px 0 9px; }
+.architecture-poster .poster-info dl { margin: 0; font-size: 12px; }
+.architecture-poster .poster-info dt { color: #929cad; margin-top: 12px; }
+.architecture-poster .poster-info dd { color: #dce1eb; margin: 3px 0 0; overflow-wrap: anywhere; line-height: 1.6; }
+.architecture-poster .poster-info code { display: block; font-size: 11px; color: #abb9cd; overflow-wrap: anywhere; line-height: 1.8; }
+.architecture-poster .poster-info .poster-children { display: flex; flex-direction: column; gap: 6px; }
+.architecture-poster .poster-children button { text-align: left; font-size: 12px; line-height: 1.5; }
+.architecture-poster .poster-footer { display: flex; justify-content: space-between; gap: 14px; padding: 10px 24px; border-top: 1px solid #2e323c; color: #8c95a5; font-size: 11px; flex-wrap: wrap; }
+.architecture-poster .poster-key { display: flex; gap: 12px; flex-wrap: wrap; }
+.architecture-poster .poster-key i { width: 8px; height: 8px; display: inline-block; margin-right: 4px; border: 1px solid; }
+@media (max-width: 850px) {
+  .architecture-poster .poster-content { grid-template-columns: minmax(0, 1fr) 215px; }
+  .architecture-poster .poster-header { padding: 14px 16px; gap: 12px; }
+  .architecture-poster .poster-nav { padding: 10px 16px; }
+  .architecture-poster .poster-nav .poster-guide { width: 100%; }
+}
+@media (max-width: 620px) {
+  .architecture-poster { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+  .architecture-poster .poster-header { align-items: flex-start; }
+  .architecture-poster h2 { font-size: 18px; }
+  .architecture-poster .poster-header-actions { gap: 5px; }
+  .architecture-poster .poster-header-actions button { font-size: 12px; padding: 7px 9px; }
+  .architecture-poster .poster-content { display: flex; flex-direction: column; overflow: auto; }
+  .architecture-poster .poster-board { min-height: 60vh; flex-shrink: 0; }
+  .architecture-poster .poster-info { overflow: visible; border-left: 0; border-top: 1px solid #2e323c; }
+  .architecture-poster .poster-footer { padding: 9px 16px; }
+}
+
+</style>
+</head>
+<body>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">◈</span><div><strong>CFD DSA</strong><span class="brand-sub">微体系结构查看器</span></div></div>
+      <span class="version">设计原型 · v0.2</span>
+      <div class="top-actions">
+        <button id="open-architecture-poster">架构总览</button>
+        <button id="load-demo" class="quiet">演示数据</button>
+        <button id="import-session">导入会话</button>
+        <button id="export-svg" class="primary">导出 SVG</button>
+        <input id="session-file" type="file" accept=".json,application/json" hidden>
+      </div>
+    </header>
+    <div class="runbar">
+      <div><span id="provenance" class="provenance">示意事件</span><strong id="run-name">单线 · cold direct</strong><span id="config-summary" class="muted"></span></div>
+      <span id="time-domain" class="mono">控制器时钟域 · cycle</span>
+    </div>
+    <aside class="sidebar" aria-label="架构导航">
+      <div class="section-label">架构层级</div>
+      <nav id="view-nav" aria-label="视图层级"></nav>
+      <div class="sidebar-divider"></div>
+      <div class="section-label">模块 / 内部单元</div>
+      <div id="module-tree" class="module-tree"></div>
+      <div class="sidebar-foot"><span class="foot-dot"></span>结构参考当前模型<br><span id="sidebar-evidence">回放时序为设计示意</span></div>
+    </aside>
+    <main class="main">
+      <section class="diagram-section" aria-labelledby="diagram-title">
+        <div class="diagram-toolbar">
+          <div class="view-heading"><div id="view-breadcrumb" class="view-breadcrumb"></div><span id="breadcrumb" class="eyebrow">DSA / COMPUTE & STORAGE</span><h1 id="diagram-title">加速器内部</h1></div>
+          <label class="entity-label">跟踪对象<select id="entity-select" aria-label="跟踪数据对象"></select></label>
+        </div>
+        <div class="canvas-wrap" id="canvas-wrap">
+          <svg id="architecture-svg" role="group" aria-label="微体系结构图，模块可选择，分组可展开"></svg>
+          <div class="canvas-controls" aria-label="图形缩放">
+            <button id="zoom-out" aria-label="缩小">−</button><span id="zoom-label" class="mono">100%</span><button id="zoom-in" aria-label="放大">+</button><button id="fit-view">适应</button>
+          </div>
+          <div id="graph-message" class="graph-message">拖动空白处平移 · 点击模块查看 · 双击分组展开</div>
+        </div>
+        <div class="diagram-legend"><span><i class="legend-dot active"></i>有在途事件</span><span><i class="legend-dot waiting"></i>等待事件</span><span><i class="legend-dot selected"></i>跟踪路径</span><span><i class="line-sample"></i>数据路径</span><span><i class="line-sample control"></i>控制 / 依赖</span><span id="detail-scope-note"></span></div>
+      </section>
+      <aside class="inspector" aria-labelledby="inspector-title">
+        <div class="inspector-heading"><span class="eyebrow">MODULE INSPECTOR</span><span id="node-type" class="type-tag"></span></div>
+        <h2 id="inspector-title">共享计算簇</h2>
+        <p id="node-description"></p>
+        <div id="node-children-section" class="detail-section" hidden><div class="detail-heading">内部单元 <span id="node-child-count" class="mono"></span></div><div id="node-children" class="node-children"></div></div>
+        <div class="detail-section"><div class="detail-heading">当前时刻 <span id="inspector-time" class="mono"></span></div><div id="node-state" class="state-line"></div><div id="node-activity"></div></div>
+        <div class="detail-section"><div class="detail-heading">结构参数</div><dl id="node-params"></dl></div>
+        <div class="detail-section"><div class="detail-heading">证据边界</div><p id="node-evidence" class="evidence-note"></p></div>
+        <div class="detail-section"><div class="detail-heading">源码位置</div><code id="node-source"></code></div>
+        <button id="drill-down" class="wide-button" hidden>展开内部结构 →</button>
+      </aside>
+      <section class="timeline-section" aria-labelledby="timeline-title">
+        <div class="timeline-toolbar"><div><span class="eyebrow">EXECUTION REPLAY</span><h2 id="timeline-title">执行时间轴 <span id="event-count" class="muted"></span></h2></div><div class="replay-controls"><button id="prev-cycle" aria-label="前一周期">−1</button><button id="play" class="primary" aria-label="播放时间回放">播放</button><button id="next-cycle" aria-label="后一周期">+1</button><button id="next-event">下一事件</button><label>速率<select id="speed" aria-label="回放速率"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div></div>
+        <div class="scrubber-row"><output id="current-time" class="mono"></output><input id="time-slider" type="range" min="0" max="340" value="100" step="1" aria-label="当前仿真时刻"><span id="end-time" class="mono muted"></span></div>
+        <div class="timeline-chart" id="timeline-chart"><svg id="timeline-svg" role="group" aria-label="按硬件资源排列的事件时间轴，点击事件定位"></svg></div>
+        <div class="timeline-foot"><span id="selection-summary" aria-live="polite"></span><span class="muted">实线框：传输 / 计算 · 虚线框：等待</span></div>
+      </section>
+    </main>
+    <footer class="statusbar"><span id="session-status">DESIGN DEMO · 示例时序，不是测量结果</span><span>架构 ↔ 对象 ↔ 时间</span></footer>
+  </div>
+  <div id="event-tooltip" class="event-tooltip" role="tooltip" hidden></div>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <script>
+/* Pure session validation and queries. Shared by the browser and Node QA. */
+(function (root) {
+  'use strict';
+  const kinds = new Set(['compute', 'transfer', 'wait', 'control']);
+  const nodeIndexes = new WeakMap();
+  function validateSession(session) {
+    const fail = message => { throw new Error(message); };
+    if (!session || session.schemaVersion !== 1) fail('会话必须使用 schemaVersion: 1');
+    const meta = session.meta;
+    if (!meta || typeof meta.name !== 'string' || !meta.name.trim()) fail('缺少会话名称');
+    if (!['demo', 'recorded'].includes(meta.provenance)) fail('provenance 必须为 demo 或 recorded');
+    if (!['cycle', 'tick'].includes(meta.timeUnit) || typeof meta.clockDomain !== 'string' || !meta.clockDomain.trim()) fail('缺少明确的时间单位或时钟域');
+    if (!Number.isSafeInteger(meta.start) || !Number.isSafeInteger(meta.end) || meta.start < 0 || meta.end <= meta.start) fail('时间范围必须是递增的非负安全整数');
+    if (!Array.isArray(session.nodes) || !session.nodes.length || session.nodes.length > 500) fail('模块数须为 1–500');
+    if (!Array.isArray(session.edges) || session.edges.length > 2000 || !Array.isArray(session.events) || session.events.length > 10000) fail('原型最多支持 2000 条连线、10000 个事件');
+    if (!Array.isArray(session.entities) || session.entities.length > 1000 || !Array.isArray(session.views) || !session.views.length || session.views.length > 50) fail('对象或视图格式无效（最多 50 个视图）');
+    const unique = (items, name) => {
+      const seen = new Set();
+      for (const item of items) {
+        if (!item || typeof item.id !== 'string' || !item.id || seen.has(item.id)) fail(name + ' ID 缺失或重复');
+        seen.add(item.id);
+      }
+      return seen;
+    };
+    const nodes = unique(session.nodes, '模块'), edges = unique(session.edges, '连线');
+    const entities = unique(session.entities, '对象'), views = unique(session.views, '视图');
+    unique(session.events, '事件');
+    const nodeMap = new Map(session.nodes.map(node => [node.id, node]));
+    for (const node of session.nodes) {
+      if (typeof node.label !== 'string' || !node.label || typeof node.type !== 'string') fail('模块名称或类型无效');
+      if (node.parent && !nodes.has(node.parent)) fail('模块父级不存在: ' + node.id);
+      if (node.drillView && !views.has(node.drillView)) fail('展开视图不存在: ' + node.id);
+      if (node.observability !== undefined && !['structure', 'event'].includes(node.observability)) fail('模块观测类型无效: ' + node.id);
+      if (node.params && (typeof node.params !== 'object' || Array.isArray(node.params))) fail('模块参数须为键值对象');
+      if (node.parent) {
+        const chain = new Set([node.id]); let ancestor = node.parent;
+        while (ancestor) {
+          if (chain.has(ancestor)) fail('模块层级存在循环: ' + node.id);
+          chain.add(ancestor); ancestor = nodeMap.get(ancestor).parent;
+        }
+      }
+    }
+    for (const edge of session.edges) {
+      if (!nodes.has(edge.from) || !nodes.has(edge.to) || !['data', 'control'].includes(edge.kind)) fail('连线端点或类型无效: ' + edge.id);
+    }
+    for (const entity of session.entities) if (typeof entity.label !== 'string') fail('对象缺少标签');
+    for (const view of session.views) {
+      if (typeof view.label !== 'string' || !Array.isArray(view.nodes) || !view.nodes.length || !Array.isArray(view.edges)) fail('视图格式无效: ' + view.id);
+      const local = unique(view.nodes, '视图模块');
+      if (view.ownerId && !nodes.has(view.ownerId)) fail('视图所属模块不存在: ' + view.id);
+      if (view.parentView && !views.has(view.parentView)) fail('上级视图不存在: ' + view.id);
+      const visited = new Set([view.id]); let parentView = view.parentView;
+      while (parentView) {
+        if (visited.has(parentView)) fail('视图层级存在循环: ' + view.id);
+        visited.add(parentView); parentView = session.views.find(v => v.id === parentView).parentView;
+      }
+      if (!Number.isFinite(view.width) || !Number.isFinite(view.height) || view.width <= 0 || view.height <= 0) fail('视图尺寸无效');
+      for (const n of view.nodes) {
+        if (!nodes.has(n.id) || !['x', 'y', 'w', 'h'].every(k => Number.isFinite(n[k])) || n.w < 80 || n.h < 40 || n.x < 0 || n.y < 0 || n.x + n.w > view.width || n.y + n.h > view.height) fail('视图模块位置无效: ' + n.id);
+      }
+      for (const id of view.edges) {
+        const edge = session.edges.find(e => e.id === id);
+        if (!edge || !local.has(edge.from) || !local.has(edge.to)) fail('视图连线引用无效: ' + id);
+      }
+      if (view.groups && (!Array.isArray(view.groups) || view.groups.some(g => !['x', 'y', 'w', 'h'].every(k => Number.isFinite(g[k])) || typeof g.label !== 'string'))) fail('视图分组无效');
+      if (view.groups?.some(g => g.ownerId && !nodes.has(g.ownerId))) fail('视图分组所属模块不存在');
+      if (view.routes) {
+        if (typeof view.routes !== 'object' || Array.isArray(view.routes)) fail('连线路由格式无效');
+        for (const [id, points] of Object.entries(view.routes)) {
+          if (!view.edges.includes(id) || !Array.isArray(points) || points.length < 2 || points.length > 30 || points.some(p => !Array.isArray(p) || p.length !== 2 || !p.every(Number.isFinite) || p[0] < 0 || p[1] < 0 || p[0] > view.width || p[1] > view.height)) fail('连线路由无效: ' + id);
+        }
+      }
+    }
+    for (const event of session.events) {
+      if (!nodes.has(event.moduleId) || !kinds.has(event.kind) || typeof event.label !== 'string') fail('事件模块或类型无效: ' + event.id);
+      if (nodeMap.get(event.moduleId).observability === 'structure') fail('仅结构单元不可直接绑定活动事件: ' + event.moduleId);
+      if (!Number.isSafeInteger(event.start) || !Number.isSafeInteger(event.end) || event.start < meta.start || event.end <= event.start || event.end > meta.end) fail('事件时间范围无效: ' + event.id);
+      if (event.entityId !== null && !entities.has(event.entityId)) fail('事件对象不存在: ' + event.id);
+      if (!Array.isArray(event.edgeIds) || event.edgeIds.some(id => !edges.has(id))) fail('事件路径引用无效: ' + event.id);
+      if (event.lanes !== undefined && (!Number.isSafeInteger(event.lanes) || event.lanes <= 0)) fail('事件 lane 数无效');
+      if (event.bytes !== undefined && (!Number.isSafeInteger(event.bytes) || event.bytes < 0)) fail('传输字节数无效');
+      if (!['illustrative', 'observed', 'derived'].includes(event.evidence)) fail('事件必须声明证据类型');
+      if (meta.provenance === 'recorded' && event.evidence === 'illustrative') fail('实测会话中不可混入示意事件');
+    }
+    if (!Array.isArray(session.tracks) || !session.tracks.length || session.tracks.length > 30) fail('缺少资源时间轴轨道');
+    unique(session.tracks, '轨道');
+    for (const track of session.tracks) {
+      if (typeof track.label !== 'string' || !Array.isArray(track.moduleIds) || !track.moduleIds.length || track.moduleIds.some(id => !nodes.has(id))) fail('时间轴轨道引用无效');
+    }
+    const covered = new Set(session.tracks.flatMap(t => t.moduleIds));
+    if (session.events.some(event => !covered.has(event.moduleId))) fail('存在未分配到时间轴轨道的事件');
+    nodeIndexes.set(session, nodeMap);
+    return session;
+  }
+  function isWithin(session, moduleId, ancestorId) {
+    let map = nodeIndexes.get(session);
+    if (!map) { map = new Map(session.nodes.map(n => [n.id, n])); nodeIndexes.set(session, map); }
+    for (let current = moduleId; current; current = map.get(current)?.parent) if (current === ancestorId) return true;
+    return false;
+  }
+  function activeEvents(session, moduleId, time, entityId = null) {
+    return session.events.filter(e => e.start <= time && time < e.end && isWithin(session, e.moduleId, moduleId) && (!entityId || e.entityId === entityId));
+  }
+  function trackedPath(session, entityId) {
+    const events = session.events.filter(e => !entityId || e.entityId === entityId);
+    return { modules: new Set(events.map(e => e.moduleId)), edges: new Set(events.flatMap(e => e.edgeIds)) };
+  }
+  const api = { validateSession, activeEvents, isWithin, trackedPath };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.CfdModel = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Structural decomposition of the current gem5 model; no invented unit events. */
+(function (root) {
+  'use strict';
+  function expandArchitecture(session) {
+    const cc = 'src/arch/arm/cfd_coeff_preprocess_controller.cc';
+    const cluster = 'src/arch/arm/cfd_coeff_preprocess_cluster.inc';
+    const onchip = 'src/arch/arm/cfd_coeff_preprocess_onchip.inc';
+    const tiles = 'src/arch/arm/cfd_coeff_preprocess_tiles.inc';
+    const runner = 'projects/cfd_dsa/configs/run_cfd_dsa.py';
+    const map = new Map(session.nodes.map(n => [n.id, n]));
+    const box = (id, x, y, w = 220, h = 86) => ({ id, x, y, w, h });
+    function unit(id, label, parent, type, params, description, source = cc, extra = {}) {
+      const node = { id, label, parent, type, params, description, source, subtitle: extra.subtitle || type,
+        observability: 'structure', evidence: '组成和参数来自源码结构；此单元尚未采集独立活动状态，父模块事件不会被自动分摊到此单元。', ...extra };
+      if (map.has(id)) throw new Error('重复结构单元: ' + id);
+      map.set(id, node); session.nodes.push(node); return id;
+    }
+    function detail(ownerId, label, rows, links = [], extra = {}) {
+      const nodes = rows.flatMap((row, r) => row.map((id, c) => {
+        const width = (1080 - (row.length - 1) * 24) / row.length;
+        return box(id, 40 + c * (width + 24), 95 + r * 135, width, 86);
+      }));
+      const view = { id: ownerId + '-detail', ownerId, parentView: extra.parentView || 'accelerator', label,
+        breadcrumb: label, width: 1160, height: Math.max(650, rows.length * 135 + 70), nodes, edges: [], ...extra };
+      const parent = map.get(ownerId); parent.drillView = view.id;
+      for (const link of links) {
+        const [from, to, text, kind = 'data'] = link, id = view.id + ':' + from + ':' + to;
+        session.edges.push({ id, from, to, label: text, kind, scope: 'structure' }); view.edges.push(id);
+      }
+      session.views.push(view); return view;
+    }
+    function group(x, y, w, h, label, ownerId) { return { x, y, w, h, label, ownerId }; }
+    const physical = '模型资源单元', logic = '逻辑控制', registers = '寄存器状态', region = 'SPM 存储区域', fifo = '有界队列';
+
+    // One shared cluster; individual lane identity is not present in current traces.
+    unit('cluster-issue', '发射与 lane 预留', 'cluster', logic, { 规则: '标量 1 lane / 向量 5 lanes', 选择: 'nextIssue ≤ 当前周期' }, 'issueLanes 按可用发射槽预留 lane，向量需一次取得五个槽。它是发射控制逻辑，不是额外计算单元。', cluster);
+    unit('cluster-pending', '在途操作完成表', 'cluster', logic, { 字段: 'completeCycle / kind / lanes', 符号: 'pendingOps' }, '根据完成周期发布回调；同一流水单元可以有多个在途操作。表内记录不提供固定 RTL 流水级。', cc);
+    unit('cluster-requests', 'LU / RHS / 向量请求', 'cluster', logic, { 入口: 'caller + lanes', 共享: '同一 5 / 5 / 1 簇' }, '不同算法任务请求同一算术资源池；这些入口不表示三套运算硬件。', cluster);
+    const muls = [], adds = [];
+    for (let i = 0; i < 5; i++) {
+      muls.push(unit('mul-lane' + i, 'MUL ' + i, 'mul', physical, { 数据类型: 'FP64', 延迟: '3 cycles', II: '1 cycle', 结构编号: String(i) }, '共享乘法池的一个结构 lane。编号用于展示源码 nextIssue 槽，不代表 trace 已记录具体操作在哪个 lane 上执行。', cluster));
+      adds.push(unit('add-lane' + i, 'ADD/SUB ' + i, 'add', physical, { 数据类型: 'FP64', 延迟: '4 cycles', II: '1 cycle', 结构编号: String(i) }, '共享加减池的一个结构 lane，执行加法或减法。当前 trace 仅记录资源池和此次发射 lane 数。', cluster));
+    }
+    unit('div-unit', 'DIV 0', 'div', physical, { 数据类型: 'FP64', 延迟: '12 cycles', II: '4 cycles' }, '唯一的共享流水除法单元。十二周期完成延迟不等于十二个除法器，也不代表已知的十二级 RTL 结构。', cluster);
+    unit('cluster-vector-adds', '待累加向量队列', 'products', fifo, { 符号: 'sharedVectorAdds', 约束: '共享乘积 credit' }, '保存已经计算出的五元素乘积，等待共享加减池消费。', cluster);
+    unit('cluster-cold-products', 'Cold 列乘积状态', 'products', registers, { 符号: 'coldProducts', 单列: '5 × FP64' }, 'cold base/Lbar 列乘积提前计算，按原列顺序累加，共用全局乘积 credit。', 'src/arch/arm/cfd_coeff_preprocess_frontier.inc');
+    unit('cluster-rhs-products', 'RHS 行乘积缓冲', 'products', registers, { 条目: '60', 保守状态预算: '4096 B', 符号: 'rhsRowProducts' }, '多个 RHS 行组暂存乘积；条目不是额外乘法器。', 'src/arch/arm/cfd_coeff_preprocess_rhs_rows.inc');
+    unit('cluster-line-products', 'Line 列乘积 / 累加', 'products', registers, { 每上下文未消费列: '≤ 5', 符号: 'LineMvmState' }, '缓存前向、后向和后台 base 各有有界乘积/累加状态，共用同一物理计算簇。', cc);
+    const clusterView = detail('cluster', '共享计算簇 · 单元展开', [], [
+      ['cluster-requests', 'cluster-issue', '请求', 'control'],
+      ...muls.map(id => ['cluster-issue', id, '发射许可', 'control']),
+      ...muls.map(id => [id, 'products', '乘积汇集']),
+      ...adds.map(id => ['products', id, '待累加数据']),
+      ['cluster-issue', 'div-unit', '除法发射', 'control'],
+      ['div-unit', 'cluster-pending', '完成'], ...adds.map(id => [id, 'cluster-pending', '完成'])
+    ], {
+      height: 740,
+      nodes: [box('cluster-requests', 60, 55, 285, 75), box('cluster-issue', 440, 55, 285, 75), ...muls.map((id, i) => box(id, 55 + i * 215, 190, 190, 70)),
+        box('products', 440, 295, 285, 75), ...adds.map((id, i) => box(id, 55 + i * 215, 425, 190, 70)), box('div-unit', 55, 600, 250, 75), box('cluster-pending', 760, 600, 315, 75)],
+      groups: [group(35, 148, 1090, 128, '共享乘法资源池 · 5 个 FP64 单元', 'mul'), group(35, 382, 1090, 128, '共享加减资源池 · 5 个 FP64 单元', 'add'), group(35, 554, 310, 140, '共享除法资源池 · 1 个单元', 'div')]
+    });
+    for (const [pool, lanes, name] of [['mul', muls, '乘法'], ['add', adds, '加减'], ['div', ['div-unit'], '除法']]) {
+      unit(pool + '-next-issue', '发射间隔状态', pool, registers, { 符号: 'ResourcePool.nextIssue', 槽数: String(lanes.length) }, '每个 lane 的下一次允许发射周期；不是当前在途操作数量。', cc);
+      detail(pool, '共享' + name + '池 · 发射单元', [[pool + '-next-issue'], lanes, ['cluster-pending']], lanes.map(id => [pool + '-next-issue', id, 'II / 发射许可', 'control']), { parentView: clusterView.id });
+    }
+    detail('products', '乘积与累加 · 缓冲状态', [['cluster-cold-products', 'cluster-vector-adds'], ['cluster-rhs-products', 'cluster-line-products'], ['mul', 'add']], [
+      ['mul', 'cluster-vector-adds', '向量乘积'], ['cluster-vector-adds', 'add', '累加'], ['mul', 'cluster-cold-products', 'cold 乘积'], ['cluster-cold-products', 'add', '按列消费']
+    ], { parentView: clusterView.id });
+
+    // Controller: logical functions and finite state rather than new FUs.
+    unit('ctrl-descriptor', 'Descriptor / token', 'controller', logic, { 符号: 'pendingLineLaunches / nextToken' }, '读取父 descriptor，生成 token，校验参数并建立 line 请求。', 'src/arch/arm/cfd_coeff_preprocess_interface.inc');
+    unit('ctrl-window', '请求窗口 / credit', 'controller', logic, { 窗口: '8', 符号: 'liveChildren / nextCell' }, '窗口限制活动 cell 请求数量，完成 detach 后可以回收计算请求 credit。', cc);
+    unit('ctrl-admission', '上下文准入', 'controller', logic, { LU额度: '2', RHS额度: '2' }, '检查输入 ready、LU/RHS 上下文额度与必要依赖，不等同于发射算术操作。', cc);
+    unit('ctrl-frontier', '前沿与依赖判定', 'controller', logic, { 状态: 'stepReady / column masks' }, '检查 LU step、RHS/列和相邻 cell 的 ready 条件。', 'src/arch/arm/cfd_coeff_preprocess_frontier.inc');
+    unit('ctrl-arbitration', '任务优先级仲裁', 'controller', logic, { 次序: '反馈 / 前沿 LU / RHS / 后台 LU' }, '决定哪类就绪工作先申请共享发射槽，不添加算术单元。', cc);
+    unit('ctrl-generation', 'Generation / 取消', 'controller', logic, { 符号: 'liveGeneration / status' }, '拒绝过期 generation 和失效 token，取消后保留在途数据直到响应安全完成。', cc);
+    unit('ctrl-fence', '完成 fence / 状态发布', 'controller', logic, { 条件: '必要数据与记录响应闭合' }, '完成状态可见前，等待必要传输、计算及完成记录响应。', 'src/arch/arm/cfd_coeff_preprocess_lifecycle.inc');
+    detail('controller', '控制器 · 准入与调度', [['ctrl-descriptor', 'ctrl-generation'], ['ctrl-window', 'ctrl-admission', 'ctrl-frontier'], ['ctrl-arbitration', 'cluster'], ['ctrl-fence', 'completion']], [
+      ['ctrl-descriptor', 'ctrl-window', '建立请求', 'control'], ['ctrl-window', 'ctrl-admission', 'credit', 'control'], ['ctrl-admission', 'ctrl-frontier', '依赖', 'control'], ['ctrl-frontier', 'ctrl-arbitration', '就绪候选', 'control'], ['ctrl-arbitration', 'cluster', '申请发射', 'control'], ['completion', 'ctrl-fence', '必要响应', 'control']
+    ]);
+
+    // DMA port state and its actual classic-memory attachment.
+    unit('dma-transfer', '传输描述 / 数据快照', 'dma', registers, { 符号: 'InterfaceTransfer', 计数: 'issued / completed' }, '持有地址、读写方向、数据字节及发出/完成计数，直到 timing 响应返回。', 'src/arch/arm/cfd_coeff_preprocess_interface.inc');
+    unit('dma-chunk', '分包 / 地址转换', 'dma', logic, { 包宽上限: '64 B', 符号: 'dmaChunkSize / issueDma' }, '按页面边界和配置宽度形成 timing DMA 包。', 'src/arch/arm/cfd_local_spm.cc');
+    unit('dma-queue', '待发送 packet 队列', 'dma', fifo, { 符号: 'dmaPackets' }, '排队等待 dma_port 接受请求；与 outstanding credit 分别表达。', 'src/arch/arm/cfd_local_spm.cc');
+    unit('dma-retry', '请求重试保持单元', 'dma', registers, { 符号: 'dmaRetryPacket', 事件: 'recvReqRetry' }, 'sendTimingReq 拒绝后保持该包，收到重试通知再发送。', 'src/arch/arm/cfd_local_spm.cc');
+    unit('dma-credits', '在途包 credit / sender state', 'dma', logic, { 上限: '32', 符号: 'dmaLivePackets / DmaSenderState' }, '限制在途包总数，并携带 packetId 和完成回调；不推测当前占用。', 'src/arch/arm/cfd_local_spm.cc');
+    unit('dma-response', '响应与回调', 'dma', logic, { 符号: 'recvDmaTimingResp', 行为: '完成计数 / 释放 credit' }, '根据 packet sender state 路由完成回调，更新计数并释放在途包 credit。', 'src/arch/arm/cfd_local_spm.cc');
+    detail('dma', 'DMA · 请求、重试与响应', [['dma-transfer', 'dma-chunk'], ['dma-queue', 'dma-retry', 'dma-credits'], ['dma-response', 'memory']], [
+      ['dma-transfer', 'dma-chunk', '地址 / bytes'], ['dma-chunk', 'dma-queue', 'packet'], ['dma-queue', 'dma-retry', '拒绝后保持', 'control'], ['dma-retry', 'dma-queue', 'retry', 'control'], ['dma-queue', 'memory', 'dma_port'], ['memory', 'dma-response', 'timing 响应'], ['dma-response', 'dma-credits', '释放 credit', 'control']
+    ]);
+
+    // Input, LU and RHS contexts. Slots are bounded state, never extra FUs.
+    for (let i = 0; i < 2; i++) unit('ingress-slot' + i, '输入槽 ' + i, 'ingress', '上下文槽', { 内容: 'D / L / U / R', 容量口径: '请求状态预算中' }, '基础输入槽保存请求身份与输入状态；具体 cell 与当前有效标志尚未采集。', cc);
+    unit('ingress-matrices', 'D / L / U 输入区域', 'ingress', region, { 每矩阵: '25 × FP64 = 200 B', 数据: '3 个 raw 矩阵' }, '输入矩阵是共享 SPM 中的地址区域，不是另配三块独立 SRAM。', onchip);
+    unit('ingress-r', 'R 向量输入区域', 'ingress', region, { 数据: '5 × FP64 = 40 B' }, 'R 输入需要片上写入和 ready/读出约束。', onchip);
+    unit('ingress-ready', '输入完成 / ready 标志', 'ingress', logic, { 符号: 'inputChunksCompleted / inputRead' }, '区分 DMA 到达、片上存储完成与计算可消费。', cc);
+    detail('ingress', '输入暂存 · 槽与数据区域', [['dma', 'ingress-ready'], ['ingress-slot0', 'ingress-slot1'], ['ingress-matrices', 'ingress-r'], ['onchip', 'lu', 'rhs']], [
+      ['dma', 'ingress-ready', '响应'], ['ingress-matrices', 'onchip', '片上访问'], ['ingress-r', 'onchip', '向量访问'], ['ingress-ready', 'lu', 'ready', 'control'], ['ingress-ready', 'rhs', 'ready', 'control']
+    ]);
+    detail('contexts', '计算上下文 · 共享资源边界', [['lu', 'rhs'], ['cluster']], [['lu', 'cluster', '共享算术资源'], ['rhs', 'cluster', '共享算术资源']]);
+    const luNodes = [], luGroups = [];
+    for (let i = 0; i < 2; i++) {
+      const parent = unit('lu-context' + i, 'LU 上下文槽 ' + i, 'lu', '上下文槽', { 槽编号: String(i), 算术资源: '共享计算簇' }, '一个活动 Request 的 LU 状态和数据，不包含专用乘加或除法器。', cc);
+      for (const [suffix, label, params, description] of [
+        ['matrix', 'D / LU 矩阵寄存器', { 数据: 'D[25] / LU[25]', 类型: 'FP64' }, '保存当前请求的原始 D 和 packed LU。'],
+        ['temps', '目标暂存 / 乘积', { 数据: 'luTemps[5] / luProducts[5]' }, '同列目标的临时值与乘积，仍按原 k 顺序更新。'],
+        ['phase', '列 / 行 / k 状态机', { 符号: 'LuPhase / luCol / luK' }, '控制 Lower/Upper 运算、Store 和 NextColumn。'],
+        ['pivot', 'Pivot 检查 / ready', { 符号: 'forwardStepReady[5]' }, '检查主元后发布 LU step ready，允许 RHS 前沿消费。'],
+        ['divide-mask', '除法发射 / 完成掩码', { 符号: 'luDivIssued / luDivCompleted' }, '记录独立目标商的发射和完成，不增加除法器。']
+      ]) {
+        const id = unit(parent + '-' + suffix, label, parent, suffix === 'matrix' || suffix === 'temps' ? registers : logic, params, description, 'src/arch/arm/cfd_coeff_preprocess_lu_rows.inc');
+        const index = luNodes.filter(n => n.id.startsWith(parent)).length;
+        luNodes.push(box(id, 55 + i * 565, 130 + index * 92, 480, 74));
+      }
+      luGroups.push(group(35 + i * 565, 80, 525, 530, 'LU CONTEXT ' + i + ' · 状态 + 寄存器', parent));
+    }
+    detail('lu', 'LU · 两个上下文槽', [], [], { height: 650, nodes: luNodes, groups: luGroups });
+    const rhsNodes = [], rhsGroups = [];
+    for (let i = 0; i < 2; i++) {
+      const parent = unit('rhs-context' + i, 'RHS 上下文槽 ' + i, 'rhs', '上下文槽', { RHS状态槽: '15', 启用条件: 'rhsEnabledMask' }, '每个请求保存十五组 RhsState；模式和边界掩码决定实际启用哪些 RHS。', cc);
+      for (let r = 0; r < 15; r++) {
+        const id = unit(parent + '-rhs' + r, 'RHS ' + r, parent, 'RHS 状态槽', { 编号: String(r), 状态: 'phase / k / i / waiting', 值: '5 × FP64', 选择: '由 batch / mask 决定' }, '独立 RHS 状态、向量值和依赖标志，申请同一共享算术簇；状态槽不是一个计算 lane。', cc);
+        rhsNodes.push(box(id, 50 + i * 565 + r % 5 * 101, 150 + Math.floor(r / 5) * 110, 92, 88));
+      }
+      rhsGroups.push(group(35 + i * 565, 95, 525, 385, 'RHS CONTEXT ' + i + ' · 15 个逻辑状态槽', parent));
+    }
+    unit('rhs-ready-masks', 'RHS 依赖 / done 掩码', 'rhs', logic, { 符号: 'rhsEnabledMask / rhsDoneMask', 依赖: 'LU step / reciprocal' }, '记录任务启用、完成和依赖，不代表全部槽均在运行。', cc);
+    detail('rhs', 'RHS · 上下文与状态槽', [], [], { nodes: [...rhsNodes, box('rhs-ready-masks', 60, 545, 480, 86), box('cluster-rhs-products', 620, 545, 480, 86)], groups: rhsGroups, height: 680 });
+
+    // SPM regions are aliases of shared bank storage, not extra port-bearing arrays.
+    unit('spm-decode', '字地址 / bank 映射', 'spm', logic, { 映射: '(address / 8) % 4', 字宽: '8 B' }, '根据地址和 grain 选择 bank，处理 stride 和每字访问进度。', onchip);
+    unit('spm-cache', '有限系数缓存区域', 'spm', region, { direct路径: 'LU / Lbar / Ubar', 每cell: '600 B', 契约: 'line / cells / version / mode' }, 'direct 路径存 LU，inverse 路径存 DInv；两者是替代模式。当前冷轮可以填充缓存，命中轮按契约复用。', tiles);
+    unit('spm-ingress-region', '输入 / 暂存区域', 'spm', region, { 内容: 'raw 输入 / warm R', 端口: '共用 bank R/W 限额' }, '输入存储区域与系数缓存、tile 一起映射到同一 banked SPM。', onchip);
+    unit('spm-ready', '访问完成 / ready 发布', 'spm', logic, { 延迟: '末字获准后 1 cycle', 符号: 'readyCycle' }, '不是数据驻留即就绪；最后一个字被端口授予后仍需 ready 延迟。', onchip);
+    detail('spm', 'SPM · 区域、仲裁与端口', [['spm-ingress-region', 'spm-cache', 'tile'], ['onchip', 'spm-decode'], ['bank0', 'bank1', 'bank2', 'bank3'], ['spm-ready']], [
+      ['spm-ingress-region', 'onchip', '输入访问'], ['spm-cache', 'onchip', '缓存访问'], ['tile', 'onchip', 'tile 访问'], ['onchip', 'spm-decode', '任务地址'], ...Array.from({ length: 4 }, (_, b) => ['spm-decode', 'bank' + b, 'bank 选择', 'control']), ...Array.from({ length: 4 }, (_, b) => ['bank' + b, 'spm-ready', '末字完成', 'control'])
+    ]);
+    unit('spm-cache-lu', 'LU 系数区域', 'spm-cache', region, { 每cell: '25 × FP64 = 200 B', 模式: 'direct' }, '当前 direct 路径缓存 packed LU；inverse 模式在相同角色使用 DInv，不在当前结构中叠加成额外缓存容量。', tiles);
+    unit('spm-cache-lbar', 'Lbar 系数区域', 'spm-cache', region, { 每cell: '25 × FP64 = 200 B' }, '保存有限系数缓存中的 Lbar。', tiles);
+    unit('spm-cache-ubar', 'Ubar 系数区域', 'spm-cache', region, { 每cell: '25 × FP64 = 200 B' }, '保存有限系数缓存中的 Ubar，后向计算依契约读取。', tiles);
+    unit('spm-cache-contract', 'Valid / version / mode 契约', 'spm-cache', logic, { 符号: 'LineCoeffCache', 条件: 'line / cells / version / directBaseSolve' }, '检查缓存有效性、系数版本、长度和模式。缓存命中仍需有限 SPM 端口读取。', tiles);
+    detail('spm-cache', '有限系数缓存 · 数据与契约', [['spm-cache-contract'], ['spm-cache-lu', 'spm-cache-lbar', 'spm-cache-ubar'], ['onchip']], [['spm-cache-contract', 'spm-cache-lu', '匹配', 'control'], ['spm-cache-contract', 'spm-cache-lbar', '匹配', 'control'], ['spm-cache-contract', 'spm-cache-ubar', '匹配', 'control'], ['spm-cache-lu', 'onchip', '读出'], ['spm-cache-lbar', 'onchip', '读出'], ['spm-cache-ubar', 'onchip', '读出']], { parentView: 'spm-detail' });
+    unit('onchip-queue', '片上访问任务队列', 'onchip', fifo, { 深度: '64', 符号: 'onchipQueue', 内容: 'owner / address / op / next' }, '有限访问任务描述，队列满则背压；不是六十四个存储端口。', onchip);
+    unit('onchip-active', 'DMA 激活 / 取消', 'onchip', logic, { 符号: 'active / eligibleCycle' }, 'DMA 到达之前预留任务，响应后激活；取消尚未激活的任务。', onchip);
+    unit('onchip-priority', '优先级 / 稳定排序', 'onchip', logic, { 顺序: 'priority / id', 优先: '前沿读取' }, '同优先级按任务编号稳定排序。', onchip);
+    unit('onchip-port-budget', '逐 bank R/W 限额', 'onchip', logic, { 每周期: '4 × (1R + 1W)', 符号: 'reads / writes' }, '每周期分别重置每 bank 的读写限额，不能把 bank 带宽共享成一个无限端口。', onchip);
+    detail('onchip', 'SPM 仲裁 · 有限访问任务', [['onchip-queue', 'onchip-active'], ['onchip-priority', 'onchip-port-budget'], ['spm-decode', 'spm-ready']], [['onchip-queue', 'onchip-priority', '活动任务', 'control'], ['onchip-priority', 'onchip-port-budget', '字访问授予', 'control']], { parentView: 'spm-detail' });
+    for (let b = 0; b < 4; b++) {
+      const parent = 'bank' + b;
+      unit(parent + '-read', 'Bank ' + b + ' · R0', parent, '读端口限额', { 每周期: '1 × 8 B', 操作: 'Read' }, '此 bank 的一个读端口授予限额；没有具体端口活动 trace 时不染成运行状态。', onchip);
+      unit(parent + '-write', 'Bank ' + b + ' · W0', parent, '写端口限额', { 每周期: '1 × 8 B', 操作: 'Write' }, '此 bank 的一个写端口授予限额，与读端口分别限制。', onchip);
+      unit(parent + '-storage', 'Bank ' + b + ' · 存储字', parent, region, { 地址: '(address / 8) % 4 = ' + b, 容量: '由共享区域分配决定' }, '同一 bank 承载输入、缓存与 tile 的映射字；统一 192 KiB 状态预算不能简单除以四当成 SRAM 容量。', onchip);
+      detail(parent, 'Bank ' + b + ' · 读写端口', [[parent + '-read', parent + '-write'], [parent + '-storage'], ['spm-ready']], [[parent + '-write', parent + '-storage', '写入字'], [parent + '-storage', parent + '-read', '读出字'], [parent + '-read', 'spm-ready', 'ready', 'control']], { parentView: 'spm-detail' });
+    }
+
+    // Two tile buffers and their data/state, bound to the same physical SPM.
+    const tileNodes = [], tileGroups = [];
+    for (let i = 0; i < 2; i++) {
+      const id = unit('tile-buffer' + i, 'Tile ' + (i ? 'B' : 'A'), 'tile', region, { cells: '8', 每cell: 'y 40 B + Ubar 200 B', 符号: i ? 'prefetchTile' : 'tile' }, '一个固定容量 tile 区域，phase 决定前向驻留、回读或保留；缓冲 A/B 没有独立算术单元。', tiles);
+      for (const [suffix, label, type, params, desc] of [
+        ['y', 'y 向量区域', region, { 容量: '8 × 40 B = 320 B' }, '保存前向结果 y。'],
+        ['ubar', 'Ubar 矩阵区域', region, { 容量: '8 × 200 B = 1600 B' }, '保存驻留后向系数 Ubar；命中路径可由有限系数缓存供给。'],
+        ['phase', 'Phase / cell 范围', logic, { 状态: 'Idle / Forward / Resident / Read' }, '记录 start/count/retired 和存储编号；phase 状态尚未在演示中逐项采集。'],
+        ['dma-count', 'DMA 计数 / 响应引用', registers, { 符号: 'issued[2] / completed[2]' }, '引用保护存储直到必需响应返回，之后才能复用区域。']
+      ]) {
+        const child = unit(id + '-' + suffix, label, id, type, params, desc, tiles);
+        const index = tileNodes.filter(n => n.id.startsWith(id + '-')).length;
+        tileNodes.push(box(child, 65 + i * 565, 145 + index * 100, 460, 78));
+      }
+      tileGroups.push(group(35 + i * 565, 95, 525, 485, 'TILE ' + (i ? 'B · 预取 / 留存' : 'A · 当前缓冲'), id));
+    }
+    detail('tile', 'Tile A / B · 数据与生命周期', [], [], { parentView: 'spm-detail', nodes: tileNodes, groups: tileGroups });
+
+    unit('feedback-handoff', '前向结果交接', 'feedback', registers, { 数据: '5 × FP64', 符号: 'ForwardDqHandoff' }, '按 line/cell/generation 将前一个 cell 的 dq_star 交给后继，附带 ready/consumed 状态。', cc);
+    unit('feedback-forward', '前向列乘积 / 累加', 'feedback', registers, { 符号: 'LineMvmState', 依赖: 'previousY / Lbar' }, '保存前向计算的乘积和累加进度，复用共享 mul/add。', cc);
+    unit('feedback-backward', '后向列乘积 / 累加', 'feedback', registers, { 符号: 'LineMvmState', 依赖: 'dq[i+1] / Ubar' }, '单线后向递推状态，仍复用同一计算簇，不画成独立 MVM 硬件。', cc);
+    unit('feedback-base', '后台 base 上下文', 'feedback', registers, { 符号: 'LineMvmState', 角色: '后台 base' }, '缓存 inverse 模式下使用的有界 base 状态；当前 direct 模式该路径不被强制激活。', cc, { subtitle: '模式条件启用' });
+    unit('feedback-combine', '最终组合 / 发布控制', 'feedback', logic, { 符号: 'ForwardCombineTask / dqStar' }, '等待 base 和 correction ready 后提交组合工作，结果发布至 handoff/tile/output。', cc);
+    detail('feedback', '前后向转发 · 递推状态', [['feedback-handoff', 'feedback-base'], ['feedback-forward', 'feedback-backward'], ['cluster', 'feedback-combine'], ['output', 'tile']], [['feedback-handoff', 'feedback-forward', '相邻结果'], ['feedback-forward', 'cluster', '共享计算'], ['feedback-backward', 'cluster', '共享计算'], ['cluster', 'feedback-combine', '完成'], ['feedback-combine', 'output', '向量'], ['tile', 'feedback-backward', 'y / Ubar']]);
+
+    // Explicit FIFO slots, plus producer and response ownership boundaries.
+    for (const [parent, prefix, title, source] of [['output', 'output-slot', '输出', tiles], ['completion', 'completion-slot', '完成记录', 'src/arch/arm/cfd_coeff_preprocess_lifecycle.inc']]) {
+      const slots = [];
+      for (let i = 0; i < 8; i++) slots.push(unit(prefix + i, title + '槽 ' + i, parent, 'FIFO 条目', parent === 'output' ? { 内容: '40 B 向量 / transfer / tile 引用' } : { 内容: 'token / request / generation / transfer', 保守预算: '1024 B' }, '有界队列中的一个结构条目。槽编号只用于展示容量，不映射到未采集的实际请求占用。', source));
+      unit(parent + '-producer', title + '入队 / credit', parent, logic, { 深度: '8', 行为: '满则背压' }, '入队条件与相应有限 credit；其预算与计算请求或输入槽分别表达。', source);
+      unit(parent + '-retire', title + '响应 / 回收', parent, logic, { 条件: 'completed == bytes.size()' }, '必要响应返回之后，释放数据或记录条目及引用。', source);
+      detail(parent, title + '队列 · 八个结构槽', [[parent + '-producer'], slots.slice(0, 4), slots.slice(4), [parent + '-retire', 'dma']], [['dma', parent + '-retire', '响应'], [parent + '-retire', parent + '-producer', '回收 credit', 'control']]);
+    }
+
+    // O3 default and actual classic cache/DRAM/SPM hierarchy from this runner.
+    map.get('cpu').description = '当前参考配置使用 O3CPU。展开查看前端、重命名、IQ/FU、LSQ、ROB/commit 和 CFD 启动接口；这里未接入 CPU 逐指令 trace。';
+    const cpuUnits = [
+      ['cpu-fetch', 'Fetch / 分支预测', logic, { 宽度: '8 inst/cycle' }, '前端取指和分支预测，访问 L1I。', 'src/cpu/o3/fetch.hh'],
+      ['cpu-decode', 'Decode', logic, { 宽度: '8 inst/cycle' }, '解码 AArch64 与自定义 CFD 指令。', 'src/cpu/o3/decode.hh'],
+      ['cpu-rename', 'Rename / 映射与 free list', logic, { 宽度: '8 inst/cycle', int寄存器: '512', vec寄存器: '512', mat寄存器: '256' }, '重命名使用物理寄存器和映射表。', 'src/cpu/o3/rename.hh'],
+      ['cpu-iq', 'IQ / 唤醒与选择', logic, { 默认条目: '64', 发射宽度: '8' }, '保留指令依赖，选择就绪指令进入 O3 FU pool；条目数可由运行参数覆盖。', 'src/cpu/o3/inst_queue.hh'],
+      ['cpu-fu', 'CPU FU pool / Writeback', physical, { wb宽度: '8', 计数: '由 FUDesc / 运行配置确定' }, '普通 O3 功能单元与事件控制器的共享簇是不同资源边界。', 'src/cpu/o3/fu_pool.hh'],
+      ['cpu-lsq', 'LSQ · Load / Store 队列', logic, { LQ: '64', SQ: '64' }, '普通 CPU load/store 经 L1D；DMA 使用独立 DMA cache 接入。', 'src/cpu/o3/lsq.hh'],
+      ['cpu-rob', 'ROB / Commit', logic, { 默认ROB: '160', 提交宽度: '8' }, '顺序提交与异常/回滚；ROB 条目数可由实际参数覆盖。', 'src/cpu/o3/commit.hh'],
+      ['cpu-launch', 'CFD ISA / Launch / Wait', logic, { 行为: 'descriptor / token' }, '自定义指令提交事件控制器工作，启动后设备自治推进。', 'src/arch/arm/insts/cfd_dsa.cc']
+    ];
+    for (const [id, label, type, params, desc, source] of cpuUnits) unit(id, label, 'cpu', type, params, desc, source);
+    detail('cpu', 'CPU · O3 流水与接口', [['cpu-fetch', 'cpu-decode', 'cpu-rename'], ['cpu-iq', 'cpu-fu', 'cpu-lsq'], ['cpu-rob', 'cpu-launch'], ['controller']], [['cpu-fetch', 'cpu-decode', '指令'], ['cpu-decode', 'cpu-rename', '解码'], ['cpu-rename', 'cpu-iq', '派发'], ['cpu-iq', 'cpu-fu', '发射'], ['cpu-iq', 'cpu-lsq', '访存'], ['cpu-fu', 'cpu-rob', '完成'], ['cpu-launch', 'controller', '启动 / 等待', 'control']], { parentView: 'system' });
+    map.get('memory').description = '当前 runner 的内存系统包含 L1I/L1D、DMA cache、toL2Bus、L2、SystemXBar、DRAM SimpleMemory 和独立映射的 SimpleMemory SPM。后者与设备内部 banked SPM 状态预算分别展示。';
+    const caches = [['mem-l1i', 'L1 I-Cache', '32 KiB', '8', '32'], ['mem-l1d', 'L1 D-Cache', '32 KiB', '8', '128'], ['mem-dma-cache', 'DMA Cache', '1 KiB', '8', '20'], ['mem-l2', 'L2 Cache', '512 KiB', '16', '128']];
+    for (const [id, label, size, assoc, mshrs] of caches) unit(id, label, 'memory', 'Cache', { 容量: size, 相联度: assoc, MSHRs: mshrs }, id === 'mem-dma-cache' ? 'timing DMA 请求先进入此 cache，再接入 classic coherent fabric；不是设备的有限系数缓存。' : '当前 runner 中的 classic cache，具体时序以实际运行配置为准。', runner);
+    unit('mem-l2bus', 'toL2Bus · L2XBar', 'memory', '互连', { 宽度: '64 B' }, '汇合 CPU 两个 L1 与 DMA cache 的请求。', runner);
+    unit('mem-bus', 'membus · SystemXBar', 'memory', '互连', { 宽度: '64 B', 时钟: '2 GHz' }, '将 L2 侧请求路由到配置的地址范围。', runner);
+    unit('mem-dram', 'DRAM · SimpleMemory', 'memory', '内存时序模型', { 默认容量: '16 MB', 延迟: '30 ns', 带宽: '32 GB/s' }, '此配置使用 SimpleMemory，未建模真实 DRAM controller 的 command queues、channel/rank/bank。', runner);
+    unit('mem-simple-spm', '映射 SPM · SimpleMemory', 'memory', '独立地址设备', { 地址: '0x70000000', 大小: '256 KiB', 默认延迟: '1 ns', 默认带宽: '64 GB/s' }, 'CPU 访问的 uncached 映射 SPM。它不是 CFD controller 内 192 KiB 统一状态预算，不能把两者容量相加当成同一存储。', runner);
+    detail('memory', '内存系统 · Cache 与互连', [['mem-l1i', 'mem-l1d', 'mem-dma-cache'], ['mem-l2bus', 'mem-l2'], ['mem-bus'], ['mem-dram', 'mem-simple-spm']], [['mem-l1i', 'mem-l2bus', '指令访存'], ['mem-l1d', 'mem-l2bus', '数据访存'], ['mem-dma-cache', 'mem-l2bus', 'DMA'], ['mem-l2bus', 'mem-l2', '请求'], ['mem-l2', 'mem-bus', '请求'], ['mem-bus', 'mem-dram', '地址路由'], ['mem-bus', 'mem-simple-spm', 'uncached 地址路由']], { parentView: 'system' });
+    for (const [id, label, size, assoc, mshrs] of caches) {
+      unit(id + '-tags', 'Tag / valid / dirty', id, registers, { 相联度: assoc, line: '64 B' }, 'cache tag 和有效/脏状态；L1I 为只读 cache。', runner);
+      unit(id + '-data', 'Data array', id, 'Cache 数据阵列', { 容量: size }, '该 cache 的数据存储，逐 set/way 内容尚未采集。', runner);
+      unit(id + '-mshr', 'MSHR / miss 合并', id, fifo, { 条目: mshrs }, '保留在途 miss 和同一 cache line 的目标请求，不代表内存通道。', runner);
+      unit(id + '-control', 'Tag 查询 / 替换控制', id, logic, { 规则: 'Cache 实际配置' }, '处理 cache hit/miss、替换和响应路由；不补出未记录的 hit rate。', runner);
+      detail(id, label + ' · 内部单元', [[id + '-control'], [id + '-tags', id + '-data'], [id + '-mshr']], [[id + '-control', id + '-tags', 'tag 查询'], [id + '-control', id + '-data', '数据访问'], [id + '-control', id + '-mshr', 'miss', 'control']], { parentView: 'memory-detail' });
+    }
+    const resourceOverview = session.views.find(v => v.id === 'resources');
+    if (resourceOverview) { resourceOverview.groups[0].ownerId = 'cluster'; resourceOverview.groups[1].ownerId = 'spm'; }
+    session.meta.detailVersion = 1;
+    return session;
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports = expandArchitecture;
+  else root.CfdArchitectureDetails = expandArchitecture;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+/* Structure reflects the shared-cluster model. Every replay event is illustrative. */
+(function (root) {
+  'use strict';
+  const arm = 'src/arch/arm/';
+  const nodes = [];
+  const node = (id, label, type, parent, subtitle, description, params, source, extra = {}) => {
+    nodes.push({ id, label, type, parent, subtitle, description, params, source, ...extra });
+  };
+  node('cpu', 'CPU / Guest', '系统', null, '提交 descriptor · 等待完成', 'CPU 执行提交与等待指令，控制器在启动后自治推进。此视图概括接口边界，CPU 内部流水线尚未展开。', { 展示粒度: '系统接口' }, 'projects/cfd_dsa/configs/run_cfd_dsa.py');
+  node('memory', '内存系统', '系统', null, 'gem5 timing memory', '承载原始矩阵、向量、描述符和完成记录。DMA 请求经过实际运行配置中的内存层级；原型将其折叠为一个模块。', { 展示粒度: '折叠层级' }, 'projects/cfd_dsa/configs/run_cfd_dsa.py');
+  node('dsa', 'CFD DSA', '加速器', null, '单线 · 前向 / 后向', '有界上下文、共享算术资源、SPM bank/端口和独立完成队列构成的有限资源时序模型。', { 路径: 'cold direct', 研究范围: '1 line / 1 sweep' }, arm + 'cfd_coeff_preprocess_controller.cc', { drillView: 'accelerator' });
+  node('controller', '控制与前沿调度', '控制器', 'dsa', '准入 · 依赖 · commit / detach', '为就绪反馈、前沿 LU、RHS 和后台 LU 分配资源。算法任务与实际共享的计算硬件分别表达。', { 请求窗口: '8', LU上下文: '2', RHS上下文: '2' }, arm + 'cfd_coeff_preprocess_frontier.inc');
+  node('dma', 'DMA 接口', '传输', 'dsa', '输入 / tile / 向量 / 完成记录', '通过 timing 读写访问内存。接口中的在途请求、传输区间和完成响应可以分别观测。示例事件表示传输组，并非逐 packet 实测。', { DMA包宽: '64 B', outstanding上限: '32' }, arm + 'cfd_local_spm.cc');
+  node('ingress', '输入暂存', '存储区域', 'dsa', 'raw D / L / U / R', 'DMA 响应后仍须经过片上写入与操作数读出，数据才可被计算消费。输入槽与输出快照持有不同生命周期。', { 基础输入槽: '2', 输入格式: 'FP64 · 5×5 / 5' }, arm + 'cfd_coeff_preprocess_tiles.inc');
+  node('contexts', '计算上下文', '逻辑分组', 'dsa', 'LU / RHS', '有限上下文保存请求状态；这些上下文共用同一组物理算术资源。', { LU: '2', RHS: '2' }, arm + 'cfd_coeff_preprocess_controller.hh');
+  node('lu', 'LU 上下文', '上下文', 'contexts', 'factor(D) · 标量任务', '推进 LU 行组并发布可供 RHS 使用的前沿。LU 任务使用共享乘法、加减和除法资源。', { 上下文数: '2', 工作方式: '前沿优先' }, arm + 'cfd_coeff_preprocess_lu_rows.inc');
+  node('rhs', 'RHS 上下文', '上下文', 'contexts', '系数求解 / base solve', '推进 RHS 行任务，与 LU 共同竞争计算簇。上下文数不是独立 TRSM 单元数。', { 上下文数: '2', 本设计配置: 'direct' }, arm + 'cfd_coeff_preprocess_rhs_rows.inc');
+  node('cluster', '共享计算簇', '共享硬件', 'dsa', '5 mul + 5 add/sub + 1 div', 'LU、RHS 和列向量任务共享同一组算术硬件。标量任务占用一个发射 lane，列向量任务原子申请五个 lane。', { 乘法发射宽度: '5 lanes', 加减发射宽度: '5 lanes', 除法发射宽度: '1 lane', 延迟: '3 / 4 / 12 cycles', 除法II: '4 cycles' }, arm + 'cfd_coeff_preprocess_cluster.inc', { drillView: 'resources', evidence: '现有 cluster trace 记录 pool / lanes / caller / complete_cycle，未记录具体 lane ID 或 request ID。真实导入时不可据此猜测其所属 cell。' });
+  node('mul', '乘法资源池', '资源池', 'cluster', '5 lanes · latency 3', '发射宽度与在途操作数是不同概念。流水线内可以同时存在多个尚未完成的操作。', { 发射宽度: '5 lanes', 延迟: '3 cycles', II: '1 cycle' }, arm + 'cfd_coeff_preprocess_cluster.inc', { evidence: '资源池级观测，不呈现没有 trace 依据的具体 lane 身份。' });
+  node('add', '加减资源池', '资源池', 'cluster', '5 lanes · latency 4', '为标量 LU/RHS 和列向量累加提供共享的加减发射槽。反馈链延迟需要通过依赖事件说明。', { 发射宽度: '5 lanes', 延迟: '4 cycles', II: '1 cycle' }, arm + 'cfd_coeff_preprocess_cluster.inc');
+  node('div', '共享除法器', '资源池', 'cluster', '1 lane · latency 12 · II 4', '单个流水除法器可每四周期发射一次，完成延迟为十二周期；因此一个发射 lane 可以有多个在途操作。', { 发射宽度: '1 lane', 延迟: '12 cycles', II: '4 cycles' }, arm + 'cfd_coeff_preprocess_cluster.inc');
+  node('products', '乘积 / 累加寄存器', '寄存器/FIFO', 'cluster', '有限 credit · 非 SPM', '活跃乘积、累加器和待累加向量是寄存器与有界 FIFO 状态，不按每次运算计入 SPM 访问。', { 共享乘积深度: '8', line乘积深度: '5' }, arm + 'cfd_coeff_preprocess_cluster.inc');
+  node('spm', 'Banked SPM', '片上存储', 'dsa', '输入 · 系数缓存 · 驻留 tile', '输入暂存、系数缓存与驻留 tile 共享有限 bank/端口的片上存储。图中区域不表示额外独立读写端口。', { 容量预算: '192 KiB', banks: '4', 每bank端口: '1R / 1W', bank粒度: '8 B', ready延迟: '1 cycle' }, arm + 'cfd_coeff_preprocess_onchip.inc', { drillView: 'resources', evidence: '192 KiB 是统一硬件状态预算上限，含寄存器/FIFO，不能当成 SRAM 利用率或综合面积。' });
+  node('onchip', '片上访问仲裁', '逻辑分组', 'spm', '有限任务队列 · 前沿优先', '按任务优先级和编号稳定仲裁每字访问。数据已驻留仍需经过端口授予和 ready 延迟。', { 任务队列深度: '64', 最低准入等待: '1 cycle', 完成ready延迟: '1 cycle' }, arm + 'cfd_coeff_preprocess_onchip.inc');
+  for (let bank = 0; bank < 4; bank++) node('bank' + bank, 'Bank ' + bank, 'SPM bank', 'spm', '1R / 1W · grain 8 B', '地址按 (address / 8) % 4 映射至此 bank。每周期分别约束读写端口；平均利用率不能解释局部冲突。', { bank编号: String(bank), 读端口: '1', 写端口: '1', 字宽: '8 B' }, arm + 'cfd_coeff_preprocess_onchip.inc');
+  node('tile', '驻留 Tile A / B', '存储区域', 'spm', 'y / Ubar · 双缓冲', '有限 tile 缓冲存放前向结果及后向所需系数。进入尾 tile 时可留存前一块，DMA 引用保护其生命周期。', { tile长度: '8 cells', 缓冲数: '2', 每cell数据: '240 B' }, arm + 'cfd_coeff_preprocess_tiles.inc');
+  node('feedback', '前向 / 后向转发', '寄存器/控制', 'dsa', 'y[i−1] / dq[i+1]', '把相邻 cell 的递推结果转发至列向量计算。这里是逻辑数据与依赖边界，运算仍经过共享计算簇。', { 数据宽度: '5 × FP64', 依赖: '单线顺序递推' }, arm + 'cfd_coeff_preprocess_frontier.inc');
+  node('output', '输出快照队列', '有界FIFO', 'dsa', '结果写回 · 持有 DMA 引用', '计算完成后将结果快照放入有限队列，输入槽可以先释放。输出响应回来后才释放对应写回引用。', { warm写队列深度: '8', 向量宽度: '40 B' }, arm + 'cfd_coeff_preprocess_tiles.inc');
+  node('completion', '完成记录队列', '有界FIFO', 'dsa', 'commit → detach → retire', '计算请求 detach 后，完成记录独立写回；最终完成状态仍须等待必要 DMA 响应。', { 队列深度: '8', 每项预算: '1024 B' }, arm + 'cfd_coeff_preprocess_lifecycle.inc');
+  const edges = [];
+  const edge = (id, from, to, kind, label) => edges.push({ id, from, to, kind, label });
+  edge('cpu-dsa', 'cpu', 'dsa', 'control', 'launch / wait');
+  edge('memory-dsa', 'memory', 'dsa', 'data', 'timing ReadReq / WriteReq');
+  edge('cpu-controller', 'cpu', 'controller', 'control', 'descriptor / token');
+  edge('controller-dma', 'controller', 'dma', 'control', '提交传输');
+  edge('memory-dma', 'memory', 'dma', 'data', 'timing 请求 / 响应');
+  edge('dma-ingress', 'dma', 'ingress', 'data', 'D / L / U / R');
+  edge('ingress-lu', 'ingress', 'lu', 'data', 'D');
+  edge('ingress-rhs', 'ingress', 'rhs', 'data', 'L / U / R');
+  edge('lu-cluster', 'lu', 'cluster', 'data', '标量运算');
+  edge('rhs-cluster', 'rhs', 'cluster', 'data', 'RHS 运算');
+  edge('cluster-spm', 'cluster', 'spm', 'data', '系数存入');
+  edge('spm-cluster', 'spm', 'cluster', 'data', '操作数读出');
+  edge('cluster-feedback', 'cluster', 'feedback', 'data', '递推结果');
+  edge('feedback-cluster', 'feedback', 'cluster', 'control', '相邻点依赖');
+  edge('feedback-output', 'feedback', 'output', 'data', 'y / dq');
+  edge('spm-tile', 'spm', 'tile', 'data', '驻留区域');
+  edge('tile-feedback', 'tile', 'feedback', 'data', '后向读取');
+  edge('output-dma', 'output', 'dma', 'data', '结果写回');
+  edge('output-completion', 'output', 'completion', 'control', 'detach');
+  edge('completion-dma', 'completion', 'dma', 'data', '完成记录');
+  edge('mul-products', 'mul', 'products', 'data', '乘积');
+  edge('products-add', 'products', 'add', 'data', '累加');
+  for (let bank = 0; bank < 4; bank++) edge('onchip-bank' + bank, 'onchip', 'bank' + bank, 'data', '字访问');
+  const box = (id, x, y, w = 220, h = 90) => ({ id, x, y, w, h });
+  const views = [
+    { id: 'system', label: '系统概览', breadcrumb: 'SYSTEM / INTERFACE', width: 1160, height: 650,
+      nodes: [box('cpu', 95, 115, 270, 125), box('memory', 95, 380, 270, 125), box('dsa', 660, 240, 350, 165)],
+      edges: ['cpu-dsa', 'memory-dsa'], groups: [{ x: 55, y: 55, w: 355, h: 515, label: 'HOST / MEMORY' }, { x: 595, y: 120, w: 470, h: 410, label: 'ACCELERATOR' }] },
+    { id: 'accelerator', label: '加速器内部', breadcrumb: 'DSA / COMPUTE & STORAGE', width: 1160, height: 660,
+      nodes: [box('cpu', 35, 55, 230, 80), box('controller', 400, 55, 360, 80), box('memory', 895, 55, 230, 80), box('dma', 895, 155, 230, 70), box('ingress', 35, 270, 215, 100), box('lu', 330, 215, 200, 85), box('rhs', 330, 345, 200, 85), box('cluster', 610, 270, 235, 145), box('feedback', 655, 455, 190, 75), box('spm', 325, 525, 290, 95), box('tile', 655, 555, 200, 65), box('output', 895, 290, 230, 100), box('completion', 895, 500, 230, 100)],
+      edges: ['cpu-controller', 'controller-dma', 'memory-dma', 'dma-ingress', 'ingress-lu', 'ingress-rhs', 'lu-cluster', 'rhs-cluster', 'cluster-spm', 'spm-cluster', 'cluster-feedback', 'feedback-cluster', 'feedback-output', 'spm-tile', 'tile-feedback', 'output-dma', 'output-completion', 'completion-dma'],
+      routes: {
+        'cpu-controller': [[265, 95], [400, 95]], 'controller-dma': [[760, 95], [875, 95], [875, 175], [895, 175]],
+        'memory-dma': [[1010, 135], [1010, 155]], 'dma-ingress': [[895, 203], [142, 203], [142, 270]],
+        'ingress-lu': [[250, 295], [285, 295], [285, 257], [330, 257]], 'ingress-rhs': [[250, 340], [280, 340], [280, 387], [330, 387]],
+        'lu-cluster': [[530, 257], [575, 257], [575, 307], [610, 307]], 'rhs-cluster': [[530, 387], [575, 387], [575, 370], [610, 370]],
+        'cluster-spm': [[610, 400], [592, 400], [592, 525]], 'spm-cluster': [[615, 572], [635, 572], [635, 415]],
+        'cluster-feedback': [[748, 415], [748, 455]], 'feedback-cluster': [[845, 484], [864, 484], [864, 390], [845, 390]],
+        'feedback-output': [[845, 508], [880, 508], [880, 340], [895, 340]], 'spm-tile': [[615, 598], [655, 598]], 'tile-feedback': [[755, 555], [755, 530]],
+        'output-dma': [[1125, 330], [1140, 330], [1140, 190], [1125, 190]], 'output-completion': [[1010, 390], [1010, 500]], 'completion-dma': [[1125, 550], [1152, 550], [1152, 210], [1125, 210]]
+      }, groups: [{ x: 310, y: 170, w: 550, h: 275, label: 'CONTEXTS → SHARED HARDWARE' }] },
+    { id: 'resources', label: '计算与存储资源', breadcrumb: 'DSA / PHYSICAL RESOURCE POOLS', width: 1160, height: 650,
+      nodes: [box('mul', 85, 115, 275, 105), box('add', 440, 115, 275, 105), box('div', 795, 115, 275, 105), box('products', 440, 255, 275, 75), box('onchip', 70, 470, 220, 95), ...Array.from({ length: 4 }, (_, b) => box('bank' + b, 350 + b * 195, 470, 170, 95))],
+      edges: ['mul-products', 'products-add', 'onchip-bank0', 'onchip-bank1', 'onchip-bank2', 'onchip-bank3'],
+      routes: { 'mul-products': [[222, 220], [222, 292], [440, 292]], 'products-add': [[577, 255], [577, 220]], ...Object.fromEntries(Array.from({ length: 4 }, (_, b) => ['onchip-bank' + b, [[290, 490 + b * 15], [315 + b * 10, 490 + b * 15], [315 + b * 10, 420 + b * 10], [435 + b * 195, 420 + b * 10], [435 + b * 195, 470]]])) },
+      groups: [{ x: 40, y: 55, w: 1080, h: 295, label: 'SHARED CLUSTER · LU / RHS / VECTOR WORK' }, { x: 40, y: 385, w: 1080, h: 220, label: 'BANKED SPM · REGIONS SHARE THESE PORTS' }] }
+  ];
+  const entities = Array.from({ length: 4 }, (_, cell) => ({ id: 'line0:g0:cell' + cell, label: 'line 0 · cell ' + cell, cell, generation: 0 }));
+  const events = [];
+  const event = (moduleId, start, end, kind, label, entityId, edgeIds, attrs = {}) => events.push({ id: 'demo-' + events.length, moduleId, start, end, kind, label, entityId, edgeIds, evidence: 'illustrative', ...attrs });
+  event('controller', 0, 8, 'control', '单线启动 / 准入', null, ['cpu-dsa', 'cpu-controller', 'controller-dma']);
+  for (let i = 0; i < 4; i++) {
+    const entity = entities[i].id, read = 8 + i * 16, base = 42 + i * 54;
+    event('dma', read, read + 18, 'transfer', 'D/L/U/R 输入传输组', entity, ['memory-dsa', 'memory-dma', 'dma-ingress'], { bytes: 640 });
+    event('bank' + i, read + 18, read + 22, 'transfer', '片上写入片段', entity, ['dma-ingress', 'onchip-bank' + i], { bytes: 32 });
+    event('ingress', read + 22, base, 'wait', '等待 LU 上下文准入', entity, ['ingress-lu'], { reason: '等待计算前沿 / 有限上下文' });
+    event('lu', base, base + 35, 'control', 'LU 上下文推进（片段）', entity, ['ingress-lu', 'lu-cluster']);
+    event('mul', base, base + 3, 'compute', 'LU 标量乘法', entity, ['lu-cluster'], { lanes: 1 });
+    event('add', base + 3, base + 7, 'compute', 'LU 标量减法', entity, ['lu-cluster'], { lanes: 1 });
+    event('div', base + 7, base + 19, 'compute', 'LU 标量除法', entity, ['lu-cluster'], { lanes: 1 });
+    event('mul', base + 20, base + 23, 'compute', 'LU 下一目标乘法', entity, ['lu-cluster'], { lanes: 1 });
+    event('div', base + 23, base + 35, 'compute', 'LU 前沿除法', entity, ['lu-cluster'], { lanes: 1 });
+    event('rhs', base + 35, base + 63, 'control', 'RHS / base solve（片段）', entity, ['ingress-rhs', 'rhs-cluster']);
+    event('mul', base + 35, base + 38, 'compute', 'RHS 列向量乘法', entity, ['rhs-cluster'], { lanes: 5 });
+    event('add', base + 38, base + 42, 'compute', 'RHS 列向量累加', entity, ['rhs-cluster'], { lanes: 5 });
+    event('mul', base + 42, base + 45, 'compute', 'RHS 第二列乘法', entity, ['rhs-cluster'], { lanes: 5 });
+    event('add', base + 45, base + 49, 'compute', 'RHS 第二列累加', entity, ['rhs-cluster'], { lanes: 5 });
+    event('div', base + 49, base + 61, 'compute', 'RHS 标量除法', entity, ['rhs-cluster'], { lanes: 1 });
+    event('feedback', base + 63, base + 72, 'control', '前向结果转发', entity, ['cluster-feedback', 'feedback-output']);
+    event('output', base + 72, base + 88, 'transfer', 'y 输出快照持有', entity, ['feedback-output', 'output-dma'], { bytes: 40 });
+    event('dma', base + 72, base + 88, 'transfer', 'y 向量写回', entity, ['output-dma', 'memory-dma', 'memory-dsa'], { bytes: 40 });
+    event('completion', base + 82, base + 98, 'transfer', '完成记录异步排出', entity, ['output-completion', 'completion-dma'], { bytes: 320 });
+  }
+  event('tile', 284, 306, 'transfer', '后向 tile 回读（示意）', entities[3].id, ['memory-dma', 'spm-tile', 'tile-feedback'], { bytes: 240 });
+  event('dma', 284, 306, 'transfer', 'tile 读回片段', entities[3].id, ['memory-dma', 'memory-dsa', 'spm-tile'], { bytes: 240 });
+  for (let j = 0; j < 4; j++) {
+    const entity = entities[3 - j].id, base = 310 + j * 27;
+    event('feedback', base, base + 27, 'control', '后向 cell 递推', entity, ['tile-feedback', 'feedback-cluster', 'cluster-feedback']);
+    for (let k = 0; k < 5; k++) {
+      event('mul', base + k, base + k + 3, 'compute', '后向列 ' + k + ' 乘法', entity, ['spm-cluster', 'feedback-cluster'], { lanes: 5 });
+      event('add', base + 3 + k * 4, base + 7 + k * 4, 'compute', '后向列 ' + k + ' 累加', entity, ['cluster-feedback'], { lanes: 5 });
+    }
+    event('add', base + 23, base + 27, 'compute', '后向最终向量减法', entity, ['cluster-feedback'], { lanes: 5 });
+    event('output', base + 27, base + 39, 'transfer', 'dq 最终向量写回', entity, ['feedback-output', 'output-dma'], { bytes: 40 });
+  }
+  event('dma', 418, 448, 'transfer', '最终向量批量写回', null, ['output-dma', 'memory-dma', 'memory-dsa'], { bytes: 160 });
+  event('controller', 448, 462, 'control', '等待必要响应 / 完成 fence', null, ['cpu-dsa', 'cpu-controller', 'completion-dma']);
+  const session = {
+    schemaVersion: 1,
+    meta: { name: '单线 · cold direct · 流程片段', provenance: 'demo', timeUnit: 'cycle', clockDomain: '控制器时钟域', start: 0, end: 480, defaultTime: 112, defaultView: 'accelerator', configSummary: 'shared 5/5/1 · 4 banks · tile 8 × 2', configSource: 'projects/cfd_dsa/suites/single-line-round2-recommended.json / cold-direct-b4-t8-q64', description: '结构参数参考当前推荐配置；全部事件为人工编排的交互示意，省略大量运算，不对应完整算例或测量结果。' },
+    nodes, edges, views, entities, events,
+    tracks: [
+      { id: 'control', label: '控制 / 上下文', moduleIds: ['controller', 'lu', 'rhs'] },
+      { id: 'dma', label: 'DMA', moduleIds: ['dma'] },
+      { id: 'spm', label: '片上存储', moduleIds: ['bank0', 'bank1', 'bank2', 'bank3', 'tile'] },
+      { id: 'input', label: '输入等待', moduleIds: ['ingress'] },
+      { id: 'mul', label: '乘法资源池', moduleIds: ['mul'] },
+      { id: 'add', label: '加减资源池', moduleIds: ['add'] },
+      { id: 'div', label: '除法资源池', moduleIds: ['div'] },
+      { id: 'output', label: '反馈 / 输出', moduleIds: ['feedback', 'output'] },
+      { id: 'completion', label: '完成记录', moduleIds: ['completion'] }
+    ]
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = require('./detail-architecture.js')(session);
+  else root.CFD_DEMO_SESSION = root.CfdArchitectureDetails(session);
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+(function () {
+  'use strict';
+  const M = window.CfdModel, NS = 'http://www.w3.org/2000/svg';
+  const $ = id => document.getElementById(id);
+  const graph = $('architecture-svg'), timeline = $('timeline-svg');
+  const state = { session: null, view: 'accelerator', selected: 'cluster', entity: null, time: 112, event: null, playing: false, speed: 1, expanded: new Set() };
+  const camera = { scale: 1, x: 0, y: 0, fit: true };
+  let drag = null, timer = null, noticeTimer = null, timelineScrubbing = false, graphDragged = false;
+  const measureCanvas = document.createElement('canvas'), measure = measureCanvas.getContext('2d');
+  const svg = (tag, attrs = {}, text) => {
+    const el = document.createElementNS(NS, tag);
+    for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, String(value));
+    if (text !== undefined) el.textContent = text;
+    return el;
+  };
+  const html = (tag, className, text) => {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
+  };
+  const currentView = () => state.session.views.find(v => v.id === state.view);
+  const currentNode = () => state.session.nodes.find(n => n.id === state.selected);
+  const timeLabel = value => value.toLocaleString() + ' ' + state.session.meta.timeUnit;
+  const entityLabel = id => state.session.entities.find(e => e.id === id)?.label || '全局事件';
+  const observed = () => state.session.meta.provenance === 'recorded';
+  const childrenOf = id => state.session.nodes.filter(node => node.parent === id);
+  const visibleInView = (view, id) => view.nodes.some(node => node.id === id) || (view.groups || []).some(group => group.ownerId === id);
+  function expandAncestors(id) {
+    for (let node = state.session.nodes.find(n => n.id === id); node; node = state.session.nodes.find(n => n.id === node.parent)) if (childrenOf(node.id).length) state.expanded.add(node.id);
+  }
+  function showNode(id) {
+    if (!visibleInView(currentView(), id)) {
+      const node = state.session.nodes.find(n => n.id === id);
+      const view = state.session.views.find(v => v.ownerId === node.parent && visibleInView(v, id)) || state.session.views.find(v => visibleInView(v, id));
+      if (view) { setView(view.id, id); return; }
+    }
+    selectNode(id);
+  }
+  function pathContainsNode(path, node) {
+    return [...path.modules].some(id => M.isWithin(state.session, id, node.id) || (node.observability === 'structure' && M.isWithin(state.session, node.id, id)));
+  }
+  function notify(message, error = false) {
+    clearTimeout(noticeTimer); $('notice').textContent = message; $('notice').classList.toggle('error', error); $('notice').hidden = false;
+    noticeTimer = setTimeout(() => { $('notice').hidden = true; }, 6000);
+  }
+  function wrapText(text, width, font, maxLines = 2) {
+    measure.font = font; const lines = []; let current = '';
+    for (const char of String(text)) {
+      if (measure.measureText(current + char).width > width && current) { lines.push(current); current = char; }
+      else current += char;
+    }
+    if (current) lines.push(current);
+    if (lines.length > maxLines) {
+      let last = lines[maxLines - 1];
+      while (last && measure.measureText(last + '…').width > width) last = last.slice(0, -1);
+      return [...lines.slice(0, maxLines - 1), last + '…'];
+    }
+    return lines;
+  }
+  function loadSession(session) {
+    M.validateSession(session); stopPlayback();
+    state.session = session;
+    state.view = session.views.some(v => v.id === session.meta.defaultView) ? session.meta.defaultView : session.views[0].id;
+    state.selected = currentView().nodes.some(n => n.id === 'cluster') ? 'cluster' : currentView().nodes[0].id;
+    state.entity = null; state.event = null;
+    state.expanded = new Set(['dsa', 'contexts']);
+    state.time = Number.isSafeInteger(session.meta.defaultTime) ? Math.max(session.meta.start, Math.min(session.meta.end, session.meta.defaultTime)) : session.meta.start;
+    $('run-name').textContent = session.meta.name;
+    $('config-summary').textContent = session.meta.configSummary || '';
+    $('time-domain').textContent = session.meta.clockDomain + ' · ' + session.meta.timeUnit;
+    $('provenance').textContent = observed() ? '导入记录' : '示意事件'; $('provenance').classList.toggle('recorded', observed());
+    $('session-status').textContent = observed() ? 'IMPORTED SESSION · ' + session.events.length + ' 个事件 · 证据类型随事件展示' : 'DESIGN DEMO · 示例时序，不是测量结果';
+    $('sidebar-evidence').textContent = observed() ? '已导入记录；完整性由采集范围决定' : '回放时序为设计示意';
+    $('time-slider').min = session.meta.start; $('time-slider').max = session.meta.end;
+    $('end-time').textContent = '/ ' + timeLabel(session.meta.end);
+    const options = [html('option', '', '全部对象')]; options[0].value = '';
+    for (const entity of session.entities) { const option = html('option', '', entity.label); option.value = entity.id; options.push(option); }
+    $('entity-select').replaceChildren(...options);
+    fitCamera(); render();
+  }
+  function setView(id, selected) {
+    state.view = id; state.event = null;
+    const view = currentView();
+    state.selected = selected || view.ownerId || (view.nodes.some(n => n.id === 'cluster') ? 'cluster' : view.nodes[0].id);
+    expandAncestors(state.selected);
+    fitCamera(); render();
+  }
+  function setTime(time) {
+    state.time = Math.max(state.session.meta.start, Math.min(state.session.meta.end, Math.round(time)));
+    if (state.event && !(state.event.start <= state.time && state.time < state.event.end)) state.event = null;
+    renderGraph(); renderInspector(); renderTimeline(); renderTime();
+  }
+  function renderTime() {
+    $('time-slider').value = state.time;
+    $('current-time').textContent = timeLabel(state.time);
+    $('inspector-time').textContent = timeLabel(state.time);
+    $('prev-cycle').disabled = state.time <= state.session.meta.start;
+    $('next-cycle').disabled = state.time >= state.session.meta.end;
+    $('next-event').disabled = !state.session.events.some(e => e.start > state.time && (!state.entity || e.entityId === state.entity));
+    const count = state.session.events.filter(e => !state.entity || e.entityId === state.entity).length;
+    $('event-count').textContent = count + ' 个事件' + (state.entity ? ' / 当前对象' : '');
+    $('selection-summary').textContent = (state.entity ? entityLabel(state.entity) + ' · ' : '全部对象 · ') + (observed() ? '无事件不等同于空闲' : '示意片段，省略大量运算');
+  }
+  function renderNav() {
+    const focusedView = document.activeElement.dataset?.viewId, focusedModule = document.activeElement.dataset?.moduleId;
+    let rootView = currentView();
+    while (rootView.parentView) rootView = state.session.views.find(v => v.id === rootView.parentView);
+    $('view-nav').replaceChildren(...state.session.views.filter(view => !view.parentView).map((view, i) => {
+      const button = html('button', 'view-button' + (rootView.id === view.id ? ' active' : ''));
+      button.dataset.viewId = view.id;
+      button.type = 'button'; button.setAttribute('aria-pressed', String(rootView.id === view.id));
+      button.append(html('span', 'view-number', String(i + 1).padStart(2, '0')), html('span', '', view.label));
+      button.addEventListener('click', () => setView(view.id)); return button;
+    }));
+    const treeRows = [];
+    function appendTree(node, depth) {
+      const row = html('div', 'tree-row'); row.style.paddingLeft = depth * 12 + 'px';
+      const children = childrenOf(node.id);
+      const toggle = html('button', 'tree-toggle', children.length ? (state.expanded.has(node.id) ? '▾' : '▸') : '·');
+      toggle.type = 'button'; toggle.disabled = !children.length;
+      toggle.setAttribute('aria-label', (state.expanded.has(node.id) ? '收起 ' : '展开 ') + node.label);
+      toggle.setAttribute('aria-expanded', String(state.expanded.has(node.id)));
+      toggle.addEventListener('click', () => { if (state.expanded.has(node.id)) state.expanded.delete(node.id); else state.expanded.add(node.id); renderNav(); });
+      const button = html('button', 'module-button' + (state.selected === node.id ? ' active' : ''));
+      button.dataset.moduleId = node.id;
+      button.type = 'button'; button.setAttribute('aria-pressed', String(state.selected === node.id));
+      button.append(html('span', 'tree-dot'), html('span', '', node.label));
+      button.addEventListener('click', () => showNode(node.id));
+      button.addEventListener('dblclick', () => { if (node.drillView) setView(node.drillView); });
+      row.append(toggle, button); treeRows.push(row);
+      if (state.expanded.has(node.id)) children.forEach(child => appendTree(child, depth + 1));
+    }
+    state.session.nodes.filter(node => !node.parent).forEach(node => appendTree(node, 0));
+    $('module-tree').replaceChildren(...treeRows);
+    if (focusedView) [...$('view-nav').children].find(el => el.dataset.viewId === focusedView)?.focus({ preventScroll: true });
+    if (focusedModule) [...$('module-tree').querySelectorAll('.module-button')].find(el => el.dataset.moduleId === focusedModule)?.focus({ preventScroll: true });
+    const ancestors = []; let view = currentView();
+    while (view) { ancestors.unshift(view); view = state.session.views.find(v => v.id === view.parentView); }
+    $('view-breadcrumb').replaceChildren(...ancestors.map((ancestor, index) => {
+      const button = html('button', 'breadcrumb-button', (index ? '› ' : '') + ancestor.label.replace(/ · .*/, ''));
+      button.type = 'button'; button.disabled = ancestor.id === state.view;
+      button.addEventListener('click', () => setView(ancestor.id)); return button;
+    }));
+  }
+  function selectNode(id) {
+    state.selected = id; state.event = null; expandAncestors(id); renderNav();
+    // Preserve SVG targets between clicks so double-click/keyboard focus survive.
+    for (const element of graph.querySelectorAll('[data-node-id]')) {
+      const selected = element.dataset.nodeId === id;
+      element.classList.toggle('selected', selected); element.setAttribute('aria-pressed', String(selected));
+    }
+    renderInspector(); renderTimeline();
+  }
+  function fitCamera(force = false) {
+    const view = currentView(), rect = $('canvas-wrap').getBoundingClientRect();
+    const fit = Math.min(rect.width / view.width, rect.height / view.height) * .96;
+    camera.scale = force ? fit : Math.max(.7, fit); camera.fit = true;
+    const selected = view.nodes.find(n => n.id === state.selected);
+    const centerX = rect.width < view.width * .55 && !force && selected ? selected.x + selected.w / 2 : view.width / 2;
+    camera.x = centerX - rect.width / camera.scale / 2; camera.y = view.height / 2 - rect.height / camera.scale / 2;
+    updateCamera();
+  }
+  function updateCamera() {
+    const rect = $('canvas-wrap').getBoundingClientRect();
+    graph.setAttribute('viewBox', [camera.x, camera.y, rect.width / camera.scale, rect.height / camera.scale].join(' '));
+    $('zoom-label').textContent = Math.round(camera.scale * 100) + '%';
+    $('graph-message').textContent = rect.width < 600 ? '拖动空白处平移 · 适应可查看全图' : '拖动空白处平移 · 点击模块查看 · 双击分组展开';
+  }
+  function zoom(factor) {
+    const rect = $('canvas-wrap').getBoundingClientRect();
+    const centerX = camera.x + rect.width / camera.scale / 2, centerY = camera.y + rect.height / camera.scale / 2;
+    camera.scale = Math.max(.25, Math.min(2.5, camera.scale * factor)); camera.fit = false;
+    camera.x = centerX - rect.width / camera.scale / 2; camera.y = centerY - rect.height / camera.scale / 2; updateCamera();
+  }
+  function defaultRoute(a, b) {
+    const dx = b.x + b.w / 2 - a.x - a.w / 2, dy = b.y + b.h / 2 - a.y - a.h / 2;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      const x1 = dx > 0 ? a.x + a.w : a.x, x2 = dx > 0 ? b.x : b.x + b.w, y1 = a.y + a.h / 2, y2 = b.y + b.h / 2, mid = (x1 + x2) / 2;
+      return [[x1, y1], [mid, y1], [mid, y2], [x2, y2]];
+    }
+    const y1 = dy > 0 ? a.y + a.h : a.y, y2 = dy > 0 ? b.y : b.y + b.h, x1 = a.x + a.w / 2, x2 = b.x + b.w / 2, mid = (y1 + y2) / 2;
+    return [[x1, y1], [x1, mid], [x2, mid], [x2, y2]];
+  }
+  function renderGraph() {
+    const focusedNode = document.activeElement.getAttribute('data-node-id');
+    const view = currentView(); $('diagram-title').textContent = view.label; $('breadcrumb').textContent = view.breadcrumb || view.label;
+    $('detail-scope-note').textContent = view.ownerId ? '细分单元显示结构；未采集的状态不推断' : '';
+    const boxes = new Map(view.nodes.map(n => [n.id, n]));
+    const path = M.trackedPath(state.session, state.entity);
+    for (const id of path.edges) { const edge = state.session.edges.find(e => e.id === id); path.modules.add(edge.from); path.modules.add(edge.to); }
+    const active = state.session.events.filter(e => e.start <= state.time && state.time < e.end && (!state.entity || e.entityId === state.entity));
+    const liveEdges = new Set(active.filter(e => e.kind !== 'wait').flatMap(e => e.edgeIds));
+    const defs = svg('defs');
+    for (const [name, color] of [['base', '#546980'], ['track', '#80aefb'], ['live', '#62d6d1']]) {
+      const marker = svg('marker', { id: 'arrow-' + name, viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: 'auto', markerUnits: 'userSpaceOnUse' });
+      marker.append(svg('path', { d: 'M 0 0 L 8 4 L 0 8 z', fill: color })); defs.append(marker);
+    }
+    const children = [svg('title', {}, view.label + '，' + state.session.meta.name), svg('desc', {}, state.session.meta.description || '模块层级、数据路径和当前事件状态'), defs];
+    for (const group of view.groups || []) {
+      const owner = state.session.nodes.find(n => n.id === group.ownerId);
+      const events = owner ? M.activeEvents(state.session, owner.id, state.time, state.entity) : [];
+      const groupEl = svg('g', { class: 'graph-owner-group' + (owner && state.selected === owner.id ? ' selected' : '') + (events.some(e => e.kind !== 'wait') ? ' active' : '') });
+      groupEl.append(svg('rect', { x: group.x, y: group.y, width: group.w, height: group.h, rx: 10, class: 'graph-group-box' }));
+      const label = group.label + (events.length ? ' · 父级 ' + events.length + ' 活动事件' : '');
+      groupEl.append(svg('text', { x: group.x + 14, y: group.y + 23, class: 'graph-group-label' }, wrapText(label, group.w - 28, '13px system-ui', 1)[0]));
+      if (owner) {
+        groupEl.setAttribute('data-node-id', owner.id); groupEl.setAttribute('tabindex', '0'); groupEl.setAttribute('role', 'button'); groupEl.setAttribute('aria-label', owner.label + '，选择资源池 / 上下文分组');
+        groupEl.append(svg('title', {}, label));
+        groupEl.addEventListener('click', () => { if (!graphDragged) selectNode(owner.id); });
+        groupEl.addEventListener('dblclick', () => { if (owner.drillView) setView(owner.drillView); });
+        groupEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(owner.id); } else if (e.key === 'ArrowRight' && owner.drillView) { e.preventDefault(); setView(owner.drillView); } });
+      }
+      children.push(groupEl);
+    }
+    for (const id of view.edges) {
+      const edge = state.session.edges.find(e => e.id === id), points = view.routes?.[id] || defaultRoute(boxes.get(edge.from), boxes.get(edge.to));
+      const tracked = state.entity && path.edges.has(id), live = liveEdges.has(id), relatedStructure = edge.scope === 'structure' && pathContainsNode(path, state.session.nodes.find(n => n.id === edge.from)) && pathContainsNode(path, state.session.nodes.find(n => n.id === edge.to)), dim = state.entity && !tracked && !relatedStructure;
+      const group = svg('g', { 'data-edge-id': id });
+      group.append(svg('title', {}, edge.label || id));
+      group.append(svg('path', { d: points.map((p, i) => (i ? 'L ' : 'M ') + p.join(' ')).join(' '), class: 'graph-edge ' + edge.kind + (tracked ? ' tracked' : '') + (live ? ' live' : '') + (dim ? ' dim' : ''), 'marker-end': 'url(#arrow-' + (live ? 'live' : tracked ? 'track' : 'base') + ')' }));
+      if (!dim) {
+        const segment = points.slice(1).map((p, i) => ({ a: points[i], b: p, width: Math.abs(p[0] - points[i][0]) })).filter(s => s.a[1] === s.b[1] && s.width >= 95).sort((a, b) => b.width - a.width)[0];
+        const nearGroupTitle = segment && (view.groups || []).some(g => Math.abs(g.y + 23 - (segment.a[1] - 8)) < 17 && (segment.a[0] + segment.b[0]) / 2 > g.x && (segment.a[0] + segment.b[0]) / 2 < g.x + g.w);
+        if (segment && !nearGroupTitle) group.append(svg('text', { x: (segment.a[0] + segment.b[0]) / 2, y: segment.a[1] - 8, 'text-anchor': 'middle', class: 'edge-label' }, edge.label || ''));
+      }
+      if (live) { const p = points[Math.floor(points.length / 2)]; group.append(svg('circle', { cx: p[0], cy: p[1], r: 3, class: 'edge-dot' })); }
+      children.push(group);
+    }
+    for (const box of view.nodes) {
+      const node = state.session.nodes.find(n => n.id === box.id), events = M.activeEvents(state.session, node.id, state.time, state.entity);
+      const busy = events.some(e => e.kind !== 'wait'), waiting = !busy && events.length > 0;
+      const tracked = !state.entity || pathContainsNode(path, node);
+      const structureOnly = node.observability === 'structure';
+      const group = svg('g', { class: 'graph-node' + (state.selected === node.id ? ' selected' : '') + (busy ? ' active' : '') + (waiting ? ' waiting' : '') + (!tracked ? ' dim' : ''), role: 'button', tabindex: 0, 'aria-label': node.label + '，' + (busy ? '有活动事件' : waiting ? '等待' : '未记录当前事件') + (node.drillView ? '，可展开' : ''), 'aria-pressed': state.selected === node.id, 'data-node-id': node.id });
+      group.append(svg('title', {}, node.label + '\n' + node.description));
+      group.append(svg('rect', { x: box.x, y: box.y, width: box.w, height: box.h, rx: 8, class: 'node-box' }));
+      group.append(svg('circle', { cx: box.x, cy: box.y + box.h / 2, r: 3, class: 'node-port' }), svg('circle', { cx: box.x + box.w, cy: box.y + box.h / 2, r: 3, class: 'node-port' }));
+      const lines = wrapText(node.label, box.w - (node.drillView ? 48 : 28), '550 16px system-ui', box.h < 80 ? 1 : 2);
+      lines.forEach((line, i) => group.append(svg('text', { x: box.x + 14, y: box.y + 27 + i * 20, class: 'node-name' }, line)));
+      if ((box.h >= 95 || (!structureOnly && box.h >= 80)) && lines.length === 1) {
+        const subtitle = wrapText(node.subtitle || node.type, box.w - 28, '12px system-ui', 1)[0] || '';
+        group.append(svg('text', { x: box.x + 14, y: box.y + 49 + (lines.length - 1) * 18, class: 'node-subtitle' }, subtitle));
+      }
+      if (events.length || structureOnly) group.append(svg('text', { x: box.x + 14, y: box.y + box.h - 15, class: structureOnly ? 'node-structure-status' : 'node-status' }, structureOnly ? (box.w < 160 ? '结构' : '仅结构 · 状态未采集') : waiting ? '等待 · ' + events.length + ' 事件' : '活动 · ' + events.filter(e => e.kind !== 'wait').length + ' 事件'));
+      if (node.drillView) group.append(svg('text', { x: box.x + box.w - 24, y: box.y + 27, class: 'node-open' }, '↗'));
+      group.addEventListener('click', () => selectNode(node.id));
+      group.addEventListener('dblclick', () => { if (node.drillView) setView(node.drillView); });
+      group.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectNode(node.id); } if (e.key === 'ArrowRight' && node.drillView) { e.preventDefault(); setView(node.drillView); } });
+      children.push(group);
+    }
+    graph.replaceChildren(...children); updateCamera();
+    if (focusedNode) [...graph.querySelectorAll('[data-node-id]')].find(el => el.dataset.nodeId === focusedNode)?.focus({ preventScroll: true });
+  }
+  function renderInspector() {
+    const node = currentNode();
+    $('inspector-title').textContent = node.label; $('node-type').textContent = node.type;
+    $('node-description').textContent = node.description || '';
+    $('node-source').textContent = node.source || '未提供源码位置';
+    const childNodes = childrenOf(node.id);
+    $('node-children-section').hidden = !childNodes.length; $('node-child-count').textContent = childNodes.length + ' 个';
+    $('node-children').replaceChildren(...childNodes.map(child => {
+      const button = html('button', 'child-unit-button'); button.type = 'button'; button.dataset.childId = child.id;
+      button.append(html('span', '', child.label), html('small', '', child.type));
+      button.addEventListener('click', () => showNode(child.id)); return button;
+    }));
+    $('node-evidence').textContent = node.evidence || (observed() ? '当前状态来自导入的事件区间。未记录事件不等同于硬件空闲；聚合、推导或采样事件应保留证据类型。' : '结构参考 gem5 模型；此处时刻、事件与关联对象均为设计示意，不用于性能判断。');
+    $('node-params').replaceChildren(...Object.entries(node.params || {}).map(([key, value]) => { const row = html('div'); row.append(html('dt', '', key), html('dd', '', String(value))); return row; }));
+    const events = M.activeEvents(state.session, node.id, state.time, state.entity), compute = events.filter(e => e.kind === 'compute'), waiting = events.filter(e => e.kind === 'wait');
+    const status = $('node-state'); status.className = 'state-line ' + (events.some(e => e.kind !== 'wait') ? 'busy' : waiting.length ? 'wait' : 'empty');
+    status.textContent = !events.length ? (node.observability === 'structure' ? '结构单元 · 状态尚未采集' : '未记录当前时刻的事件') : waiting.length === events.length ? '等待 · ' + waiting[0].label : compute.length ? compute.length + ' 个在途算术操作' : '有 ' + events.filter(e => e.kind !== 'wait').length + ' 个活动事件';
+    const lines = [], scope = state.entity ? entityLabel(state.entity) : '全部对象';
+    lines.push(html('div', 'activity-line', '观测范围：' + scope));
+    if (node.observability === 'structure') {
+      let ancestor = state.session.nodes.find(n => n.id === node.parent);
+      while (ancestor?.observability === 'structure') ancestor = state.session.nodes.find(n => n.id === ancestor.parent);
+      if (ancestor) {
+        const parentEvents = M.activeEvents(state.session, ancestor.id, state.time, state.entity);
+        lines.push(html('div', 'activity-line', '父级「' + ancestor.label + '」：' + parentEvents.length + ' 个区间事件；未映射到当前单元。'));
+      }
+    }
+    const issued = state.session.events.filter(e => e.start === state.time && e.kind === 'compute' && M.isWithin(state.session, e.moduleId, node.id) && (!state.entity || e.entityId === state.entity));
+    if (['cluster', 'mul', 'add', 'div'].includes(node.id)) {
+      const grouped = new Map();
+      for (const event of issued) grouped.set(event.moduleId, (grouped.get(event.moduleId) || 0) + (event.lanes || 0));
+      lines.push(html('div', 'activity-line', grouped.size ? '本时刻发射：' + [...grouped].map(([id, lanes]) => id + ' ' + lanes + ' lanes').join(' · ') : '本时刻无记录的算术发射'));
+      lines.push(html('div', 'activity-line', '在途数量包含流水线中的操作，不是发射槽占用率。'));
+    }
+    const detail = state.event && M.isWithin(state.session, state.event.moduleId, node.id) ? state.event : events.find(e => e.kind !== 'wait') || events[0];
+    if (detail) {
+      const box = html('div', 'event-detail'); box.append(html('strong', '', detail.label));
+      box.append(html('div', '', entityLabel(detail.entityId)), html('div', 'mono', '[' + detail.start + ', ' + detail.end + ') ' + state.session.meta.timeUnit));
+      if (detail.bytes !== undefined) box.append(html('div', 'mono', detail.bytes + ' B · 传输组/片段'));
+      if (detail.lanes !== undefined) box.append(html('div', 'mono', '发射宽度 ' + detail.lanes + ' lanes'));
+      box.append(html('div', '', ({ illustrative: '示意事件', observed: '直接观测', derived: '由记录推导' })[detail.evidence])); lines.push(box);
+    }
+    $('node-activity').replaceChildren(...lines);
+    $('drill-down').hidden = !node.drillView; $('drill-down').onclick = () => setView(node.drillView);
+    $('inspector-time').textContent = timeLabel(state.time);
+  }
+  function selectEvent(event) {
+    stopPlayback(); state.entity = event.entityId || null; $('entity-select').value = state.entity || '';
+    if (!visibleInView(currentView(), event.moduleId)) {
+      const view = state.session.views.find(v => v.nodes.some(n => n.id === event.moduleId));
+      if (view) { state.view = view.id; state.selected = event.moduleId; fitCamera(); }
+      else { const ancestor = currentView().nodes.find(n => M.isWithin(state.session, event.moduleId, n.id)); if (ancestor) state.selected = ancestor.id; }
+    } else state.selected = event.moduleId;
+    state.event = event; state.time = event.start; expandAncestors(state.selected); $('event-tooltip').hidden = true; render();
+  }
+  function renderTimeline() {
+    const focusedEvent = document.activeElement.getAttribute('data-event-id');
+    const width = Math.max(280, $('timeline-chart').clientWidth), left = width < 500 ? 88 : 116, right = 12, top = 27;
+    const chartWidth = width - left - right, span = state.session.meta.end - state.session.meta.start;
+    const x = time => left + (time - state.session.meta.start) / span * chartWidth;
+    let y = top; const tracks = [];
+    for (const track of state.session.tracks) {
+      const events = state.session.events.filter(e => track.moduleIds.includes(e.moduleId)).sort((a, b) => a.start - b.start || a.end - b.end);
+      const ends = [], placements = [];
+      for (const event of events) {
+        let row = ends.findIndex(end => end <= event.start); if (row < 0) row = ends.length;
+        ends[row] = event.end; placements.push({ event, row });
+      }
+      const height = Math.max(1, ends.length) * 13 + 10;
+      tracks.push({ track, placements, y, height }); y += height + 3;
+    }
+    const height = y + 5; timeline.setAttribute('viewBox', '0 0 ' + width + ' ' + height); timeline.style.height = height + 'px';
+    const children = [svg('title', {}, '事件时间轴 · ' + state.session.meta.clockDomain), svg('desc', {}, '点击区间定位到模块、对象和开始时刻；虚线区间为等待事件。')];
+    const rawStep = span / Math.max(2, Math.floor(chartWidth / 95)), magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const step = [1, 2, 5, 10].map(n => n * magnitude).find(n => n >= rawStep) || magnitude * 10;
+    for (let t = Math.ceil(state.session.meta.start / step) * step; t <= state.session.meta.end; t += step) {
+      children.push(svg('line', { x1: x(t), x2: x(t), y1: top - 4, y2: height, class: 'timeline-grid' }));
+      children.push(svg('text', { x: x(t), y: 14, 'text-anchor': t === state.session.meta.start ? 'start' : t === state.session.meta.end ? 'end' : 'middle', class: 'timeline-axis' }, t.toLocaleString()));
+    }
+    for (const row of tracks) {
+      children.push(svg('text', { x: 0, y: row.y + row.height / 2 + 3, class: 'timeline-label' }, row.track.label));
+      children.push(svg('rect', { x: left, y: row.y, width: chartWidth, height: row.height, rx: 2, class: 'timeline-track' }));
+    }
+    const hit = svg('rect', { x: left, y: top, width: chartWidth, height: height - top, class: 'timeline-hit' });
+    const timeAtPointer = e => { const bounds = timeline.getBoundingClientRect(); return state.session.meta.start + ((e.clientX - bounds.left) / bounds.width * width - left) / chartWidth * span; };
+    hit.addEventListener('pointerdown', e => { stopPlayback(); timelineScrubbing = true; timeline.setPointerCapture(e.pointerId); setTime(timeAtPointer(e)); });
+    timeline.onpointermove = e => { if (timelineScrubbing) setTime(timeAtPointer(e)); };
+    timeline.onpointerup = timeline.onpointercancel = () => { timelineScrubbing = false; };
+    children.push(hit);
+    for (const row of tracks) {
+      for (const { event, row: index } of row.placements) {
+        const dim = state.entity && event.entityId !== state.entity, selected = state.event?.id === event.id;
+        const rect = svg('rect', { x: x(event.start), y: row.y + 5 + index * 13, width: Math.max(1.5, x(event.end) - x(event.start)), height: 10, rx: 2, class: 'timeline-event ' + event.kind + (dim ? ' dim' : '') + (selected ? ' selected' : ''), role: 'button', tabindex: 0, 'aria-label': event.label + '，' + entityLabel(event.entityId) + '，' + event.start + ' 至 ' + event.end + ' ' + state.session.meta.timeUnit, 'data-event-id': event.id });
+        rect.append(svg('title', {}, event.label + ' · ' + entityLabel(event.entityId)));
+        rect.addEventListener('click', e => { e.stopPropagation(); selectEvent(event); });
+        rect.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectEvent(event); } });
+        rect.addEventListener('pointermove', e => {
+          if (e.pointerType === 'touch') return;
+          const tip = $('event-tooltip'); tip.textContent = event.label + '\n' + entityLabel(event.entityId) + '\n[' + event.start + ', ' + event.end + ') ' + state.session.meta.timeUnit + (event.bytes !== undefined ? ' · ' + event.bytes + ' B' : '') + '\n' + ({ illustrative: '设计示意', observed: '直接观测', derived: '由记录推导' })[event.evidence];
+          tip.hidden = false; const bounds = tip.getBoundingClientRect();
+          tip.style.left = Math.max(8, Math.min(window.innerWidth - bounds.width - 8, e.clientX + 14)) + 'px'; tip.style.top = Math.max(8, Math.min(window.innerHeight - bounds.height - 8, e.clientY + 14)) + 'px';
+        });
+        rect.addEventListener('pointerleave', () => { $('event-tooltip').hidden = true; }); children.push(rect);
+      }
+    }
+    children.push(svg('line', { x1: x(state.time), x2: x(state.time), y1: 18, y2: height, class: 'timeline-cursor' }));
+    children.push(svg('path', { d: 'M ' + (x(state.time) - 4) + ' 18 L ' + (x(state.time) + 4) + ' 18 L ' + x(state.time) + ' 24 Z', fill: '#62d6d1' }));
+    timeline.replaceChildren(...children);
+    if (focusedEvent) [...timeline.querySelectorAll('.timeline-event')].find(el => el.dataset.eventId === focusedEvent)?.focus({ preventScroll: true });
+  }
+  function render() { renderNav(); renderGraph(); renderInspector(); renderTimeline(); renderTime(); }
+  function stopPlayback() {
+    if (timer) clearInterval(timer); timer = null; state.playing = false;
+    $('play').textContent = '播放'; $('play').setAttribute('aria-label', '播放时间回放');
+  }
+  function play() {
+    if (state.playing) { stopPlayback(); return; }
+    if (state.time >= state.session.meta.end) setTime(state.session.meta.start);
+    state.playing = true; $('play').textContent = '暂停'; $('play').setAttribute('aria-label', '暂停时间回放');
+    let time = state.time, last = performance.now();
+    timer = setInterval(() => { const now = performance.now(); time += (now - last) / 1000 * 24 * state.speed; last = now; setTime(time); if (time >= state.session.meta.end) stopPlayback(); }, 100);
+  }
+  function download(data, mime, name) {
+    const url = URL.createObjectURL(new Blob([data], { type: mime })), a = html('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  function exportSvg() {
+    const clone = graph.cloneNode(true), originalElements = [graph, ...graph.querySelectorAll('*')], clones = [clone, ...clone.querySelectorAll('*')];
+    const props = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-opacity', 'opacity', 'font-family', 'font-size', 'font-weight', 'paint-order'];
+    originalElements.forEach((element, index) => {
+      const style = getComputedStyle(element);
+      for (const prop of props) clones[index].style.setProperty(prop, style.getPropertyValue(prop));
+      clones[index].removeAttribute('tabindex'); clones[index].removeAttribute('role');
+    });
+    const view = currentView(); clone.setAttribute('viewBox', '0 0 ' + view.width + ' ' + view.height); clone.setAttribute('width', view.width); clone.setAttribute('height', view.height);
+    const background = svg('rect', { x: 0, y: 0, width: view.width, height: view.height, fill: '#0b1018' }); clone.insertBefore(background, clone.firstChild);
+    clone.append(svg('text', { x: 14, y: view.height - 10, fill: '#93a3b7', 'font-size': 11, 'font-family': 'system-ui' }, (observed() ? '导入记录' : '设计示意 · 非测量结果') + ' | ' + state.session.meta.name + ' | ' + timeLabel(state.time)));
+    download('<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone), 'image/svg+xml', 'cfd-dsa-' + state.view + '-' + state.time + '.svg');
+    notify('已导出当前层级与时刻的完整 SVG，包含数据来源标记。');
+  }
+  $('load-demo').addEventListener('click', () => { loadSession(window.CFD_DEMO_SESSION); notify('已恢复设计演示。所有回放事件均为示意。'); });
+  $('entity-select').addEventListener('change', e => { state.entity = e.target.value || null; state.event = null; renderGraph(); renderInspector(); renderTimeline(); renderTime(); });
+  $('time-slider').addEventListener('input', e => { stopPlayback(); setTime(Number(e.target.value)); });
+  $('prev-cycle').addEventListener('click', () => { stopPlayback(); setTime(state.time - 1); });
+  $('next-cycle').addEventListener('click', () => { stopPlayback(); setTime(state.time + 1); });
+  $('next-event').addEventListener('click', () => { stopPlayback(); const next = state.session.events.filter(e => e.start > state.time && (!state.entity || e.entityId === state.entity)).sort((a, b) => a.start - b.start)[0]; if (next) selectEvent(next); });
+  $('speed').addEventListener('change', e => { state.speed = Number(e.target.value); });
+  $('play').addEventListener('click', play);
+  $('zoom-in').addEventListener('click', () => zoom(1.2)); $('zoom-out').addEventListener('click', () => zoom(1 / 1.2)); $('fit-view').addEventListener('click', () => fitCamera(true));
+  $('export-svg').addEventListener('click', exportSvg);
+  $('import-session').addEventListener('click', () => $('session-file').click());
+  $('session-file').addEventListener('change', async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try { if (file.size > 20 * 1024 * 1024) throw new Error('原型导入文件上限为 20 MiB'); const session = JSON.parse(await file.text()); loadSession(session); notify('已导入 ' + session.meta.name + ' · ' + session.events.length + ' 个事件'); }
+    catch (error) { notify('导入失败：' + error.message, true); }
+    finally { e.target.value = ''; }
+  });
+  graph.addEventListener('pointerdown', e => {
+    if (e.target.closest('.graph-node')) return;
+    graphDragged = false;
+    drag = { x: e.clientX, y: e.clientY, cameraX: camera.x, cameraY: camera.y }; camera.fit = false; graph.setPointerCapture(e.pointerId); graph.classList.add('panning');
+  });
+  graph.addEventListener('pointermove', e => { if (!drag) return; if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 4) graphDragged = true; camera.x = drag.cameraX - (e.clientX - drag.x) / camera.scale; camera.y = drag.cameraY - (e.clientY - drag.y) / camera.scale; updateCamera(); });
+  const stopPan = () => { drag = null; graph.classList.remove('panning'); }; graph.addEventListener('pointerup', stopPan); graph.addEventListener('pointercancel', stopPan);
+  graph.addEventListener('wheel', e => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); zoom(e.deltaY < 0 ? 1.07 : 1 / 1.07); } }, { passive: false });
+  new ResizeObserver(() => { if (!state.session) return; if (camera.fit) fitCamera(); else updateCamera(); renderTimeline(); }).observe($('canvas-wrap'));
+  new ResizeObserver(() => { if (state.session) renderTimeline(); }).observe($('timeline-chart'));
+  window.addEventListener('pagehide', stopPlayback);
+  loadSession(window.CFD_DEMO_SESSION);
+  // Diagnostic snapshots for future adapters; no mutation API.
+  window.CFDVisualizer = { getState: () => ({ view: state.view, selected: state.selected, entity: state.entity, time: state.time, playing: state.playing, provenance: state.session.meta.provenance }), getSession: () => structuredClone(state.session) };
+})();
+
+</script>
+  <script>
+/* Standalone structural drawings. The replay model and its views are untouched. */
+(function (root) {
+  'use strict';
+  const palette = {
+    control: ['#34363c', '#a4a8b3'], compute: ['#301741', '#a768c7'],
+    storage: ['#293519', '#a4b25c'], state: ['#17333e', '#60a1b7'], cache: ['#421e23', '#c16c75']
+  };
+  const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
+  const clip = (value, length = 40) => String(value).length > length ? String(value).slice(0, length - 1) + '…' : String(value);
+  function create(session, ownerId = 'dsa') {
+    const nodes = new Map(session.nodes.map(n => [n.id, n]));
+    const owner = nodes.get(ownerId);
+    if (!owner) throw new Error('当前会话没有此模块');
+    const parts = [], boxes = [], references = new Set(), width = 1280;
+    let height = 1160;
+    const p = (id, key) => String(nodes.get(id)?.params?.[key] ?? '未提供');
+    const text = (x, y, value, size = 17, color = '#e5e5ea', anchor = 'middle', weight = 400) => {
+      parts.push(`<text x="${x}" y="${y}" font-size="${size}" fill="${color}" text-anchor="${anchor}" font-weight="${weight}">${escape(value)}</text>`);
+    };
+    function target(id, content) {
+      if (!nodes.has(id)) return content;
+      references.add(id);
+      return `<g data-poster-node="${escape(id)}" role="button" tabindex="0" aria-label="${escape(nodes.get(id).label)}${nodes.get(id).drillView ? '，展开分区' : '，查看参数'}"><title>${escape(nodes.get(id).label)}</title>${content}</g>`;
+    }
+    function frame(x, y, w, h, label, id, tone = 'control') {
+      const color = palette[tone];
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#25262b" stroke="#3a3c44"/>`);
+      const start = parts.length;
+      text(x + 18, y + 30, label, 19, color[1], 'start', 600);
+      text(x + w - 17, y + 30, nodes.get(id)?.drillView ? '展开 ↗' : '', 13, '#9398a3', 'end');
+      const content = parts.splice(start).join('');
+      parts.push(target(id, `<rect x="${x + 6}" y="${y + 4}" width="${w - 12}" height="36" fill="transparent"/>` + content));
+    }
+    function card(id, x, y, w, h, title, lines = [], tone = 'control') {
+      if (!nodes.has(id)) return;
+      const [fill, stroke] = palette[tone];
+      const start = parts.length;
+      parts.push(`<rect class="poster-unit" x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}" stroke-width="1.3"/>`);
+      const size = w < 145 ? 14 : 17;
+      const total = lines.length + 1, step = Math.min(24, (h - 18) / total);
+      const top = y + h / 2 - (total - 1) * step / 2 + 5;
+      text(x + w / 2, top, clip(title || nodes.get(id).label, Math.floor(w / (size * 0.58))), size, '#f0edf2', 'middle', 500);
+      lines.forEach((line, i) => text(x + w / 2, top + (i + 1) * step, clip(line, Math.floor(w / 8)), Math.min(size, 14), '#c4c7d0'));
+      parts.push(target(id, parts.splice(start).join('')));
+      boxes.push({ id, x, y, w, h });
+    }
+    function arrow(points, label = '', kind = 'data') {
+      const color = kind === 'control' ? '#8f939e' : '#aeb4c1';
+      parts.push(`<path d="${points.map((point, i) => (i ? 'L' : 'M') + point.join(' ')).join(' ')}" fill="none" stroke="${color}" stroke-width="1.2" ${kind === 'control' ? 'stroke-dasharray="5 4"' : ''} marker-end="url(#poster-arrow)"/>`);
+      if (label) { const a = points[0], b = points[points.length - 1]; text((a[0] + b[0]) / 2 + 9, (a[1] + b[1]) / 2 - 7, label, 12, '#a4a9b5', 'start'); }
+    }
+    function lanes(poolId, x, y, w, h, prefix) {
+      const children = session.nodes.filter(n => n.parent === poolId && n.type === '模型资源单元');
+      if (!children.length) { card(poolId, x, y, w, h, nodes.get(poolId)?.label, [p(poolId, '发射宽度')], 'compute'); return; }
+      const gap = 8, cell = (w - gap * (children.length - 1)) / children.length;
+      children.forEach((n, i) => card(n.id, x + i * (cell + gap), y, cell, h, prefix, ['#' + i], 'compute'));
+    }
+    function heading(title, subtitle) {
+      text(640, 59, title, 30, '#f0edf2', 'middle', 600);
+      text(640, 91, subtitle, 14, '#8f95a3');
+    }
+    function dsa() {
+      heading('CFD DSA · 微体系结构', '控制与调度 / 上下文状态 / 共享算术资源 / 数据搬运');
+      card('cpu', 460, 118, 360, 59, 'CPU / Guest', ['descriptor · launch · wait'], 'state');
+      arrow([[640, 177], [640, 200]], '', 'control');
+      frame(50, 200, 1180, 168, '控制与前沿调度', 'controller');
+      const controlCards = [
+        ['ctrl-descriptor', 'Descriptor / token', '解析与请求身份'], ['ctrl-window', '请求窗口 / credit', p('controller', '请求窗口') + ' entries'],
+        ['ctrl-admission', '上下文准入', 'LU ' + p('controller', 'LU上下文') + ' / RHS ' + p('controller', 'RHS上下文')],
+        ['ctrl-frontier', '前沿 / 依赖', 'ready · masks'], ['ctrl-arbitration', '优先级仲裁', '共享资源发射许可']
+      ];
+      controlCards.forEach(([id, title, value], i) => card(id, 70 + i * 234, 248, 216, 72, title, [value]));
+      text(640, 347, 'Generation 校验 · 取消管理 · 完成 fence', 14, '#adb1bc');
+      for (const x of [217, 640, 1063]) arrow([[x, 368], [x, 399]], '', 'control');
+
+      frame(50, 400, 334, 513, '上下文与递推状态', 'contexts', 'state');
+      card('lu', 70, 452, 294, 94, 'LU 上下文 ×' + p('lu', '上下文数'), ['矩阵 / 暂存 / pivot', '列、行、k 状态 · 除法掩码'], 'state');
+      card('rhs', 70, 574, 294, 94, 'RHS 上下文 ×' + p('rhs', '上下文数'), ['每上下文 ' + p('rhs-context0', 'RHS状态槽') + ' 个状态槽', '向量值 · phase · ready / done'], 'state');
+      card('feedback', 70, 696, 294, 97, '前向 / 后向递推', [p('feedback', '数据宽度'), 'handoff · forward / backward / base'], 'state');
+      card('ingress', 70, 821, 294, 68, '输入暂存 ×' + p('ingress', '基础输入槽'), ['D / L / U / R · ready'], 'state');
+
+      frame(414, 400, 452, 513, '共享计算簇 · FP64', 'cluster', 'compute');
+      card('cluster-issue', 434, 452, 412, 57, '发射与 lane 预留', ['标量 / 向量请求共用一个资源池']);
+      arrow([[640, 509], [640, 530]]);
+      lanes('mul', 434, 535, 412, 55, 'MUL');
+      text(640, 612, '乘法 ×' + session.nodes.filter(n => n.parent === 'mul' && n.type === '模型资源单元').length + ' · Lat ' + p('mul', '延迟') + ' · II ' + p('mul', 'II'), 13, '#b8a3c7');
+      arrow([[640, 622], [640, 639]]);
+      card('products', 434, 644, 412, 59, '乘积 / 累加寄存器', ['共享深度 ' + p('products', '共享乘积深度') + ' · line 深度 ' + p('products', 'line乘积深度')], 'state');
+      arrow([[640, 703], [640, 725]]);
+      lanes('add', 434, 730, 412, 55, 'ADD/SUB');
+      text(640, 807, '加减 ×' + session.nodes.filter(n => n.parent === 'add' && n.type === '模型资源单元').length + ' · Lat ' + p('add', '延迟') + ' · II ' + p('add', 'II'), 13, '#b8a3c7');
+      card('div', 434, 832, 190, 57, 'DIV ×' + p('div', '发射宽度').split(' ')[0], ['Lat ' + p('div', '延迟').replace(' cycles', '') + ' · II ' + p('div', 'II').replace(' cycles', '') + ' cycles'], 'compute');
+      card('cluster-pending', 640, 832, 206, 57, '在途操作完成表', ['kind / lanes / 完成周期']);
+
+      frame(896, 400, 334, 513, '搬运与片上存储', 'spm', 'storage');
+      card('dma', 916, 452, 294, 75, 'DMA 接口', [p('dma', 'DMA包宽') + ' / packet', p('dma', 'outstanding上限') + ' outstanding'], 'storage');
+      arrow([[1063, 527], [1063, 548]]);
+      card('onchip', 916, 553, 294, 60, '片上访问仲裁', [p('onchip', '任务队列深度') + ' entries · priority / id'], 'storage');
+      arrow([[1063, 613], [1063, 635]]);
+      const banks = session.nodes.filter(n => n.parent === 'spm' && /^bank\d+$/.test(n.id));
+      const bankWidth = (294 - (banks.length - 1) * 10) / banks.length;
+      banks.forEach((n, i) => card(n.id, 916 + i * (bankWidth + 10), 640, bankWidth, 58, 'B' + i, [bankWidth < 50 ? 'R/W' : p('spm', '每bank端口')], 'storage'));
+      text(1063, 719, '每 bank ' + p('spm', '每bank端口') + ' · ' + p('spm', 'bank粒度') + ' grain', 13, '#b2bb91');
+      text(1063, 738, 'ready ' + p('spm', 'ready延迟'), 12, '#b2bb91');
+      card('spm-cache', 916, 752, 294, 57, '有限系数缓存', ['系数区域 · 有效性 / version / mode'], 'storage');
+      card('tile', 916, 832, 294, 57, '驻留 Tile A / B', [p('tile', '缓冲数') + ' buffers × ' + p('tile', 'tile长度')], 'storage');
+
+      arrow([[384, 492], [414, 492]], '', 'control');
+      arrow([[866, 672], [896, 672]]);
+      text(399, 569, '请求', 11, '#959ba8');
+      for (const x of [217, 640, 1063]) arrow([[x, 913], [x, 944]]);
+      frame(50, 944, 1180, 142, '结果发布与请求生命周期', 'completion', 'state');
+      card('output', 70, 994, 354, 64, '输出快照队列', [p('output', 'warm写队列深度') + ' slots · ' + p('output', '向量宽度') + ' / vector'], 'state');
+      card('completion', 463, 994, 354, 64, '完成记录队列', [p('completion', '队列深度') + ' slots · ' + p('completion', '每项预算') + ' 预留 / entry'], 'state');
+      card('ctrl-fence', 856, 994, 354, 64, 'Commit / Detach / Retire', ['响应闭合 · credit 回收']);
+      arrow([[424, 1039], [438, 1039], [438, 1074], [838, 1074], [838, 1039], [856, 1039]], '', 'control');
+      arrow([[817, 1013], [856, 1013]], '', 'control');
+      text(640, 1115, '统一设备状态预算 ' + p('spm', '容量预算') + '（含寄存器与队列） · 分区为模型结构，连线为功能关系', 13, '#9096a2');
+    }
+    function cpu() {
+      height = 1020;
+      heading('CPU / Guest · O3 微体系结构', '统一 IQ 与 FU pool · 宽度、容量取自当前会话的结构参数');
+      card('mem-l1i', 460, 125, 360, 67, 'L1 Instruction Cache', [p('mem-l1i', '容量') + ' · ' + p('mem-l1i', '相联度') + '-way'], 'cache');
+      arrow([[640, 192], [640, 226]]);
+      frame(60, 226, 1160, 277, '前端 · Fetch / Decode / Rename', 'cpu');
+      card('cpu-fetch', 345, 278, 590, 52, 'Fetch & Branch Prediction', [p('cpu-fetch', '宽度')]);
+      arrow([[640, 330], [640, 348]]);
+      card('cpu-decode', 345, 353, 590, 52, 'Decode', [p('cpu-decode', '宽度')]);
+      arrow([[640, 405], [640, 423]]);
+      card('cpu-rename', 85, 428, 1110, 54, 'Map and Rename', [p('cpu-rename', '宽度')]);
+      card('cpu-rename', 85, 353, 235, 52, '整数物理寄存器', [p('cpu-rename', 'int寄存器') + ' entries'], 'state');
+      card('cpu-rename', 960, 353, 235, 52, '向量 / 矩阵寄存器', [p('cpu-rename', 'vec寄存器') + ' / ' + p('cpu-rename', 'mat寄存器') + ' entries'], 'state');
+      arrow([[640, 503], [640, 536]]);
+      card('cpu-iq', 85, 541, 730, 76, '统一 Instruction Queue / Scheduler', ['默认 ' + p('cpu-iq', '默认条目') + ' entries · Issue ' + p('cpu-iq', '发射宽度') + '-wide'], 'compute');
+      card('cpu-lsq', 845, 541, 350, 76, 'Load / Store Queue', ['LQ ' + p('cpu-lsq', 'LQ') + ' / SQ ' + p('cpu-lsq', 'SQ') + ' entries'], 'storage');
+      arrow([[450, 617], [450, 654]]); arrow([[1020, 617], [1020, 654]]);
+      card('cpu-fu', 85, 659, 730, 104, 'CPU Functional Unit Pool', ['整数 · 标量浮点 · SIMD · Matrix', p('cpu-fu', '计数'), 'Writeback ' + p('cpu-fu', 'wb宽度') + '-wide'], 'compute');
+      card('mem-l1d', 845, 659, 350, 104, 'L1 Data Cache', [p('mem-l1d', '容量') + ' · ' + p('mem-l1d', '相联度') + '-way', 'MSHR ' + p('mem-l1d', 'MSHRs')], 'cache');
+      arrow([[450, 763], [450, 800]]);
+      card('cpu-rob', 85, 805, 730, 76, 'Reorder Buffer / Commit', ['默认 ROB ' + p('cpu-rob', '默认ROB') + ' entries · Commit ' + p('cpu-rob', '提交宽度') + '-wide'], 'state');
+      card('cpu-launch', 845, 805, 350, 76, 'DSA 软件启动接口', ['descriptor · launch / wait'], 'state');
+      arrow([[1020, 881], [1020, 913]], '', 'control');
+      card('controller', 845, 918, 350, 56, 'CFD 控制器', [], 'control');
+      text(450, 951, 'O3 的 IQ、ROB 默认条目数仍可被运行配置覆盖', 14, '#9399a6');
+    }
+    function memory() {
+      height = 1120;
+      heading('存储系统 · Cache 与互连', 'CPU 指令 / 数据与 DSA DMA 汇合到 classic memory system');
+      card('cpu', 160, 125, 410, 59, 'CPU / Guest', [], 'control');
+      card('dma', 890, 125, 300, 59, 'CFD DSA · DMA', [], 'control');
+      arrow([[365, 184], [365, 207], [235, 207], [235, 238]]);
+      arrow([[365, 207], [630, 207], [630, 238]]);
+      arrow([[1040, 184], [1040, 238]]);
+      for (const [id, x, title] of [['mem-l1i', 85, 'L1 Instruction Cache'], ['mem-l1d', 480, 'L1 Data Cache'], ['mem-dma-cache', 890, 'DMA Cache']]) {
+        card(id, x, 243, 300, 87, title, [p(id, '容量') + ' · ' + p(id, '相联度') + '-way', 'MSHR ' + p(id, 'MSHRs')], 'cache');
+      }
+      for (const x of [235, 630, 1040]) arrow([[x, 330], [x, 378]]);
+      card('mem-l2bus', 85, 383, 1105, 64, 'toL2Bus · L2XBar', [p('mem-l2bus', '宽度') + ' width']);
+      arrow([[640, 447], [640, 487]]);
+      card('mem-l2', 345, 492, 590, 87, 'L2 Cache', [p('mem-l2', '容量') + ' · ' + p('mem-l2', '相联度') + '-way', 'MSHR ' + p('mem-l2', 'MSHRs')], 'cache');
+      arrow([[640, 579], [640, 619]]);
+      card('mem-bus', 85, 624, 1105, 64, 'membus · SystemXBar', [p('mem-bus', '宽度') + ' width']);
+      arrow([[365, 688], [365, 742]]);
+      arrow([[1020, 688], [1020, 742]], 'uncached 地址范围');
+      card('mem-dram', 85, 747, 550, 96, 'DRAM · SimpleMemory', ['默认 ' + p('mem-dram', '默认容量'), p('mem-dram', '延迟') + ' · ' + p('mem-dram', '带宽')], 'storage');
+      card('mem-simple-spm', 675, 747, 515, 96, '映射 SPM · SimpleMemory', [p('mem-simple-spm', '大小') + ' @ ' + p('mem-simple-spm', '地址'), 'uncached · 独立地址设备'], 'storage');
+      frame(85, 897, 1105, 145, 'CFD 设备内部 · 单独展开', 'spm', 'state');
+      card('spm', 108, 946, 521, 68, 'Banked SPM / 寄存器 / 队列', ['统一状态预算 ' + p('spm', '容量预算')], 'state');
+      text(915, 970, '映射 SPM 与设备状态预算', 17, '#bac0cb');
+      text(915, 996, '使用不同口径，分别显示', 15, '#9399a6');
+      text(640, 1076, 'SimpleMemory 提供容量、延迟和带宽模型；当前配置没有真实 DRAM 控制器内部单元', 13, '#9096a2');
+    }
+    function detail() {
+      const view = session.views.find(v => v.id === owner.drillView && (!v.ownerId || v.ownerId === ownerId));
+      if (!view) {
+        height = 480; heading(owner.label, '模块结构参数');
+        card(ownerId, 160, 160, 960, 180, owner.label, Object.entries(owner.params || {}).slice(0, 5).map(([k, v]) => k + ' · ' + v), 'state');
+        return;
+      }
+      // Existing detail geometry and links are reused in this independent drawing.
+      const scale = 1160 / view.width, offset = 60, top = 105;
+      height = Math.max(620, view.height * scale + 165);
+      heading(owner.label + ' · 单元展开', '点击有内部结构的分区继续展开 · 点击单元查看参数与来源');
+      const headers = [];
+      for (const g of view.groups || []) {
+        const tone = ['mul', 'add', 'div'].includes(g.ownerId) ? 'compute' : 'state';
+        frame(g.x * scale + offset, g.y * scale + top, g.w * scale, g.h * scale, g.label, g.ownerId, tone);
+        headers.push(parts.pop());
+      }
+      const layout = new Map(view.nodes.map(b => [b.id, { ...b, x: b.x * scale + offset, y: b.y * scale + top, w: b.w * scale, h: b.h * scale }]));
+      for (const id of view.edges || []) {
+        const edge = session.edges.find(e => e.id === id);
+        if (!edge) continue;
+        const a = layout.get(edge.from), b = layout.get(edge.to);
+        if (!a || !b) continue;
+        if (Math.abs(a.y - b.y) < 1) {
+          const right = a.x < b.x;
+          arrow([[right ? a.x + a.w : a.x, a.y + a.h / 2], [right ? b.x : b.x + b.w, b.y + b.h / 2]], '', edge.kind);
+        } else {
+          const down = a.y < b.y, ay = down ? a.y + a.h : a.y, by = down ? b.y : b.y + b.h;
+          const ax = a.x + a.w / 2, bx = b.x + b.w / 2, mid = (ay + by) / 2;
+          arrow([[ax, ay], [ax, mid], [bx, mid], [bx, by]], '', edge.kind);
+        }
+      }
+      // Keep group headings above routed links; their label band stays readable.
+      for (const header of headers) parts.push(header.replace('fill="transparent"', 'fill="#25262b"'));
+      for (const b of layout.values()) {
+        const n = nodes.get(b.id); if (!n) continue;
+        let tone = 'control';
+        if (['模型资源单元', '资源池'].includes(n.type) || /^mul|^add|^div/.test(n.id)) tone = 'compute';
+        else if (n.type === 'Cache') tone = 'cache';
+        else if (/SPM|bank|onchip|tile/.test(n.id)) tone = 'storage';
+        else if (/寄存器|槽|队列|上下文/.test(n.type)) tone = 'state';
+        const lines = b.w < 145 ? Object.values(n.params || {}).slice(0, 1) : Object.entries(n.params || {}).slice(0, b.h < 85 ? 2 : 3).map(([k, v]) => k + ' · ' + v);
+        card(n.id, b.x, b.y, b.w, b.h, n.label, lines, tone);
+      }
+      text(640, height - 31, '结构单元与当前会话一致 · 箭头表达数据 / 控制关系 · 单元活动状态未采集', 13, '#9096a2');
+    }
+    // Special compositions only apply when their required structure is present.
+    const known = ids => ids.every(id => nodes.has(id));
+    const bankCount = session.nodes.filter(n => n.parent === 'spm' && /^bank\d+$/.test(n.id)).length;
+    if (ownerId === 'dsa' && bankCount <= 8 && known(['cluster-issue', 'mul-lane4', 'rhs-context0', 'bank3', 'ctrl-fence'])) dsa();
+    else if (ownerId === 'cpu' && known(['cpu-rename', 'cpu-fu', 'cpu-rob', 'mem-l1i'])) cpu();
+    else if (ownerId === 'memory' && known(['mem-l2bus', 'mem-l2', 'mem-bus', 'mem-simple-spm'])) memory();
+    else detail();
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="group" aria-label="${escape(owner.label)}结构图" font-family="Arial, 'Noto Sans CJK SC', sans-serif"><defs><marker id="poster-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L6 3L0 6Z" fill="#a5abb8"/></marker></defs><rect width="${width}" height="${height}" fill="#141518"/><rect x="15" y="15" width="1250" height="${height - 30}" rx="26" fill="#191a1e" stroke="#383d48" stroke-width="6"/>${parts.join('')}</svg>`;
+    return { ownerId, title: owner.label, width, height, svg, boxes, references: [...references] };
+  }
+  const api = { create };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.CFDPosterLayout = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+  <script>
+(function () {
+  'use strict';
+  const launch = document.getElementById('open-architecture-poster');
+  if (!launch || !window.CFDPosterLayout || !window.CFDVisualizer) return;
+  const dialog = document.createElement('dialog');
+  dialog.className = 'architecture-poster';
+  dialog.setAttribute('aria-labelledby', 'poster-title');
+  dialog.innerHTML = `
+    <header class="poster-header"><div><div class="poster-kicker">MICROARCHITECTURE / BLOCK DIAGRAM</div><h2 id="poster-title">架构总览</h2></div>
+      <div class="poster-header-actions"><button type="button" data-action="export">导出此图 SVG</button><button type="button" data-action="close" aria-label="关闭架构总览">关闭 ×</button></div></header>
+    <nav class="poster-nav" aria-label="独立架构图分区"><button type="button" data-owner="dsa">CFD DSA 总图</button><button type="button" data-owner="cpu">CPU 流水</button><button type="button" data-owner="memory">存储系统</button><button type="button" data-action="fit">适应宽度</button><button type="button" data-action="actual">100%</button><span class="poster-guide">点击分区展开 · 点击单元查看参数 · Esc 关闭</span></nav>
+    <div class="poster-content"><section class="poster-board" aria-label="架构图画布"><nav class="poster-breadcrumb" aria-label="架构图路径"></nav><div class="poster-scroll"><div class="poster-drawing"></div></div></section><aside class="poster-info" aria-label="架构图模块说明"></aside></div>
+    <footer class="poster-footer"><div class="poster-key"><span><i style="background:#301741;border-color:#a768c7"></i>计算资源</span><span><i style="background:#293519;border-color:#a4b25c"></i>存储 / 搬运</span><span><i style="background:#17333e;border-color:#60a1b7"></i>状态 / 队列</span><span><i style="background:#421e23;border-color:#c16c75"></i>Cache</span></div><span>结构示意 · 功能关系 · 无逐单元活动回放</span></footer>`;
+  document.body.append(dialog);
+  const drawing = dialog.querySelector('.poster-drawing');
+  const info = dialog.querySelector('.poster-info');
+  const breadcrumb = dialog.querySelector('.poster-breadcrumb');
+  let session, map, history = [], poster, fit = true;
+  function element(tag, text, className) {
+    const e = document.createElement(tag); if (text !== undefined) e.textContent = text;
+    if (className) e.className = className; return e;
+  }
+  function inspect(id) {
+    const n = map.get(id); if (!n) return;
+    for (const box of drawing.querySelectorAll('[data-poster-node]')) box.classList.toggle('poster-selected', box.dataset.posterNode === id);
+    info.replaceChildren(element('div', n.type, 'poster-kicker'), element('h3', n.label), element('p', n.description));
+    const dl = element('dl');
+    for (const [key, value] of Object.entries(n.params || {})) dl.append(element('dt', key), element('dd', value));
+    info.append(element('div', '结构参数', 'poster-info-label'), dl);
+    const children = session.nodes.filter(child => child.parent === id);
+    if (children.length) {
+      const links = element('div', undefined, 'poster-children');
+      for (const child of children) {
+        const button = element('button', child.label + (child.drillView ? ' ↗' : ''));
+        button.type = 'button'; button.dataset.inspect = child.id; links.append(button);
+      }
+      info.append(element('div', '内部单元 · ' + children.length, 'poster-info-label'), links);
+    }
+    if (n.drillView && poster.ownerId !== id) {
+      const button = element('button', '展开此分区 ↗'); button.type = 'button'; button.dataset.owner = id;
+      info.append(element('div', '', 'poster-info-label'), button);
+    }
+    info.append(element('div', '来源', 'poster-info-label'), element('code', n.source || '当前导入会话'), element('p', n.evidence || '显示当前会话的结构定义；连线表达模块间的功能关系。'));
+    info.scrollTop = 0;
+  }
+  function sizing() { const svg = drawing.querySelector('svg'); if (svg) svg.style.width = fit ? '100%' : poster.width + 'px'; }
+  function render(id, reset = false) {
+    if (!map.has(id)) return;
+    const n = map.get(id);
+    if (!reset && poster && !n.drillView && !['dsa', 'cpu', 'memory'].includes(id)) { inspect(id); return; }
+    if (reset) history = [id]; else if (history[history.length - 1] !== id) history.push(id);
+    poster = window.CFDPosterLayout.create(session, id);
+    drawing.innerHTML = poster.svg; sizing();
+    dialog.querySelector('.poster-scroll').scrollTo(0, 0);
+    breadcrumb.replaceChildren();
+    history.forEach((key, i) => {
+      if (i) breadcrumb.append(element('span', '›'));
+      const button = element('button', map.get(key).label); button.type = 'button'; button.dataset.history = String(i);
+      if (i === history.length - 1) button.setAttribute('aria-current', 'page');
+      breadcrumb.append(button);
+    });
+    for (const button of dialog.querySelectorAll('.poster-nav [data-owner]')) button.setAttribute('aria-pressed', String(button.dataset.owner === history[0]));
+    inspect(id);
+  }
+  function open() {
+    session = window.CFDVisualizer.getSession();
+    map = new Map(session.nodes.map(n => [n.id, n]));
+    for (const button of dialog.querySelectorAll('.poster-nav [data-owner]')) button.disabled = !map.has(button.dataset.owner);
+    const first = map.has('dsa') ? 'dsa' : session.nodes.find(n => n.drillView)?.id || session.nodes[0].id;
+    fit = true; history = []; poster = null; drawing.replaceChildren(); render(first, true);
+    dialog.showModal();
+  }
+  function exportSvg() {
+    const svg = drawing.querySelector('svg').cloneNode(true);
+    svg.removeAttribute('style');
+    svg.querySelectorAll('[data-poster-node]').forEach(n => { n.removeAttribute('tabindex'); n.removeAttribute('role'); n.removeAttribute('data-poster-node'); });
+    const desc = document.createElementNS('http://www.w3.org/2000/svg', 'desc');
+    desc.textContent = '结构示意：' + session.meta.name + '；' + (session.meta.configSource || '当前导入会话') + '。功能关系图，无逐单元活动回放。';
+    svg.prepend(desc);
+    const blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'cfd-architecture-' + poster.ownerId.replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg';
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  launch.addEventListener('click', open);
+  dialog.addEventListener('close', () => launch.focus());
+  dialog.addEventListener('click', event => {
+    const button = event.target.closest('[data-action], [data-owner], [data-history], [data-inspect], [data-poster-node]');
+    if (!button) return;
+    if (button.dataset.action === 'close') dialog.close();
+    else if (button.dataset.action === 'export') exportSvg();
+    else if (button.dataset.action === 'fit') { fit = true; sizing(); }
+    else if (button.dataset.action === 'actual') { fit = false; sizing(); }
+    else if (button.dataset.history !== undefined) { history = history.slice(0, Number(button.dataset.history) + 1); render(history[history.length - 1]); }
+    else if (button.dataset.owner) render(button.dataset.owner, !!button.closest('.poster-nav'));
+    else if (button.dataset.inspect) { if (map.get(button.dataset.inspect)?.drillView) render(button.dataset.inspect); else inspect(button.dataset.inspect); }
+    else if (button.dataset.posterNode) render(button.dataset.posterNode);
+  });
+  dialog.addEventListener('keydown', event => {
+    const node = event.target.closest('[data-poster-node]');
+    if (node && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); render(node.dataset.posterNode); }
+  });
+})();
+
+</script>
+</body>
+</html>

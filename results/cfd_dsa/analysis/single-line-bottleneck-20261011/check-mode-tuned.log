@@ -1,0 +1,7 @@
+n17-t4-k1-o16-inverse cycles 105976 reload 26880
+n17-t4-k1-o16-direct cycles 94064 reload 26880
+n17-t4-k2-o16-inverse cycles 82558 reload 26880
+n17-t4-k2-o16-direct cycles 84668 reload 26880
+n17-t4-k7-o16-inverse cycles 58550 reload 26880
+n17-t4-k7-o16-direct cycles 76358 reload 26880
+SINGLE_LINE_STORAGE_CHECK_PASS

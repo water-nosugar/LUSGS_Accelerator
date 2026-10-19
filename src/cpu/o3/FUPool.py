@@ -68,7 +68,6 @@ class DefaultFUPool(FUPool):
         CFD_DSA_VEC5_Engine(),
         CFD_DSA_LINEBUF_Engine(),
         CFD_DSA_LUSGS_CTRL_Engine(),
-        CFD_SME_FMOPA_Engine(),
         CFD_SME_PIPE_Engine(),
         CFD_SME_ZA_OUTER_Engine(),
         Matrix_Unit(),

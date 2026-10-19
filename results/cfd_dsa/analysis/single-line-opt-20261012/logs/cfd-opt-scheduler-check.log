@@ -1,0 +1,9 @@
+cold-direct-rhs-frontier-s2 cycles 8776 error 5.551115123125783e-17
+cold-direct-rhs-frontier-s4 cycles 8984 error 5.551115123125783e-17
+reuse-direct-rhs-frontier-s2 cycles 25164 error 5.551115123125783e-17
+reuse-direct-rhs-frontier-s4 cycles 24474 error 5.551115123125783e-17
+cold-inverse-rhs-frontier-s2 cycles 9754 error 8.326672684688674e-17
+cold-inverse-rhs-frontier-s4 cycles 9780 error 8.326672684688674e-17
+reuse-inverse-rhs-frontier-s2 cycles 23822 error 8.326672684688674e-17
+reuse-inverse-rhs-frontier-s4 cycles 23848 error 8.326672684688674e-17
+SINGLE_LINE_OPT_CHECK_PASS 8 cases 32 sweeps

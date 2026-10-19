@@ -1,0 +1,10 @@
+{
+  "archived_oracle": {
+    "return_code": 2,
+    "stdout": ""
+  },
+  "isolated_oracle": {
+    "return_code": 0,
+    "stdout": "RAW_REFERENCE_ISOLATION_PASS"
+  }
+}

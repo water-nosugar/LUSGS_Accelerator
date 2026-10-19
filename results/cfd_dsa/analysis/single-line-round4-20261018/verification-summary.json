@@ -1,0 +1,8 @@
+{
+  "accepted_simulation_cases": 138,
+  "max_abs": 5.551115123125783e-16,
+  "max_normalized_raw_residual": 3.2538482807473654e-16,
+  "unit_tests": 19,
+  "invalid_configurations": 23,
+  "corrupted_log_rejections": 22
+}

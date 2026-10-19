@@ -1,0 +1,17 @@
+[
+  {
+    "name": "probe-failure-cache-recovery",
+    "runner_exit": 1,
+    "expected_valid": false
+  },
+  {
+    "name": "capacity-n115",
+    "runner_exit": 0,
+    "expected_valid": true
+  },
+  {
+    "name": "capacity-n116",
+    "runner_exit": 0,
+    "expected_valid": true
+  }
+]

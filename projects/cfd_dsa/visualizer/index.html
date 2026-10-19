@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CFD DSA · 微体系结构查看器</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="architecture-poster.css">
+</head>
+<body>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">◈</span><div><strong>CFD DSA</strong><span class="brand-sub">微体系结构查看器</span></div></div>
+      <span class="version">设计原型 · v0.2</span>
+      <div class="top-actions">
+        <button id="open-architecture-poster">架构总览</button>
+        <button id="load-demo" class="quiet">演示数据</button>
+        <button id="import-session">导入会话</button>
+        <button id="export-svg" class="primary">导出 SVG</button>
+        <input id="session-file" type="file" accept=".json,application/json" hidden>
+      </div>
+    </header>
+    <div class="runbar">
+      <div><span id="provenance" class="provenance">示意事件</span><strong id="run-name">单线 · cold direct</strong><span id="config-summary" class="muted"></span></div>
+      <span id="time-domain" class="mono">控制器时钟域 · cycle</span>
+    </div>
+    <aside class="sidebar" aria-label="架构导航">
+      <div class="section-label">架构层级</div>
+      <nav id="view-nav" aria-label="视图层级"></nav>
+      <div class="sidebar-divider"></div>
+      <div class="section-label">模块 / 内部单元</div>
+      <div id="module-tree" class="module-tree"></div>
+      <div class="sidebar-foot"><span class="foot-dot"></span>结构参考当前模型<br><span id="sidebar-evidence">回放时序为设计示意</span></div>
+    </aside>
+    <main class="main">
+      <section class="diagram-section" aria-labelledby="diagram-title">
+        <div class="diagram-toolbar">
+          <div class="view-heading"><div id="view-breadcrumb" class="view-breadcrumb"></div><span id="breadcrumb" class="eyebrow">DSA / COMPUTE & STORAGE</span><h1 id="diagram-title">加速器内部</h1></div>
+          <label class="entity-label">跟踪对象<select id="entity-select" aria-label="跟踪数据对象"></select></label>
+        </div>
+        <div class="canvas-wrap" id="canvas-wrap">
+          <svg id="architecture-svg" role="group" aria-label="微体系结构图，模块可选择，分组可展开"></svg>
+          <div class="canvas-controls" aria-label="图形缩放">
+            <button id="zoom-out" aria-label="缩小">−</button><span id="zoom-label" class="mono">100%</span><button id="zoom-in" aria-label="放大">+</button><button id="fit-view">适应</button>
+          </div>
+          <div id="graph-message" class="graph-message">拖动空白处平移 · 点击模块查看 · 双击分组展开</div>
+        </div>
+        <div class="diagram-legend"><span><i class="legend-dot active"></i>有在途事件</span><span><i class="legend-dot waiting"></i>等待事件</span><span><i class="legend-dot selected"></i>跟踪路径</span><span><i class="line-sample"></i>数据路径</span><span><i class="line-sample control"></i>控制 / 依赖</span><span id="detail-scope-note"></span></div>
+      </section>
+      <aside class="inspector" aria-labelledby="inspector-title">
+        <div class="inspector-heading"><span class="eyebrow">MODULE INSPECTOR</span><span id="node-type" class="type-tag"></span></div>
+        <h2 id="inspector-title">共享计算簇</h2>
+        <p id="node-description"></p>
+        <div id="node-children-section" class="detail-section" hidden><div class="detail-heading">内部单元 <span id="node-child-count" class="mono"></span></div><div id="node-children" class="node-children"></div></div>
+        <div class="detail-section"><div class="detail-heading">当前时刻 <span id="inspector-time" class="mono"></span></div><div id="node-state" class="state-line"></div><div id="node-activity"></div></div>
+        <div class="detail-section"><div class="detail-heading">结构参数</div><dl id="node-params"></dl></div>
+        <div class="detail-section"><div class="detail-heading">证据边界</div><p id="node-evidence" class="evidence-note"></p></div>
+        <div class="detail-section"><div class="detail-heading">源码位置</div><code id="node-source"></code></div>
+        <button id="drill-down" class="wide-button" hidden>展开内部结构 →</button>
+      </aside>
+      <section class="timeline-section" aria-labelledby="timeline-title">
+        <div class="timeline-toolbar"><div><span class="eyebrow">EXECUTION REPLAY</span><h2 id="timeline-title">执行时间轴 <span id="event-count" class="muted"></span></h2></div><div class="replay-controls"><button id="prev-cycle" aria-label="前一周期">−1</button><button id="play" class="primary" aria-label="播放时间回放">播放</button><button id="next-cycle" aria-label="后一周期">+1</button><button id="next-event">下一事件</button><label>速率<select id="speed" aria-label="回放速率"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div></div>
+        <div class="scrubber-row"><output id="current-time" class="mono"></output><input id="time-slider" type="range" min="0" max="340" value="100" step="1" aria-label="当前仿真时刻"><span id="end-time" class="mono muted"></span></div>
+        <div class="timeline-chart" id="timeline-chart"><svg id="timeline-svg" role="group" aria-label="按硬件资源排列的事件时间轴，点击事件定位"></svg></div>
+        <div class="timeline-foot"><span id="selection-summary" aria-live="polite"></span><span class="muted">实线框：传输 / 计算 · 虚线框：等待</span></div>
+      </section>
+    </main>
+    <footer class="statusbar"><span id="session-status">DESIGN DEMO · 示例时序，不是测量结果</span><span>架构 ↔ 对象 ↔ 时间</span></footer>
+  </div>
+  <div id="event-tooltip" class="event-tooltip" role="tooltip" hidden></div>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <script src="model.js"></script>
+  <script src="detail-architecture.js"></script>
+  <script src="demo-session.js"></script>
+  <script src="app.js"></script>
+  <script src="poster-layout.js"></script>
+  <script src="architecture-poster.js"></script>
+</body>
+</html>

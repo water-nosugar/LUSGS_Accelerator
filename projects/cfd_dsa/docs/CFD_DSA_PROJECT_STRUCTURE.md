@@ -1,6 +1,12 @@
 # CFD DSA / LU-SGS gem5 项目结构与实现路径说明
 
-> 审查基线：2026-07-28 工作区；本文件描述的是当前工作树，不以提交时间判断 active。
+> 2026-09-12 增量：runner统计/报告已移至`projects/cfd_dsa/configs/cfd_reporting.py`
+> 的`ReportContext`（第44行）；runner仅保留绑定和调用。
+> 下文旧runner报告区行号需按符号在新模块定位；本次未改变执行模型。
+> 重构边界与验证见[精简记录](CFD_DSA_SIMPLIFICATION.md)。
+
+> 审查基线：2026-09-10 清理后工作树；源码基线为 `529f5a2ec5`，
+> 可恢复标签为 `snapshot/cfd-dsa-cleanup-2026-09-10`。
 > 状态词：**active** 当前推荐或默认实际使用；**legacy** 兼容/回归保留；
 > **experimental** 可运行但不是 LU-SGS 主路径；**test-only** 仅测试；
 > **generated** 构建或运行生成；**unknown/待确认** 代码证据不足。
@@ -36,17 +42,17 @@ SPM、模式、统计和回归之间的对应关系。它不把旧性能数字�
 - 另有一套 **Step4 LU-SGS event controller**。它把 sweep 内 Path A/TRSV5/Vector5
   调度移入控制器，但不是 coefficient event controller
   （`src/arch/arm/cfd_lusgs_event_controller.cc:40-176,2985-3048`）。
-- 当前所谓 coeff `packet` 是 `CfdLocalSpm::issuePacket()` 的内部 event 仲裁 API，
-  未接入 gem5 memory hierarchy 的 `RequestPort/sendTimingReq`
-  （`src/arch/arm/cfd_local_spm.cc:2290-2390`）。
+- coeff `packet` 是 `CfdLocalSpm::issuePacket()` 的内部 event 仲裁 API；
+  `--coeff-spm-model=dma` 则通过 `CfdLocalSpm.dma_port` 接入 gem5 memory hierarchy 并发出
+  timing `ReadReq/WriteReq`。二者不能混为同一统计口径；当前 DMA 也尚不包含
+  tile descriptor、burst 合并和三缓冲整机。
 
 ## 2. 仓库扫描范围与方法
 
-在仓库根 `/home/zyy/gem5` 执行并核对了 `pwd`、`git rev-parse --show-toplevel`、
-`git status --short`、`git ls-files` 与用户指定的 `find`。扫描规模为：git 跟踪文件
-10,933 个，`projects/cfd_dsa` 59 个文件（其中 3 个为 `__pycache__`，非生成文件 56 个），
-`src/arch/arm` 355 个文件，`src/cpu`
-363 个文件。重点逐内容核对：
+在仓库根 `/home/zyy/gem5` 执行并核对了 `git status --short`、`git ls-files`、
+`rg` 与 `find`。清理提交共跟踪 11,026 个文件，其中 `projects/cfd_dsa`
+为 73 个跟踪条目；项目目录下已无 `__pycache__`/`.pyc`。本文避免使用容易因
+文档增删而过时的源码行数，以符号、mode 和 suite 连通性判定 active。重点核对：
 
 - `projects/cfd_dsa/{benchmarks,configs,docs,suites,tools}`；
 - `src/arch/arm/{insts,isa}` 及六个 CFD 控制器/SPM/helper；
@@ -54,14 +60,11 @@ SPM、模式、统计和回归之间的对应关系。它不把旧性能数字�
 - `src/arch/arm/SConscript`、根级兼容 runner、results manifest/simout/stats；
 - 通过 `rg` 交叉检查类、函数、mode、参数、环境变量、指令类和测试引用。
 
-`build/`、`__pycache__/`、二进制、trace 与 stats 只做分类。results 规模：
-`archive` 1201、`baselines` 10 个普通文件（另有 Step4-C 软链接）、`campaigns`
-1340、`failed` 16、`runs` 637；旧顶层 `results/lusgs_raw` 98、
-`results/lusgs_optprep` 115。正式结果生命周期由
-`projects/cfd_dsa/docs/RESULT_MANAGEMENT.md:18-30` 定义。
-
-工作树在审查开始时已有大量 modified/untracked CFD 文件；因此本文描述“当前工作树”，
-不能据 git 历史判定 active。此次只新增两份 Markdown。
+`build/`、二进制、trace 与 stats 只做分类。2026-09-10 扫描中
+`results/cfd_dsa` 有 9,444 个普通文件（`archive` 1,201、`baselines` 10、
+`campaigns` 7,268、`failed` 16、`runs` 946）；旧顶层 `results/lusgs_raw` 98、
+`results/lusgs_optprep` 115。这些是证据/生成数据，不计入源码规模。本轮文档更新
+不改动任何结果目录。
 
 ## 3. 项目总体架构
 
@@ -115,7 +118,7 @@ gem5/
 | --- | --- | --- | --- |
 | `projects/cfd_dsa/benchmarks/` | guest / 数据面 | 生成数据、inline asm、reference、校验；由 config 作为 workload 启动 | active + legacy |
 | `projects/cfd_dsa/configs/` | host / 控制面 | 解析 CLI、构造 CPU/FU/SPM、形成 guest argv | active |
-| `src/arch/arm/insts/cfd_dsa.*` | simulator / 数据面 | StaticInst、execute、architectural X/Z/ZA 与 helper 调用 | active + legacy class |
+| `src/arch/arm/insts/cfd_dsa.*` | simulator / 数据面 | StaticInst、execute、architectural X/Z/ZA 与 helper 调用 | active |
 | `src/arch/arm/isa/formats/custom_cfd.isa` | simulator / 控制面 | 唯一 CFD 自定义编码分派 | active |
 | `src/arch/arm/cfd_local_spm.*` | simulator / 数据面/统计 | Path A/ZA 状态、linebuf、内部 request 仲裁、全局 CFD stats | active |
 | coeff controller | simulator / 控制面 | raw 系数 LU/TRSM/drain event 图 | active |
@@ -124,8 +127,8 @@ gem5/
 | `projects/cfd_dsa/docs/` | 文档 | 分主题历史与专项说明 | active + historical |
 
 编译入口在 `src/arch/arm/SConscript:91-96`；ISA include 在
-`src/arch/arm/isa/formats/custom_cfd.isa:115-124`，
-`src/arch/arm/isa/insts/cfd_dsa.isa:4-11` 仅为兼容说明 stub。
+`src/arch/arm/isa/formats/custom_cfd.isa:115-124`。未被 include 的旧
+`src/arch/arm/isa/insts/cfd_dsa.isa` stub 已于 2026-09-09 删除。
 
 ## 5. 模拟器侧与 Guest 侧边界
 
@@ -194,7 +197,7 @@ packed LU，并非第四种 LU 分解（`src/arch/arm/insts/cfd_dsa.cc:1731-1779
 | coeff launch/wait/cancel | descriptor/token -> token/status | LusgsCtrl | `DSACoeffPreprocess*` | coeff event active |
 | `cfdsme_mvm5_pipe_step` | Zcol,Zvec,k -> ZA col | SMEPipe | Path B execute | standalone experimental |
 | `cfdsme_za_outer5_step` | selected outer column -> ZA col | SMEZaOuter | Path C execute | standalone experimental |
-| old `cfdsme_fmopa5_step` | fixed ZA[:,0] | SMEFmopa | C++ class remains | decoder guard 101 返回 Unknown；legacy candidate |
+| old `cfdsme_fmopa5_step` | fixed ZA[:,0] | SMEFmopa | removed 2026-09-09 | decoder guard 101 继续返回 Unknown |
 
 dual/coeff3 exact fixed-register guards先于 generic TRSV/MRHS 解码，coeff cancel 也仍可 decode
 （`src/arch/arm/isa/formats/custom_cfd.isa:196-272`）。OpClass 枚举的完整 CFD 集合在
@@ -260,8 +263,8 @@ Path A 新 benchmark 是 `test_cfd_patha_extreme_perf.c`；
 `test_cfd_extreme_perf.c` 明确作为 `patha-legacy` 构建
 （`projects/cfd_dsa/tools/build_benchmarks.py:20-23`）。Path B/C 均在 core regression
 （`projects/cfd_dsa/suites/core-regression.json:4-18`），但没有被 Step2 benchmark 调用。
-Path C compatibility source只 include 新 outer benchmark；旧 fixed-ZA source仍能编译，
-其编码在 decoder 中不可达，故是“待审查 legacy/test-only”，不能删除。
+2026-09-09 清理已删除 Path C include-only compatibility source 和 decoder 不可达的
+fixed-ZA source/target；当前 Path C 唯一可执行 benchmark 为 selected-column outer 版本。
 
 ## 11. LU-SGS Step1 / Step2 / Step3 / Step4
 
@@ -712,17 +715,16 @@ Step4-C 是“将整个 sweep 调度移入 event controller”的并行研究线
 
 ## 25. Legacy 与实验路径
 
-- 明确 legacy：root `run_cfd_*.py` compatibility shims（
-  `projects/cfd_dsa/docs/RESULT_MANAGEMENT.md:15-16`）；Path A
+- 已清理 legacy：root `run_cfd_*.py` compatibility shims、旧 fixed-ZA
+  C++ class/benchmark/FU/OpClass、GetAcc/VsetZero 和 ISA stub；Path A
   `projects/cfd_dsa/benchmarks/patha/test_cfd_extreme_perf.c`；prepared Step1/2
-  mode；旧 fixed-ZA C++ class/benchmark source。
+  mode 继续作为回归保留。
 - compatibility/回归：dual INV/LBAR、MRHS coarse、coeff3 coarse、linebuf、context variants。
-- experimental：Path B、Path C、Path A streaming、Step2 coefficient Streaming Stage A+B1.5+B2.5+B3+B4、
-  Step3 coarse macro、Step4 A/B/C。
+- experimental：Path B、Path C、Path A streaming、Step2 coefficient Streaming
+  Stage A+B1.5+B2.5+B3+B4+C1+C2/B5、Step3 coarse macro、Step4 A/B/C。
 - generated：`build/cfd_dsa/aarch64`、`results/`、`__pycache__`。
-- 待确认死代码：`DSAGetAcc`/`DSAVsetZero` 类、old FMOPA class、decoder 中 PathB 分支后的
-  unreachable `return Unknown64`、仅旧文档/compile target 引用的 old SME source。仅标记，
-  未删除；删除前必须按 Stage4 条件审查。
+- 已完成死代码审查并清理：`DSAGetAcc`/`DSAVsetZero`、old FMOPA class、
+  PathB 分支后的 unreachable return、旧 SME source/build target。
 
 ## 26. 已知混杂和技术债务
 
@@ -754,17 +756,23 @@ Step4-C 是“将整个 sweep 调度移入 event controller”的并行研究线
 - `projects/cfd_dsa/docs/performance_analysis.md`、`projects/cfd_dsa/docs/test_report.md`
   是历史 comparison artifact，不是当前默认。
 - `projects/cfd_dsa/docs/CFD_DSA_LUSGS_FULL_TECHNICAL_REPORT.md` 与 STEP/PRETRANSFORM
-  文档会重复描述边界；其审计日期为 2026-07-01，覆盖 Step4-C，但未包含 2026-07-14
-  `projects/cfd_dsa/docs/CFD_DSA_LUSGS_PRETRANSFORM.md:1-8` 所记录的最终 coeff-event
-  路径。以后应以本项目地图做导航，以专项文档保留细节。
+  文档会重复描述边界。该报告 1–27 节保留 Step1–4 历史演进，新增的
+  28 节统一说明 2026-09-10 的 Step2 raw coefficient streaming 主线、DMA 边界和清理结论。
+  项目导航以本地图为准，细节以各专项文档和 campaign 为准。
 - `projects/cfd_dsa/docs/test_report.md:1-13` 仍使用绝对路径链接并只汇总六组早期 Path A
   参数；内容可作历史证据，链接与“当前”措辞已过时。
-- `projects/cfd_dsa/docs/RESULT_MANAGEMENT.md:23-24` 提到
-  `results/cfd_dsa/baseline-index.json`，当前扫描未发现该文件；
-  Step4-C baseline 软链接实际存在。**baseline index 文件是否遗漏：待确认。**
-- `__pycache__` 出现在项目树中是 generated，不应进入源码索引或评审 diff。
+- `projects/cfd_dsa/docs/RESULT_LIFECYCLE.md` 当前不在工作树中，其原先提到的
+  `results/cfd_dsa/baseline-index.json` 也不存在；Step4-C baseline 软链接实际存在。
+  在恢复或重写结果治理文档前，以 campaign manifest、软链接目标和 cleanup report 共同判定归属。
+- `__pycache__` 已从项目树清除；若工具运行后重新生成，仍属于 generated，不应进入源码索引或评审 diff。
 
-## 27. 安全清理建议
+## 27. 清理状态与后续原则
+
+2026-09-09/10 已依据版本保留分析完成一轮可恢复清理，并在
+`snapshot/cfd-dsa-cleanup-2026-09-10` 标签上通过 11 个 guest targets 构建和
+10/10 core regression。完整删除清单、保留理由和恢复入口见
+`projects/cfd_dsa/docs/CFD_DSA_CLEANUP_REPORT_2026-09-09.md`。下列 Stage 0–3
+仍是未来整理原则，而不是本轮尚未执行的计划。
 
 ### Stage 0：仅补标签
 
@@ -789,7 +797,8 @@ report；将 runner 的 Path/Step 参数组拆为 profile 模块。
 ### Stage 4：废弃候选审查
 
 只有同时满足“无 mode 引用、无测试引用、无文档依赖、有替代实现、核心回归通过”才能
-删除。本任务未执行任何 Stage4 删除。
+删除。本轮已删除的对象全部满足该闭包；未满足的 Step1/3/4、Path B/C、
+off/shadow 对照和失败诊断证据均保留。后续不得根据 `old`、`debug`、`failed`等名称批量删除。
 
 ## 28. 后续开发入口
 
@@ -838,24 +847,22 @@ python3 projects/cfd_dsa/tools/run_suite.py \
   --campaign <new-immutable-campaign-name>
 ```
 
-本轮 Stage 6b/7/8 修改了 C++、Python/SimObject 和 guest benchmark，因此已重建
-`build/ARM/gem5.opt` 与 `lusgs-step2` guest，并执行三项集中 full-validation；命令与证据见
-`projects/cfd_dsa/docs/CFD_DSA_LUSGS_STEP2_STREAMING.md`。
+清理后已重建 `build/ARM/gem5.opt`、构建全部 11 个保留 guest targets，并执行
+10/10 core regression。证据位于
+`results/cfd_dsa/campaigns/cleanup-validation-2026-09-10/`；用例覆盖 Path A/B/C、
+TRSV5、decode-exclusive、Step1、Step2、Step2 raw streaming、Step3 与 Step4-C。
 
 ## 30. 待确认问题
 
-1. `projects/cfd_dsa/docs/RESULT_MANAGEMENT.md` 所述
-   `results/cfd_dsa/baseline-index.json` 当前不存在，是迁移遗漏
-   还是已由软链接取代？
+1. 是否恢复 `projects/cfd_dsa/docs/RESULT_LIFECYCLE.md`，或以新的 manifest/index 规范替代？
+   在决策前不得假设缺失的 `baseline-index.json` 已被软链接完全取代。
 2. Minor 缺少多项 CFD OpClass，是有意只支持子集还是尚未同步？
-3. old `DSAGetAcc/DSAVsetZero` 与 fixed-ZA FMOPA C++ 类是否仍有外部/未入库测试依赖？
-4. `sme-step` build target 编译旧不可 decode 编码，是专门的 negative/decode 测试还是历史残留？
-5. Step4 多 context/tile 参数虽然 Python 暴露，但 controller 明确拒绝非 1；是否应在 CLI
+3. Step4 多 context/tile 参数虽然 Python 暴露，但 controller 明确拒绝非 1；是否应在 CLI
    提前报错而非运行期 UnsupportedStage？
-6. `ColumnMajor` scheduler 是否需要成为显式受支持 CLI 值，还是应删除仅枚举残留？
-7. Stage 6b 已覆盖 coefficient request 的 timing RequestPort，但尚无 tile descriptor、
+4. `ColumnMajor` scheduler 是否需要成为显式受支持 CLI 值，还是应删除仅枚举残留？
+5. Stage 6b 已覆盖 coefficient request 的 timing RequestPort，但尚无 tile descriptor、
    DMA burst 合并和 load/compute/store 三缓冲；这些是否作为下一阶段统一实现？
-8. 真实 CFD Jacobian/系数装配代码尚未接入本仓库的 version/dirty publisher ABI；需要由算法
+6. 真实 CFD Jacobian/系数装配代码尚未接入本仓库的 version/dirty publisher ABI；需要由算法
    团队指定装配完成点和 lineId 命名域，不能把 benchmark 的 K 值直接当成生产算法结论。
 
 以上待确认项均未通过猜测填补，也未触发代码修改。

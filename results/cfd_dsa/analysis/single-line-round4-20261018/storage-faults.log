@@ -1,0 +1,7 @@
+capacity REJECTED cfd-storage-fault-yq3qa12j: incorrect residency/traffic ledger
+missing_reload_response REJECTED missing or duplicate timing read responses
+missing_record_response REJECTED interface packets missing or duplicated
+premature_completion REJECTED invalid numerical/visible completion order
+wrong_cache_residency REJECTED cfd-storage-fault-s203m19p: incorrect residency/traffic ledger
+duplicated_terminal_event REJECTED terminal child state was duplicated or skipped
+STORAGE_FAULT_CHECK_PASS (6 injected faults)

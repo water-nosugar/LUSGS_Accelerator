@@ -1,0 +1,16 @@
+test_preserve_explicit_resource_settings (test_single_line.SingleLineScopeTests) ... ok
+test_reject_multiple_lines_even_with_duplicate_overrides (test_single_line.SingleLineScopeTests) ... ok
+test_scope_and_idempotence (test_single_line.SingleLineScopeTests) ... ok
+test_boundaries (test_single_line.StorageLedgerTests) ... ok
+test_numeric_completion_can_precede_visibility (test_single_line.VisibilityCheckerTests) ... ok
+test_reject_premature_visibility_lost_bytes_and_overflow (test_single_line.VisibilityCheckerTests) ... ok
+test_lu_and_mvm_cannot_oversubscribe_multiplier (test_single_line_cluster.ClusterTraceTests) ... ok
+test_lu_and_trsm_use_same_divider_ii (test_single_line_cluster.ClusterTraceTests) ... ok
+test_scalar_and_vector_share_five_lanes (test_single_line_cluster.ClusterTraceTests) ... ok
+test_vector_width_and_latency_are_physical (test_single_line_cluster.ClusterTraceTests) ... ok
+test_wrong_bank_and_hidden_bank_rejected (test_single_line_cluster.ClusterTraceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.001s
+
+OK

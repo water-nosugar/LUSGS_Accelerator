@@ -1,0 +1,234 @@
+{
+  "stale_cache_state": {
+    "case": "results/cfd_dsa/campaigns/single-line-round4-full-recovery-probe-20261019/n17-direct",
+    "cache_hits": [
+      "0",
+      "1",
+      "1"
+    ],
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.3893184290465254e-16",
+        "mismatches": "0",
+        "result_hash": "31efc1d3b84ee793",
+        "residual_max": "2.1599888041755203e-16"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "6.0856463308136044e-16",
+        "mismatches": "0",
+        "result_hash": "08db84b812cd87a8",
+        "residual_max": "2.1192819164441569e-16"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "5.3939516245950307e-16",
+        "mismatches": "0",
+        "result_hash": "2d3e250934e6209a",
+        "residual_max": "2.5327218778036572e-16"
+      }
+    ],
+    "aborts": [
+      {
+        "cycle": "258277",
+        "token": "1",
+        "event": "begin",
+        "status": "6"
+      },
+      {
+        "cycle": "258395",
+        "token": "1",
+        "event": "visible",
+        "status": "9",
+        "dma_live": "0",
+        "records": "0",
+        "children": "0"
+      },
+      {
+        "cycle": "440279",
+        "token": "28",
+        "event": "begin",
+        "status": "9"
+      },
+      {
+        "cycle": "440339",
+        "token": "28",
+        "event": "visible",
+        "status": "9",
+        "dma_live": "0",
+        "records": "0",
+        "children": "0"
+      },
+      {
+        "cycle": "596257",
+        "token": "55",
+        "event": "begin",
+        "status": "9"
+      },
+      {
+        "cycle": "596268",
+        "token": "55",
+        "event": "visible",
+        "status": "9",
+        "dma_live": "0",
+        "records": "0",
+        "children": "0"
+      }
+    ],
+    "checker_rejection": "a later cancellation overwrote the first error"
+  },
+  "wrong_result": {
+    "case": "results/cfd_dsa/campaigns/single-line-round4-full-recovery-dirty-probe-20261019/n17-direct",
+    "cache_hits": [
+      "0",
+      "1",
+      "1"
+    ],
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.3893184290465254e-16",
+        "mismatches": "0",
+        "result_hash": "31efc1d3b84ee793",
+        "residual_max": "2.1599888041755203e-16"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "6.0856463308136044e-16",
+        "mismatches": "0",
+        "result_hash": "08db84b812cd87a8",
+        "residual_max": "2.1192819164441569e-16"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "0.0098535899522490533",
+        "max_rel": "0.035410688087874585",
+        "mismatches": "171",
+        "result_hash": "2d3e250934e6209a",
+        "residual_max": "0.014823599169878476"
+      }
+    ],
+    "aborts": [
+      {
+        "cycle": "258641",
+        "token": "1",
+        "event": "begin",
+        "status": "6"
+      },
+      {
+        "cycle": "258759",
+        "token": "1",
+        "event": "visible",
+        "status": "9",
+        "dma_live": "0",
+        "records": "0",
+        "children": "0"
+      },
+      {
+        "cycle": "440587",
+        "token": "28",
+        "event": "begin",
+        "status": "9"
+      },
+      {
+        "cycle": "440657",
+        "token": "28",
+        "event": "visible",
+        "status": "9",
+        "dma_live": "0",
+        "records": "0",
+        "children": "0"
+      },
+      {
+        "cycle": "597019",
+        "token": "55",
+        "event": "begin",
+        "status": "9"
+      },
+      {
+        "cycle": "597030",
+        "token": "55",
+        "event": "visible",
+        "status": "9",
+        "dma_live": "0",
+        "records": "0",
+        "children": "0"
+      }
+    ],
+    "checker_rejection": "recovery contract did not finish"
+  },
+  "late_summary": [
+    {
+      "baseline": "n17-reuse-direct-baseline",
+      "optimized": "n17-reuse-direct-production",
+      "before_cycles": 20684,
+      "after_cycles": 21520,
+      "cycle_reduction_pct": -4.041771417520779,
+      "before_dma_bytes": 50896,
+      "after_dma_bytes": 34960,
+      "before_cache_hits": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "after_cache_hits": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "baseline": "n65-reuse-direct-baseline",
+      "optimized": "n65-reuse-direct-production",
+      "before_cycles": 56952,
+      "after_cycles": 57794,
+      "cycle_reduction_pct": -1.478437982862757,
+      "before_dma_bytes": 216016,
+      "after_dma_bytes": 154000,
+      "before_cache_hits": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "after_cache_hits": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
 #include <utility>
 
@@ -22,6 +23,19 @@ namespace
 {
 
 CfdLocalSpm *localSpmInstance = nullptr;
+
+bool dmaTraceEnabled()
+{
+    const char *value=std::getenv("GEM5_CFD_COEFF_TRACE_ENABLE");
+    return value && (!std::strcmp(value,"1") || !std::strcmp(value,"true"));
+}
+
+void traceDma(const char *event,uint64_t id)
+{
+    if (dmaTraceEnabled())
+        std::fprintf(stderr,"CFD_DMA_PACKET tick=%llu event=%s packet=%llu\n",
+            (unsigned long long)curTick(),event,(unsigned long long)id);
+}
 
 uint64_t
 localEnvU64(const char *name, uint64_t default_value)
@@ -56,6 +70,9 @@ CfdLocalSpm::CfdLocalSpm(const CfdLocalSpmParams &params)
       system(params.system),
       dmaPort(name() + ".dma_port"),
       dmaRequestorId(system->getRequestorId(this, "coeff_dma")),
+      dmaIssuePackets(localEnvU64("GEM5_CFD_DMA_ISSUE_PACKETS",0)),
+      dmaIssueBytes(localEnvU64("GEM5_CFD_DMA_ISSUE_BYTES",0)),
+      dmaSendEvent([this] { trySendDma(); },name()+".dma_send"),
       ADD_STAT(bytesRead, statistics::units::Byte::get(),
                "Logical bytes read through CFD local SPM port"),
       ADD_STAT(logicalBytesRead, statistics::units::Byte::get(),
@@ -1201,30 +1218,84 @@ CfdLocalSpm::getPort(const std::string &if_name, PortID idx)
 void
 CfdLocalSpm::trySendDma()
 {
+    if (dmaIssuePackets || dmaIssueBytes) {
+        sendBoundedDma();
+        return;
+    }
     if (dmaRetryPacket || dmaPackets.empty())
         return;
     PacketPtr pkt = dmaPackets.front();
+    const auto id=static_cast<DmaSenderState *>(pkt->senderState)->packetId;
     if (dmaPort.sendTimingReq(pkt)) {
+        traceDma("send",id);
         dmaPackets.pop_front();
     } else {
         dmaRetryPacket = pkt;
         dmaPackets.pop_front();
         coeffDmaPortRetries++;
+        traceDma("retry",id);
     }
 }
 
 void
 CfdLocalSpm::recvDmaReqRetry()
 {
+    if (dmaIssuePackets || dmaIssueBytes) {
+        dmaWaitingRetry = false;
+        trySendDma();
+        return;
+    }
     if (!dmaRetryPacket)
         return;
     PacketPtr pkt = dmaRetryPacket;
+    const auto id=static_cast<DmaSenderState *>(pkt->senderState)->packetId;
     if (!dmaPort.sendTimingReq(pkt)) {
         coeffDmaPortRetries++;
+        traceDma("retry",id);
         return;
     }
+    traceDma("send",id);
     dmaRetryPacket = nullptr;
     trySendDma();
+}
+
+void
+CfdLocalSpm::sendBoundedDma()
+{
+    if (dmaWaitingRetry)
+        return;
+    const Tick ticks = localEnvU64("GEM5_CFD_TICKS_PER_CYCLE",500);
+    const Tick nowCycle = curTick()/ticks;
+    if (nowCycle != dmaIssueCycle) {
+        dmaIssueCycle = nowCycle;
+        dmaCyclePackets = dmaCycleBytes = 0;
+    }
+    while (dmaRetryPacket || !dmaPackets.empty()) {
+        PacketPtr pkt = dmaRetryPacket ? dmaRetryPacket : dmaPackets.front();
+        const auto id = static_cast<DmaSenderState *>(pkt->senderState)->packetId;
+        panic_if(dmaIssueBytes && pkt->getSize() > dmaIssueBytes,
+                 "CFD DMA packet exceeds its link cycle budget");
+        if ((dmaIssuePackets && dmaCyclePackets == dmaIssuePackets) ||
+            (dmaIssueBytes && dmaCycleBytes+pkt->getSize() > dmaIssueBytes)) {
+            if (!dmaSendEvent.scheduled())
+                schedule(dmaSendEvent,(nowCycle+1)*ticks);
+            return;
+        }
+        const auto bytes = pkt->getSize();
+        if (!dmaRetryPacket)
+            dmaPackets.pop_front();
+        if (!dmaPort.sendTimingReq(pkt)) {
+            dmaRetryPacket = pkt;
+            dmaWaitingRetry = true;
+            coeffDmaPortRetries++;
+            traceDma("retry",id);
+            return;
+        }
+        dmaRetryPacket = nullptr;
+        dmaCyclePackets++;
+        dmaCycleBytes += bytes;
+        traceDma("send",id);
+    }
 }
 
 bool
@@ -1233,6 +1304,7 @@ CfdLocalSpm::recvDmaTimingResp(PacketPtr pkt)
     auto *state = dynamic_cast<DmaSenderState *>(pkt->senderState);
     panic_if(!state, "CFD coefficient DMA response lacks sender state");
     const uint64_t packetId = state->packetId;
+    traceDma("response",packetId);
     auto completion = std::move(state->completion);
     delete state;
     delete pkt;
@@ -1293,6 +1365,10 @@ CfdLocalSpm::issueDma(
         coeffDmaReadBytes += bytes;
     if (dmaLivePackets > coeffDmaLiveMax.value())
         coeffDmaLiveMax = dmaLivePackets;
+    if (dmaTraceEnabled())
+        std::fprintf(stderr,"CFD_DMA_PACKET tick=%llu event=queue packet=%llu op=%s bytes=%u live=%llu\n",
+            (unsigned long long)curTick(),(unsigned long long)state->packetId,
+            write ? "W" : "R",bytes,(unsigned long long)dmaLivePackets);
     trySendDma();
     return result;
 }

@@ -1,0 +1,5 @@
+cold-direct-n65 cycles 23178 error 1.6653345369377348e-16
+cold-inverse-n65 cycles 27926 error 2.220446049250313e-16
+reuse-direct-n65 cycles 67342 error 1.6653345369377348e-16
+reuse-inverse-n65 cycles 67008 error 2.220446049250313e-16
+SINGLE_LINE_OPT_CHECK_PASS 4 cases 16 sweeps

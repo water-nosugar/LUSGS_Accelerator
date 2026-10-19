@@ -7,6 +7,7 @@
 | 标签 | 对应方案 | 主要入口 |
 | --- | --- | --- |
 | `snapshot/cfd-dsa-2026-09-09` | 本次上传的完整工作快照 | `projects/cfd_dsa/` |
+| `snapshot/cfd-dsa-cleanup-2026-09-10` | 按版本保留分析完成清理并通过全量 core regression | `projects/cfd_dsa/docs/CFD_DSA_CLEANUP_REPORT_2026-09-09.md` |
 | `scheme/path-a-v1` | dotp-row / internal-buffer Path A | `configs/run_cfd_patha.py` |
 | `scheme/path-b-v1` | ZA partial-sum pipeline | `configs/run_cfd_pathb.py` |
 | `scheme/path-c-v1` | ZA selected-column outer product | `configs/run_cfd_pathc.py` |

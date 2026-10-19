@@ -1,0 +1,15 @@
+{
+  "implementation": "finished",
+  "campaigns": "validated",
+  "counts": {
+    "final_cases": 125,
+    "final_sweeps": 428,
+    "all_cases": 198,
+    "all_sweeps": 748
+  },
+  "build_command": "scons build/ARM/gem5.opt -j2",
+  "evidence": "evidence.json",
+  "verification": "verify.py",
+  "evidence_verification": "passed",
+  "verification_log": "logs/cfd-round2-evidence-check.log"
+}

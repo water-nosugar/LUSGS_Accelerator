@@ -511,31 +511,6 @@ class DSACoeffPreprocessCancel : public CFDDSABase
 };
 
 // ================================================================
-// DSACFDSMEFmopa5Step -- restricted SME FMOPA-like k-step
-// Encodes: [31:27]=00000 [26:25]=00 [24:23]=11 [22]=1 [21]=0
-//          [20:18]=k [17:15]=101 [14:10]=zcol [9:5]=zvec [4:0]=0
-//
-// Path C: each step directly accumulates into architectural ZA.
-//   left[0:4]=zcol[0:4], right[0]=zvec[k]
-//   ZA[0:4,0] += left[0:4] * right[0]
-// ================================================================
-class DSACFDSMEFmopa5Step : public CFDDSABase
-{
-  protected:
-    RegIndex zcol;
-    RegIndex zvec;
-    uint8_t k;
-    RegId srcRegIdxArr[3];
-    RegId destRegIdxArr[1];
-
-  public:
-    DSACFDSMEFmopa5Step(ExtMachInst, RegIndex _zcol,
-                        RegIndex _zvec, uint8_t _k);
-    Fault execute(ExecContext *, trace::InstRecord *) const override;
-    std::string generateDisassembly(Addr, const loader::SymbolTable *) const override;
-};
-
-// ================================================================
 // DSACFDSMEMvm5PipeStep -- Path B ZA spatial partial-sum pipeline
 // Encodes: [31:27]=00000 [26:25]=00 [24:23]=11 [22]=1 [21]=1
 //          [20:18]=k [17:15]=110 [14:10]=zcol [9:5]=zvec [4:0]=0
@@ -585,39 +560,6 @@ class DSACFDSMEZaOuter5Step : public CFDDSABase
   public:
     DSACFDSMEZaOuter5Step(ExtMachInst, RegIndex _zcol,
                           RegIndex _zvec, uint8_t _k);
-    Fault execute(ExecContext *, trace::InstRecord *) const override;
-    std::string generateDisassembly(Addr, const loader::SymbolTable *) const override;
-};
-
-// ================================================================
-// DSAVsetZero -- Zero a Z register (kept for compatibility)
-// ================================================================
-class DSAVsetZero : public CFDDSABase
-{
-  protected:
-    RegIndex zrd;
-    RegId srcRegIdxArr[0];
-    RegId destRegIdxArr[1];
-
-  public:
-    DSAVsetZero(ExtMachInst, RegIndex _zrd);
-    Fault execute(ExecContext *, trace::InstRecord *) const override;
-    std::string generateDisassembly(Addr, const loader::SymbolTable *) const override;
-};
-
-// ================================================================
-// DSAGetAcc -- Harvest Shadow Accumulator (legacy, v3.0)
-// Kept for backward compatibility
-// ================================================================
-class DSAGetAcc : public CFDDSABase
-{
-  protected:
-    RegIndex zd;
-    RegId srcRegIdxArr[5];
-    RegId destRegIdxArr[1];
-
-  public:
-    DSAGetAcc(ExtMachInst, RegIndex _zd);
     Fault execute(ExecContext *, trace::InstRecord *) const override;
     std::string generateDisassembly(Addr, const loader::SymbolTable *) const override;
 };

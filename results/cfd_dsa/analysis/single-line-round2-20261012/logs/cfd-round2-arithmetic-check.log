@@ -1,0 +1,10 @@
+cold-direct-ii2 cycles 8580 error 5.551115123125783e-17
+cold-inverse-ii2 cycles 7958 error 8.326672684688674e-17
+reuse-inverse-ii2 cycles 19780 error 8.326672684688674e-17
+reuse-inverse-add2 cycles 18948 error 8.326672684688674e-17
+reuse-inverse-add2-tile8 cycles 18586 error 8.326672684688674e-17
+reuse-direct-ii2 cycles 23372 error 5.551115123125783e-17
+reuse-direct-add2 cycles 22372 error 5.551115123125783e-17
+reuse-direct-add2-tile8 cycles 21358 error 5.551115123125783e-17
+cold-inverse-reciprocal cycles 8412 error 8.326672684688674e-17
+SINGLE_LINE_OPT_CHECK_PASS 9 cases 45 sweeps

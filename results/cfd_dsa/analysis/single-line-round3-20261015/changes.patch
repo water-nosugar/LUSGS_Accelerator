@@ -1,0 +1,1383 @@
+--- a/src/arch/arm/cfd_coeff_preprocess_rhs_rows.inc
++++ b/src/arch/arm/cfd_coeff_preprocess_rhs_rows.inc
+@@ -24,13 +24,14 @@
+     const bool multiply = rhs.phase == RhsPhase::ForwardMul || rhs.phase == RhsPhase::BackwardMul;
+     const bool backward = rhs.phase == RhsPhase::BackwardMul || rhs.phase == RhsPhase::BackwardSub;
+     const uint64_t token = req.token;
++    const auto end = rhsRowProducts.begin()+env.rhsProductDepth;
+     panic_if(k < 0 || k >= 4, "CFD invalid RHS row batch");
+     auto it = multiply ?
+-        std::find_if(rhsRowProducts.begin(), rhsRowProducts.end(), [](const auto &s) { return !s.valid; }) :
+-        std::find_if(rhsRowProducts.begin(), rhsRowProducts.end(), [token,index](const auto &s) {
++        std::find_if(rhsRowProducts.begin(), end, [](const auto &s) { return !s.valid; }) :
++        std::find_if(rhsRowProducts.begin(), end, [token,index](const auto &s) {
+             return s.valid && s.token == token && s.rhs == index;
+         });
+-    if (it == rhsRowProducts.end()) {
++    if (it == end) {
+         panic_if(!multiply, "CFD RHS row product missing");
+         rowGroupsStalls++;
+         return false;
+--- a/src/arch/arm/cfd_coeff_preprocess_controller.hh
++++ b/src/arch/arm/cfd_coeff_preprocess_controller.hh
+@@ -88,6 +88,7 @@
+     // Cache keys distinguish LU/direct-base and DInv/inverse-base payloads.
+     CFD_COEFF_PRE_BASE_DIRECT_SOLVE = 1ull << 21,
+     CFD_COEFF_PRE_COMPACT_RECORD = 1ull << 22,
++    CFD_COEFF_PRE_PACKED_RECORD = 1ull << 23,
+ };
+ 
+ // Guest-visible descriptor. Keep this layout mirrored in the Step2 benchmark.
+@@ -346,6 +347,14 @@
+ };
+ static_assert(sizeof(CfdCoeffCompactRecord) == 320);
+ 
++struct CfdCoeffPackedRecord
++{
++#define CFD_PACKED_FIELD(type, cpp, guest) type cpp;
++#include "arch/arm/cfd_packed_record_fields.inc"
++#undef CFD_PACKED_FIELD
++};
++static_assert(sizeof(CfdCoeffPackedRecord) == 160);
++
+ inline CfdCoeffCompactRecord
+ cfdCompactRecord(const CfdCoeffPreprocessRecord &record)
+ {
+--- a/src/arch/arm/cfd_coeff_preprocess_controller.cc
++++ b/src/arch/arm/cfd_coeff_preprocess_controller.cc
+@@ -34,6 +34,43 @@
+ constexpr unsigned MatrixBytes = N * N * sizeof(double);
+ constexpr unsigned VectorBytes = N * sizeof(double);
+ constexpr uint64_t DescriptorVersion = 1;
++
++static unsigned
++completionEntryBytes(unsigned level)
++{
++    return level >= 11 ? 512 : 1024;
++}
++
++static size_t
++recordBytes(uint64_t flags)
++{
++    return flags & CFD_COEFF_PRE_PACKED_RECORD ? sizeof(CfdCoeffPackedRecord) :
++           flags & CFD_COEFF_PRE_COMPACT_RECORD ? sizeof(CfdCoeffCompactRecord) :
++                                                 sizeof(CfdCoeffPreprocessRecord);
++}
++
++static CfdCoeffPackedRecord
++packedRecord(const CfdCoeffPreprocessRecord &record)
++{
++    CfdCoeffPackedRecord packed{};
++#define CFD_PACKED_FIELD(type, cpp, guest) \
++    if constexpr (sizeof(type) < sizeof(uint64_t)) \
++        panic_if(record.cpp > std::numeric_limits<type>::max(), "CFD packed record overflow: " #cpp); \
++    packed.cpp = record.cpp;
++#include "arch/arm/cfd_packed_record_fields.inc"
++#undef CFD_PACKED_FIELD
++    return packed;
++}
++
++static uint64_t
++recordDigest(const CfdCoeffPreprocessRecord &record)
++{
++    uint64_t digest=14695981039346656037ULL;
++#define CFD_RECORD_FIELD(cpp, guest) digest=(digest^record.cpp)*1099511628211ULL;
++#include "arch/arm/cfd_compact_record_fields.inc"
++#undef CFD_RECORD_FIELD
++    return digest;
++}
+ 
+ uint64_t
+ envU64(const char *name, uint64_t fallback)
+@@ -169,10 +206,12 @@
+     bool tiledLine = false;
+     unsigned lineOptLevel = 0;
+     bool rhsRowParallel = false;
++    unsigned rhsProductDepth = 60;
+     unsigned completionDepth = 8, warmWriteDepth = 8;
+     bool onchipTiming = false;
+     unsigned onchipDepth = 64;
+     uint64_t onchipLatency = 1;
++    bool dmaOutputPriority = true;
+     bool timedInterface = false;
+     uint32_t interfaceWidth = 64;
+     uint64_t lineSpmBytes = 131072;
+@@ -194,7 +233,10 @@
+     EventEnv e;
+     e.tiledLine = envBool("GEM5_CFD_LINE_TILED", false);
+     e.lineOptLevel = envU64("GEM5_CFD_LINE_OPT_LEVEL", 0);
++    e.dmaOutputPriority = envBool("GEM5_CFD_DMA_OUTPUT_PRIORITY", true);
+     e.rhsRowParallel = envBool("GEM5_CFD_RHS_ROW_PARALLEL", false);
++    e.rhsProductDepth = envU64("GEM5_CFD_RHS_PRODUCT_DEPTH",60);
++    panic_if(e.rhsProductDepth<1 || e.rhsProductDepth>60,"CFD RHS product depth outside 1..60");
+     e.completionDepth = envU64("GEM5_CFD_COMPLETION_DEPTH", 8);
+     e.warmWriteDepth = envU64("GEM5_CFD_WARM_WRITE_DEPTH", 8);
+     e.onchipTiming = envBool("GEM5_CFD_ONCHIP_TIMING", e.lineOptLevel >= 8);
+@@ -456,6 +498,9 @@
+ };
+ static_assert(sizeof(DetachedRecord) + sizeof(InterfaceTransfer) +
+               sizeof(CfdCoeffCompactRecord) <= 1024);
++static_assert(sizeof(DetachedRecord) + sizeof(InterfaceTransfer) +
++              sizeof(CfdCoeffPackedRecord) + 128 <= 512,
++              "update packed completion reservation");
+ 
+ struct Request
+ {
+@@ -532,6 +577,7 @@
+     bool dqStarPublishComplete = false;
+     bool handoffProduced = false;
+     bool tileDataCommitted = false;
++    bool localTilePublished = false;
+     std::array<std::array<std::shared_ptr<ColdColumnProduct>, N>, 2> coldProducts;
+     uint8_t lbarColumnReadyMask = 0;
+     uint8_t lbarColumnQueuedMask = 0;
+@@ -600,10 +646,26 @@
+     Phase phase = Phase::Forward;
+     unsigned storageIndex = 0;
+     uint64_t start = 0, count = 0, retired = 0;
++    std::array<uint64_t, 16> readyMask{};
++    uint64_t readyCount = 0;
+     std::vector<std::array<double, N>> y;
+     std::vector<std::array<double, N * N>> u;
+     uint64_t issued[2] = {}, completed[2] = {};
+ };
++
++// Two register slots overlap a point's arithmetic with the next SPM read.
++struct BackwardOperand
++{
++    uint64_t cell = UINT64_MAX;
++    std::shared_ptr<LineTile> tile;
++    std::shared_ptr<OnchipAccess> yLoad;
++    std::array<std::shared_ptr<OnchipAccess>, N> columns;
++    std::array<double, N> y{};
++    std::array<std::array<double, N>, N> values{};
++    uint8_t readyColumns = 0, usedColumns = 0;
++    bool yReady = false;
++};
++static_assert(sizeof(BackwardOperand) <= 512);
+ 
+ // Fixed input/base credits; opt level 5 separates the bounded write queue.
+ struct WarmSlot
+@@ -621,6 +683,7 @@
+     std::shared_ptr<InterfaceTransfer> transfer;
+     std::shared_ptr<LineTile> tile;
+     std::shared_ptr<OnchipAccess> localStore, localRead;
++    bool localPublished = false;
+ };
+ 
+ struct LineRequest
+@@ -648,6 +711,8 @@
+     uint64_t warmInputStalls = 0, warmOutputStalls = 0;
+     uint64_t warmBaseStalls = 0, warmTileStalls = 0;
+     std::shared_ptr<OnchipAccess> tailRead;
++    std::array<BackwardOperand, 2> backwardOperands;
++    uint64_t backwardOperandAllocated = 0, backwardOperandReleased = 0;
+     std::array<double,N> backwardYOperand{};
+     uint64_t warmNextInput = 0, warmAheadInputs = 0, warmWritesMax = 0;
+     uint64_t cacheReadIssued = 0, cacheReadCompleted = 0;
+@@ -700,6 +765,7 @@
+     uint64_t outputLastResponseCycle = 0;
+     bool backwardDirect = false;
+     bool backwardStarted = false;
++    bool earlyBackward = false;
+     bool backwardOpPending = false;
+     bool backwardFinishWaiting = false;
+     bool backwardSubtractReady = false;
+@@ -944,6 +1010,15 @@
+     bool onchipColumnReady(LineRequest &line, unsigned context, unsigned column);
+     bool prepareOnchipCommit(Request &req);
+     bool cachedRegistersReady(Request &req);
++    void processBackwardOperands(LineRequest &line);
++    bool backwardOperandReady(LineRequest &line, unsigned column);
++    void releaseBackwardOperands(LineRequest &line);
++    bool backwardTileReadable(const LineTile &tile, uint64_t cell) const;
++    void markLocalTileReady(LineRequest &line, const std::shared_ptr<LineTile> &tile,
++                           uint64_t cell, uint64_t yJob, uint64_t uJob);
++    void processLocalTileResults();
++    bool startEarlyBackward(LineRequest &line);
++    void processEarlyLineTiles(LineRequest &line);
+     unsigned warmDepth(const LineRequest &line) const {
+         return std::min<uint64_t>(env.lineOptLevel >= 5 ? 8 : 4, line.window);
+     }
+@@ -1102,7 +1177,10 @@
+ void
+ CfdCoeffPreprocessController::writeGuestRecord(const Request &req)
+ {
+-    if (req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) {
++    if (req.desc.flags & CFD_COEFF_PRE_PACKED_RECORD) {
++        const auto packed=packedRecord(req.record);
++        proxy().writeBlob(req.desc.recordAddr,&packed,sizeof(packed));
++    } else if (req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) {
+         const auto compact = cfdCompactRecord(req.record);
+         proxy().writeBlob(req.desc.recordAddr, &compact, sizeof(compact));
+     } else {
+@@ -1714,8 +1792,7 @@
+             if (child.lBarOutAddr)
+                 child.lBarOutAddr += cell * MatrixBytes;
+             child.uBarOutAddr += cell * MatrixBytes;
+-            child.recordAddr += cell * ((child.flags & CFD_COEFF_PRE_COMPACT_RECORD) ?
+-                sizeof(CfdCoeffCompactRecord) : sizeof(CfdCoeffPreprocessRecord));
++            child.recordAddr += cell * recordBytes(child.flags);
+ 
+             child.reserved[0] = line.desc.reserved[0] + cell * VectorBytes;
+             child.reserved[1] = 0;
+@@ -2307,8 +2384,10 @@
+     if (line.terminal || !line.backwardStarted || line.backwardOpPending ||
+         line.backwardCell >= 0)
+         return;
+-    if (!line.backwardDoneCycle)
++    if (!line.backwardDoneCycle) {
+         line.backwardDoneCycle = cycle();
++        releaseBackwardOperands(line);
++    }
+     // Numeric completion is not software-visible completion: all child
+     // drains and stable completion records must still retire successfully.
+     if ((!line.coefficientCacheHit ||
+@@ -2316,6 +2395,8 @@
+         line.completedChildren != line.cells)
+         return;
+     if (line.recordsPending)
++        return;
++    if (line.tile && (line.completedChildren != line.cells || !line.warmWrites.empty()))
+         return;
+     if (env.onchipTiming && std::any_of(onchipQueue.begin(),onchipQueue.end(),
+         [&line](const auto &a) { return a->owner == line.token; })) return;
+@@ -2385,8 +2466,7 @@
+             (unsigned long long)line.interfacePacketsCompleted,
+             (unsigned long long)line.interfaceLastResponse,
+             sizeof(CfdCoeffPreprocessDescriptor),
+-            (line.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) ?
+-                sizeof(CfdCoeffCompactRecord) : sizeof(CfdCoeffPreprocessRecord));
++            recordBytes(line.desc.flags));
+     if (env.lineOptLevel >= 5)
+         std::fprintf(stderr,"CFD_LINE_LIFETIME phase=complete token=%llu records_pending=%llu record_stalls=%llu "
+             "warm_input_depth=%u warm_output_depth=%u warm_output_peak=%llu "
+@@ -2574,6 +2654,7 @@
+ {
+     for (auto &[lineToken, linePtr] : lineRequests) {
+         LineRequest &line = *linePtr;
++        processBackwardOperands(line);
+         if (!line.backwardStarted || line.terminal ||
+             line.backwardOpPending)
+             continue;
+@@ -2581,8 +2662,7 @@
+             finishLineBackward(line);
+             continue;
+         }
+-        if (line.tile && (line.tile->phase != LineTile::Phase::Resident ||
+-            static_cast<uint64_t>(line.backwardCell) < line.tile->start)) {
++        if (line.tile && !backwardTileReadable(*line.tile,line.backwardCell)) {
+             line.tileStalls++;
+             continue;
+         }
+@@ -4946,9 +5026,19 @@
+             transfer->write = true;
+             transfer->kind = "record";
+             transfer->cell = req.desc.cellId;
+-            const auto compact = cfdCompactRecord(req.record);
+-            transfer->bytes.resize(sizeof(compact));
+-            std::memcpy(transfer->bytes.data(), &compact, sizeof(compact));
++            transfer->bytes.resize(recordBytes(req.desc.flags));
++            if (req.desc.flags & CFD_COEFF_PRE_PACKED_RECORD) {
++                const auto packed=packedRecord(req.record);
++                std::memcpy(transfer->bytes.data(),&packed,sizeof(packed));
++                if (env.traceEnable)
++                    std::fprintf(stderr,"CFD_RECORD_DIGEST_SOURCE request=%llu generation=%llu hash=%016llx\n",
++                        (unsigned long long)req.record.requestId,
++                        (unsigned long long)req.record.generation,
++                        (unsigned long long)recordDigest(req.record));
++            } else {
++                const auto compact=cfdCompactRecord(req.record);
++                std::memcpy(transfer->bytes.data(),&compact,sizeof(compact));
++            }
+             const uint64_t owner = childLineTokens.at(token);
+             detachedRecords.push_back({owner, token, req.record.requestId,
+                 req.desc.generation, req.desc.lineId, req.desc.cellId, transfer});
+@@ -4970,7 +5060,11 @@
+                 transfer.write = true;
+                 transfer.kind = "record";
+                 transfer.cell = req.desc.cellId;
+-                if (req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) {
++                if (req.desc.flags & CFD_COEFF_PRE_PACKED_RECORD) {
++                    const auto packed=packedRecord(req.record);
++                    transfer.bytes.resize(sizeof(packed));
++                    std::memcpy(transfer.bytes.data(),&packed,sizeof(packed));
++                } else if (req.desc.flags & CFD_COEFF_PRE_COMPACT_RECORD) {
+                     const auto compact = cfdCompactRecord(req.record);
+                     transfer.bytes.resize(sizeof(compact));
+                     std::memcpy(transfer.bytes.data(), &compact, sizeof(compact));
+@@ -5115,6 +5209,8 @@
+ #include "cfd_coeff_preprocess_lifecycle.inc"
+ #include "cfd_coeff_preprocess_lu_rows.inc"
+ #include "cfd_coeff_preprocess_onchip.inc"
++#include "cfd_coeff_preprocess_backward.inc"
++#include "cfd_coeff_preprocess_early.inc"
+ 
+ void
+ CfdCoeffPreprocessController::processTick()
+@@ -5146,9 +5242,17 @@
+     processForwardCombines(now);
+     processLineCachedForward(now);
+     publishLineValues();
++    processLocalTileResults();
++    // A resident solution is on the recurrence's output path. Give it the
++    // first chance at a newly freed DMA credit before background tile reads.
++    // Keep one output DMA issue opportunity per tick in either ordering.
++    const bool outputFirst = env.lineOptLevel >= 11 && env.dmaOutputPriority;
++    if (outputFirst)
++        processLineOutputWrites();
+     processLineTiles();
+     processLineBackward(now);
+-    processLineOutputWrites();
++    if (!outputFirst)
++        processLineOutputWrites();
+     if (env.sharedCluster) {
+         processLu(now);
+         processSolve(now);
+--- a/src/arch/arm/cfd_coeff_preprocess_tiles.inc
++++ b/src/arch/arm/cfd_coeff_preprocess_tiles.inc
+@@ -7,11 +7,16 @@
+                   "update finite request/terminal-record reservation");
+     const uint64_t capacity = env.inputSlots + env.luPendingDepth +
+         env.solvePendingDepth + env.outputDepth;
+-    line.tileReserve = capacity * 8192 + 16384 + (env.rhsRowParallel ? 4096 : 0);
++    line.tileReserve = capacity * 8192 + 16384 +
++        (env.rhsRowParallel ? env.rhsProductDepth*64+256 : 0);
+     if (env.lineOptLevel >= 5)
+-        line.tileReserve += env.completionDepth * 1024 + 2048 + env.warmWriteDepth * 256 + env.spmOutstanding * 64;
++        line.tileReserve += env.completionDepth * completionEntryBytes(env.lineOptLevel) + 2048 + env.warmWriteDepth * 256 + env.spmOutstanding * 64;
+     if (env.onchipTiming)
+         line.tileReserve += env.onchipDepth*256 + capacity*128 + 1024;
++    if (env.lineOptLevel >= 9)
++        line.tileReserve += 1024;
++    if (env.lineOptLevel >= 10)
++        line.tileReserve += 512;
+     const uint64_t cells = std::min<uint64_t>(env.lineTileCells, line.cells);
+     line.tileAllocated = cells * (MatrixBytes + VectorBytes) * env.tileBuffers;
+     panic_if(!cells || line.tileReserve + line.tileAllocated > env.lineSpmBytes,
+@@ -162,6 +167,10 @@
+                 (it->transfer->cell-it->tile->start)*VectorBytes;
+             if (!it->localStore) it->localStore = startOnchip(line.token,address,N,8,true,1);
+             if (!it->localStore || !it->localStore->done) { ++it; continue; }
++            if (env.lineOptLevel >= 10 && !it->localPublished) {
++                markLocalTileReady(line,it->tile,it->transfer->cell,it->localStore->id,0);
++                it->localPublished = true;
++            }
+             if (!it->localRead) it->localRead = startOnchip(line.token,address,N,8,false,1);
+             if (!it->localRead || !it->localRead->done) { ++it; continue; }
+         }
+@@ -251,6 +260,8 @@
+     tile->start = first;
+     tile->count = std::min<uint64_t>(env.lineTileCells, line.cells-first);
+     tile->phase = LineTile::Phase::Read;
++    tile->readyMask.fill(0);
++    tile->readyCount = 0;
+     tile->issued[0] = tile->issued[1] = 0;
+     tile->completed[0] = tile->completed[1] = 0;
+     std::fill(tile->y.begin(), tile->y.end(), std::array<double, N>{});
+@@ -352,6 +363,10 @@
+     for (auto &[token, ptr] : lineRequests) {
+         auto &line = *ptr;
+         if (!line.tile || line.terminal) continue;
++        if (env.lineOptLevel >= 10 && (line.earlyBackward || startEarlyBackward(line))) {
++            processEarlyLineTiles(line);
++            continue;
++        }
+         auto tile = line.tile;
+         if (tile->phase == LineTile::Phase::Forward && tile->retired == tile->count) {
+             if (env.onchipTiming && tile->start+tile->count == line.cells) {
+@@ -383,6 +398,8 @@
+                     tile->count = std::min<uint64_t>(env.lineTileCells, line.cells-next);
+                 }
+                 tile->retired = 0;
++                tile->readyMask.fill(0);
++                tile->readyCount = 0;
+                 tile->phase = tile->count ? LineTile::Phase::Forward : LineTile::Phase::Idle;
+                 std::fill(tile->y.begin(), tile->y.end(), std::array<double, N>{});
+                 std::fill(tile->u.begin(), tile->u.end(), std::array<double, N*N>{});
+--- a/src/arch/arm/cfd_coeff_preprocess_onchip.inc
++++ b/src/arch/arm/cfd_coeff_preprocess_onchip.inc
+@@ -107,7 +107,7 @@
+ CfdCoeffPreprocessController::warmOnchipAddr(const LineRequest &line,uint64_t cell) const
+ {
+     const uint64_t base = (env.inputSlots+env.luPendingDepth+env.solvePendingDepth+env.outputDepth)*8192+
+-        16384+(env.rhsRowParallel ? 4096 : 0)+env.completionDepth*1024;
++        16384+(env.rhsRowParallel ? env.rhsProductDepth*64+256 : 0)+env.completionDepth*completionEntryBytes(env.lineOptLevel);
+     return base+(cell%warmDepth(line))*128;
+ }
+ 
+@@ -123,6 +123,8 @@
+ CfdCoeffPreprocessController::onchipColumnReady(LineRequest &line,unsigned context,unsigned column)
+ {
+     if (!env.onchipTiming) return true;
++    if (context == 1 && env.lineOptLevel >= 9)
++        return backwardOperandReady(line, column);
+     const uint64_t cell = context == 1 ? line.backwardCell : context == 2 ? line.baseCell : line.cachedForwardCell;
+     const unsigned kind = context == 1 ? 2 : context == 2 ? 0 : line.cachedForwardPhase;
+     auto &state = line.mvm[context];
+@@ -196,6 +198,14 @@
+             base+tile->y.size()*VectorBytes+(cell-tile->start)*MatrixBytes,N*N,8,true,1);
+         if (!memory.commit[1] || !memory.commit[1]->done) return false;
+     }
++    if (env.lineOptLevel >= 10 && !req.localTilePublished) {
++        const auto index = cell-tile->start;
++        tile->y[index] = req.dqStar;
++        tile->u[index] = req.uBar;
++        markLocalTileReady(line,tile,cell,memory.commit[0]->id,
++                          memory.commit[1] ? memory.commit[1]->id : 0);
++        req.localTilePublished = true;
++    }
+     if (line.coefficientCacheEnabled && !line.coefficientCacheHit) {
+         if (!memory.commit[2]) memory.commit[2] = startOnchip(line.token,
+             line.tileReserve+line.tileAllocated+cell*3*MatrixBytes,3*N*N,8,true,2);
+--- a/src/arch/arm/cfd_coeff_preprocess_diagnostics.inc
++++ b/src/arch/arm/cfd_coeff_preprocess_diagnostics.inc
+@@ -86,12 +86,13 @@
+         if (env.lineOptLevel >= 5)
+             std::fprintf(stderr, "CFD_COMPLETION_QUEUE depth=%u bytes=%u peak=%llu "
+                 "issued=%llu completed=%llu live=%zu\n", env.completionDepth,
+-                env.completionDepth*1024, (unsigned long long)detachedPeak,
++                env.completionDepth*completionEntryBytes(env.lineOptLevel), (unsigned long long)detachedPeak,
+                 (unsigned long long)detachedIssued, (unsigned long long)detachedCompleted,
+                 detachedRecords.size());
+         if (env.rhsRowParallel)
+-            std::fprintf(stderr, "CFD_RHS_ROWS capacity=60 bytes=4096 peak=%llu "
++            std::fprintf(stderr, "CFD_RHS_ROWS capacity=%u bytes=%u peak=%llu "
+                 "issued=%llu completed=%llu live=%zu stalls=%llu\n",
++                env.rhsProductDepth,env.rhsProductDepth*64+256,
+                 (unsigned long long)rowGroupsPeak, (unsigned long long)rowGroupsIssued,
+                 (unsigned long long)rowGroupsCompleted,
+                 static_cast<size_t>(std::count_if(rhsRowProducts.begin(), rhsRowProducts.end(),
+--- a/projects/cfd_dsa/tools/check_single_line_opt.py
++++ b/projects/cfd_dsa/tools/check_single_line_opt.py
+@@ -9,6 +9,7 @@
+ from check_single_line_storage import check_case
+ from check_single_line_c import fields
+ from check_single_line_onchip import check_onchip
++from check_single_line_dma_packets import check_dma_packets
+ 
+ 
+ def union_length(intervals):
+@@ -36,9 +37,10 @@
+     pools = {p['pool']:p for p in fields(text, 'CFD_RESOURCE_STATS')}
+     if config.get('--coeff-rhs-row-parallel','0') == '1':
+         rows = fields(text, 'CFD_RHS_ROWS')[-1]
+-        assert int(rows['capacity'])==60 and int(rows['bytes'])==4096
++        capacity=int(config.get('--coeff-rhs-product-depth','60'))
++        assert int(rows['capacity'])==capacity and int(rows['bytes'])==capacity*64+256
+         assert int(rows['live'])==0 and int(rows['issued'])==int(rows['completed'])
+-        assert 0 <= int(rows['peak']) <= 60
++        assert 0 <= int(rows['peak']) <= capacity
+         assert int(rows['issued']) == 8*sum(r['stage']=='RHS_COMPLETE' for r in trace)
+     if level>=5:
+         for lifetime in [r for r in fields(text,'CFD_LINE_LIFETIME') if r.get('phase')=='complete']:
+@@ -46,10 +48,20 @@
+             assert int(lifetime['warm_output_peak'])<=int(lifetime['warm_output_depth'])
+         queue=fields(text,'CFD_COMPLETION_QUEUE')[-1]
+         depth=int(config.get('--coeff-completion-depth','8'))
+-        assert int(queue['depth'])==depth and int(queue['bytes'])==depth*1024
++        assert int(queue['depth'])==depth and int(queue['bytes'])==depth*(512 if level>=11 else 1024)
+         assert int(queue['live'])==0 and int(queue['issued'])==int(queue['completed'])
+         assert int(queue['peak'])<=depth
+         assert int(queue['issued'])==sum(r['stage']=='REQUEST_DETACH' for r in trace)
++    if level>=11:
++        def digests(prefix):
++            rows=fields(text,prefix)
++            values={(r['request'],r['generation']):r['hash'] for r in rows}
++            assert len(values)==len(rows)
++            return values
++        source=digests('CFD_RECORD_DIGEST_SOURCE')
++        guest=digests('CFD_RECORD_DIGEST_GUEST')
++        assert source==guest and len(source)==int(queue['issued']), 'packed record roundtrip changed fields'
++        check_dma_packets(text,path,config)
+     completed = defaultdict(list)
+     issued = Counter()
+     events = defaultdict(dict)
+@@ -104,7 +116,7 @@
+                 rb=max(int(p['cycle']) for p in one if p['kind']=='rhs' and p['event']=='response')
+                 ya=min(int(p['cycle']) for p in one if p['kind']=='y' and p['event']=='issue')
+                 yb=max(int(p['cycle']) for p in one if p['kind']=='y' and p['event']=='response')
+-                assert ra<=rb<=ya<=yb<=int(s['backward_start'])
++                assert ra<=rb<=ya<=yb<=int(s['visible_done'] if level>=10 else s['backward_start'])
+                 rstarts.append(ra);ystarts.append(ya);yends.append(yb)
+                 if level>=5:
+                     releases=[p for p in fields(text,'CFD_WARM_INPUT_RELEASE') if p['token']==token and int(p['cell'])==i]
+--- a/projects/cfd_dsa/tools/check_single_line_storage_config.py
++++ b/projects/cfd_dsa/tools/check_single_line_storage_config.py
+@@ -27,12 +27,16 @@
+                                              'optimization requires tiled timing DMA')
+         tests['optimized_timing_required'] = (['--coeff-interface-timing=0'],
+                                                'optimization requires tiled timing DMA')
+-        tests['invalid_optimization_level'] = (['--coeff-line-opt-level=9'],
+-                                               '--coeff-line-opt-level must be 0..8')
++        tests['invalid_optimization_level'] = (['--coeff-line-opt-level=12'],
++                                               '--coeff-line-opt-level must be 0..11')
+     if int(config.get('--coeff-line-opt-level','0'))>=8:
+         tests.update({'onchip_zero_ports':(['--coeff-spm-read-ports=0'],'onchip banks require'),
+                       'onchip_bad_grain':(['--coeff-spm-bank-granularity=7'],'onchip banks require'),
+                       'onchip_zero_queue':(['--coeff-onchip-queue-depth=0'],'onchip timing requires')})
++    if int(config.get('--coeff-line-opt-level','0'))>=9:
++        tests['backward_requires_onchip']=(['--coeff-onchip-timing=0'],'backward operand prefetch requires')
++    tests.update({'invalid_rhs_depth':(['--coeff-rhs-product-depth=0'],'RHS product depth must'),
++                  'invalid_dma_latency':(['--coeff-dma-cache-tag-latency=0'],'DMA cache latencies must')})
+     results={}
+     for name,(extra,expected) in tests.items():
+         with tempfile.TemporaryDirectory(prefix='cfd-invalid-') as tmp:
+--- a/projects/cfd_dsa/tools/check_single_line_storage.py
++++ b/projects/cfd_dsa/tools/check_single_line_storage.py
+@@ -16,10 +16,12 @@
+     level=int(config.get('--coeff-line-opt-level','0'))
+     reserve=0
+     if level>=5:
+-        reserve=1024*int(config.get('--coeff-completion-depth','8'))+2048+256*int(config.get('--coeff-warm-write-depth','8'))+64*int(config['--coeff-spm-outstanding'])
++        reserve=(512 if level>=11 else 1024)*int(config.get('--coeff-completion-depth','8'))+2048+256*int(config.get('--coeff-warm-write-depth','8'))+64*int(config['--coeff-spm-outstanding'])
+     if config.get('--coeff-onchip-timing','1' if level>=8 else '0')=='1':
+         capacity=sum(int(config[k]) for k in ('--coeff-input-slots','--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))
+         reserve+=256*int(config.get('--coeff-onchip-queue-depth','64'))+128*capacity+1024
++    if level>=9:reserve+=1024
++    if level>=10:reserve+=512
+     return reserve
+ 
+ 
+@@ -41,7 +43,7 @@
+     opt=int(config.get('--coeff-line-opt-level','0'))
+     tiled=config['--coeff-line-storage']=='tiled'
+     reserve=8192*sum(int(config[k]) for k in ('--coeff-input-slots',
+-        '--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))+16384+(4096 if config.get('--coeff-rhs-row-parallel','0')=='1' else 0)+lifecycle_reserve(config)
++        '--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))+16384+(int(config.get('--coeff-rhs-product-depth','60'))*64+256 if config.get('--coeff-rhs-row-parallel','0')=='1' else 0)+lifecycle_reserve(config)
+     t=int(config['--coeff-line-tile-cells'])
+     buffers=int(config.get('--coeff-line-tile-buffers','1'))
+     resident=min(n,t)*240*buffers
+@@ -65,7 +67,7 @@
+         if opt>=6 and buffers==2: prefix=max(0,prefix-t)
+         capacity=int(config['--coeff-line-spm-bytes'])
+         reserve=8192*sum(int(config[k]) for k in ('--coeff-input-slots',
+-            '--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))+16384+(4096 if config.get('--coeff-rhs-row-parallel','0')=='1' else 0)+lifecycle_reserve(config)
++            '--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))+16384+(int(config.get('--coeff-rhs-product-depth','60'))*64+256 if config.get('--coeff-rhs-row-parallel','0')=='1' else 0)+lifecycle_reserve(config)
+         if len(records)!=sweeps:
+             raise ValueError('missing finite storage accounting')
+         bytoken={int(r['token']):r for r in records}
+@@ -91,10 +93,11 @@
+             commits=[e for e in es if e['event']=='forward_commit']
+             starts=[e for e in es if e['event']=='reload_start']
+             ready=[e for e in es if e['event']=='reload_ready']
+-            if [int(e['first']) for e in commits]!=list(range(0,n,t)) or \
++            commit_order=[int(e['first']) for e in commits]
++            if (sorted(commit_order) if opt>=10 else commit_order)!=list(range(0,n,t)) or \
+                 [int(e['first']) for e in starts]!=list(range(prefix-t,-1,-t)) or \
+                 [int(e['first']) for e in ready]!=list(range(prefix-t,-1,-t)) or \
+-                int(commits[-1]['cycle'])>int(line['backward_start']):
++                (opt<10 and int(commits[-1]['cycle'])>int(line['backward_start'])):
+                 raise ValueError('incorrect tile order or premature backward start')
+             ps=[e for e in packets if int(e['token'])==token]
+             issue=Counter((int(e['packet']),int(e['first']),int(e['region']),int(e['bytes']))
+@@ -126,7 +129,7 @@
+         for line in lines:
+             token=int(line['token']);r=bytoken[token]
+             inv_warm=int(line['cache_hit']) and config['--coeff-base-solve']=='inverse'
+-            if int(r['record_bytes'])!=(320 if opt>=2 else 1784):
++            if int(r['record_bytes'])!=(160 if opt>=11 else 320 if opt>=2 else 1784):
+                 raise ValueError('incorrect compact/full record ABI size')
+             reads=int(r['descriptor_bytes']);writes=(0 if inv_warm else n*int(r['record_bytes']))+8
+             if int(r['read_issued'])!=reads or int(r['read_completed'])!=reads or \
+@@ -146,6 +149,11 @@
+             first_status=min(int(p['cycle']) for p in ps if p['event']=='issue' and p['kind']=='status')
+             if first_status<max(int(line['children_retired']),int(line['output_last_response'])):
+                 raise ValueError('completion status issued before data/record responses')
++            for prefix in ('CFD_CACHE_DMA','CFD_TILE_DMA'):
++                responses=[int(p['cycle']) for p in fields(text,prefix)
++                           if int(p['token'])==token and p['event']=='response']
++                if responses and max(responses)>first_status:
++                    raise ValueError('status issued before required cache/tile DMA response')
+             interface_reads+=reads;interface_writes+=writes
+     # Warm inverse uses bounded R DMA and explicit y/Ubar drains, no cell records.
+     for line in lines if tiled else []:
+@@ -216,7 +224,7 @@
+         width=40 if hot else 240
+         backing=40*n if hot else 240*n-200
+         reserve=8192*sum(int(config[k]) for k in ('--coeff-input-slots',
+-            '--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))+16384+(4096 if config.get('--coeff-rhs-row-parallel','0')=='1' else 0)+lifecycle_reserve(config)
++            '--lu5-pending-depth','--coeff3-pending-depth','--coeff-output-buffer-depth'))+16384+(int(config.get('--coeff-rhs-product-depth','60'))*64+256 if config.get('--coeff-rhs-row-parallel','0')=='1' else 0)+lifecycle_reserve(config)
+         wanted=dict(cells=n,reserved=reserve,resident=240*min(n,t)*buffers,
+             cache_bytes=600*n,capacity=int(config['--coeff-line-spm-bytes']),
+             forward_tiles=(n+t-1)//t,reload_tiles=prefix//t,
+--- a/projects/cfd_dsa/tools/check_single_line_onchip.py
++++ b/projects/cfd_dsa/tools/check_single_line_onchip.py
+@@ -75,3 +75,73 @@
+     for r in trace:
+         if r['requestId'] in reused and r['stage']=='COLUMN_FMA_ISSUE':
+             assert int(r['cycle'])>=int(ready[r['requestId']]['cycle']), 'cached Lbar consumed before bank response'
++    if level>=9:
++        check_backward_operands(text,config,ids,ends)
++    if level>=10:
++        check_local_ready(text,config,ids,ends)
++
++
++def check_backward_operands(text,config,jobs,completed):
++    active={};cells={};used=Counter();reads={};allocated=set();released=set()
++    schedules=fields(text,'CFD_LINE_SCHEDULE');fixture=fields(text,'CFD_CACHE_CONTRACT')
++    expected=set()
++    for i,s in enumerate(schedules):
++        n=int(fixture[i]['cells']) if fixture else int(config['--lusgs-cells'])
++        expected.update((s['token'],str(c)) for c in range(n-1))
++    for r in fields(text,'CFD_BACK_OPERAND'):
++        key=r['token'],r['cell'];cycle=int(r['cycle']);event=r['event']
++        slot=r['token'],int(r['cell'])%2
++        if event=='allocate':
++            assert key not in allocated and slot not in active
++            assert int(r['slot'])==slot[1]
++            allocated.add(key);active[slot]=key;cells[key]=cycle
++        elif event=='read':
++            assert active[slot]==key
++            column=int(r['column']);job=jobs[r['job']]
++            assert (key,column) not in reads and column in range(-1,5)
++            assert job['owner']==r['token'] and job['op']=='R' and job['words']=='5'
++            assert int(job['stride'])==(8 if column==-1 else 40)
++            assert int(job['cycle'])==cycle
++            reads[key,column]=r['job']
++        elif event=='use':
++            assert active[slot]==key and cycle>=cells[key]
++            column=int(r['column'])
++            assert r['job']==reads[key,column] and r['y_job']==reads[key,-1]
++            assert cycle>=int(completed[r['job']]['cycle'])
++            assert cycle>=int(completed[r['y_job']]['cycle']), 'backward operands consumed before SPM response'
++            used[key,column]+=1
++        elif event=='release':
++            assert active.pop(slot)==key and key not in released
++            assert all(used[key,col]==1 for col in range(5))
++            assert all(cycle>=int(completed[reads[key,col]]['cycle']) for col in range(-1,5))
++            released.add(key)
++        else:raise ValueError('unknown backward operand event')
++    assert not active and allocated==released==expected
++    assert len(reads)==6*len(expected) and sum(used.values())==5*len(expected)
++
++
++def check_local_ready(text,config,jobs,completed):
++    ready={};schedules=fields(text,'CFD_LINE_SCHEDULE');fixture=fields(text,'CFD_CACHE_CONTRACT')
++    expected=set();sizes={};cache={}
++    for i,s in enumerate(schedules):
++        n=int(fixture[i]['cells']) if fixture else int(config['--lusgs-cells'])
++        expected.update((s['token'],str(c)) for c in range(n));sizes[s['token']]=n;cache[s['token']]=int(s['cache_hit'])
++    for r in fields(text,'CFD_LOCAL_READY'):
++        key=r['token'],r['cell'];assert key not in ready
++        ready[key]=r;cycle=int(r['cycle'])
++        for name,words in [('y_job',5),('u_job',25)]:
++            if r[name]=='0':
++                assert name=='u_job' and (cache[r['token']] or int(r['cell'])+1==sizes[r['token']])
++                continue
++            job=jobs[r[name]]
++            assert job['op']=='W' and int(job['words'])==words and job['owner']==r['token']
++            assert int(completed[r[name]]['cycle'])<=cycle, 'resident ready before SPM stores completed'
++    assert set(ready)==expected
++    for r in fields(text,'CFD_BACK_OPERAND'):
++        if r['event']=='allocate':
++            assert int(r['cycle'])>=int(ready[r['token'],r['cell']]['cycle'])
++    for r in fields(text,'CFD_EARLY_BACKWARD'):
++        tail=ready[r['token'],str(sizes[r['token']]-1)]
++        job=jobs[r['tail_job']]
++        assert job['op']=='R' and job['words']=='5'
++        assert int(tail['cycle'])<=int(job['cycle'])<=int(completed[r['tail_job']]['cycle'])<=int(r['cycle'])
+--- a/projects/cfd_dsa/tools/check_single_line_opt_faults.py
++++ b/projects/cfd_dsa/tools/check_single_line_opt_faults.py
+@@ -41,6 +41,22 @@
+         'row_product_leak': ('simout.txt', re.sub(
+             r'(CFD_RHS_ROWS[^\n]* live=)0', r'\g<1>1', text)),
+     }
++    if 'CFD_BACK_OPERAND ' in text:
++        faults.update({
++            'premature_backward_use': ('simout.txt', re.sub(
++                r'(CFD_BACK_OPERAND cycle=)\d+( [^\n]*event=use )',r'\g<1>1\2',text,count=1)),
++            'backward_operand_leak': ('simout.txt', re.sub(
++                r'^CFD_BACK_OPERAND [^\n]*event=release[^\n]*\n','',text,count=1,flags=re.M)),
++        })
++    if 'CFD_LOCAL_READY ' in text:
++        faults['premature_local_ready'] = ('simout.txt', re.sub(
++            r'(CFD_LOCAL_READY cycle=)\d+',r'\g<1>1',text,count=1))
++    if 'CFD_RECORD_DIGEST_GUEST ' in text:
++        faults['packed_record_field_changed'] = ('simout.txt', re.sub(
++            r'(CFD_RECORD_DIGEST_GUEST [^\n]*hash=)[0-9a-f]+',r'\g<1>bad',text,count=1))
++    if 'CFD_DMA_PACKET ' in text:
++        faults['response_before_send'] = ('simout.txt', re.sub(
++            r'(CFD_DMA_PACKET tick=)\d+( event=response )',r'\g<1>1\2',text,count=1))
+     for name, (filename, content) in faults.items():
+         assert content != (text if filename == 'simout.txt' else trace)
+         with tempfile.TemporaryDirectory(prefix='cfd-opt-fault-') as tmp:
+@@ -55,7 +71,7 @@
+                 print(name, 'REJECTED', str(exc))
+             else:
+                 raise ValueError('acceptance checker accepted '+name)
+-    print('OPTIMIZATION_FAULT_CHECK_PASS (4 injected faults)')
++    print(f'OPTIMIZATION_FAULT_CHECK_PASS ({len(faults)} injected faults)')
+ 
+ 
+ if __name__ == '__main__':
+--- a/projects/cfd_dsa/configs/run_cfd_dsa.py
++++ b/projects/cfd_dsa/configs/run_cfd_dsa.py
+@@ -249,6 +249,11 @@
+ coeff_line_storage = 'full'
+ coeff_line_opt_level = 0
+ coeff_rhs_row_parallel = False
++coeff_rhs_product_depth = 60
++coeff_dma_output_priority = True
++coeff_dma_cache_tag_lat = 50
++coeff_dma_cache_data_lat = 50
++coeff_dma_cache_response_lat = 50
+ coeff_completion_depth = 8
+ coeff_warm_write_depth = 8
+ coeff_onchip_timing = None
+@@ -492,6 +497,11 @@
+                                 'coeff-line-storage=',
+                                 'coeff-line-opt-level=',
+                                 'coeff-rhs-row-parallel=',
++                                'coeff-rhs-product-depth=',
++                                'coeff-dma-output-priority=',
++                                'coeff-dma-cache-tag-latency=',
++                                'coeff-dma-cache-data-latency=',
++                                'coeff-dma-cache-response-latency=',
+                                 'coeff-completion-depth=',
+                                 'coeff-warm-write-depth=',
+                                 'coeff-onchip-timing=',
+@@ -960,6 +970,16 @@
+             coeff_line_opt_level = int(arg)
+         elif opt == '--coeff-rhs-row-parallel':
+             coeff_rhs_row_parallel = parse_bool(arg)
++        elif opt == '--coeff-rhs-product-depth':
++            coeff_rhs_product_depth = int(arg)
++        elif opt == '--coeff-dma-output-priority':
++            coeff_dma_output_priority = parse_bool(arg)
++        elif opt == '--coeff-dma-cache-tag-latency':
++            coeff_dma_cache_tag_lat = int(arg)
++        elif opt == '--coeff-dma-cache-data-latency':
++            coeff_dma_cache_data_lat = int(arg)
++        elif opt == '--coeff-dma-cache-response-latency':
++            coeff_dma_cache_response_lat = int(arg)
+         elif opt == '--coeff-completion-depth':
+             coeff_completion_depth = int(arg)
+         elif opt == '--coeff-warm-write-depth':
+@@ -1405,12 +1425,15 @@
+     print("ERROR: --coeff-stream-boundary-mask=0 is an auto-retire-only isolation mode")
+     sys.exit(1)
+ stream_mode = lusgs_mode == 'step2-pretransform-raw-optprep-stream'
+-if not 0 <= coeff_line_opt_level <= 8 or (coeff_line_opt_level and
++if not 0 <= coeff_line_opt_level <= 11 or (coeff_line_opt_level and
+         (coeff_line_storage != 'tiled' or not coeff_interface_timing)):
+-    print("ERROR: --coeff-line-opt-level must be 0..8; optimization requires tiled timing DMA")
++    print("ERROR: --coeff-line-opt-level must be 0..11; optimization requires tiled timing DMA")
+     sys.exit(1)
+ if coeff_onchip_timing is None:
+     coeff_onchip_timing = coeff_line_opt_level >= 8
++if coeff_line_opt_level >= 9 and not coeff_onchip_timing:
++    print("ERROR: backward operand prefetch requires onchip timing")
++    sys.exit(1)
+ if coeff_onchip_timing and (not 1 <= coeff_spm_banks <= 32 or not 1 <= coeff_spm_read_ports <= 8 or not 1 <= coeff_spm_write_ports <= 8 or coeff_spm_bank_granularity < 8 or coeff_spm_bank_granularity % 8):
+     print("ERROR: onchip banks require 1..32 banks, 1..8 ports and a granularity divisible by 8")
+     sys.exit(1)
+@@ -1423,6 +1446,13 @@
+ if coeff_rhs_row_parallel and (coeff_line_storage != 'tiled' or
+         coeff_compute_model != 'shared' or not coeff_interface_timing):
+     print("ERROR: parallel RHS rows require the tiled shared timing model")
++    sys.exit(1)
++if not 1 <= coeff_rhs_product_depth <= 60:
++    print("ERROR: RHS product depth must be in [1,60]")
++    sys.exit(1)
++if any(not 1 <= value <= 1000 for value in
++       (coeff_dma_cache_tag_lat,coeff_dma_cache_data_lat,coeff_dma_cache_response_lat)):
++    print("ERROR: DMA cache latencies must be in [1,1000]")
+     sys.exit(1)
+ if coeff_line_storage not in ('full', 'tiled'):
+     print("ERROR: --coeff-line-storage must be full or tiled")
+@@ -1442,11 +1472,15 @@
+         sys.exit(1)
+     reserve = 8192 * (coeff_input_slots + lu5_pending_depth +
+                       coeff3_pending_depth + coeff_output_buffer_depth) + 16384
+-    reserve += 4096 if coeff_rhs_row_parallel else 0
++    reserve += coeff_rhs_product_depth*64+256 if coeff_rhs_row_parallel else 0
+     if coeff_line_opt_level >= 5:
+-        reserve += coeff_completion_depth * 1024 + 2048 + coeff_warm_write_depth * 256 + coeff_spm_outstanding * 64
++        reserve += coeff_completion_depth * (512 if coeff_line_opt_level >= 11 else 1024) + 2048 + coeff_warm_write_depth * 256 + coeff_spm_outstanding * 64
+     if coeff_onchip_timing:
+         reserve += coeff_onchip_depth*256 + 128*(coeff_input_slots+lu5_pending_depth+coeff3_pending_depth+coeff_output_buffer_depth) + 1024
++    if coeff_line_opt_level >= 9:
++        reserve += 1024
++    if coeff_line_opt_level >= 10:
++        reserve += 512
+     if coeff_line_tile_buffers not in (1, 2) or coeff_line_cache_cells < 0 or not 1 <= coeff_line_tile_dma_width <= 1024:
+         print("ERROR: tile buffers must be 1 or 2, cache cells nonnegative and DMA width in [1,1024]")
+         sys.exit(1)
+@@ -1786,6 +1820,8 @@
+ os.environ['GEM5_CFD_LINE_TILED'] = '1' if coeff_line_storage == 'tiled' else '0'
+ os.environ['GEM5_CFD_LINE_OPT_LEVEL'] = str(coeff_line_opt_level)
+ os.environ['GEM5_CFD_RHS_ROW_PARALLEL'] = '1' if coeff_rhs_row_parallel else '0'
++os.environ['GEM5_CFD_RHS_PRODUCT_DEPTH'] = str(coeff_rhs_product_depth)
++os.environ['GEM5_CFD_DMA_OUTPUT_PRIORITY'] = '1' if coeff_dma_output_priority else '0'
+ os.environ['GEM5_CFD_COMPLETION_DEPTH'] = str(coeff_completion_depth)
+ os.environ['GEM5_CFD_WARM_WRITE_DEPTH'] = str(coeff_warm_write_depth)
+ os.environ['GEM5_CFD_ONCHIP_TIMING'] = '1' if coeff_onchip_timing else '0'
+@@ -2280,8 +2316,8 @@
+ # parameters so both reads and writes use the classic coherence protocol.
+ if coeff_spm_model == 'dma':
+     system.coeff_dma_cache = Cache(
+-        size='1KiB', assoc=8, tag_latency=50, data_latency=50,
+-        response_latency=50, mshrs=20, tgts_per_mshr=12,
++        size='1KiB', assoc=8, tag_latency=coeff_dma_cache_tag_lat, data_latency=coeff_dma_cache_data_lat,
++        response_latency=coeff_dma_cache_response_lat, mshrs=20, tgts_per_mshr=12,
+         addr_ranges=system.mem_ranges)
+     system.cpu.local_spm.dma_port = system.coeff_dma_cache.cpu_side
+     system.coeff_dma_cache.mem_side = system.toL2Bus.cpu_side_ports
+--- a/projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c
++++ b/projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c
+@@ -723,6 +723,7 @@
+     COEFF_PRE_LINE_COEFF_DIRTY = 1ULL << 20,
+     COEFF_PRE_BASE_DIRECT_SOLVE = 1ULL << 21,
+     COEFF_PRE_COMPACT_RECORD = 1ULL << 22,
++    COEFF_PRE_PACKED_RECORD = 1ULL << 23,
+     COEFF_PRE_STATUS_COMPLETE = 0,
+     COEFF_PRE_STATUS_BUSY = 1,
+     COEFF_PRE_STATUS_BAD_TOKEN = 5,
+@@ -887,6 +888,13 @@
+ #undef CFD_RECORD_FIELD
+ } CoeffCompactRecord;
+ _Static_assert(sizeof(CoeffCompactRecord) == 320, "compact record ABI");
++
++typedef struct {
++#define CFD_PACKED_FIELD(type, cpp, guest) type guest;
++#include "../../../../src/arch/arm/cfd_packed_record_fields.inc"
++#undef CFD_PACKED_FIELD
++} CoeffPackedRecord;
++_Static_assert(sizeof(CoeffPackedRecord) == 160, "packed record ABI");
+ 
+ typedef struct {
+     CoeffPreprocessDescriptor descriptor;
+--- a/projects/cfd_dsa/benchmarks/lusgs/step2_cli.inc
++++ b/projects/cfd_dsa/benchmarks/lusgs/step2_cli.inc
+@@ -609,7 +609,7 @@
+         } else if ((value = option_value(argc, argv, &idx, arg,
+                          "--coeff-line-opt-level")) != NULL) {
+             if (!parse_uint64(value, &cfg->coeff_line_opt_level) ||
+-                cfg->coeff_line_opt_level > 8) {
++                cfg->coeff_line_opt_level > 11) {
+                 fprintf(stderr, "invalid --coeff-line-opt-level\n");
+                 exit(2);
+             }
+--- a/projects/cfd_dsa/benchmarks/lusgs/step2_streaming.inc
++++ b/projects/cfd_dsa/benchmarks/lusgs/step2_streaming.inc
+@@ -712,7 +712,9 @@
+         (CoeffPreprocessRecord *)xcalloc_raw(
+             total_cells, sizeof(*records), "coeff_stream_line_records");
+     const int compact_records = cfg->coeff_line_opt_level >= 2;
+-    const size_t record_stride = compact_records ? sizeof(CoeffCompactRecord) :
++    const int packed_records = cfg->coeff_line_opt_level >= 11;
++    const size_t record_stride = packed_records ? sizeof(CoeffPackedRecord) :
++                                compact_records ? sizeof(CoeffCompactRecord) :
+                                                   sizeof(*records);
+     CoeffPreprocessDescriptor *descs =
+         (CoeffPreprocessDescriptor *)xcalloc_raw(
+@@ -739,6 +741,9 @@
+         record_pages[record_bytes - 1] = 0;
+     for (size_t line = 0; line < p->lines; ++line)
+         line_status[line] = COEFF_PRE_STATUS_BUSY;
++    // Reporting from the preceding sweep must reach the console before new
++    // asynchronous controller traces; flushing is outside the measured solve.
++    fflush(stdout);
+     const uint64_t total_start = read_cycle_counter();
+ 
+     for (size_t line = 0; line < p->lines; ++line) {
+@@ -757,6 +762,8 @@
+         COEFF_PRE_LINE_AUTONOMOUS;
+     if (compact_records)
+         desc->flags |= COEFF_PRE_COMPACT_RECORD;
++    if (packed_records)
++        desc->flags |= COEFF_PRE_PACKED_RECORD;
+     if (direct_solve)
+         desc->flags |= COEFF_PRE_BASE_DIRECT_SOLVE;
+     if (cache_enabled)
+@@ -926,7 +933,7 @@
+     stats->streaming_total_cycles += compute_finish - total_start;
+     if (compact_records)
+         printf("CFD_RECORD_FORMAT bytes=%lu full_diagnostics=0 diagnostics_source=trace\n",
+-               (unsigned long)sizeof(CoeffCompactRecord));
++               (unsigned long)record_stride);
+     // Validate both wavefronts on every sweep, outside its timing window.
+     // Direct solve and inverse-MVM have different rounding, so compare the
+     // entire output to the software raw solve using the existing tolerances.
+@@ -963,13 +970,32 @@
+     // Stable-record verification and aggregation are reporting work.  Keep
+     // them outside the measured solve so the controller-to-backward handoff
+     // is not separated by per-cell guest bookkeeping.
+-    for (size_t line = 0; (coefficient_dirty ||
+-         !strcmp(cfg->coeff_base_solve, "direct")) && line < p->lines; ++line) {
++    // A mode/size/version miss can rebuild despite dirty=0. The terminal
++    // record timestamp also identifies that rebuild; warm inverse hits leave
++    // the zero-initialized record buffer untouched. This is outside timing.
++    const int generated_records = coefficient_dirty ||
++        !strcmp(cfg->coeff_base_solve, "direct") ||
++        (packed_records && ((const CoeffPackedRecord *)records)->complete_cycle);
++    for (size_t line = 0; generated_records && line < p->lines; ++line) {
+       for (size_t cell = 0; cell < p->cells; ++cell) {
+         CoeffPreprocessRecord expanded = {};
+         const CoeffPreprocessRecord *record =
+             &records[line * p->cells + cell];
+-        if (compact_records) {
++        if (packed_records) {
++            const CoeffPackedRecord *packed = (const CoeffPackedRecord *)
++                ((const unsigned char *)records + (line*p->cells+cell)*record_stride);
++#define CFD_PACKED_FIELD(type, cpp, guest) expanded.guest = packed->guest;
++#include "../../../../src/arch/arm/cfd_packed_record_fields.inc"
++#undef CFD_PACKED_FIELD
++            record = &expanded;
++            uint64_t digest=14695981039346656037ULL;
++#define CFD_RECORD_FIELD(cpp, guest) digest=(digest^expanded.guest)*1099511628211ULL;
++#include "../../../../src/arch/arm/cfd_compact_record_fields.inc"
++#undef CFD_RECORD_FIELD
++            printf("CFD_RECORD_DIGEST_GUEST request=%lu generation=%lu hash=%016lx\n",
++                (unsigned long)expanded.request_id,(unsigned long)expanded.generation,
++                (unsigned long)digest);
++        } else if (compact_records) {
+             const CoeffCompactRecord *compact = (const CoeffCompactRecord *)
+                 ((const unsigned char *)records + (line*p->cells+cell)*record_stride);
+ #define CFD_RECORD_FIELD(cpp, guest) expanded.guest = compact->guest;
+@@ -1059,6 +1085,7 @@
+     free(tokens);
+     free(descs);
+     free(records);
++    fflush(stdout);
+     return all_valid;
+ }
+ 
+--- a/src/arch/arm/cfd_local_spm.cc
++++ b/src/arch/arm/cfd_local_spm.cc
+@@ -2,6 +2,7 @@
+ 
+ #include <algorithm>
+ #include <cstdlib>
++#include <cstdio>
+ #include <cstring>
+ #include <utility>
+ 
+@@ -22,6 +23,19 @@
+ {
+ 
+ CfdLocalSpm *localSpmInstance = nullptr;
++
++bool dmaTraceEnabled()
++{
++    const char *value=std::getenv("GEM5_CFD_COEFF_TRACE_ENABLE");
++    return value && (!std::strcmp(value,"1") || !std::strcmp(value,"true"));
++}
++
++void traceDma(const char *event,uint64_t id)
++{
++    if (dmaTraceEnabled())
++        std::fprintf(stderr,"CFD_DMA_PACKET tick=%llu event=%s packet=%llu\n",
++            (unsigned long long)curTick(),event,(unsigned long long)id);
++}
+ 
+ uint64_t
+ localEnvU64(const char *name, uint64_t default_value)
+@@ -1204,12 +1218,15 @@
+     if (dmaRetryPacket || dmaPackets.empty())
+         return;
+     PacketPtr pkt = dmaPackets.front();
++    const auto id=static_cast<DmaSenderState *>(pkt->senderState)->packetId;
+     if (dmaPort.sendTimingReq(pkt)) {
++        traceDma("send",id);
+         dmaPackets.pop_front();
+     } else {
+         dmaRetryPacket = pkt;
+         dmaPackets.pop_front();
+         coeffDmaPortRetries++;
++        traceDma("retry",id);
+     }
+ }
+ 
+@@ -1219,10 +1236,13 @@
+     if (!dmaRetryPacket)
+         return;
+     PacketPtr pkt = dmaRetryPacket;
++    const auto id=static_cast<DmaSenderState *>(pkt->senderState)->packetId;
+     if (!dmaPort.sendTimingReq(pkt)) {
+         coeffDmaPortRetries++;
++        traceDma("retry",id);
+         return;
+     }
++    traceDma("send",id);
+     dmaRetryPacket = nullptr;
+     trySendDma();
+ }
+@@ -1233,6 +1253,7 @@
+     auto *state = dynamic_cast<DmaSenderState *>(pkt->senderState);
+     panic_if(!state, "CFD coefficient DMA response lacks sender state");
+     const uint64_t packetId = state->packetId;
++    traceDma("response",packetId);
+     auto completion = std::move(state->completion);
+     delete state;
+     delete pkt;
+@@ -1293,6 +1314,10 @@
+         coeffDmaReadBytes += bytes;
+     if (dmaLivePackets > coeffDmaLiveMax.value())
+         coeffDmaLiveMax = dmaLivePackets;
++    if (dmaTraceEnabled())
++        std::fprintf(stderr,"CFD_DMA_PACKET tick=%llu event=queue packet=%llu op=%s bytes=%u live=%llu\n",
++            (unsigned long long)curTick(),(unsigned long long)state->packetId,
++            write ? "W" : "R",bytes,(unsigned long long)dmaLivePackets);
+     trySendDma();
+     return result;
+ }
+--- /dev/null
++++ b/src/arch/arm/cfd_coeff_preprocess_backward.inc
+@@ -0,0 +1,112 @@
++// Operand prefetch does not evaluate another point's recurrence. Only SPM
++// reads run ahead; products wait for the actual adjacent-point feedback.
++void
++CfdCoeffPreprocessController::processBackwardOperands(LineRequest &line)
++{
++    if (env.lineOptLevel < 9 || !env.onchipTiming || !line.backwardStarted ||
++        line.terminal || line.backwardCell < 0) return;
++    for (int ahead = 0; ahead < 2; ++ahead) {
++        const int64_t wanted = line.backwardCell-ahead;
++        if (wanted < 0) break;
++        const uint64_t cell = wanted;
++        std::shared_ptr<LineTile> tile;
++        for (const auto &candidate : {line.tile,line.prefetchTile}) {
++            if (candidate && backwardTileReadable(*candidate,cell)) {
++                tile = candidate;
++                break;
++            }
++        }
++        if (!tile) continue;
++        auto &operand = line.backwardOperands[cell%2];
++        if (operand.cell != cell) {
++            if (operand.cell != UINT64_MAX) {
++                panic_if(!operand.yReady || operand.readyColumns != 0x1f ||
++                         operand.usedColumns != 0x1f,
++                         "CFD overwriting live backward operands");
++                if (env.traceEnable)
++                    std::fprintf(stderr,"CFD_BACK_OPERAND cycle=%llu token=%llu cell=%llu event=release\n",
++                        (unsigned long long)cycle(),(unsigned long long)line.token,
++                        (unsigned long long)operand.cell);
++                line.backwardOperandReleased++;
++            }
++            operand = BackwardOperand{};
++            operand.cell = cell;
++            operand.tile = tile;
++            line.backwardOperandAllocated++;
++            if (env.traceEnable)
++                std::fprintf(stderr,"CFD_BACK_OPERAND cycle=%llu token=%llu cell=%llu event=allocate tile=%llu slot=%llu\n",
++                    (unsigned long long)cycle(),(unsigned long long)line.token,
++                    (unsigned long long)cell,(unsigned long long)tile->start,
++                    (unsigned long long)(cell%2));
++        }
++        const Addr base = tileOnchipAddr(line,*tile);
++        const unsigned index = cell-tile->start;
++        auto read = [this,&line,cell](std::shared_ptr<OnchipAccess> &job,
++                                      Addr address,unsigned stride,int column) {
++            if (job) return;
++            job = startOnchip(line.token,address,N,stride,false,0);
++            if (job && env.traceEnable)
++                std::fprintf(stderr,"CFD_BACK_OPERAND cycle=%llu token=%llu cell=%llu event=read column=%d job=%llu\n",
++                    (unsigned long long)cycle(),(unsigned long long)line.token,
++                    (unsigned long long)cell,column,(unsigned long long)job->id);
++        };
++        read(operand.yLoad,base+index*VectorBytes,8,-1);
++        const Addr matrixBase = cachedUbar(line) ?
++            line.tileReserve+line.tileAllocated+cell*3*MatrixBytes+2*MatrixBytes :
++            base+tile->y.size()*VectorBytes+index*MatrixBytes;
++        const auto &matrix = cachedUbar(line) ?
++            lineCoeffCaches.at(line.desc.lineId).uBar[cell] : tile->u[index];
++        for (unsigned col = 0; col < N; ++col) {
++            read(operand.columns[col],matrixBase+col*8,N*8,col);
++            if (operand.columns[col] && operand.columns[col]->done &&
++                !(operand.readyColumns & (1u<<col))) {
++                for (unsigned row = 0; row < N; ++row)
++                    operand.values[col][row] = matrix[row*N+col];
++                operand.readyColumns |= 1u<<col;
++            }
++        }
++        if (operand.yLoad && operand.yLoad->done && !operand.yReady) {
++            operand.y = tile->y[index];
++            operand.yReady = true;
++        }
++    }
++}
++
++bool
++CfdCoeffPreprocessController::backwardOperandReady(LineRequest &line,unsigned column)
++{
++    auto &operand = line.backwardOperands[line.backwardCell%2];
++    if (operand.cell != static_cast<uint64_t>(line.backwardCell) || !operand.yReady ||
++        !(operand.readyColumns & (1u<<column))) return false;
++    line.backwardYOperand = operand.y;
++    line.mvm[1].columnOperands[column] = operand.values[column];
++    if (!(operand.usedColumns & (1u<<column))) {
++        operand.usedColumns |= 1u<<column;
++        if (env.traceEnable)
++            std::fprintf(stderr,"CFD_BACK_OPERAND cycle=%llu token=%llu cell=%llu event=use column=%u job=%llu y_job=%llu\n",
++                (unsigned long long)cycle(),(unsigned long long)line.token,
++                (unsigned long long)operand.cell,column,
++                (unsigned long long)operand.columns[column]->id,
++                (unsigned long long)operand.yLoad->id);
++    }
++    return true;
++}
++
++void
++CfdCoeffPreprocessController::releaseBackwardOperands(LineRequest &line)
++{
++    if (env.lineOptLevel < 9) return;
++    for (auto &operand : line.backwardOperands) {
++        if (operand.cell == UINT64_MAX) continue;
++        panic_if(!operand.yReady || operand.readyColumns != 0x1f || operand.usedColumns != 0x1f,
++                 "CFD incomplete backward operand at completion");
++        if (env.traceEnable)
++            std::fprintf(stderr,"CFD_BACK_OPERAND cycle=%llu token=%llu cell=%llu event=release\n",
++                (unsigned long long)cycle(),(unsigned long long)line.token,
++                (unsigned long long)operand.cell);
++        line.backwardOperandReleased++;
++        operand = BackwardOperand{};
++    }
++    panic_if(line.backwardOperandAllocated != line.backwardOperandReleased,
++             "CFD backward operand credit leak");
++}
+--- /dev/null
++++ b/src/arch/arm/cfd_coeff_preprocess_early.inc
+@@ -0,0 +1,116 @@
++// Resident data becomes readable after its modeled SPM stores. Its external
++// writeback owns independent snapshots; final completion still fences them.
++bool
++CfdCoeffPreprocessController::backwardTileReadable(const LineTile &tile,uint64_t cell) const
++{
++    if (cell < tile.start || cell >= tile.start+tile.count) return false;
++    if (tile.phase == LineTile::Phase::Resident) return true;
++    const unsigned local = cell-tile.start;
++    return env.lineOptLevel >= 10 && tile.phase == LineTile::Phase::Forward &&
++           (tile.readyMask[local/64] & (1ull<<(local%64)));
++}
++
++void
++CfdCoeffPreprocessController::markLocalTileReady(LineRequest &line,
++    const std::shared_ptr<LineTile> &tile,uint64_t cell,uint64_t yJob,uint64_t uJob)
++{
++    panic_if(tile->phase != LineTile::Phase::Forward || cell < tile->start ||
++             cell >= tile->start+tile->count,"CFD local result outside forward tile");
++    const unsigned local = cell-tile->start;
++    const uint64_t bit = 1ull<<(local%64);
++    panic_if(tile->readyMask[local/64] & bit,"CFD local result published twice");
++    tile->readyMask[local/64] |= bit;
++    tile->readyCount++;
++    if (env.traceEnable)
++        std::fprintf(stderr,"CFD_LOCAL_READY cycle=%llu token=%llu cell=%llu first=%llu storage=%u y_job=%llu u_job=%llu\n",
++            (unsigned long long)cycle(),(unsigned long long)line.token,
++            (unsigned long long)cell,(unsigned long long)tile->start,tile->storageIndex,
++            (unsigned long long)yJob,(unsigned long long)uJob);
++}
++
++void
++CfdCoeffPreprocessController::processLocalTileResults()
++{
++    if (env.lineOptLevel < 10) return;
++    for (auto &[token,ptr] : requests) {
++        auto &req = *ptr;
++        if (req.stage == RequestStage::Complete || req.stage == RequestStage::Failed ||
++            !req.solveDone || !req.dqStarReadyLocal) continue;
++        prepareOnchipCommit(req);
++    }
++}
++
++bool
++CfdCoeffPreprocessController::startEarlyBackward(LineRequest &line)
++{
++    if (line.backwardStarted) return false;
++    std::shared_ptr<LineTile> tail,active;
++    for (const auto &t : {line.tile,line.prefetchTile}) {
++        if (!t) continue;
++        if (line.cells-1 >= t->start && line.cells-1 < t->start+t->count &&
++            t->readyCount == t->count && backwardTileReadable(*t,line.cells-1)) tail=t;
++        if (line.cells>1 && backwardTileReadable(*t,line.cells-2) &&
++            t->readyCount == t->count) active=t;
++    }
++    if (!tail || (line.cells>1 && !active)) return false;
++    if (!line.tailRead) line.tailRead = startOnchip(line.token,
++        tileOnchipAddr(line,*tail)+(line.cells-1-tail->start)*VectorBytes,N,8,false,0);
++    if (!line.tailRead || !line.tailRead->done) return false;
++    if (!active) active=tail;
++    auto other = line.tile == active ? line.prefetchTile : line.tile;
++    line.tile=active;
++    line.prefetchTile=other;
++    line.earlyBackward=true;
++    line.backwardStarted=true;
++    line.backwardStartCycle=cycle();
++    line.backwardCell=static_cast<int64_t>(line.cells)-2;
++    line.backwardValue=tail->y[line.cells-1-tail->start];
++    line.backwardNext=line.backwardValue;
++    publishLineOutput(line,line.cells-1);
++    if (env.traceEnable)
++        std::fprintf(stderr,"CFD_EARLY_BACKWARD cycle=%llu token=%llu tail=%llu first=%llu tail_job=%llu\n",
++            (unsigned long long)cycle(),(unsigned long long)line.token,
++            (unsigned long long)tail->start,(unsigned long long)active->start,
++            (unsigned long long)line.tailRead->id);
++    return true;
++}
++
++void
++CfdCoeffPreprocessController::processEarlyLineTiles(LineRequest &line)
++{
++    for (const auto &t : {line.tile,line.prefetchTile}) {
++        if (!t || t->phase != LineTile::Phase::Forward || t->retired != t->count) continue;
++        panic_if(t->readyCount != t->count,"CFD forward drain before local data ready");
++        t->phase=LineTile::Phase::Resident;
++        line.tileForwardCount++;
++        if (env.traceEnable)
++            std::fprintf(stderr,"CFD_TILE_EVENT cycle=%llu token=%llu event=forward_commit first=%llu cells=%llu\n",
++                (unsigned long long)cycle(),(unsigned long long)line.token,
++                (unsigned long long)t->start,(unsigned long long)t->count);
++    }
++    // A buffer is reusable only after its old forward DMA responses. Reads
++    // may consume locally ready data while those writes are still pending.
++    auto prefetch = [&] {
++        if (!line.tile->start || !line.prefetchTile) return;
++        auto t=line.prefetchTile;
++        if (t->phase == LineTile::Phase::Idle ||
++            (t->phase == LineTile::Phase::Resident && t->start >= line.tile->start))
++            beginTileRead(line,t,line.tile->start-env.lineTileCells);
++    };
++    prefetch();
++    stepTileRead(line,line.tile);
++    stepTileRead(line,line.prefetchTile);
++    if (line.backwardCell < 0) return;
++    const uint64_t cell=line.backwardCell;
++    if (cell < line.tile->start && !line.backwardOpPending) {
++        if (line.prefetchTile && backwardTileReadable(*line.prefetchTile,cell)) {
++            std::swap(line.tile,line.prefetchTile);
++            if (line.prefetchTile->phase != LineTile::Phase::Forward)
++                line.prefetchTile->phase=LineTile::Phase::Idle;
++            prefetch();
++        } else if (!line.prefetchTile && line.tile->phase == LineTile::Phase::Resident) {
++            beginTileRead(line,line.tile,(cell/env.lineTileCells)*env.lineTileCells);
++        }
++    }
++    if (!backwardTileReadable(*line.tile,cell)) line.tileWaitCycles++;
++}
+--- /dev/null
++++ b/src/arch/arm/cfd_packed_record_fields.inc
+@@ -0,0 +1,42 @@
++// Lossless wire ABI: 64-bit identities/timestamps, checked 16-bit per-cell counters.
++// Grouping by width keeps all 40 compact fields in a 160-byte record.
++CFD_PACKED_FIELD(uint64_t, requestId, request_id)
++CFD_PACKED_FIELD(uint64_t, generation, generation)
++CFD_PACKED_FIELD(uint64_t, lineId, line_id)
++CFD_PACKED_FIELD(uint64_t, cellId, cell_id)
++CFD_PACKED_FIELD(uint64_t, issueCycle, issue_cycle)
++CFD_PACKED_FIELD(uint64_t, luIssueCycle, lu_issue_cycle)
++CFD_PACKED_FIELD(uint64_t, solveIssueCycle, solve_issue_cycle)
++CFD_PACKED_FIELD(uint64_t, completeCycle, complete_cycle)
++CFD_PACKED_FIELD(uint64_t, dInvReadyCycle, d_inv_ready_cycle)
++CFD_PACKED_FIELD(uint64_t, lBarReadyCycle, l_bar_ready_cycle)
++CFD_PACKED_FIELD(uint64_t, uBarReadyCycle, u_bar_ready_cycle)
++CFD_PACKED_FIELD(uint64_t, baseComputeReadyCycle, base_compute_ready_cycle)
++CFD_PACKED_FIELD(uint64_t, dqStarPublishCycle, dq_star_publish_cycle)
++CFD_PACKED_FIELD(uint16_t, status, status)
++CFD_PACKED_FIELD(uint16_t, luDivIssued, lu_div_issued)
++CFD_PACKED_FIELD(uint16_t, luMulIssued, lu_mul_issued)
++CFD_PACKED_FIELD(uint16_t, luSubIssued, lu_sub_issued)
++CFD_PACKED_FIELD(uint16_t, coeffDivIssued, coeff_div_issued)
++CFD_PACKED_FIELD(uint16_t, coeffMulIssued, coeff_mul_issued)
++CFD_PACKED_FIELD(uint16_t, coeffSubIssued, coeff_sub_issued)
++CFD_PACKED_FIELD(uint16_t, inputBytes, input_bytes)
++CFD_PACKED_FIELD(uint16_t, outputBytes, output_bytes)
++CFD_PACKED_FIELD(uint16_t, autoRetired, auto_retired)
++CFD_PACKED_FIELD(uint16_t, autoRetireError, auto_retire_error)
++CFD_PACKED_FIELD(uint16_t, dqStarReady, dq_star_ready)
++CFD_PACKED_FIELD(uint16_t, forwardConsumerError, forward_consumer_error)
++CFD_PACKED_FIELD(uint16_t, baseAccumulatorsCompleted, base_accumulators_completed)
++CFD_PACKED_FIELD(uint16_t, dInvColumnsReady, d_inv_columns_ready)
++CFD_PACKED_FIELD(uint16_t, dInvColumnsConsumed, d_inv_columns_consumed)
++CFD_PACKED_FIELD(uint16_t, baseConsumedColumnMask, base_consumed_column_mask)
++CFD_PACKED_FIELD(uint16_t, baseAccumulatorsAllocated, base_accumulators_allocated)
++CFD_PACKED_FIELD(uint16_t, dInvMatrixDrainsAvoided, d_inv_matrix_drains_avoided)
++CFD_PACKED_FIELD(uint16_t, lbarColumnsConsumed, lbar_columns_consumed)
++CFD_PACKED_FIELD(uint16_t, correctionAccumulatorsCompleted, correction_accumulators_completed)
++CFD_PACKED_FIELD(uint16_t, forwardHandoffsProduced, forward_handoffs_produced)
++CFD_PACKED_FIELD(uint16_t, forwardHandoffsConsumed, forward_handoffs_consumed)
++CFD_PACKED_FIELD(uint16_t, forwardCombineCompleted, forward_combine_completed)
++CFD_PACKED_FIELD(uint16_t, dqStarPublishCount, dq_star_publish_count)
++CFD_PACKED_FIELD(uint16_t, lbarMatrixDrainsAvoided, lbar_matrix_drains_avoided)
++CFD_PACKED_FIELD(uint16_t, pathaLbarMvmEliminated, patha_lbar_mvm_eliminated)
+--- /dev/null
++++ b/projects/cfd_dsa/tools/check_single_line_dma_packets.py
+@@ -0,0 +1,40 @@
++#!/usr/bin/env python3
++"""Validate physical DMA queue/send/response events without counting retries twice."""
++from collections import Counter
++import json
++import re
++from check_single_line_c import fields
++
++
++def check_dma_packets(text,path,config):
++    system=json.loads((path/'config.json').read_text())['system']
++    cache=system['coeff_dma_cache']
++    expected=dict(size=1024,assoc=8,mshrs=20,tgts_per_mshr=12)
++    expected.update({name+'_latency':int(config.get('--coeff-dma-cache-'+name+'-latency','50'))
++                     for name in ('tag','data','response')})
++    assert all(cache[k]==v for k,v in expected.items()), 'DMA endpoint differs from declared sensitivity'
++    assert system['cpu']['local_spm']['dma_port']['peer']=='system.coeff_dma_cache.cpu_side'
++    queued={};sent={};responded={};retry=Counter();live=peak=0
++    for r in fields(text,'CFD_DMA_PACKET'):
++        packet=r['packet'];tick=int(r['tick']);event=r['event']
++        if event=='queue':
++            assert packet not in queued and r['op'] in ('R','W') and 0<int(r['bytes'])<=64
++            queued[packet]=r;live+=1;peak=max(peak,live)
++            assert int(r['live'])==live<=int(config['--coeff-spm-outstanding'])
++        elif event=='send':
++            assert packet in queued and packet not in sent
++            assert tick>=int(queued[packet]['tick']);sent[packet]=tick
++        elif event=='retry':
++            assert packet in queued and packet not in sent
++            assert tick>=int(queued[packet]['tick']);retry[packet]+=1
++        elif event=='response':
++            assert packet in sent and packet not in responded and tick>sent[packet]
++            responded[packet]=tick;live-=1;assert live>=0
++        else:raise ValueError('unknown DMA packet event')
++    assert queued and not live and queued.keys()==sent.keys()==responded.keys()
++    stats=(path/'stats.txt').read_text()
++    def value(name):return int(re.search(r'\.coeffDma'+name+r'\s+(\d+)',stats)[1])
++    assert len(queued)==value('Issued')==value('Completed')
++    assert sum(int(r['bytes']) for r in queued.values() if r['op']=='R')==value('ReadBytes')
++    assert sum(int(r['bytes']) for r in queued.values() if r['op']=='W')==value('WriteBytes')
++    assert sum(retry.values())==value('PortRetries') and peak==value('LiveMax')
+--- /dev/null
++++ b/projects/cfd_dsa/tools/check_single_line_dma_priority.py
+@@ -0,0 +1,33 @@
++#!/usr/bin/env python3
++"""Prove that output priority removes backpressure under the same DMA credits."""
++import argparse
++import json
++from pathlib import Path
++from check_single_line_c import fields
++
++
++def check(root):
++    data=json.loads((root/'optimization.json').read_text())
++    results={}
++    for mode in ('direct','inverse'):
++        before=data[f'n65-cold-{mode}-priority0']
++        after=data[f'n65-cold-{mode}-l11']
++        a=dict(before['config']);b=dict(after['config'])
++        a.pop('--coeff-dma-output-priority',None);b.pop('--coeff-dma-output-priority',None)
++        assert a==b, 'priority comparison changes hardware resources'
++        assert before['binary']==after['binary'] and before['hashes']==after['hashes']
++        assert before['windows'][0]['issued']==after['windows'][0]['issued']
++        old=fields((root/f'n65-cold-{mode}-priority0'/'simout.txt').read_text(),'CFD_LINE_SCHEDULE')[0]
++        new=fields((root/f'n65-cold-{mode}-l11'/'simout.txt').read_text(),'CFD_LINE_SCHEDULE')[0]
++        assert int(new['output_queue_stalls'])<int(old['output_queue_stalls'])
++        assert after['windows'][0]['backward_cycles']<before['windows'][0]['backward_cycles']
++        assert after['windows'][0]['cycles']<before['windows'][0]['cycles']
++        results[mode]={'before':old,'after':new}
++        print(mode,'output_wait',old['output_queue_stalls'],'->',new['output_queue_stalls'])
++    (root/'dma-priority.json').write_text(json.dumps(results,indent=2)+'\n')
++    print('DMA_PRIORITY_CHECK_PASS (same resources, same FP64 work/results)')
++
++
++if __name__=='__main__':
++    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('campaign',type=Path)
++    check(parser.parse_args().campaign)

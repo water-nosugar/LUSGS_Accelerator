@@ -76,8 +76,7 @@ namespace o3
 static inline bool
 isCfdSmeZaStep(const DynInstPtr &inst)
 {
-    return inst && (inst->opClass() == CFDSMEFmopaStepOp ||
-                    inst->opClass() == CFDSMEPipeStepOp ||
+    return inst && (inst->opClass() == CFDSMEPipeStepOp ||
                     inst->opClass() == CFDSMEZaOuterStepOp);
 }
 

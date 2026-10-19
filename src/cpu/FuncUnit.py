@@ -142,7 +142,6 @@ class OpClass(Enum):
         "CFDDSAVec5",
         "CFDDSALineBuf",
         "CFDDSALusgsCtrl",
-        "CFDSMEFmopaStep",
         "CFDSMEPipeStep",
         "CFDSMEZaOuterStep",
         "System",

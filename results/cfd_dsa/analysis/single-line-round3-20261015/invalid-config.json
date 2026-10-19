@@ -1,0 +1,62 @@
+{
+  "insufficient_capacity": {
+    "returncode": 1,
+    "expected_error": "finite SPM needs"
+  },
+  "invalid_buffer_count": {
+    "returncode": 1,
+    "expected_error": "tile buffers must"
+  },
+  "invalid_tile": {
+    "returncode": 1,
+    "expected_error": "finite tile requires"
+  },
+  "invalid_dma_width": {
+    "returncode": 1,
+    "expected_error": "tile buffers must"
+  },
+  "interface_requires_tiles": {
+    "returncode": 1,
+    "expected_error": "optimization requires tiled timing DMA"
+  },
+  "fixture_requires_cache": {
+    "returncode": 1,
+    "expected_error": "finite cache contract requires"
+  },
+  "single_line_only": {
+    "returncode": 1,
+    "expected_error": "single-line study requires"
+  },
+  "optimized_timing_required": {
+    "returncode": 1,
+    "expected_error": "optimization requires tiled timing DMA"
+  },
+  "invalid_optimization_level": {
+    "returncode": 1,
+    "expected_error": "--coeff-line-opt-level must be 0..11"
+  },
+  "onchip_zero_ports": {
+    "returncode": 1,
+    "expected_error": "onchip banks require"
+  },
+  "onchip_bad_grain": {
+    "returncode": 1,
+    "expected_error": "onchip banks require"
+  },
+  "onchip_zero_queue": {
+    "returncode": 1,
+    "expected_error": "onchip timing requires"
+  },
+  "backward_requires_onchip": {
+    "returncode": 1,
+    "expected_error": "backward operand prefetch requires"
+  },
+  "invalid_rhs_depth": {
+    "returncode": 1,
+    "expected_error": "RHS product depth must"
+  },
+  "invalid_dma_latency": {
+    "returncode": 1,
+    "expected_error": "DMA cache latencies must"
+  }
+}

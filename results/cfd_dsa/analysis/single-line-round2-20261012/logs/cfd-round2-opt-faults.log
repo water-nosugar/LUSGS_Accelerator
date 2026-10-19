@@ -1,0 +1,5 @@
+unordered_column_sum REJECTED ('cfd-opt-fault-wmh55p26', 'unordered column sum', ('2', '1'), [4, 1, 2, 3, 4])
+premature_tile_commit REJECTED 
+frontier_admission_reordered REJECTED ('cfd-opt-fault-6o6tpmp0', 'non-frontier input admission', [999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+row_product_leak REJECTED 
+OPTIMIZATION_FAULT_CHECK_PASS (4 injected faults)

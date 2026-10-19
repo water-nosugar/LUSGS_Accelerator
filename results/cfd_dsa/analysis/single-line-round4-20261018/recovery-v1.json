@@ -1,0 +1,529 @@
+{
+  "schema_version": 1,
+  "campaign": "single-line-round4-recovery-20261019",
+  "provenance": [
+    "8ebf1e29e6b993e4b0cccef4842afc6ce8903e626b1de7a698bf4528f9fc5f4a",
+    "fd7c0760301856838ca52ebf671039a618244fcb234be62dfd53b40af3ee2f01",
+    "4effd5c8ad73338c834b0d9ecc67bd1389dd51432dbdea7f1f774b2db2fa62da"
+  ],
+  "cases": {},
+  "recovery": {
+    "n1-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "209377",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "257349",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "5"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "1",
+          "expected": "0",
+          "mode": "direct",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "1",
+          "expected": "1",
+          "mode": "direct",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "1",
+          "expected": "0",
+          "mode": "direct",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "1",
+          "expected": "1",
+          "mode": "direct",
+          "step": "3"
+        }
+      ],
+      "result": "passed"
+    },
+    "n2-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "214067",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "273038",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "7"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "2",
+          "expected": "0",
+          "mode": "direct",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "2",
+          "expected": "1",
+          "mode": "direct",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "2",
+          "expected": "0",
+          "mode": "direct",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "2",
+          "expected": "1",
+          "mode": "direct",
+          "step": "3"
+        }
+      ],
+      "result": "passed"
+    },
+    "n17-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "259241",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "463915",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "28"
+        },
+        {
+          "children": "0",
+          "cycle": "644262",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "55"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "17",
+          "expected": "0",
+          "mode": "direct",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "17",
+          "expected": "1",
+          "mode": "direct",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "17",
+          "expected": "0",
+          "mode": "direct",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "17",
+          "expected": "1",
+          "mode": "direct",
+          "step": "3"
+        },
+        {
+          "actual": "0",
+          "cells": "17",
+          "expected": "0",
+          "mode": "direct",
+          "step": "4"
+        },
+        {
+          "actual": "1",
+          "cells": "17",
+          "expected": "1",
+          "mode": "direct",
+          "step": "5"
+        }
+      ],
+      "result": "passed"
+    },
+    "n65-direct-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "394393",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "1059060",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "76"
+        },
+        {
+          "children": "0",
+          "cycle": "1702772",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "151"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "65",
+          "expected": "0",
+          "mode": "direct",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "65",
+          "expected": "1",
+          "mode": "direct",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "65",
+          "expected": "0",
+          "mode": "direct",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "65",
+          "expected": "1",
+          "mode": "direct",
+          "step": "3"
+        },
+        {
+          "actual": "0",
+          "cells": "65",
+          "expected": "0",
+          "mode": "direct",
+          "step": "4"
+        },
+        {
+          "actual": "1",
+          "cells": "65",
+          "expected": "1",
+          "mode": "direct",
+          "step": "5"
+        }
+      ],
+      "result": "passed"
+    },
+    "n1-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "210776",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "257429",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "5"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "1",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "1",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "1",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "1",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "3"
+        }
+      ],
+      "result": "passed"
+    },
+    "n2-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "215389",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "271511",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "7"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "2",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "2",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "2",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "2",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "3"
+        }
+      ],
+      "result": "passed"
+    },
+    "n17-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "258535",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "446558",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "28"
+        },
+        {
+          "children": "0",
+          "cycle": "570666",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "47"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "17",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "17",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "17",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "17",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "3"
+        },
+        {
+          "actual": "0",
+          "cells": "17",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "4"
+        },
+        {
+          "actual": "1",
+          "cells": "17",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "5"
+        }
+      ],
+      "result": "passed"
+    },
+    "n65-inverse-recovery": {
+      "aborts": [
+        {
+          "children": "0",
+          "cycle": "393678",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "6",
+          "token": "1"
+        },
+        {
+          "children": "0",
+          "cycle": "994685",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "76"
+        },
+        {
+          "children": "0",
+          "cycle": "1427764",
+          "dma_live": "0",
+          "event": "visible",
+          "records": "0",
+          "status": "9",
+          "token": "143"
+        }
+      ],
+      "cases": [
+        {
+          "actual": "0",
+          "cells": "65",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "0"
+        },
+        {
+          "actual": "1",
+          "cells": "65",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "1"
+        },
+        {
+          "actual": "0",
+          "cells": "65",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "2"
+        },
+        {
+          "actual": "1",
+          "cells": "65",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "3"
+        },
+        {
+          "actual": "0",
+          "cells": "65",
+          "expected": "0",
+          "mode": "inverse",
+          "step": "4"
+        },
+        {
+          "actual": "1",
+          "cells": "65",
+          "expected": "1",
+          "mode": "inverse",
+          "step": "5"
+        }
+      ],
+      "result": "passed"
+    }
+  },
+  "comparison_pairs": []
+}

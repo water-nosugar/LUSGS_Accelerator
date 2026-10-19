@@ -1,0 +1,25 @@
+one-inverse-full cycles 3310 reload 0
+one-inverse-tiled cycles 3322 reload 0
+one-direct-full cycles 3490 reload 0
+one-direct-tiled cycles 3494 reload 0
+two-inverse-full cycles 4664 reload 0
+two-inverse-tiled cycles 5006 reload 240
+two-direct-full cycles 4770 reload 0
+two-direct-tiled cycles 5150 reload 240
+partial-inverse-full cycles 16576 reload 0
+partial-inverse-tiled cycles 20288 reload 3840
+partial-direct-full cycles 16706 reload 0
+partial-direct-tiled cycles 20430 reload 3840
+allfit-inverse-full cycles 16576 reload 0
+allfit-inverse-tiled cycles 16712 reload 0
+allfit-direct-full cycles 16706 reload 0
+allfit-direct-tiled cycles 16790 reload 0
+tree-inverse-full cycles 16576 reload 0
+tree-inverse-tiled cycles 20272 reload 3840
+tree-direct-full cycles 16706 reload 0
+tree-direct-tiled cycles 20414 reload 3840
+long-inverse-full cycles 57984 reload 0
+long-inverse-tiled cycles 70068 reload 15360
+long-direct-full cycles 57886 reload 0
+long-direct-tiled cycles 70250 reload 15360
+SINGLE_LINE_STORAGE_CHECK_PASS

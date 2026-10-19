@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="830" viewBox="0 0 1120 830">
+<rect width="1120" height="830" fill="white"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#243449}</style>
+<text x="48" y="42" font-size="25" text-anchor="start" style="fill:#243449">Single-line LU-SGS: measured bottlenecks</text>
+<text x="48" y="69" font-size="14" text-anchor="start" style="fill:#243449">N=17, tile=4, shared FP64 5 mul / 5 add / 1 div; accepted traces from 2026-10-09</text>
+<text x="48" y="110" font-size="18" text-anchor="start" style="fill:#243449">A. Issue throughput utilization within controller-active windows</text>
+<text x="48" y="132" font-size="13" text-anchor="start" style="fill:#243449">mul/add: issued / (5 x cycles); div: issued x II4 / cycles</text>
+<rect x="760.000" y="117.000" width="15.000" height="12.000" fill="#2675ba"/>
+<text x="782" y="128" font-size="14" text-anchor="start" style="fill:#243449">mul</text>
+<rect x="855.000" y="117.000" width="15.000" height="12.000" fill="#31937b"/>
+<text x="877" y="128" font-size="14" text-anchor="start" style="fill:#243449">add</text>
+<rect x="950.000" y="117.000" width="15.000" height="12.000" fill="#dc8c28"/>
+<text x="972" y="128" font-size="14" text-anchor="start" style="fill:#243449">div</text>
+<line x1="90" y1="375" x2="1050" y2="375" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="76" y="380" font-size="13" text-anchor="end" style="fill:#243449">0%</text>
+<line x1="90" y1="335" x2="1050" y2="335" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="76" y="340" font-size="13" text-anchor="end" style="fill:#243449">10%</text>
+<line x1="90" y1="295" x2="1050" y2="295" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="76" y="300" font-size="13" text-anchor="end" style="fill:#243449">20%</text>
+<line x1="90" y1="255" x2="1050" y2="255" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="76" y="260" font-size="13" text-anchor="end" style="fill:#243449">30%</text>
+<line x1="90" y1="215" x2="1050" y2="215" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="76" y="220" font-size="13" text-anchor="end" style="fill:#243449">40%</text>
+<line x1="90" y1="175" x2="1050" y2="175" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="76" y="180" font-size="13" text-anchor="end" style="fill:#243449">50%</text>
+<rect x="115.000" y="361.913" width="31.000" height="13.087" fill="#2675ba"/>
+<text x="130.5" y="353.91311386940095" font-size="13" text-anchor="middle" style="fill:#243449">3.3</text>
+<rect x="155.000" y="361.481" width="31.000" height="13.519" fill="#31937b"/>
+<text x="170.5" y="353.4813815434431" font-size="13" text-anchor="middle" style="fill:#243449">3.4</text>
+<rect x="195.000" y="318.065" width="31.000" height="56.935" fill="#dc8c28"/>
+<text x="210.5" y="310.06529951430116" font-size="13" text-anchor="middle" style="fill:#243449">14.2</text>
+<text x="170" y="402" font-size="14" text-anchor="middle" style="fill:#243449">Cold direct, O4</text>
+<text x="170" y="424" font-size="13" text-anchor="middle" style="fill:#243449">All FUs empty: 70.9%</text>
+<rect x="353.000" y="345.245" width="31.000" height="29.755" fill="#2675ba"/>
+<text x="368.5" y="337.2453987730061" font-size="13" text-anchor="middle" style="fill:#243449">7.4</text>
+<rect x="393.000" y="344.264" width="31.000" height="30.736" fill="#31937b"/>
+<text x="408.5" y="336.2638036809816" font-size="13" text-anchor="middle" style="fill:#243449">7.7</text>
+<rect x="433.000" y="245.552" width="31.000" height="129.448" fill="#dc8c28"/>
+<text x="448.5" y="237.5521472392638" font-size="13" text-anchor="middle" style="fill:#243449">32.4</text>
+<text x="408" y="402" font-size="14" text-anchor="middle" style="fill:#243449">Cold direct, O16</text>
+<text x="408" y="424" font-size="13" text-anchor="middle" style="fill:#243449">All FUs empty: 56.7%</text>
+<rect x="591.000" y="339.121" width="31.000" height="35.879" fill="#2675ba"/>
+<text x="606.5" y="331.12058942814656" font-size="13" text-anchor="middle" style="fill:#243449">9.0</text>
+<rect x="631.000" y="338.255" width="31.000" height="36.745" fill="#31937b"/>
+<text x="646.5" y="330.25537380018926" font-size="13" text-anchor="middle" style="fill:#243449">9.2</text>
+<rect x="671.000" y="224.128" width="31.000" height="150.872" fill="#dc8c28"/>
+<text x="686.5" y="216.1280248749493" font-size="13" text-anchor="middle" style="fill:#243449">37.7</text>
+<text x="646" y="402" font-size="14" text-anchor="middle" style="fill:#243449">Cold inverse, O16</text>
+<text x="646" y="424" font-size="13" text-anchor="middle" style="fill:#243449">All FUs empty: 52.8%</text>
+<rect x="829.000" y="360.391" width="31.000" height="14.609" fill="#2675ba"/>
+<text x="844.5" y="352.39057841383425" font-size="13" text-anchor="middle" style="fill:#243449">3.7</text>
+<rect x="869.000" y="358.482" width="31.000" height="16.518" fill="#31937b"/>
+<text x="884.5" y="350.4824090638044" font-size="13" text-anchor="middle" style="fill:#243449">4.1</text>
+<rect x="909.000" y="375.000" width="31.000" height="0.000" fill="#dc8c28"/>
+<text x="924.5" y="367.0" font-size="13" text-anchor="middle" style="fill:#243449">0.0</text>
+<text x="884" y="402" font-size="14" text-anchor="middle" style="fill:#243449">Warm inverse, O16</text>
+<text x="884" y="424" font-size="13" text-anchor="middle" style="fill:#243449">All FUs empty: 81.3%</text>
+<text x="48" y="481" font-size="18" text-anchor="start" style="fill:#243449">B. Exact backward-window decomposition (cycles)</text>
+<text x="48" y="504" font-size="13" text-anchor="start" style="fill:#243449">Arithmetic-active + tile-data wait + output-queue backpressure = backward duration</text>
+<rect x="550.000" y="525.000" width="15.000" height="12.000" fill="#2675ba"/>
+<text x="572" y="537" font-size="14" text-anchor="start" style="fill:#243449">Arithmetic</text>
+<rect x="710.000" y="525.000" width="15.000" height="12.000" fill="#dc8c28"/>
+<text x="732" y="537" font-size="14" text-anchor="start" style="fill:#243449">Tile wait</text>
+<rect x="860.000" y="525.000" width="15.000" height="12.000" fill="#8896a6"/>
+<text x="882" y="537" font-size="14" text-anchor="start" style="fill:#243449">Output wait</text>
+<text x="245" y="583" font-size="14" text-anchor="end" style="fill:#243449">1 buffer / 40 B / O4</text>
+<rect x="260.000" y="563.000" width="77.760" height="27.000" fill="#2675ba"/>
+<text x="298.88" y="582" font-size="13" text-anchor="middle" style="fill:#ffffff">432</text>
+<rect x="337.760" y="563.000" width="631.980" height="27.000" fill="#dc8c28"/>
+<text x="653.75" y="582" font-size="13" text-anchor="middle" style="fill:#ffffff">3511</text>
+<text x="977.74" y="583" font-size="14" text-anchor="start" style="fill:#243449">3943</text>
+<text x="245" y="630" font-size="14" text-anchor="end" style="fill:#243449">2 buffers / 64 B / O4</text>
+<rect x="260.000" y="610.000" width="77.760" height="27.000" fill="#2675ba"/>
+<text x="298.88" y="629" font-size="13" text-anchor="middle" style="fill:#ffffff">432</text>
+<rect x="337.760" y="610.000" width="155.520" height="27.000" fill="#dc8c28"/>
+<text x="415.52" y="629" font-size="13" text-anchor="middle" style="fill:#ffffff">864</text>
+<rect x="493.280" y="610.000" width="190.980" height="27.000" fill="#8896a6"/>
+<text x="588.77" y="629" font-size="13" text-anchor="middle" style="fill:#ffffff">1061</text>
+<text x="692.26" y="630" font-size="14" text-anchor="start" style="fill:#243449">2357</text>
+<text x="245" y="677" font-size="14" text-anchor="end" style="fill:#243449">2 buffers / 64 B / O8</text>
+<rect x="260.000" y="657.000" width="77.760" height="27.000" fill="#2675ba"/>
+<text x="298.88" y="676" font-size="13" text-anchor="middle" style="fill:#ffffff">432</text>
+<rect x="337.760" y="657.000" width="126.360" height="27.000" fill="#dc8c28"/>
+<text x="400.94" y="676" font-size="13" text-anchor="middle" style="fill:#ffffff">702</text>
+<rect x="464.120" y="657.000" width="28.800" height="27.000" fill="#8896a6"/>
+<text x="500.92" y="677" font-size="14" text-anchor="start" style="fill:#243449">1294</text>
+<text x="245" y="724" font-size="14" text-anchor="end" style="fill:#243449">2 buffers / 64 B / O16</text>
+<rect x="260.000" y="704.000" width="77.760" height="27.000" fill="#2675ba"/>
+<text x="298.88" y="723" font-size="13" text-anchor="middle" style="fill:#ffffff">432</text>
+<rect x="337.760" y="704.000" width="73.980" height="27.000" fill="#dc8c28"/>
+<text x="374.75" y="723" font-size="13" text-anchor="middle" style="fill:#ffffff">411</text>
+<rect x="411.740" y="704.000" width="17.460" height="27.000" fill="#8896a6"/>
+<text x="437.2" y="724" font-size="14" text-anchor="start" style="fill:#243449">940</text>
+<line x1="260.0" y1="753" x2="260.0" y2="759" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="260.0" y="780" font-size="13" text-anchor="middle" style="fill:#243449">0</text>
+<line x1="440.0" y1="753" x2="440.0" y2="759" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="440.0" y="780" font-size="13" text-anchor="middle" style="fill:#243449">1000</text>
+<line x1="620.0" y1="753" x2="620.0" y2="759" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="620.0" y="780" font-size="13" text-anchor="middle" style="fill:#243449">2000</text>
+<line x1="800.0" y1="753" x2="800.0" y2="759" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="800.0" y="780" font-size="13" text-anchor="middle" style="fill:#243449">3000</text>
+<line x1="980.0" y1="753" x2="980.0" y2="759" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="980.0" y="780" font-size="13" text-anchor="middle" style="fill:#243449">4000</text>
+<line x1="260" y1="753" x2="980" y2="753" stroke="#dde3e9" stroke-dasharray=""/>
+<text x="1050" y="780" font-size="13" text-anchor="end" style="fill:#243449">cycles</text>
+<text x="48" y="810" font-size="12" text-anchor="start" style="fill:#243449">O = DMA outstanding limit. Occupancy and stall counts are not bus-bandwidth utilization.</text>
+</svg>

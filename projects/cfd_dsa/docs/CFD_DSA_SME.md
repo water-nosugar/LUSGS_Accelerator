@@ -23,7 +23,8 @@ cfdsme_fmopa5_step:
     ZA[0:4,0] += A[:,k] * x[k]
 ```
 
-已从默认 decoder 和推荐 benchmark 中删除。旧编码 guard `[17:15]=101` 默认返回 `Unknown64`，旧测试源文件 `projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_sme_step_perf.c` 只保留为兼容 wrapper，实际包含新的 `projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_za_outer_perf.c`。
+已从 decoder、C++ StaticInst、FU/OpClass 和 benchmark build map 中删除。旧编码 guard
+`[17:15]=101` 仍返回 `Unknown64`，作为编码排他边界。
 
 新 Path C 的目标是保留 PathB 已验证的外部调度和 6 cycles/matvec 下界，同时用 Path C 自己的 “selected-column outer-product” 指令语义描述 ZA 阵列数据流。
 
@@ -33,10 +34,8 @@ cfdsme_fmopa5_step:
 | --- | --- |
 | `projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_za_outer_perf.c` | Path C 推荐 benchmark |
 | `build/cfd_dsa/aarch64/test_cfd_pathc_za_outer_arm` | Path C 推荐 binary |
-| `projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_sme_step_perf.c` | deprecated compatibility wrapper |
-| `build/cfd_dsa/aarch64/test_cfd_pathc_sme_step_arm` | deprecated binary 名，可兼容编译新 Path C |
 | `projects/cfd_dsa/configs/run_cfd_pathc.py` | Path C 独立运行入口 |
-| `projects/cfd_dsa/configs/run_cfd_dsa.py` | deprecated / compatibility wrapper 和共享 gem5 配置 |
+| `projects/cfd_dsa/configs/run_cfd_dsa.py` | 各 profile 共用的完整 gem5 配置实现 |
 | `src/arch/arm/insts/cfd_dsa.hh/.cc` | `DSACFDSMEZaOuter5Step` execute/disassembly |
 | `src/arch/arm/isa/formats/custom_cfd.isa` | Path C outer decoder |
 | `src/arch/arm/cfd_local_spm.hh/.cc` | local SPM、ZA rename/MOVA override、Path C outer stats |
@@ -258,15 +257,8 @@ aarch64-linux-gnu-gcc -static -O2 -march=armv8-a+sve \
     --bench-iters=10000
 ```
 
-旧入口：
-
-```text
-projects/cfd_dsa/configs/run_cfd_dsa.py:
-    deprecated / compatibility wrapper
-
-projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_sme_step_perf.c:
-    deprecated compatibility source; includes projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_za_outer_perf.c
-```
+`projects/cfd_dsa/configs/run_cfd_dsa.py` 是各 profile 共用的完整配置实现，不是已删除的
+根目录 compatibility shim。
 
 ## 9. benchmark correctness
 
@@ -393,7 +385,7 @@ PathC benchmark:   projects/cfd_dsa/benchmarks/pathc/test_cfd_pathc_za_outer_per
 
 1. O3 通用 FU busy breakdown 中 `outer FU busy` 仍可能为 0；Path C 现在使用 `Path C local outer FU issue/busy/util` 作为专用统计口径。
 2. `--sme-outer-full-array=true` 目前只是 future/full-array label，不是默认硬件路径。
-3. 旧 `cfdsme_fmopa5_step` 类保留在 C++ 兼容区，但 decoder 默认不再接受旧 PathC 编码。
+3. 旧 `cfdsme_fmopa5_step` 类及专用 FU/OpClass 已删除；历史统计字段仅供解析旧结果。
 4. 不再追求低于 6 cycles/matvec；后续只做统计清理、trace 和文档收敛。
 
 ## 13. 验证命令摘要

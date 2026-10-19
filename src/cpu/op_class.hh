@@ -160,7 +160,6 @@ static const OpClass CFDDSATrsm5Coeff3Op = enums::CFDDSATrsm5Coeff3;
 static const OpClass CFDDSAVec5Op = enums::CFDDSAVec5;
 static const OpClass CFDDSALineBufOp = enums::CFDDSALineBuf;
 static const OpClass CFDDSALusgsCtrlOp = enums::CFDDSALusgsCtrl;
-static const OpClass CFDSMEFmopaStepOp = enums::CFDSMEFmopaStep;
 static const OpClass CFDSMEPipeStepOp = enums::CFDSMEPipeStep;
 static const OpClass CFDSMEZaOuterStepOp = enums::CFDSMEZaOuterStep;
 static const OpClass SystemOp = enums::System;

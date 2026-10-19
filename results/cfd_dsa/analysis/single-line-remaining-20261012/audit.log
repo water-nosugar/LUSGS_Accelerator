@@ -1,0 +1,13 @@
+cold-direct whole 8658 last controller 5955 phase cycles [4925, 844, 186] backward {'math_active': 432, 'tile_wait': 412, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 1627 warm mean None
+cold-inverse whole 9662 last controller 7200 phase cycles [6159, 855, 186] backward {'math_active': 432, 'tile_wait': 423, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 1376 warm mean None
+reuse-direct whole 23876 last controller 2148 phase cycles [1398, 552, 198] backward {'math_active': 432, 'tile_wait': 120, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 558 warm mean 2197.3333333333335
+reuse-inverse whole 23172 last controller 2002 phase cycles [1315, 489, 198] backward {'math_active': 432, 'tile_wait': 57, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 0 warm mean 2002.5
+cold-direct-ii2 whole 8576 last controller 5875 phase cycles [4833, 856, 186] backward {'math_active': 432, 'tile_wait': 424, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 2573 warm mean None
+cold-inverse-ii2 whole 8100 last controller 5637 phase cycles [4613, 838, 186] backward {'math_active': 432, 'tile_wait': 406, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 2152 warm mean None
+reuse-inverse-add2 whole 21894 last controller 1800 phase cycles [1198, 392, 210] backward {'math_active': 240, 'tile_wait': 152, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 0 warm mean 1801.6666666666667
+reuse-inverse-tile17 whole 22282 last controller 1928 phase cycles [1298, 432, 198] backward {'math_active': 432, 'tile_wait': 0, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 0 warm mean 1926.1666666666667
+cold-direct-n65 whole 23178 last controller 20794 phase cycles [17529, 3052, 213] backward {'math_active': 1728, 'tile_wait': 1324, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 12254 warm mean None
+cold-inverse-n65 whole 27926 last controller 25781 phase cycles [22484, 3084, 213] backward {'math_active': 1728, 'tile_wait': 1356, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 6756 warm mean None
+reuse-direct-n65 whole 67342 last controller 7010 phase cycles [4872, 1925, 213] backward {'math_active': 1728, 'tile_wait': 197, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 3628 warm mean 7010.5
+reuse-inverse-n65 whole 67008 last controller 6255 phase cycles [4209, 1833, 213] backward {'math_active': 1728, 'tile_wait': 105, 'other_empty': 0, 'output_queue_stalls': 0} terminal pressure 0 warm mean 6255.666666666667
+REMAINING_BOTTLENECK_AUDIT_PASS 12 cases

@@ -1,0 +1,470 @@
+{
+  "campaign": "single-line-c-complete",
+  "common_args": [
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-line-mvm-model=serial",
+    "--coeff3-div-mode=divide",
+    "--coeff-line-base-ahead=1",
+    "--coeff-line-early-backward=1",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1",
+    "--coeff-stream-dinv-consumer=direct",
+    "--coeff-stream-lbar-consumer=direct",
+    "--coeff-stream-ubar-consumer=direct",
+    "--coeff-stream-line-autonomous=1",
+    "--coeff-stream-window=8",
+    "--coeff3-schedule=frontier-aware",
+    "--lusgs-lines=1",
+    "--lusgs-interleave=1",
+    "--coeff-preprocess-trace-enable=1",
+    "--coeff-resource-stats=1",
+    "--lu5-pending-depth=2",
+    "--coeff3-pending-depth=2",
+    "--coeff-input-slots=2",
+    "--coeff-output-buffer-depth=4",
+    "--lu5-div-count=1",
+    "--lu5-mulsub-count=1",
+    "--lu5-div-lat=12",
+    "--lu5-div-ii=12",
+    "--lu5-mul-lat=3",
+    "--lu5-sub-lat=4",
+    "--coeff3-div-count=1",
+    "--coeff-mulsub-count=1",
+    "--coeff3-div-lat=12",
+    "--coeff3-div-ii=4",
+    "--coeff-mul-lat=3",
+    "--coeff-sub-lat=4",
+    "--coeff3-rhs-lanes=15",
+    "--lu-forwarding=1",
+    "--lu-solve-early-start=1",
+    "--coeff-column-fma-count=1",
+    "--coeff-column-fma-latency=4",
+    "--coeff-column-fma-ii=1",
+    "--coeff-column-fma-queue-depth=5",
+    "--forward-combine-count=1",
+    "--forward-combine-latency=1",
+    "--forward-combine-ii=1",
+    "--forward-combine-queue-depth=2",
+    "--coeff-spm-model=internal",
+    "--coeff-spm-layout=legacy",
+    "--coeff-spm-banks=4",
+    "--coeff-spm-read-ports=1",
+    "--coeff-spm-write-ports=1",
+    "--coeff-spm-outstanding=4",
+    "--coeff-drain-width=40",
+    "--coeff-drain-ports=1",
+    "--coeff-drain-lat=1",
+    "--coeff-drain-outstanding=4",
+    "--coeff-drain-queue-depth=4",
+    "--bench-iters=1",
+    "--coefficient-update-interval=1",
+    "--lu5-count=2",
+    "--coeff3-count=2",
+    "--coeff-compute-model=shared",
+    "--coeff-cluster-mul-lat=3",
+    "--coeff-cluster-add-lat=4",
+    "--coeff-cluster-div-lat=12",
+    "--coeff-cluster-div-ii=4",
+    "--coeff-cluster-product-depth=8",
+    "--coeff-line-product-depth=5",
+    "--max-ticks=2000000000"
+  ],
+  "cases": [
+    {
+      "name": "cold-1-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1",
+        "--coeff-stream-window=1",
+        "--coeff-preprocess-trace-cells=1",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "cold-1-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1",
+        "--coeff-stream-window=1",
+        "--coeff-preprocess-trace-cells=1",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "cold-2-window1-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=2",
+        "--coeff-stream-window=1",
+        "--coeff-preprocess-trace-cells=2",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "cold-2-window1-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=2",
+        "--coeff-stream-window=1",
+        "--coeff-preprocess-trace-cells=2",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "cold-17-serial-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "cold-17-serial-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "cold-17-split-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "cold-17-split-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "cold-17-tree-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-line-mvm-model=tree",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "cold-17-tree-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-line-mvm-model=tree",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "mixed-17-serial-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "mixed-17-serial-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "mixed-17-split-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "mixed-17-split-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "mixed-17-tree-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=tree",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "mixed-17-tree-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=tree",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "steady-17-split-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=7",
+        "--coefficient-update-interval=7",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "steady-17-split-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=7",
+        "--coefficient-update-interval=7",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "reciprocal-mixed-17-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff3-div-mode=reciprocal",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "reciprocal-mixed-17-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff3-div-mode=reciprocal",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "pressure-depth1-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-cluster-product-depth=1",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "pressure-depth1-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-cluster-product-depth=1",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "dma-mixed-17-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff-spm-model=dma",
+        "--coeff-drain-queue-depth=1",
+        "--coeff-spm-outstanding=1",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "dma-mixed-17-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff-spm-model=dma",
+        "--coeff-drain-queue-depth=1",
+        "--coeff-spm-outstanding=1",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "cold-64-split-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=64",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=64",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "cold-64-split-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=64",
+        "--coeff-line-mvm-model=split",
+        "--coeff-preprocess-trace-cells=64",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "mixed-t4-split-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff3-count=4",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "mixed-t4-split-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff3-count=4",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "legacy-mixed-serial-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-compute-model=legacy",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "legacy-mixed-serial-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-compute-model=legacy",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "legacy-mixed-split-inverse",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff-compute-model=legacy",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=inverse"
+      ]
+    },
+    {
+      "name": "legacy-mixed-split-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--bench-iters=3",
+        "--coefficient-update-interval=2",
+        "--coeff-line-mvm-model=split",
+        "--coeff-compute-model=legacy",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct"
+      ]
+    },
+    {
+      "name": "latency-17-direct",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=17",
+        "--coeff-preprocess-trace-cells=17",
+        "--coeff-base-solve=direct",
+        "--coeff-cluster-mul-lat=7",
+        "--coeff-cluster-add-lat=8"
+      ]
+    },
+    {
+      "name": "cache-contract-legacy",
+      "target": "lusgs-single-line",
+      "args": [
+        "--coeff-compute-model=legacy",
+        "--lusgs-cells=3",
+        "--coeff-preprocess-trace-cells=3",
+        "--coeff-cache-contract-test=1"
+      ]
+    },
+    {
+      "name": "cache-contract-shared",
+      "target": "lusgs-single-line",
+      "args": [
+        "--coeff-compute-model=shared",
+        "--lusgs-cells=3",
+        "--coeff-preprocess-trace-cells=3",
+        "--coeff-cache-contract-test=1"
+      ]
+    }
+  ]
+}

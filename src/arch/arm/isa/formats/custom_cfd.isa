@@ -159,8 +159,6 @@ decodeCustomCFD(ExtMachInst machInst)
         uint8_t zcol = bits(machInst, 14, 10);
         uint8_t zvec = bits(machInst, 9, 5);
         return new DSACFDSMEMvm5PipeStep(machInst, zcol, zvec, k);
-
-        return new Unknown64(machInst);
     }
 
     // ─── lmat5_spm: [24]=0 ──────────────────────────────────────

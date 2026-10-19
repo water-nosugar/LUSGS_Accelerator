@@ -1,0 +1,19 @@
+{
+  "diagnostic_cases": 8,
+  "diagnostic_sweeps": 32,
+  "compared_cases": 12,
+  "files": {
+    "projects/cfd_dsa/docs/CFD_DSA_SINGLE_LINE_REMAINING_BOTTLENECK_20261012.md": "07635188d0e0bddc2f1c10dec80e696aa2695dea84f0688f9dd776016bb41910",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/analyze.py": "d05bb1b4278bd2f3dd09d54aa88f3c308a72899c16d7d6ef63f6efcffa1bdef9",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/details.json": "b6e2fab9908546e63c02d9c39f345dbe6c456b4c056684e741d5dc6a0175c7a0",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/size-report.json": "0f87de39a7433f939b93570d890a7dcded28c584f104af0a49828444d9a680b4",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/compute-report.json": "433029bda98f67d12994dfbcea21eccbd57b8a4a8156eb2aedf77780ef6ee45f",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/compute.json": "a82d7760e8ecf01a839866b765655427de7058256888c054946031174c081d69",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/size.json": "e4a2b3ed2bee6a31dd31a644e0f4a6c6089ec0d3290924165ca38832e5baa296",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/compute-check.log": "edfb7135fb792dfcfb330a61318f285fd4755af39cfada7a25ed66c1ba7c595f",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/size-check.log": "c3d830131fb1873ba49fd84028c2fd1a5f7efb9af7a36b5afb23ff6e12ee5e50",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/audit.log": "a1160d4367954f5a0cecc1ba3e505494889efce6b26110c5afa7be5851c26f2d",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/size-run.log": "ecec2ca8b6b5ebc54397a77d243fdf564de3a2421d3886cf5c516de75ada0917",
+    "results/cfd_dsa/analysis/single-line-remaining-20261012/compute-run.log": "c620989ee618ca6c567e14cd68cfc35682815de0b2d9abf3f4d0ffa42b51078e"
+  }
+}

@@ -1,0 +1,17 @@
+cold-direct-div2 cycles 6164 error 5.551115123125783e-17
+cold-direct-add2 cycles 7506 error 5.551115123125783e-17
+cold-direct-both cycles 5840 error 5.551115123125783e-17
+cold-direct-both-n65 cycles 14720 error 1.6653345369377348e-16
+cold-inverse-div2 cycles 6588 error 8.326672684688674e-17
+cold-inverse-add2 cycles 8780 error 8.326672684688674e-17
+cold-inverse-both cycles 6330 error 8.326672684688674e-17
+cold-inverse-both-n65 cycles 16820 error 2.220446049250313e-16
+reuse-direct-div2 cycles 19100 error 5.551115123125783e-17
+reuse-direct-add2 cycles 19196 error 5.551115123125783e-17
+reuse-direct-both cycles 17512 error 5.551115123125783e-17
+reuse-inverse-div2 cycles 16520 error 8.326672684688674e-17
+reuse-inverse-add2 cycles 16684 error 8.326672684688674e-17
+reuse-inverse-both cycles 14230 error 8.326672684688674e-17
+cold-direct-both-n65-t32 cycles 14450 error 1.6653345369377348e-16
+cold-inverse-both-n65-t32 cycles 16550 error 2.220446049250313e-16
+SINGLE_LINE_OPT_CHECK_PASS 16 cases 52 sweeps

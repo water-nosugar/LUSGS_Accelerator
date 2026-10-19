@@ -1,0 +1,6415 @@
+{
+  "overlap-direct-b2-w64": {
+    "sweeps": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "forward_dma": {
+          "slot_cycles": 104878,
+          "mean": 3.869180255294031,
+          "peak": 4,
+          "capacity": 4,
+          "full_cycles": 25375,
+          "full_pct": 93.61396000885412,
+          "utilization_pct": 96.72950638235078
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 32126,
+          "CoeffDrain": 21850,
+          "descriptor": 312,
+          "record": 50590
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 16118,
+            "mean": 0.5436454398273071,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 7385,
+            "full_pct": 24.908931462493253,
+            "utilization_pct": 27.182271991365354
+          },
+          "lu_contexts": {
+            "slot_cycles": 6724,
+            "mean": 0.22679438747976255,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 384,
+            "full_pct": 1.2951969778737182,
+            "utilization_pct": 11.339719373988128
+          },
+          "solve_contexts": {
+            "slot_cycles": 8730,
+            "mean": 0.29445493793847816,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 978,
+            "full_pct": 3.2987048030221264,
+            "utilization_pct": 14.722746896923907
+          },
+          "request_window": {
+            "slot_cycles": 162896,
+            "mean": 5.494333513221802,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 15133,
+            "full_pct": 51.042228818132756,
+            "utilization_pct": 68.67916891527253
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 261182,
+            "commit": 267035,
+            "record_gated_delay": 5853
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 259797,
+            "commit": 267036,
+            "record_gated_delay": 7239
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 273772,
+            "commit": 279767,
+            "record_gated_delay": 5995
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 273134,
+            "commit": 279768,
+            "record_gated_delay": 6634
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 280820,
+            "commit": 281654,
+            "record_gated_delay": 834
+          }
+        ],
+        "record_retire_waits": [
+          5852,
+          5491,
+          5061,
+          4658,
+          4404,
+          3782,
+          2937,
+          2265,
+          5994,
+          5471,
+          5213,
+          5184,
+          3818,
+          3352,
+          2950,
+          2267,
+          833
+        ]
+      }
+    ],
+    "ordered_child_column_issue_gaps": {
+      "7": 64
+    },
+    "handoffs": [
+      {
+        "cell": 0,
+        "cycle": 259151
+      },
+      {
+        "cell": 1,
+        "cycle": 259191
+      },
+      {
+        "cell": 2,
+        "cycle": 259230
+      },
+      {
+        "cell": 3,
+        "cycle": 259269
+      },
+      {
+        "cell": 4,
+        "cycle": 259308
+      },
+      {
+        "cell": 5,
+        "cycle": 259347
+      },
+      {
+        "cell": 6,
+        "cycle": 259386
+      },
+      {
+        "cell": 7,
+        "cycle": 259425
+      },
+      {
+        "cell": 8,
+        "cycle": 271832
+      },
+      {
+        "cell": 9,
+        "cycle": 271871
+      },
+      {
+        "cell": 10,
+        "cycle": 271910
+      },
+      {
+        "cell": 11,
+        "cycle": 271949
+      },
+      {
+        "cell": 12,
+        "cycle": 271988
+      },
+      {
+        "cell": 13,
+        "cycle": 272027
+      },
+      {
+        "cell": 14,
+        "cycle": 272066
+      },
+      {
+        "cell": 15,
+        "cycle": 272105
+      },
+      {
+        "cell": 16,
+        "cycle": 280713
+      }
+    ],
+    "child_lifetimes": [
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 0,
+        "INPUT_START": 257824,
+        "INPUT_SLOT_RELEASE": 258681,
+        "LU_ISSUE": 258681,
+        "COEFF3_ISSUE": 258688,
+        "LU_COMPLETE": 259070,
+        "COEFF3_COMPLETE": 259170,
+        "REQUEST_COMPLETE": 261182,
+        "REQUEST_AUTO_RETIRE": 267034
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 1,
+        "INPUT_START": 257238,
+        "INPUT_SLOT_RELEASE": 258253,
+        "LU_ISSUE": 258253,
+        "COEFF3_ISSUE": 258260,
+        "LU_COMPLETE": 258646,
+        "COEFF3_COMPLETE": 258766,
+        "REQUEST_COMPLETE": 260802,
+        "REQUEST_AUTO_RETIRE": 266293
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 2,
+        "INPUT_START": 256696,
+        "INPUT_SLOT_RELEASE": 257823,
+        "LU_ISSUE": 257823,
+        "COEFF3_ISSUE": 257830,
+        "LU_COMPLETE": 258219,
+        "COEFF3_COMPLETE": 258339,
+        "REQUEST_COMPLETE": 260543,
+        "REQUEST_AUTO_RETIRE": 265604
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 3,
+        "INPUT_START": 256265,
+        "INPUT_SLOT_RELEASE": 257237,
+        "LU_ISSUE": 257237,
+        "COEFF3_ISSUE": 257244,
+        "LU_COMPLETE": 257633,
+        "COEFF3_COMPLETE": 257753,
+        "REQUEST_COMPLETE": 260278,
+        "REQUEST_AUTO_RETIRE": 264936
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 4,
+        "INPUT_START": 255723,
+        "INPUT_SLOT_RELEASE": 256695,
+        "LU_ISSUE": 256695,
+        "COEFF3_ISSUE": 256702,
+        "LU_COMPLETE": 257091,
+        "COEFF3_COMPLETE": 257211,
+        "REQUEST_COMPLETE": 259797,
+        "REQUEST_AUTO_RETIRE": 264201
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 5,
+        "INPUT_START": 255410,
+        "INPUT_SLOT_RELEASE": 256264,
+        "LU_ISSUE": 256264,
+        "COEFF3_ISSUE": 256271,
+        "LU_COMPLETE": 256660,
+        "COEFF3_COMPLETE": 256780,
+        "REQUEST_COMPLETE": 259690,
+        "REQUEST_AUTO_RETIRE": 263472
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 6,
+        "INPUT_START": 254656,
+        "INPUT_SLOT_RELEASE": 255722,
+        "LU_ISSUE": 255722,
+        "COEFF3_ISSUE": 255729,
+        "LU_COMPLETE": 256118,
+        "COEFF3_COMPLETE": 256238,
+        "REQUEST_COMPLETE": 259746,
+        "REQUEST_AUTO_RETIRE": 262683
+      },
+      {
+        "REQUEST_ALLOC": 254656,
+        "cell": 7,
+        "INPUT_START": 254656,
+        "INPUT_SLOT_RELEASE": 255409,
+        "LU_ISSUE": 255409,
+        "COEFF3_ISSUE": 255416,
+        "LU_COMPLETE": 255807,
+        "COEFF3_COMPLETE": 255931,
+        "REQUEST_COMPLETE": 259746,
+        "REQUEST_AUTO_RETIRE": 262011
+      },
+      {
+        "REQUEST_ALLOC": 267035,
+        "cell": 8,
+        "INPUT_START": 270305,
+        "INPUT_SLOT_RELEASE": 271312,
+        "LU_ISSUE": 271312,
+        "COEFF3_ISSUE": 271319,
+        "LU_COMPLETE": 271708,
+        "COEFF3_COMPLETE": 271829,
+        "REQUEST_COMPLETE": 273772,
+        "REQUEST_AUTO_RETIRE": 279766
+      },
+      {
+        "REQUEST_ALLOC": 267035,
+        "cell": 9,
+        "INPUT_START": 269770,
+        "INPUT_SLOT_RELEASE": 270836,
+        "LU_ISSUE": 270836,
+        "COEFF3_ISSUE": 270843,
+        "LU_COMPLETE": 271232,
+        "COEFF3_COMPLETE": 271352,
+        "REQUEST_COMPLETE": 273509,
+        "REQUEST_AUTO_RETIRE": 278980
+      },
+      {
+        "REQUEST_ALLOC": 267035,
+        "cell": 10,
+        "INPUT_START": 267036,
+        "INPUT_SLOT_RELEASE": 268493,
+        "LU_ISSUE": 268493,
+        "COEFF3_ISSUE": 268500,
+        "LU_COMPLETE": 268897,
+        "COEFF3_COMPLETE": 269137,
+        "REQUEST_COMPLETE": 273242,
+        "REQUEST_AUTO_RETIRE": 278455
+      },
+      {
+        "REQUEST_ALLOC": 267035,
+        "cell": 11,
+        "INPUT_START": 267036,
+        "INPUT_SLOT_RELEASE": 267735,
+        "LU_ISSUE": 267735,
+        "COEFF3_ISSUE": 267742,
+        "LU_COMPLETE": 268131,
+        "COEFF3_COMPLETE": 268251,
+        "REQUEST_COMPLETE": 272496,
+        "REQUEST_AUTO_RETIRE": 277680
+      },
+      {
+        "REQUEST_ALLOC": 267036,
+        "cell": 12,
+        "INPUT_START": 269240,
+        "INPUT_SLOT_RELEASE": 270304,
+        "LU_ISSUE": 270304,
+        "COEFF3_ISSUE": 270311,
+        "LU_COMPLETE": 270700,
+        "COEFF3_COMPLETE": 270820,
+        "REQUEST_COMPLETE": 273134,
+        "REQUEST_AUTO_RETIRE": 276952
+      },
+      {
+        "REQUEST_ALLOC": 267036,
+        "cell": 13,
+        "INPUT_START": 268599,
+        "INPUT_SLOT_RELEASE": 269769,
+        "LU_ISSUE": 269769,
+        "COEFF3_ISSUE": 269776,
+        "LU_COMPLETE": 270165,
+        "COEFF3_COMPLETE": 270285,
+        "REQUEST_COMPLETE": 272868,
+        "REQUEST_AUTO_RETIRE": 276220
+      },
+      {
+        "REQUEST_ALLOC": 267036,
+        "cell": 14,
+        "INPUT_START": 268494,
+        "INPUT_SLOT_RELEASE": 269239,
+        "LU_ISSUE": 269239,
+        "COEFF3_ISSUE": 269246,
+        "LU_COMPLETE": 269635,
+        "COEFF3_COMPLETE": 269755,
+        "REQUEST_COMPLETE": 272491,
+        "REQUEST_AUTO_RETIRE": 275441
+      },
+      {
+        "REQUEST_ALLOC": 267036,
+        "cell": 15,
+        "INPUT_START": 267736,
+        "INPUT_SLOT_RELEASE": 268598,
+        "LU_ISSUE": 268598,
+        "COEFF3_ISSUE": 268605,
+        "LU_COMPLETE": 268993,
+        "COEFF3_COMPLETE": 269113,
+        "REQUEST_COMPLETE": 272547,
+        "REQUEST_AUTO_RETIRE": 274814
+      },
+      {
+        "REQUEST_ALLOC": 279767,
+        "cell": 16,
+        "INPUT_START": 279768,
+        "INPUT_SLOT_RELEASE": 280200,
+        "LU_ISSUE": 280200,
+        "COEFF3_ISSUE": 280207,
+        "LU_COMPLETE": 280589,
+        "COEFF3_COMPLETE": 280689,
+        "REQUEST_COMPLETE": 280820,
+        "REQUEST_AUTO_RETIRE": 281653
+      }
+    ],
+    "divider_issue_gap_histogram": {
+      "4": 962,
+      "43": 12,
+      "9": 14,
+      "60": 14,
+      "49": 2,
+      "12": 1,
+      "55": 12,
+      "24": 12,
+      "115": 2,
+      "159": 1,
+      "39": 1,
+      "6": 2,
+      "14": 2,
+      "47": 2,
+      "21": 2,
+      "20": 2,
+      "59": 2,
+      "44": 2,
+      "8654": 1,
+      "331": 1,
+      "191": 1,
+      "103": 1,
+      "108": 1,
+      "105": 1,
+      "8461": 1
+    }
+  },
+  "overlap-inverse-b2-w64": {
+    "sweeps": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "forward_dma": {
+          "slot_cycles": 104989,
+          "mean": 3.862872070348431,
+          "peak": 4,
+          "capacity": 4,
+          "full_cycles": 25396,
+          "full_pct": 93.43978807167298,
+          "utilization_pct": 96.57180175871076
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 32126,
+          "CoeffDrain": 21950,
+          "descriptor": 312,
+          "record": 50601
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 16118,
+            "mean": 0.5423101510716328,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 7385,
+            "full_pct": 24.847750748628915,
+            "utilization_pct": 27.115507553581644
+          },
+          "lu_contexts": {
+            "slot_cycles": 6776,
+            "mean": 0.227986945257562,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 384,
+            "full_pct": 1.2920157464419098,
+            "utilization_pct": 11.3993472628781
+          },
+          "solve_contexts": {
+            "slot_cycles": 9258,
+            "mean": 0.3114969213687292,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1184,
+            "full_pct": 3.9837152181958886,
+            "utilization_pct": 15.57484606843646
+          },
+          "request_window": {
+            "slot_cycles": 163208,
+            "mean": 5.491336092325292,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 15239,
+            "full_pct": 51.2735103125736,
+            "utilization_pct": 68.64170115406615
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 259883,
+            "commit": 265787,
+            "record_gated_delay": 5904
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 258544,
+            "commit": 265788,
+            "record_gated_delay": 7244
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 272569,
+            "commit": 278564,
+            "record_gated_delay": 5995
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 271883,
+            "commit": 278565,
+            "record_gated_delay": 6682
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 279640,
+            "commit": 280474,
+            "record_gated_delay": 834
+          }
+        ],
+        "record_retire_waits": [
+          5903,
+          5441,
+          4871,
+          4668,
+          4513,
+          3734,
+          2953,
+          2275,
+          5994,
+          5466,
+          5213,
+          5227,
+          3866,
+          3453,
+          2995,
+          2312,
+          833
+        ]
+      }
+    ],
+    "ordered_child_column_issue_gaps": {
+      "7": 130,
+      "69": 1,
+      "37": 1
+    },
+    "handoffs": [
+      {
+        "cell": 0,
+        "cycle": 257939
+      },
+      {
+        "cell": 1,
+        "cycle": 257979
+      },
+      {
+        "cell": 2,
+        "cycle": 258018
+      },
+      {
+        "cell": 3,
+        "cycle": 258057
+      },
+      {
+        "cell": 4,
+        "cycle": 258096
+      },
+      {
+        "cell": 5,
+        "cycle": 258135
+      },
+      {
+        "cell": 6,
+        "cycle": 258174
+      },
+      {
+        "cell": 7,
+        "cycle": 258213
+      },
+      {
+        "cell": 8,
+        "cycle": 270603
+      },
+      {
+        "cell": 9,
+        "cycle": 270642
+      },
+      {
+        "cell": 10,
+        "cycle": 270681
+      },
+      {
+        "cell": 11,
+        "cycle": 270720
+      },
+      {
+        "cell": 12,
+        "cycle": 270759
+      },
+      {
+        "cell": 13,
+        "cycle": 270798
+      },
+      {
+        "cell": 14,
+        "cycle": 270837
+      },
+      {
+        "cell": 15,
+        "cycle": 270876
+      },
+      {
+        "cell": 16,
+        "cycle": 279533
+      }
+    ],
+    "child_lifetimes": [
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 0,
+        "INPUT_START": 256571,
+        "INPUT_SLOT_RELEASE": 257428,
+        "LU_ISSUE": 257428,
+        "COEFF3_ISSUE": 257435,
+        "LU_COMPLETE": 257823,
+        "COEFF3_COMPLETE": 257940,
+        "REQUEST_COMPLETE": 259883,
+        "REQUEST_AUTO_RETIRE": 265786
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 1,
+        "INPUT_START": 255985,
+        "INPUT_SLOT_RELEASE": 257000,
+        "LU_ISSUE": 257000,
+        "COEFF3_ISSUE": 257007,
+        "LU_COMPLETE": 257399,
+        "COEFF3_COMPLETE": 257544,
+        "REQUEST_COMPLETE": 259563,
+        "REQUEST_AUTO_RETIRE": 265004
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 2,
+        "INPUT_START": 255443,
+        "INPUT_SLOT_RELEASE": 256570,
+        "LU_ISSUE": 256570,
+        "COEFF3_ISSUE": 256577,
+        "LU_COMPLETE": 256969,
+        "COEFF3_COMPLETE": 257114,
+        "REQUEST_COMPLETE": 259345,
+        "REQUEST_AUTO_RETIRE": 264216
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 3,
+        "INPUT_START": 255012,
+        "INPUT_SLOT_RELEASE": 255984,
+        "LU_ISSUE": 255984,
+        "COEFF3_ISSUE": 255991,
+        "LU_COMPLETE": 256383,
+        "COEFF3_COMPLETE": 256519,
+        "REQUEST_COMPLETE": 259018,
+        "REQUEST_AUTO_RETIRE": 263686
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 4,
+        "INPUT_START": 254470,
+        "INPUT_SLOT_RELEASE": 255442,
+        "LU_ISSUE": 255442,
+        "COEFF3_ISSUE": 255449,
+        "LU_COMPLETE": 255840,
+        "COEFF3_COMPLETE": 255976,
+        "REQUEST_COMPLETE": 258442,
+        "REQUEST_AUTO_RETIRE": 262955
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 5,
+        "INPUT_START": 254157,
+        "INPUT_SLOT_RELEASE": 255011,
+        "LU_ISSUE": 255011,
+        "COEFF3_ISSUE": 255018,
+        "LU_COMPLETE": 255410,
+        "COEFF3_COMPLETE": 255555,
+        "REQUEST_COMPLETE": 258493,
+        "REQUEST_AUTO_RETIRE": 262227
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 6,
+        "INPUT_START": 253403,
+        "INPUT_SLOT_RELEASE": 254469,
+        "LU_ISSUE": 254469,
+        "COEFF3_ISSUE": 254476,
+        "LU_COMPLETE": 254869,
+        "COEFF3_COMPLETE": 255025,
+        "REQUEST_COMPLETE": 258493,
+        "REQUEST_AUTO_RETIRE": 261446
+      },
+      {
+        "REQUEST_ALLOC": 253403,
+        "cell": 7,
+        "INPUT_START": 253403,
+        "INPUT_SLOT_RELEASE": 254156,
+        "LU_ISSUE": 254156,
+        "COEFF3_ISSUE": 254163,
+        "LU_COMPLETE": 254554,
+        "COEFF3_COMPLETE": 254711,
+        "REQUEST_COMPLETE": 258544,
+        "REQUEST_AUTO_RETIRE": 260819
+      },
+      {
+        "REQUEST_ALLOC": 265787,
+        "cell": 8,
+        "INPUT_START": 269057,
+        "INPUT_SLOT_RELEASE": 270064,
+        "LU_ISSUE": 270064,
+        "COEFF3_ISSUE": 270071,
+        "LU_COMPLETE": 270463,
+        "COEFF3_COMPLETE": 270601,
+        "REQUEST_COMPLETE": 272569,
+        "REQUEST_AUTO_RETIRE": 278563
+      },
+      {
+        "REQUEST_ALLOC": 265787,
+        "cell": 9,
+        "INPUT_START": 268522,
+        "INPUT_SLOT_RELEASE": 269588,
+        "LU_ISSUE": 269588,
+        "COEFF3_ISSUE": 269595,
+        "LU_COMPLETE": 269987,
+        "COEFF3_COMPLETE": 270123,
+        "REQUEST_COMPLETE": 272311,
+        "REQUEST_AUTO_RETIRE": 277777
+      },
+      {
+        "REQUEST_ALLOC": 265787,
+        "cell": 10,
+        "INPUT_START": 265788,
+        "INPUT_SLOT_RELEASE": 267245,
+        "LU_ISSUE": 267245,
+        "COEFF3_ISSUE": 267252,
+        "LU_COMPLETE": 267649,
+        "COEFF3_COMPLETE": 268042,
+        "REQUEST_COMPLETE": 272039,
+        "REQUEST_AUTO_RETIRE": 277252
+      },
+      {
+        "REQUEST_ALLOC": 265787,
+        "cell": 11,
+        "INPUT_START": 265788,
+        "INPUT_SLOT_RELEASE": 266487,
+        "LU_ISSUE": 266487,
+        "COEFF3_ISSUE": 266494,
+        "LU_COMPLETE": 266886,
+        "COEFF3_COMPLETE": 267022,
+        "REQUEST_COMPLETE": 271250,
+        "REQUEST_AUTO_RETIRE": 276477
+      },
+      {
+        "REQUEST_ALLOC": 265788,
+        "cell": 12,
+        "INPUT_START": 267992,
+        "INPUT_SLOT_RELEASE": 269056,
+        "LU_ISSUE": 269056,
+        "COEFF3_ISSUE": 269063,
+        "LU_COMPLETE": 269455,
+        "COEFF3_COMPLETE": 269591,
+        "REQUEST_COMPLETE": 271883,
+        "REQUEST_AUTO_RETIRE": 275749
+      },
+      {
+        "REQUEST_ALLOC": 265788,
+        "cell": 13,
+        "INPUT_START": 267351,
+        "INPUT_SLOT_RELEASE": 268521,
+        "LU_ISSUE": 268521,
+        "COEFF3_ISSUE": 268528,
+        "LU_COMPLETE": 268920,
+        "COEFF3_COMPLETE": 269056,
+        "REQUEST_COMPLETE": 271564,
+        "REQUEST_AUTO_RETIRE": 275017
+      },
+      {
+        "REQUEST_ALLOC": 265788,
+        "cell": 14,
+        "INPUT_START": 267246,
+        "INPUT_SLOT_RELEASE": 267991,
+        "LU_ISSUE": 267991,
+        "COEFF3_ISSUE": 267998,
+        "LU_COMPLETE": 268390,
+        "COEFF3_COMPLETE": 268526,
+        "REQUEST_COMPLETE": 271243,
+        "REQUEST_AUTO_RETIRE": 274238
+      },
+      {
+        "REQUEST_ALLOC": 265788,
+        "cell": 15,
+        "INPUT_START": 266488,
+        "INPUT_SLOT_RELEASE": 267350,
+        "LU_ISSUE": 267350,
+        "COEFF3_ISSUE": 267357,
+        "LU_COMPLETE": 267745,
+        "COEFF3_COMPLETE": 267881,
+        "REQUEST_COMPLETE": 271299,
+        "REQUEST_AUTO_RETIRE": 273611
+      },
+      {
+        "REQUEST_ALLOC": 278564,
+        "cell": 16,
+        "INPUT_START": 278565,
+        "INPUT_SLOT_RELEASE": 278997,
+        "LU_ISSUE": 278997,
+        "COEFF3_ISSUE": 279004,
+        "LU_COMPLETE": 279393,
+        "COEFF3_COMPLETE": 279510,
+        "REQUEST_COMPLETE": 279640,
+        "REQUEST_AUTO_RETIRE": 280473
+      }
+    ],
+    "divider_issue_gap_histogram": {
+      "4": 1320,
+      "27": 11,
+      "52": 12,
+      "30": 2,
+      "7": 4,
+      "8": 13,
+      "75": 1,
+      "39": 11,
+      "97": 1,
+      "140": 1,
+      "24": 1,
+      "13": 2,
+      "60": 2,
+      "59": 2,
+      "28": 2,
+      "8637": 1,
+      "312": 1,
+      "6": 1,
+      "38": 1,
+      "84": 1,
+      "89": 1,
+      "86": 1,
+      "8487": 1,
+      "47": 1
+    }
+  },
+  "out16-direct": {
+    "sweeps": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "forward_dma": {
+          "slot_cycles": 143336,
+          "mean": 12.03088803088803,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 6917,
+          "full_pct": 58.05774718818197,
+          "utilization_pct": 75.1930501930502
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 35558,
+          "CoeffDrain": 24748,
+          "descriptor": 312,
+          "record": 82718
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 6263,
+            "mean": 0.48029141104294476,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3019,
+            "full_pct": 23.151840490797547,
+            "utilization_pct": 24.01457055214724
+          },
+          "lu_contexts": {
+            "slot_cycles": 6722,
+            "mean": 0.5154907975460122,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3072,
+            "full_pct": 23.558282208588956,
+            "utilization_pct": 25.774539877300615
+          },
+          "solve_contexts": {
+            "slot_cycles": 8647,
+            "mean": 0.6631134969325153,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3895,
+            "full_pct": 29.869631901840492,
+            "utilization_pct": 33.155674846625764
+          },
+          "request_window": {
+            "slot_cycles": 69779,
+            "mean": 5.351150306748466,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 6998,
+            "full_pct": 53.66564417177914,
+            "utilization_pct": 66.88937883435582
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 258045,
+            "commit": 260429,
+            "record_gated_delay": 2384
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 258343,
+            "commit": 260430,
+            "record_gated_delay": 2087
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 263079,
+            "commit": 265697,
+            "record_gated_delay": 2618
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 263315,
+            "commit": 265698,
+            "record_gated_delay": 2383
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 266443,
+            "commit": 267287,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2422,
+          2300,
+          2053,
+          1509,
+          1315,
+          892,
+          619,
+          506,
+          2638,
+          2437,
+          2178,
+          1963,
+          1452,
+          1293,
+          794,
+          750,
+          843
+        ]
+      }
+    ],
+    "ordered_child_column_issue_gaps": {
+      "7": 64
+    },
+    "handoffs": [
+      {
+        "cell": 0,
+        "cycle": 257858
+      },
+      {
+        "cell": 1,
+        "cycle": 257898
+      },
+      {
+        "cell": 2,
+        "cycle": 257937
+      },
+      {
+        "cell": 3,
+        "cycle": 257976
+      },
+      {
+        "cell": 4,
+        "cycle": 258015
+      },
+      {
+        "cell": 5,
+        "cycle": 258054
+      },
+      {
+        "cell": 6,
+        "cycle": 258093
+      },
+      {
+        "cell": 7,
+        "cycle": 258132
+      },
+      {
+        "cell": 8,
+        "cycle": 262893
+      },
+      {
+        "cell": 9,
+        "cycle": 262932
+      },
+      {
+        "cell": 10,
+        "cycle": 262971
+      },
+      {
+        "cell": 11,
+        "cycle": 263010
+      },
+      {
+        "cell": 12,
+        "cycle": 263049
+      },
+      {
+        "cell": 13,
+        "cycle": 263088
+      },
+      {
+        "cell": 14,
+        "cycle": 263127
+      },
+      {
+        "cell": 15,
+        "cycle": 263166
+      },
+      {
+        "cell": 16,
+        "cycle": 266336
+      }
+    ],
+    "child_lifetimes": [
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 0,
+        "INPUT_START": 256643,
+        "INPUT_SLOT_RELEASE": 257044,
+        "LU_ISSUE": 257044,
+        "LU_COMPLETE": 257439,
+        "COEFF3_ISSUE": 257540,
+        "COEFF3_COMPLETE": 257896,
+        "REQUEST_COMPLETE": 258006,
+        "REQUEST_AUTO_RETIRE": 260428
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 1,
+        "INPUT_START": 256597,
+        "INPUT_SLOT_RELEASE": 256992,
+        "LU_ISSUE": 256992,
+        "COEFF3_ISSUE": 257280,
+        "LU_COMPLETE": 257387,
+        "COEFF3_COMPLETE": 257763,
+        "REQUEST_COMPLETE": 258006,
+        "REQUEST_AUTO_RETIRE": 260306
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 2,
+        "INPUT_START": 256205,
+        "INPUT_SLOT_RELEASE": 256642,
+        "LU_ISSUE": 256642,
+        "COEFF3_ISSUE": 257004,
+        "LU_COMPLETE": 257043,
+        "COEFF3_COMPLETE": 257539,
+        "REQUEST_COMPLETE": 258045,
+        "REQUEST_AUTO_RETIRE": 260098
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 3,
+        "INPUT_START": 256201,
+        "INPUT_SLOT_RELEASE": 256596,
+        "LU_ISSUE": 256596,
+        "COEFF3_ISSUE": 256744,
+        "LU_COMPLETE": 256991,
+        "COEFF3_COMPLETE": 257279,
+        "REQUEST_COMPLETE": 258045,
+        "REQUEST_AUTO_RETIRE": 259554
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 4,
+        "INPUT_START": 255809,
+        "INPUT_SLOT_RELEASE": 256204,
+        "LU_ISSUE": 256204,
+        "COEFF3_ISSUE": 256472,
+        "LU_COMPLETE": 256599,
+        "COEFF3_COMPLETE": 257003,
+        "REQUEST_COMPLETE": 258232,
+        "REQUEST_AUTO_RETIRE": 259547
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 5,
+        "INPUT_START": 255803,
+        "INPUT_SLOT_RELEASE": 256200,
+        "LU_ISSUE": 256200,
+        "COEFF3_ISSUE": 256352,
+        "LU_COMPLETE": 256595,
+        "COEFF3_COMPLETE": 256743,
+        "REQUEST_COMPLETE": 258232,
+        "REQUEST_AUTO_RETIRE": 259124
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 6,
+        "INPUT_START": 255481,
+        "INPUT_SLOT_RELEASE": 255808,
+        "LU_ISSUE": 255808,
+        "COEFF3_ISSUE": 255815,
+        "LU_COMPLETE": 256203,
+        "COEFF3_COMPLETE": 256471,
+        "REQUEST_COMPLETE": 258235,
+        "REQUEST_AUTO_RETIRE": 258854
+      },
+      {
+        "REQUEST_ALLOC": 255481,
+        "cell": 7,
+        "INPUT_START": 255481,
+        "INPUT_SLOT_RELEASE": 255802,
+        "LU_ISSUE": 255802,
+        "COEFF3_ISSUE": 255809,
+        "LU_COMPLETE": 256199,
+        "COEFF3_COMPLETE": 256351,
+        "REQUEST_COMPLETE": 258343,
+        "REQUEST_AUTO_RETIRE": 258849
+      },
+      {
+        "REQUEST_ALLOC": 260429,
+        "cell": 8,
+        "INPUT_START": 261591,
+        "INPUT_SLOT_RELEASE": 261986,
+        "LU_ISSUE": 261986,
+        "LU_COMPLETE": 262381,
+        "COEFF3_ISSUE": 262502,
+        "COEFF3_COMPLETE": 262947,
+        "REQUEST_COMPLETE": 263058,
+        "REQUEST_AUTO_RETIRE": 265696
+      },
+      {
+        "REQUEST_ALLOC": 260429,
+        "cell": 9,
+        "INPUT_START": 261552,
+        "INPUT_SLOT_RELEASE": 261950,
+        "LU_ISSUE": 261950,
+        "COEFF3_ISSUE": 262254,
+        "LU_COMPLETE": 262345,
+        "COEFF3_COMPLETE": 262729,
+        "REQUEST_COMPLETE": 263040,
+        "REQUEST_AUTO_RETIRE": 265477
+      },
+      {
+        "REQUEST_ALLOC": 260429,
+        "cell": 10,
+        "INPUT_START": 260430,
+        "INPUT_SLOT_RELEASE": 260763,
+        "LU_ISSUE": 260763,
+        "COEFF3_ISSUE": 260770,
+        "LU_COMPLETE": 261158,
+        "COEFF3_COMPLETE": 261618,
+        "REQUEST_COMPLETE": 263079,
+        "REQUEST_AUTO_RETIRE": 265257
+      },
+      {
+        "REQUEST_ALLOC": 260429,
+        "cell": 11,
+        "INPUT_START": 260430,
+        "INPUT_SLOT_RELEASE": 260757,
+        "LU_ISSUE": 260757,
+        "COEFF3_ISSUE": 260764,
+        "LU_COMPLETE": 261154,
+        "COEFF3_COMPLETE": 261306,
+        "REQUEST_COMPLETE": 263079,
+        "REQUEST_AUTO_RETIRE": 265042
+      },
+      {
+        "REQUEST_ALLOC": 260430,
+        "cell": 12,
+        "INPUT_START": 261160,
+        "INPUT_SLOT_RELEASE": 261590,
+        "LU_ISSUE": 261590,
+        "COEFF3_ISSUE": 261978,
+        "LU_COMPLETE": 261985,
+        "COEFF3_COMPLETE": 262501,
+        "REQUEST_COMPLETE": 263163,
+        "REQUEST_AUTO_RETIRE": 264615
+      },
+      {
+        "REQUEST_ALLOC": 260430,
+        "cell": 13,
+        "INPUT_START": 261156,
+        "INPUT_SLOT_RELEASE": 261551,
+        "LU_ISSUE": 261551,
+        "COEFF3_ISSUE": 261687,
+        "LU_COMPLETE": 261949,
+        "COEFF3_COMPLETE": 262253,
+        "REQUEST_COMPLETE": 263209,
+        "REQUEST_AUTO_RETIRE": 264502
+      },
+      {
+        "REQUEST_ALLOC": 260430,
+        "cell": 14,
+        "INPUT_START": 260764,
+        "INPUT_SLOT_RELEASE": 261159,
+        "LU_ISSUE": 261159,
+        "LU_COMPLETE": 261554,
+        "COEFF3_ISSUE": 261619,
+        "COEFF3_COMPLETE": 261977,
+        "REQUEST_COMPLETE": 263266,
+        "REQUEST_AUTO_RETIRE": 264060
+      },
+      {
+        "REQUEST_ALLOC": 260430,
+        "cell": 15,
+        "INPUT_START": 260758,
+        "INPUT_SLOT_RELEASE": 261155,
+        "LU_ISSUE": 261155,
+        "COEFF3_ISSUE": 261307,
+        "LU_COMPLETE": 261550,
+        "COEFF3_COMPLETE": 261686,
+        "REQUEST_COMPLETE": 263315,
+        "REQUEST_AUTO_RETIRE": 264065
+      },
+      {
+        "REQUEST_ALLOC": 265697,
+        "cell": 16,
+        "INPUT_START": 265698,
+        "INPUT_SLOT_RELEASE": 265823,
+        "LU_ISSUE": 265823,
+        "COEFF3_ISSUE": 265830,
+        "LU_COMPLETE": 266212,
+        "COEFF3_COMPLETE": 266312,
+        "REQUEST_COMPLETE": 266443,
+        "REQUEST_AUTO_RETIRE": 267286
+      }
+    ],
+    "divider_issue_gap_histogram": {
+      "4": 1030,
+      "16": 1,
+      "8": 2,
+      "9": 3,
+      "5": 3,
+      "7": 3,
+      "2950": 1,
+      "12": 1,
+      "6": 2,
+      "2967": 1,
+      "14": 1,
+      "47": 1,
+      "21": 1,
+      "60": 1,
+      "20": 1,
+      "59": 1,
+      "44": 1
+    }
+  },
+  "out16-inverse": {
+    "sweeps": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "forward_dma": {
+          "slot_cycles": 147804,
+          "mean": 10.81387181738367,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 6980,
+          "full_pct": 51.06818846941762,
+          "utilization_pct": 67.58669885864794
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 35485,
+          "CoeffDrain": 24835,
+          "descriptor": 312,
+          "record": 87172
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 6269,
+            "mean": 0.4237528727862647,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3028,
+            "full_pct": 20.467757198864405,
+            "utilization_pct": 21.187643639313237
+          },
+          "lu_contexts": {
+            "slot_cycles": 6751,
+            "mean": 0.45633364877653104,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3093,
+            "full_pct": 20.907124509936462,
+            "utilization_pct": 22.81668243882655
+          },
+          "solve_contexts": {
+            "slot_cycles": 11119,
+            "mean": 0.7515884818169528,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 5047,
+            "full_pct": 34.11518183047181,
+            "utilization_pct": 37.57942409084764
+          },
+          "request_window": {
+            "slot_cycles": 81904,
+            "mean": 5.536298499391645,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 8360,
+            "full_pct": 56.50939570095985,
+            "utilization_pct": 69.20373124239556
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 256461,
+            "commit": 259299,
+            "record_gated_delay": 2838
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 256776,
+            "commit": 259300,
+            "record_gated_delay": 2524
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 262639,
+            "commit": 265231,
+            "record_gated_delay": 2592
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 262953,
+            "commit": 265232,
+            "record_gated_delay": 2279
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 266000,
+            "commit": 266844,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2869,
+          2545,
+          2296,
+          1862,
+          1541,
+          1316,
+          698,
+          774,
+          2626,
+          2319,
+          2063,
+          1839,
+          1334,
+          1213,
+          773,
+          650,
+          843
+        ]
+      }
+    ],
+    "ordered_child_column_issue_gaps": {
+      "7": 112,
+      "12": 5,
+      "9": 3,
+      "28": 1,
+      "11": 2,
+      "24": 4,
+      "20": 1,
+      "436": 1,
+      "31": 1,
+      "21": 1,
+      "13": 1
+    },
+    "handoffs": [
+      {
+        "cell": 0,
+        "cycle": 256274
+      },
+      {
+        "cell": 1,
+        "cycle": 256314
+      },
+      {
+        "cell": 2,
+        "cycle": 256353
+      },
+      {
+        "cell": 3,
+        "cycle": 256392
+      },
+      {
+        "cell": 4,
+        "cycle": 256431
+      },
+      {
+        "cell": 5,
+        "cycle": 256470
+      },
+      {
+        "cell": 6,
+        "cycle": 256509
+      },
+      {
+        "cell": 7,
+        "cycle": 256548
+      },
+      {
+        "cell": 8,
+        "cycle": 262453
+      },
+      {
+        "cell": 9,
+        "cycle": 262492
+      },
+      {
+        "cell": 10,
+        "cycle": 262531
+      },
+      {
+        "cell": 11,
+        "cycle": 262570
+      },
+      {
+        "cell": 12,
+        "cycle": 262609
+      },
+      {
+        "cell": 13,
+        "cycle": 262648
+      },
+      {
+        "cell": 14,
+        "cycle": 262687
+      },
+      {
+        "cell": 15,
+        "cycle": 262726
+      },
+      {
+        "cell": 16,
+        "cycle": 265893
+      }
+    ],
+    "child_lifetimes": [
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 0,
+        "INPUT_START": 254446,
+        "INPUT_SLOT_RELEASE": 254843,
+        "LU_ISSUE": 254843,
+        "LU_COMPLETE": 255238,
+        "COEFF3_ISSUE": 255823,
+        "COEFF3_COMPLETE": 256319,
+        "REQUEST_COMPLETE": 256429,
+        "REQUEST_AUTO_RETIRE": 259298
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 1,
+        "INPUT_START": 254404,
+        "INPUT_SLOT_RELEASE": 254799,
+        "LU_ISSUE": 254799,
+        "LU_COMPLETE": 255194,
+        "COEFF3_ISSUE": 255527,
+        "COEFF3_COMPLETE": 256122,
+        "REQUEST_COMPLETE": 256422,
+        "REQUEST_AUTO_RETIRE": 258967
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 2,
+        "INPUT_START": 254008,
+        "INPUT_SLOT_RELEASE": 254445,
+        "LU_ISSUE": 254445,
+        "LU_COMPLETE": 254842,
+        "COEFF3_ISSUE": 255203,
+        "COEFF3_COMPLETE": 255822,
+        "REQUEST_COMPLETE": 256461,
+        "REQUEST_AUTO_RETIRE": 258757
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 3,
+        "INPUT_START": 254004,
+        "INPUT_SLOT_RELEASE": 254403,
+        "LU_ISSUE": 254403,
+        "LU_COMPLETE": 254798,
+        "COEFF3_ISSUE": 254823,
+        "COEFF3_COMPLETE": 255526,
+        "REQUEST_COMPLETE": 256461,
+        "REQUEST_AUTO_RETIRE": 258323
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 4,
+        "INPUT_START": 253612,
+        "INPUT_SLOT_RELEASE": 254007,
+        "LU_ISSUE": 254007,
+        "LU_COMPLETE": 254406,
+        "COEFF3_ISSUE": 254459,
+        "COEFF3_COMPLETE": 255202,
+        "REQUEST_COMPLETE": 256568,
+        "REQUEST_AUTO_RETIRE": 258109
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 5,
+        "INPUT_START": 253606,
+        "INPUT_SLOT_RELEASE": 254003,
+        "LU_ISSUE": 254003,
+        "COEFF3_ISSUE": 254171,
+        "LU_COMPLETE": 254402,
+        "COEFF3_COMPLETE": 254822,
+        "REQUEST_COMPLETE": 256568,
+        "REQUEST_AUTO_RETIRE": 257884
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 6,
+        "INPUT_START": 253284,
+        "INPUT_SLOT_RELEASE": 253611,
+        "LU_ISSUE": 253611,
+        "COEFF3_ISSUE": 253618,
+        "LU_COMPLETE": 254006,
+        "COEFF3_COMPLETE": 254458,
+        "REQUEST_COMPLETE": 256648,
+        "REQUEST_AUTO_RETIRE": 257346
+      },
+      {
+        "REQUEST_ALLOC": 253284,
+        "cell": 7,
+        "INPUT_START": 253284,
+        "INPUT_SLOT_RELEASE": 253605,
+        "LU_ISSUE": 253605,
+        "COEFF3_ISSUE": 253612,
+        "LU_COMPLETE": 254002,
+        "COEFF3_COMPLETE": 254170,
+        "REQUEST_COMPLETE": 256776,
+        "REQUEST_AUTO_RETIRE": 257550
+      },
+      {
+        "REQUEST_ALLOC": 259299,
+        "cell": 8,
+        "INPUT_START": 260461,
+        "INPUT_SLOT_RELEASE": 260857,
+        "LU_ISSUE": 260857,
+        "LU_COMPLETE": 261256,
+        "COEFF3_ISSUE": 261896,
+        "COEFF3_COMPLETE": 262493,
+        "REQUEST_COMPLETE": 262604,
+        "REQUEST_AUTO_RETIRE": 265230
+      },
+      {
+        "REQUEST_ALLOC": 259299,
+        "cell": 9,
+        "INPUT_START": 260426,
+        "INPUT_SLOT_RELEASE": 260825,
+        "LU_ISSUE": 260825,
+        "LU_COMPLETE": 261224,
+        "COEFF3_ISSUE": 261533,
+        "COEFF3_COMPLETE": 262195,
+        "REQUEST_COMPLETE": 262600,
+        "REQUEST_AUTO_RETIRE": 264919
+      },
+      {
+        "REQUEST_ALLOC": 259299,
+        "cell": 10,
+        "INPUT_START": 259300,
+        "INPUT_SLOT_RELEASE": 259633,
+        "LU_ISSUE": 259633,
+        "COEFF3_ISSUE": 259640,
+        "LU_COMPLETE": 260028,
+        "COEFF3_COMPLETE": 261532,
+        "REQUEST_COMPLETE": 262639,
+        "REQUEST_AUTO_RETIRE": 264702
+      },
+      {
+        "REQUEST_ALLOC": 259299,
+        "cell": 11,
+        "INPUT_START": 259300,
+        "INPUT_SLOT_RELEASE": 259627,
+        "LU_ISSUE": 259627,
+        "COEFF3_ISSUE": 259634,
+        "LU_COMPLETE": 260024,
+        "COEFF3_COMPLETE": 260192,
+        "REQUEST_COMPLETE": 262639,
+        "REQUEST_AUTO_RETIRE": 264478
+      },
+      {
+        "REQUEST_ALLOC": 259300,
+        "cell": 12,
+        "INPUT_START": 260030,
+        "INPUT_SLOT_RELEASE": 260460,
+        "LU_ISSUE": 260460,
+        "LU_COMPLETE": 260856,
+        "COEFF3_ISSUE": 261505,
+        "COEFF3_COMPLETE": 261895,
+        "REQUEST_COMPLETE": 262824,
+        "REQUEST_AUTO_RETIRE": 264158
+      },
+      {
+        "REQUEST_ALLOC": 259300,
+        "cell": 13,
+        "INPUT_START": 260026,
+        "INPUT_SLOT_RELEASE": 260425,
+        "LU_ISSUE": 260425,
+        "LU_COMPLETE": 260824,
+        "COEFF3_ISSUE": 261093,
+        "COEFF3_COMPLETE": 261504,
+        "REQUEST_COMPLETE": 262825,
+        "REQUEST_AUTO_RETIRE": 264038
+      },
+      {
+        "REQUEST_ALLOC": 259300,
+        "cell": 14,
+        "INPUT_START": 259634,
+        "INPUT_SLOT_RELEASE": 260029,
+        "LU_ISSUE": 260029,
+        "LU_COMPLETE": 260428,
+        "COEFF3_ISSUE": 260637,
+        "COEFF3_COMPLETE": 261092,
+        "REQUEST_COMPLETE": 262825,
+        "REQUEST_AUTO_RETIRE": 263598
+      },
+      {
+        "REQUEST_ALLOC": 259300,
+        "cell": 15,
+        "INPUT_START": 259628,
+        "INPUT_SLOT_RELEASE": 260025,
+        "LU_ISSUE": 260025,
+        "COEFF3_ISSUE": 260193,
+        "LU_COMPLETE": 260424,
+        "COEFF3_COMPLETE": 260636,
+        "REQUEST_COMPLETE": 262953,
+        "REQUEST_AUTO_RETIRE": 263603
+      },
+      {
+        "REQUEST_ALLOC": 265231,
+        "cell": 16,
+        "INPUT_START": 265232,
+        "INPUT_SLOT_RELEASE": 265357,
+        "LU_ISSUE": 265357,
+        "COEFF3_ISSUE": 265364,
+        "LU_COMPLETE": 265753,
+        "COEFF3_COMPLETE": 265870,
+        "REQUEST_COMPLETE": 266000,
+        "REQUEST_AUTO_RETIRE": 266843
+      }
+    ],
+    "divider_issue_gap_histogram": {
+      "4": 1382,
+      "10": 2,
+      "7": 2,
+      "3397": 1,
+      "55": 1,
+      "2954": 1,
+      "47": 1,
+      "13": 1,
+      "60": 1,
+      "59": 1,
+      "28": 1
+    }
+  },
+  "n17-t4-k7-o16-direct": {
+    "sweeps": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "forward_dma": {
+          "slot_cycles": 135146,
+          "mean": 11.862196085315544,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 6340,
+          "full_pct": 55.64820503818134,
+          "utilization_pct": 74.13872553322216
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 35558,
+          "CoeffDrain": 24751,
+          "descriptor": 312,
+          "record": 74525
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 6263,
+            "mean": 0.5002795750459302,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3019,
+            "full_pct": 24.115344676092338,
+            "utilization_pct": 25.01397875229651
+          },
+          "lu_contexts": {
+            "slot_cycles": 6722,
+            "mean": 0.5369438453550603,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3072,
+            "full_pct": 24.53870117421519,
+            "utilization_pct": 26.847192267753016
+          },
+          "solve_contexts": {
+            "slot_cycles": 8647,
+            "mean": 0.6907101206166627,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3895,
+            "full_pct": 31.11270868280214,
+            "utilization_pct": 34.53550603083313
+          },
+          "request_window": {
+            "slot_cycles": 67681,
+            "mean": 5.406262481028836,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 6953,
+            "full_pct": 55.53957983864526,
+            "utilization_pct": 67.57828101286046
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 287366,
+            "commit": 289229,
+            "record_gated_delay": 1863
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 287664,
+            "commit": 289230,
+            "record_gated_delay": 1566
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 291879,
+            "commit": 294497,
+            "record_gated_delay": 2618
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 292115,
+            "commit": 294498,
+            "record_gated_delay": 2383
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 295243,
+            "commit": 296087,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          1901,
+          1693,
+          1540,
+          1357,
+          1063,
+          891,
+          569,
+          502,
+          2638,
+          2437,
+          2178,
+          1963,
+          1452,
+          1293,
+          794,
+          750,
+          843
+        ]
+      },
+      {
+        "token": "19",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 102000,
+          "mean": 11.529331976941336,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 4841,
+          "full_pct": 54.71911382389511,
+          "utilization_pct": 72.05832485588336
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 2431,
+          "CoeffDrain": 14063,
+          "descriptor": 312,
+          "record": 85194
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 1715,
+            "mean": 0.17175763645468203,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 742,
+            "full_pct": 7.43114672008012,
+            "utilization_pct": 8.5878818227341
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 3404,
+            "mean": 0.34091136705057584,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1590,
+            "full_pct": 15.923885828743115,
+            "utilization_pct": 17.045568352528793
+          },
+          "request_window": {
+            "slot_cycles": 47759,
+            "mean": 4.783074611917876,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 4209,
+            "full_pct": 42.153229844767154,
+            "utilization_pct": 59.78843264897346
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 492698,
+            "commit": 495283,
+            "record_gated_delay": 2585
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 492972,
+            "commit": 495284,
+            "record_gated_delay": 2312
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 496389,
+            "commit": 499069,
+            "record_gated_delay": 2680
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 496671,
+            "commit": 499070,
+            "record_gated_delay": 2399
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 499491,
+            "commit": 500335,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2664,
+          2517,
+          2245,
+          1918,
+          1557,
+          1441,
+          800,
+          879,
+          2758,
+          2613,
+          2044,
+          1821,
+          1429,
+          1218,
+          774,
+          666,
+          843
+        ]
+      },
+      {
+        "token": "37",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 99325,
+          "mean": 11.495949074074074,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 4735,
+          "full_pct": 54.80324074074074,
+          "utilization_pct": 71.84968171296296
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 2431,
+          "CoeffDrain": 14039,
+          "descriptor": 312,
+          "record": 82543
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 1715,
+            "mean": 0.17539374105133973,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 742,
+            "full_pct": 7.588463898547761,
+            "utilization_pct": 8.769687052566987
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 3404,
+            "mean": 0.3481284516260994,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1590,
+            "full_pct": 16.26099406831663,
+            "utilization_pct": 17.40642258130497
+          },
+          "request_window": {
+            "slot_cycles": 46497,
+            "mean": 4.7552669257516875,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 4193,
+            "full_pct": 42.88197995500102,
+            "utilization_pct": 59.44083657189609
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 517475,
+            "commit": 519853,
+            "record_gated_delay": 2378
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 517731,
+            "commit": 519854,
+            "record_gated_delay": 2123
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 520959,
+            "commit": 523639,
+            "record_gated_delay": 2680
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 521241,
+            "commit": 523640,
+            "record_gated_delay": 2399
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 524061,
+            "commit": 524905,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2457,
+          2308,
+          2047,
+          1711,
+          1450,
+          1231,
+          794,
+          782,
+          2758,
+          2613,
+          2044,
+          1821,
+          1429,
+          1218,
+          774,
+          666,
+          843
+        ]
+      },
+      {
+        "token": "55",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 103312,
+          "mean": 11.545820295037997,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 4940,
+          "full_pct": 55.207867679928476,
+          "utilization_pct": 72.16137684398748
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 2431,
+          "CoeffDrain": 14063,
+          "descriptor": 418,
+          "record": 86400
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 1715,
+            "mean": 0.17003767598651595,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 742,
+            "full_pct": 7.356732103906405,
+            "utilization_pct": 8.501883799325798
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 3404,
+            "mean": 0.3374975213166766,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1590,
+            "full_pct": 15.764425936942295,
+            "utilization_pct": 16.874876065833828
+          },
+          "request_window": {
+            "slot_cycles": 48260,
+            "mean": 4.784850287527266,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 4208,
+            "full_pct": 41.721197699781875,
+            "utilization_pct": 59.81062859409082
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 541210,
+            "commit": 543894,
+            "record_gated_delay": 2684
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 541484,
+            "commit": 543895,
+            "record_gated_delay": 2411
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 545000,
+            "commit": 547680,
+            "record_gated_delay": 2680
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 545282,
+            "commit": 547681,
+            "record_gated_delay": 2399
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 548102,
+            "commit": 548946,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2763,
+          2616,
+          2249,
+          2019,
+          1655,
+          1543,
+          799,
+          878,
+          2758,
+          2613,
+          2044,
+          1821,
+          1429,
+          1218,
+          774,
+          666,
+          843
+        ]
+      },
+      {
+        "token": "73",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 103076,
+          "mean": 11.525886167952589,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 4937,
+          "full_pct": 55.20518841552052,
+          "utilization_pct": 72.03678854970367
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 2431,
+          "CoeffDrain": 14063,
+          "descriptor": 312,
+          "record": 86270
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 1715,
+            "mean": 0.17012201170518798,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 742,
+            "full_pct": 7.360380914591806,
+            "utilization_pct": 8.506100585259398
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 3404,
+            "mean": 0.3376649141950203,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1590,
+            "full_pct": 15.772244816982441,
+            "utilization_pct": 16.883245709751016
+          },
+          "request_window": {
+            "slot_cycles": 48253,
+            "mean": 4.786529114175181,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 4209,
+            "full_pct": 41.751810336276165,
+            "utilization_pct": 59.831613927189764
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 565373,
+            "commit": 568054,
+            "record_gated_delay": 2681
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 565647,
+            "commit": 568055,
+            "record_gated_delay": 2408
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 569160,
+            "commit": 571840,
+            "record_gated_delay": 2680
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 569442,
+            "commit": 571841,
+            "record_gated_delay": 2399
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 572262,
+            "commit": 573106,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2760,
+          2614,
+          2245,
+          2018,
+          1657,
+          1542,
+          800,
+          879,
+          2758,
+          2613,
+          2044,
+          1821,
+          1429,
+          1218,
+          774,
+          666,
+          843
+        ]
+      },
+      {
+        "token": "91",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 100635,
+          "mean": 11.378900949796472,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 4732,
+          "full_pct": 53.5052012663953,
+          "utilization_pct": 71.11813093622796
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 2431,
+          "CoeffDrain": 14063,
+          "descriptor": 418,
+          "record": 83723
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 1715,
+            "mean": 0.1718092566619916,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 742,
+            "full_pct": 7.433380084151473,
+            "utilization_pct": 8.59046283309958
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 3404,
+            "mean": 0.34101382488479265,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1590,
+            "full_pct": 15.928671608896012,
+            "utilization_pct": 17.05069124423963
+          },
+          "request_window": {
+            "slot_cycles": 47332,
+            "mean": 4.741735123221799,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 4098,
+            "full_pct": 41.05389701462633,
+            "utilization_pct": 59.27168904027249
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 589067,
+            "commit": 591647,
+            "record_gated_delay": 2580
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 589341,
+            "commit": 591648,
+            "record_gated_delay": 2307
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 592753,
+            "commit": 595433,
+            "record_gated_delay": 2680
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 593035,
+            "commit": 595434,
+            "record_gated_delay": 2399
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 595855,
+            "commit": 596699,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2659,
+          2514,
+          2148,
+          1814,
+          1553,
+          1335,
+          902,
+          669,
+          2758,
+          2613,
+          2044,
+          1821,
+          1429,
+          1218,
+          774,
+          666,
+          843
+        ]
+      },
+      {
+        "token": "109",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 103270,
+          "mean": 11.413572060123784,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 4841,
+          "full_pct": 53.50353669319187,
+          "utilization_pct": 71.33482537577365
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 2431,
+          "CoeffDrain": 14063,
+          "descriptor": 312,
+          "record": 86464
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 1715,
+            "mean": 0.16836834871392106,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 742,
+            "full_pct": 7.284508148439034,
+            "utilization_pct": 8.418417435696053
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 3404,
+            "mean": 0.3341841743569605,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 1590,
+            "full_pct": 15.609660318083645,
+            "utilization_pct": 16.70920871784803
+          },
+          "request_window": {
+            "slot_cycles": 48179,
+            "mean": 4.729923424307874,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 4209,
+            "full_pct": 41.32142155900255,
+            "utilization_pct": 59.12404280384842
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 612448,
+            "commit": 615234,
+            "record_gated_delay": 2786
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 612722,
+            "commit": 615235,
+            "record_gated_delay": 2513
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 616340,
+            "commit": 619020,
+            "record_gated_delay": 2680
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 616622,
+            "commit": 619021,
+            "record_gated_delay": 2399
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 619442,
+            "commit": 620286,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2865,
+          2727,
+          2252,
+          1919,
+          1661,
+          1338,
+          800,
+          879,
+          2758,
+          2613,
+          2044,
+          1821,
+          1429,
+          1218,
+          774,
+          666,
+          843
+        ]
+      }
+    ],
+    "ordered_child_column_issue_gaps": {
+      "7": 448
+    },
+    "handoffs": [
+      {
+        "cell": 0,
+        "cycle": 287179
+      },
+      {
+        "cell": 1,
+        "cycle": 287219
+      },
+      {
+        "cell": 2,
+        "cycle": 287258
+      },
+      {
+        "cell": 3,
+        "cycle": 287297
+      },
+      {
+        "cell": 4,
+        "cycle": 287336
+      },
+      {
+        "cell": 5,
+        "cycle": 287375
+      },
+      {
+        "cell": 6,
+        "cycle": 287414
+      },
+      {
+        "cell": 7,
+        "cycle": 287453
+      },
+      {
+        "cell": 8,
+        "cycle": 291693
+      },
+      {
+        "cell": 9,
+        "cycle": 291732
+      },
+      {
+        "cell": 10,
+        "cycle": 291771
+      },
+      {
+        "cell": 11,
+        "cycle": 291810
+      },
+      {
+        "cell": 12,
+        "cycle": 291849
+      },
+      {
+        "cell": 13,
+        "cycle": 291888
+      },
+      {
+        "cell": 14,
+        "cycle": 291927
+      },
+      {
+        "cell": 15,
+        "cycle": 291966
+      },
+      {
+        "cell": 16,
+        "cycle": 295136
+      },
+      {
+        "cell": 0,
+        "cycle": 492511
+      },
+      {
+        "cell": 1,
+        "cycle": 492551
+      },
+      {
+        "cell": 2,
+        "cycle": 492590
+      },
+      {
+        "cell": 3,
+        "cycle": 492629
+      },
+      {
+        "cell": 4,
+        "cycle": 492668
+      },
+      {
+        "cell": 5,
+        "cycle": 492707
+      },
+      {
+        "cell": 6,
+        "cycle": 492746
+      },
+      {
+        "cell": 7,
+        "cycle": 492785
+      },
+      {
+        "cell": 8,
+        "cycle": 496203
+      },
+      {
+        "cell": 9,
+        "cycle": 496242
+      },
+      {
+        "cell": 10,
+        "cycle": 496281
+      },
+      {
+        "cell": 11,
+        "cycle": 496320
+      },
+      {
+        "cell": 12,
+        "cycle": 496359
+      },
+      {
+        "cell": 13,
+        "cycle": 496398
+      },
+      {
+        "cell": 14,
+        "cycle": 496437
+      },
+      {
+        "cell": 15,
+        "cycle": 496476
+      },
+      {
+        "cell": 16,
+        "cycle": 499384
+      },
+      {
+        "cell": 0,
+        "cycle": 517288
+      },
+      {
+        "cell": 1,
+        "cycle": 517328
+      },
+      {
+        "cell": 2,
+        "cycle": 517367
+      },
+      {
+        "cell": 3,
+        "cycle": 517406
+      },
+      {
+        "cell": 4,
+        "cycle": 517445
+      },
+      {
+        "cell": 5,
+        "cycle": 517484
+      },
+      {
+        "cell": 6,
+        "cycle": 517523
+      },
+      {
+        "cell": 7,
+        "cycle": 517562
+      },
+      {
+        "cell": 8,
+        "cycle": 520773
+      },
+      {
+        "cell": 9,
+        "cycle": 520812
+      },
+      {
+        "cell": 10,
+        "cycle": 520851
+      },
+      {
+        "cell": 11,
+        "cycle": 520890
+      },
+      {
+        "cell": 12,
+        "cycle": 520929
+      },
+      {
+        "cell": 13,
+        "cycle": 520968
+      },
+      {
+        "cell": 14,
+        "cycle": 521007
+      },
+      {
+        "cell": 15,
+        "cycle": 521046
+      },
+      {
+        "cell": 16,
+        "cycle": 523954
+      },
+      {
+        "cell": 0,
+        "cycle": 541023
+      },
+      {
+        "cell": 1,
+        "cycle": 541063
+      },
+      {
+        "cell": 2,
+        "cycle": 541102
+      },
+      {
+        "cell": 3,
+        "cycle": 541141
+      },
+      {
+        "cell": 4,
+        "cycle": 541180
+      },
+      {
+        "cell": 5,
+        "cycle": 541219
+      },
+      {
+        "cell": 6,
+        "cycle": 541258
+      },
+      {
+        "cell": 7,
+        "cycle": 541297
+      },
+      {
+        "cell": 8,
+        "cycle": 544814
+      },
+      {
+        "cell": 9,
+        "cycle": 544853
+      },
+      {
+        "cell": 10,
+        "cycle": 544892
+      },
+      {
+        "cell": 11,
+        "cycle": 544931
+      },
+      {
+        "cell": 12,
+        "cycle": 544970
+      },
+      {
+        "cell": 13,
+        "cycle": 545009
+      },
+      {
+        "cell": 14,
+        "cycle": 545048
+      },
+      {
+        "cell": 15,
+        "cycle": 545087
+      },
+      {
+        "cell": 16,
+        "cycle": 547995
+      },
+      {
+        "cell": 0,
+        "cycle": 565186
+      },
+      {
+        "cell": 1,
+        "cycle": 565226
+      },
+      {
+        "cell": 2,
+        "cycle": 565265
+      },
+      {
+        "cell": 3,
+        "cycle": 565304
+      },
+      {
+        "cell": 4,
+        "cycle": 565343
+      },
+      {
+        "cell": 5,
+        "cycle": 565382
+      },
+      {
+        "cell": 6,
+        "cycle": 565421
+      },
+      {
+        "cell": 7,
+        "cycle": 565460
+      },
+      {
+        "cell": 8,
+        "cycle": 568974
+      },
+      {
+        "cell": 9,
+        "cycle": 569013
+      },
+      {
+        "cell": 10,
+        "cycle": 569052
+      },
+      {
+        "cell": 11,
+        "cycle": 569091
+      },
+      {
+        "cell": 12,
+        "cycle": 569130
+      },
+      {
+        "cell": 13,
+        "cycle": 569169
+      },
+      {
+        "cell": 14,
+        "cycle": 569208
+      },
+      {
+        "cell": 15,
+        "cycle": 569247
+      },
+      {
+        "cell": 16,
+        "cycle": 572155
+      },
+      {
+        "cell": 0,
+        "cycle": 588880
+      },
+      {
+        "cell": 1,
+        "cycle": 588920
+      },
+      {
+        "cell": 2,
+        "cycle": 588959
+      },
+      {
+        "cell": 3,
+        "cycle": 588998
+      },
+      {
+        "cell": 4,
+        "cycle": 589037
+      },
+      {
+        "cell": 5,
+        "cycle": 589076
+      },
+      {
+        "cell": 6,
+        "cycle": 589115
+      },
+      {
+        "cell": 7,
+        "cycle": 589154
+      },
+      {
+        "cell": 8,
+        "cycle": 592567
+      },
+      {
+        "cell": 9,
+        "cycle": 592606
+      },
+      {
+        "cell": 10,
+        "cycle": 592645
+      },
+      {
+        "cell": 11,
+        "cycle": 592684
+      },
+      {
+        "cell": 12,
+        "cycle": 592723
+      },
+      {
+        "cell": 13,
+        "cycle": 592762
+      },
+      {
+        "cell": 14,
+        "cycle": 592801
+      },
+      {
+        "cell": 15,
+        "cycle": 592840
+      },
+      {
+        "cell": 16,
+        "cycle": 595748
+      },
+      {
+        "cell": 0,
+        "cycle": 612261
+      },
+      {
+        "cell": 1,
+        "cycle": 612301
+      },
+      {
+        "cell": 2,
+        "cycle": 612340
+      },
+      {
+        "cell": 3,
+        "cycle": 612379
+      },
+      {
+        "cell": 4,
+        "cycle": 612418
+      },
+      {
+        "cell": 5,
+        "cycle": 612457
+      },
+      {
+        "cell": 6,
+        "cycle": 612496
+      },
+      {
+        "cell": 7,
+        "cycle": 612535
+      },
+      {
+        "cell": 8,
+        "cycle": 616154
+      },
+      {
+        "cell": 9,
+        "cycle": 616193
+      },
+      {
+        "cell": 10,
+        "cycle": 616232
+      },
+      {
+        "cell": 11,
+        "cycle": 616271
+      },
+      {
+        "cell": 12,
+        "cycle": 616310
+      },
+      {
+        "cell": 13,
+        "cycle": 616349
+      },
+      {
+        "cell": 14,
+        "cycle": 616388
+      },
+      {
+        "cell": 15,
+        "cycle": 616427
+      },
+      {
+        "cell": 16,
+        "cycle": 619335
+      }
+    ],
+    "child_lifetimes": [
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 0,
+        "INPUT_START": 285964,
+        "INPUT_SLOT_RELEASE": 286365,
+        "LU_ISSUE": 286365,
+        "LU_COMPLETE": 286760,
+        "COEFF3_ISSUE": 286861,
+        "COEFF3_COMPLETE": 287217,
+        "REQUEST_COMPLETE": 287327,
+        "REQUEST_AUTO_RETIRE": 289228
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 1,
+        "INPUT_START": 285918,
+        "INPUT_SLOT_RELEASE": 286313,
+        "LU_ISSUE": 286313,
+        "COEFF3_ISSUE": 286601,
+        "LU_COMPLETE": 286708,
+        "COEFF3_COMPLETE": 287084,
+        "REQUEST_COMPLETE": 287327,
+        "REQUEST_AUTO_RETIRE": 289020
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 2,
+        "INPUT_START": 285526,
+        "INPUT_SLOT_RELEASE": 285963,
+        "LU_ISSUE": 285963,
+        "COEFF3_ISSUE": 286325,
+        "LU_COMPLETE": 286364,
+        "COEFF3_COMPLETE": 286860,
+        "REQUEST_COMPLETE": 287366,
+        "REQUEST_AUTO_RETIRE": 288906
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 3,
+        "INPUT_START": 285522,
+        "INPUT_SLOT_RELEASE": 285917,
+        "LU_ISSUE": 285917,
+        "COEFF3_ISSUE": 286065,
+        "LU_COMPLETE": 286312,
+        "COEFF3_COMPLETE": 286600,
+        "REQUEST_COMPLETE": 287366,
+        "REQUEST_AUTO_RETIRE": 288723
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 4,
+        "INPUT_START": 285130,
+        "INPUT_SLOT_RELEASE": 285525,
+        "LU_ISSUE": 285525,
+        "COEFF3_ISSUE": 285793,
+        "LU_COMPLETE": 285920,
+        "COEFF3_COMPLETE": 286324,
+        "REQUEST_COMPLETE": 287554,
+        "REQUEST_AUTO_RETIRE": 288617
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 5,
+        "INPUT_START": 285124,
+        "INPUT_SLOT_RELEASE": 285521,
+        "LU_ISSUE": 285521,
+        "COEFF3_ISSUE": 285673,
+        "LU_COMPLETE": 285916,
+        "COEFF3_COMPLETE": 286064,
+        "REQUEST_COMPLETE": 287554,
+        "REQUEST_AUTO_RETIRE": 288445
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 6,
+        "INPUT_START": 284802,
+        "INPUT_SLOT_RELEASE": 285129,
+        "LU_ISSUE": 285129,
+        "COEFF3_ISSUE": 285136,
+        "LU_COMPLETE": 285524,
+        "COEFF3_COMPLETE": 285792,
+        "REQUEST_COMPLETE": 287556,
+        "REQUEST_AUTO_RETIRE": 288125
+      },
+      {
+        "REQUEST_ALLOC": 284802,
+        "cell": 7,
+        "INPUT_START": 284802,
+        "INPUT_SLOT_RELEASE": 285123,
+        "LU_ISSUE": 285123,
+        "COEFF3_ISSUE": 285130,
+        "LU_COMPLETE": 285520,
+        "COEFF3_COMPLETE": 285672,
+        "REQUEST_COMPLETE": 287664,
+        "REQUEST_AUTO_RETIRE": 288166
+      },
+      {
+        "REQUEST_ALLOC": 289229,
+        "cell": 8,
+        "INPUT_START": 290391,
+        "INPUT_SLOT_RELEASE": 290786,
+        "LU_ISSUE": 290786,
+        "LU_COMPLETE": 291181,
+        "COEFF3_ISSUE": 291302,
+        "COEFF3_COMPLETE": 291747,
+        "REQUEST_COMPLETE": 291858,
+        "REQUEST_AUTO_RETIRE": 294496
+      },
+      {
+        "REQUEST_ALLOC": 289229,
+        "cell": 9,
+        "INPUT_START": 290352,
+        "INPUT_SLOT_RELEASE": 290750,
+        "LU_ISSUE": 290750,
+        "COEFF3_ISSUE": 291054,
+        "LU_COMPLETE": 291145,
+        "COEFF3_COMPLETE": 291529,
+        "REQUEST_COMPLETE": 291840,
+        "REQUEST_AUTO_RETIRE": 294277
+      },
+      {
+        "REQUEST_ALLOC": 289229,
+        "cell": 10,
+        "INPUT_START": 289230,
+        "INPUT_SLOT_RELEASE": 289563,
+        "LU_ISSUE": 289563,
+        "COEFF3_ISSUE": 289570,
+        "LU_COMPLETE": 289958,
+        "COEFF3_COMPLETE": 290418,
+        "REQUEST_COMPLETE": 291879,
+        "REQUEST_AUTO_RETIRE": 294057
+      },
+      {
+        "REQUEST_ALLOC": 289229,
+        "cell": 11,
+        "INPUT_START": 289230,
+        "INPUT_SLOT_RELEASE": 289557,
+        "LU_ISSUE": 289557,
+        "COEFF3_ISSUE": 289564,
+        "LU_COMPLETE": 289954,
+        "COEFF3_COMPLETE": 290106,
+        "REQUEST_COMPLETE": 291879,
+        "REQUEST_AUTO_RETIRE": 293842
+      },
+      {
+        "REQUEST_ALLOC": 289230,
+        "cell": 12,
+        "INPUT_START": 289960,
+        "INPUT_SLOT_RELEASE": 290390,
+        "LU_ISSUE": 290390,
+        "COEFF3_ISSUE": 290778,
+        "LU_COMPLETE": 290785,
+        "COEFF3_COMPLETE": 291301,
+        "REQUEST_COMPLETE": 291963,
+        "REQUEST_AUTO_RETIRE": 293415
+      },
+      {
+        "REQUEST_ALLOC": 289230,
+        "cell": 13,
+        "INPUT_START": 289956,
+        "INPUT_SLOT_RELEASE": 290351,
+        "LU_ISSUE": 290351,
+        "COEFF3_ISSUE": 290487,
+        "LU_COMPLETE": 290749,
+        "COEFF3_COMPLETE": 291053,
+        "REQUEST_COMPLETE": 292009,
+        "REQUEST_AUTO_RETIRE": 293302
+      },
+      {
+        "REQUEST_ALLOC": 289230,
+        "cell": 14,
+        "INPUT_START": 289564,
+        "INPUT_SLOT_RELEASE": 289959,
+        "LU_ISSUE": 289959,
+        "LU_COMPLETE": 290354,
+        "COEFF3_ISSUE": 290419,
+        "COEFF3_COMPLETE": 290777,
+        "REQUEST_COMPLETE": 292066,
+        "REQUEST_AUTO_RETIRE": 292860
+      },
+      {
+        "REQUEST_ALLOC": 289230,
+        "cell": 15,
+        "INPUT_START": 289558,
+        "INPUT_SLOT_RELEASE": 289955,
+        "LU_ISSUE": 289955,
+        "COEFF3_ISSUE": 290107,
+        "LU_COMPLETE": 290350,
+        "COEFF3_COMPLETE": 290486,
+        "REQUEST_COMPLETE": 292115,
+        "REQUEST_AUTO_RETIRE": 292865
+      },
+      {
+        "REQUEST_ALLOC": 294497,
+        "cell": 16,
+        "INPUT_START": 294498,
+        "INPUT_SLOT_RELEASE": 294623,
+        "LU_ISSUE": 294623,
+        "COEFF3_ISSUE": 294630,
+        "LU_COMPLETE": 295012,
+        "COEFF3_COMPLETE": 295112,
+        "REQUEST_COMPLETE": 295243,
+        "REQUEST_AUTO_RETIRE": 296086
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 0,
+        "INPUT_START": 491923,
+        "INPUT_SLOT_RELEASE": 492030,
+        "COEFF3_ISSUE": 492310,
+        "COEFF3_COMPLETE": 492510,
+        "REQUEST_COMPLETE": 492618,
+        "REQUEST_AUTO_RETIRE": 495282
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 1,
+        "INPUT_START": 491921,
+        "INPUT_SLOT_RELEASE": 491972,
+        "COEFF3_ISSUE": 492306,
+        "COEFF3_COMPLETE": 492506,
+        "REQUEST_COMPLETE": 492659,
+        "REQUEST_AUTO_RETIRE": 495176
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 2,
+        "INPUT_START": 491813,
+        "INPUT_SLOT_RELEASE": 491922,
+        "COEFF3_ISSUE": 492109,
+        "COEFF3_COMPLETE": 492309,
+        "REQUEST_COMPLETE": 492698,
+        "REQUEST_AUTO_RETIRE": 494943
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 3,
+        "INPUT_START": 491813,
+        "INPUT_SLOT_RELEASE": 491920,
+        "COEFF3_ISSUE": 492105,
+        "COEFF3_COMPLETE": 492305,
+        "REQUEST_COMPLETE": 492698,
+        "REQUEST_AUTO_RETIRE": 494616
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 4,
+        "INPUT_START": 491706,
+        "INPUT_SLOT_RELEASE": 491812,
+        "COEFF3_ISSUE": 491908,
+        "COEFF3_COMPLETE": 492108,
+        "REQUEST_COMPLETE": 492843,
+        "REQUEST_AUTO_RETIRE": 494400
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 5,
+        "INPUT_START": 491704,
+        "INPUT_SLOT_RELEASE": 491812,
+        "COEFF3_ISSUE": 491904,
+        "COEFF3_COMPLETE": 492104,
+        "REQUEST_COMPLETE": 492844,
+        "REQUEST_AUTO_RETIRE": 494285
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 6,
+        "INPUT_START": 491596,
+        "INPUT_SLOT_RELEASE": 491703,
+        "COEFF3_ISSUE": 491703,
+        "COEFF3_COMPLETE": 491903,
+        "REQUEST_COMPLETE": 492952,
+        "REQUEST_AUTO_RETIRE": 493752
+      },
+      {
+        "REQUEST_ALLOC": 491596,
+        "cell": 7,
+        "INPUT_START": 491596,
+        "INPUT_SLOT_RELEASE": 491705,
+        "COEFF3_ISSUE": 491705,
+        "COEFF3_COMPLETE": 491907,
+        "REQUEST_COMPLETE": 492972,
+        "REQUEST_AUTO_RETIRE": 493851
+      },
+      {
+        "REQUEST_ALLOC": 495283,
+        "cell": 8,
+        "INPUT_START": 495609,
+        "INPUT_SLOT_RELEASE": 495716,
+        "COEFF3_ISSUE": 495998,
+        "COEFF3_COMPLETE": 496198,
+        "REQUEST_COMPLETE": 496310,
+        "REQUEST_AUTO_RETIRE": 499068
+      },
+      {
+        "REQUEST_ALLOC": 495283,
+        "cell": 9,
+        "INPUT_START": 495609,
+        "INPUT_SLOT_RELEASE": 495660,
+        "COEFF3_ISSUE": 495994,
+        "COEFF3_COMPLETE": 496194,
+        "REQUEST_COMPLETE": 496350,
+        "REQUEST_AUTO_RETIRE": 498963
+      },
+      {
+        "REQUEST_ALLOC": 495283,
+        "cell": 10,
+        "INPUT_START": 495284,
+        "INPUT_SLOT_RELEASE": 495393,
+        "COEFF3_ISSUE": 495393,
+        "COEFF3_COMPLETE": 495595,
+        "REQUEST_COMPLETE": 496389,
+        "REQUEST_AUTO_RETIRE": 498433
+      },
+      {
+        "REQUEST_ALLOC": 495283,
+        "cell": 11,
+        "INPUT_START": 495284,
+        "INPUT_SLOT_RELEASE": 495391,
+        "COEFF3_ISSUE": 495391,
+        "COEFF3_COMPLETE": 495591,
+        "REQUEST_COMPLETE": 496389,
+        "REQUEST_AUTO_RETIRE": 498210
+      },
+      {
+        "REQUEST_ALLOC": 495284,
+        "cell": 12,
+        "INPUT_START": 495503,
+        "INPUT_SLOT_RELEASE": 495608,
+        "COEFF3_ISSUE": 495797,
+        "COEFF3_COMPLETE": 495997,
+        "REQUEST_COMPLETE": 496562,
+        "REQUEST_AUTO_RETIRE": 497991
+      },
+      {
+        "REQUEST_ALLOC": 495284,
+        "cell": 13,
+        "INPUT_START": 495501,
+        "INPUT_SLOT_RELEASE": 495608,
+        "COEFF3_ISSUE": 495793,
+        "COEFF3_COMPLETE": 495993,
+        "REQUEST_COMPLETE": 496562,
+        "REQUEST_AUTO_RETIRE": 497780
+      },
+      {
+        "REQUEST_ALLOC": 495284,
+        "cell": 14,
+        "INPUT_START": 495394,
+        "INPUT_SLOT_RELEASE": 495500,
+        "COEFF3_ISSUE": 495596,
+        "COEFF3_COMPLETE": 495796,
+        "REQUEST_COMPLETE": 496669,
+        "REQUEST_AUTO_RETIRE": 497443
+      },
+      {
+        "REQUEST_ALLOC": 495284,
+        "cell": 15,
+        "INPUT_START": 495392,
+        "INPUT_SLOT_RELEASE": 495502,
+        "COEFF3_ISSUE": 495592,
+        "COEFF3_COMPLETE": 495792,
+        "REQUEST_COMPLETE": 496671,
+        "REQUEST_AUTO_RETIRE": 497337
+      },
+      {
+        "REQUEST_ALLOC": 499069,
+        "cell": 16,
+        "INPUT_START": 499070,
+        "INPUT_SLOT_RELEASE": 499179,
+        "COEFF3_ISSUE": 499179,
+        "COEFF3_COMPLETE": 499379,
+        "REQUEST_COMPLETE": 499491,
+        "REQUEST_AUTO_RETIRE": 500334
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 0,
+        "INPUT_START": 516700,
+        "INPUT_SLOT_RELEASE": 516807,
+        "COEFF3_ISSUE": 517087,
+        "COEFF3_COMPLETE": 517287,
+        "REQUEST_COMPLETE": 517395,
+        "REQUEST_AUTO_RETIRE": 519852
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 1,
+        "INPUT_START": 516698,
+        "INPUT_SLOT_RELEASE": 516749,
+        "COEFF3_ISSUE": 517083,
+        "COEFF3_COMPLETE": 517283,
+        "REQUEST_COMPLETE": 517436,
+        "REQUEST_AUTO_RETIRE": 519744
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 2,
+        "INPUT_START": 516590,
+        "INPUT_SLOT_RELEASE": 516699,
+        "COEFF3_ISSUE": 516886,
+        "COEFF3_COMPLETE": 517086,
+        "REQUEST_COMPLETE": 517475,
+        "REQUEST_AUTO_RETIRE": 519522
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 3,
+        "INPUT_START": 516590,
+        "INPUT_SLOT_RELEASE": 516697,
+        "COEFF3_ISSUE": 516882,
+        "COEFF3_COMPLETE": 517082,
+        "REQUEST_COMPLETE": 517475,
+        "REQUEST_AUTO_RETIRE": 519186
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 4,
+        "INPUT_START": 516483,
+        "INPUT_SLOT_RELEASE": 516589,
+        "COEFF3_ISSUE": 516685,
+        "COEFF3_COMPLETE": 516885,
+        "REQUEST_COMPLETE": 517620,
+        "REQUEST_AUTO_RETIRE": 519070
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 5,
+        "INPUT_START": 516481,
+        "INPUT_SLOT_RELEASE": 516589,
+        "COEFF3_ISSUE": 516681,
+        "COEFF3_COMPLETE": 516881,
+        "REQUEST_COMPLETE": 517620,
+        "REQUEST_AUTO_RETIRE": 518851
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 6,
+        "INPUT_START": 516373,
+        "INPUT_SLOT_RELEASE": 516480,
+        "COEFF3_ISSUE": 516480,
+        "COEFF3_COMPLETE": 516680,
+        "REQUEST_COMPLETE": 517727,
+        "REQUEST_AUTO_RETIRE": 518521
+      },
+      {
+        "REQUEST_ALLOC": 516373,
+        "cell": 7,
+        "INPUT_START": 516373,
+        "INPUT_SLOT_RELEASE": 516482,
+        "COEFF3_ISSUE": 516482,
+        "COEFF3_COMPLETE": 516684,
+        "REQUEST_COMPLETE": 517731,
+        "REQUEST_AUTO_RETIRE": 518513
+      },
+      {
+        "REQUEST_ALLOC": 519853,
+        "cell": 8,
+        "INPUT_START": 520179,
+        "INPUT_SLOT_RELEASE": 520286,
+        "COEFF3_ISSUE": 520568,
+        "COEFF3_COMPLETE": 520768,
+        "REQUEST_COMPLETE": 520880,
+        "REQUEST_AUTO_RETIRE": 523638
+      },
+      {
+        "REQUEST_ALLOC": 519853,
+        "cell": 9,
+        "INPUT_START": 520179,
+        "INPUT_SLOT_RELEASE": 520230,
+        "COEFF3_ISSUE": 520564,
+        "COEFF3_COMPLETE": 520764,
+        "REQUEST_COMPLETE": 520920,
+        "REQUEST_AUTO_RETIRE": 523533
+      },
+      {
+        "REQUEST_ALLOC": 519853,
+        "cell": 10,
+        "INPUT_START": 519854,
+        "INPUT_SLOT_RELEASE": 519963,
+        "COEFF3_ISSUE": 519963,
+        "COEFF3_COMPLETE": 520165,
+        "REQUEST_COMPLETE": 520959,
+        "REQUEST_AUTO_RETIRE": 523003
+      },
+      {
+        "REQUEST_ALLOC": 519853,
+        "cell": 11,
+        "INPUT_START": 519854,
+        "INPUT_SLOT_RELEASE": 519961,
+        "COEFF3_ISSUE": 519961,
+        "COEFF3_COMPLETE": 520161,
+        "REQUEST_COMPLETE": 520959,
+        "REQUEST_AUTO_RETIRE": 522780
+      },
+      {
+        "REQUEST_ALLOC": 519854,
+        "cell": 12,
+        "INPUT_START": 520073,
+        "INPUT_SLOT_RELEASE": 520178,
+        "COEFF3_ISSUE": 520367,
+        "COEFF3_COMPLETE": 520567,
+        "REQUEST_COMPLETE": 521132,
+        "REQUEST_AUTO_RETIRE": 522561
+      },
+      {
+        "REQUEST_ALLOC": 519854,
+        "cell": 13,
+        "INPUT_START": 520071,
+        "INPUT_SLOT_RELEASE": 520178,
+        "COEFF3_ISSUE": 520363,
+        "COEFF3_COMPLETE": 520563,
+        "REQUEST_COMPLETE": 521132,
+        "REQUEST_AUTO_RETIRE": 522350
+      },
+      {
+        "REQUEST_ALLOC": 519854,
+        "cell": 14,
+        "INPUT_START": 519964,
+        "INPUT_SLOT_RELEASE": 520070,
+        "COEFF3_ISSUE": 520166,
+        "COEFF3_COMPLETE": 520366,
+        "REQUEST_COMPLETE": 521239,
+        "REQUEST_AUTO_RETIRE": 522013
+      },
+      {
+        "REQUEST_ALLOC": 519854,
+        "cell": 15,
+        "INPUT_START": 519962,
+        "INPUT_SLOT_RELEASE": 520072,
+        "COEFF3_ISSUE": 520162,
+        "COEFF3_COMPLETE": 520362,
+        "REQUEST_COMPLETE": 521241,
+        "REQUEST_AUTO_RETIRE": 521907
+      },
+      {
+        "REQUEST_ALLOC": 523639,
+        "cell": 16,
+        "INPUT_START": 523640,
+        "INPUT_SLOT_RELEASE": 523749,
+        "COEFF3_ISSUE": 523749,
+        "COEFF3_COMPLETE": 523949,
+        "REQUEST_COMPLETE": 524061,
+        "REQUEST_AUTO_RETIRE": 524904
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 0,
+        "INPUT_START": 540435,
+        "INPUT_SLOT_RELEASE": 540542,
+        "COEFF3_ISSUE": 540822,
+        "COEFF3_COMPLETE": 541022,
+        "REQUEST_COMPLETE": 541130,
+        "REQUEST_AUTO_RETIRE": 543893
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 1,
+        "INPUT_START": 540433,
+        "INPUT_SLOT_RELEASE": 540484,
+        "COEFF3_ISSUE": 540818,
+        "COEFF3_COMPLETE": 541018,
+        "REQUEST_COMPLETE": 541171,
+        "REQUEST_AUTO_RETIRE": 543787
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 2,
+        "INPUT_START": 540325,
+        "INPUT_SLOT_RELEASE": 540434,
+        "COEFF3_ISSUE": 540621,
+        "COEFF3_COMPLETE": 540821,
+        "REQUEST_COMPLETE": 541210,
+        "REQUEST_AUTO_RETIRE": 543459
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 3,
+        "INPUT_START": 540325,
+        "INPUT_SLOT_RELEASE": 540432,
+        "COEFF3_ISSUE": 540617,
+        "COEFF3_COMPLETE": 540817,
+        "REQUEST_COMPLETE": 541210,
+        "REQUEST_AUTO_RETIRE": 543229
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 4,
+        "INPUT_START": 540218,
+        "INPUT_SLOT_RELEASE": 540324,
+        "COEFF3_ISSUE": 540420,
+        "COEFF3_COMPLETE": 540620,
+        "REQUEST_COMPLETE": 541355,
+        "REQUEST_AUTO_RETIRE": 543010
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 5,
+        "INPUT_START": 540216,
+        "INPUT_SLOT_RELEASE": 540324,
+        "COEFF3_ISSUE": 540416,
+        "COEFF3_COMPLETE": 540616,
+        "REQUEST_COMPLETE": 541356,
+        "REQUEST_AUTO_RETIRE": 542899
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 6,
+        "INPUT_START": 540108,
+        "INPUT_SLOT_RELEASE": 540215,
+        "COEFF3_ISSUE": 540215,
+        "COEFF3_COMPLETE": 540415,
+        "REQUEST_COMPLETE": 541464,
+        "REQUEST_AUTO_RETIRE": 542263
+      },
+      {
+        "REQUEST_ALLOC": 540108,
+        "cell": 7,
+        "INPUT_START": 540108,
+        "INPUT_SLOT_RELEASE": 540217,
+        "COEFF3_ISSUE": 540217,
+        "COEFF3_COMPLETE": 540419,
+        "REQUEST_COMPLETE": 541484,
+        "REQUEST_AUTO_RETIRE": 542362
+      },
+      {
+        "REQUEST_ALLOC": 543894,
+        "cell": 8,
+        "INPUT_START": 544220,
+        "INPUT_SLOT_RELEASE": 544327,
+        "COEFF3_ISSUE": 544609,
+        "COEFF3_COMPLETE": 544809,
+        "REQUEST_COMPLETE": 544921,
+        "REQUEST_AUTO_RETIRE": 547679
+      },
+      {
+        "REQUEST_ALLOC": 543894,
+        "cell": 9,
+        "INPUT_START": 544220,
+        "INPUT_SLOT_RELEASE": 544271,
+        "COEFF3_ISSUE": 544605,
+        "COEFF3_COMPLETE": 544805,
+        "REQUEST_COMPLETE": 544961,
+        "REQUEST_AUTO_RETIRE": 547574
+      },
+      {
+        "REQUEST_ALLOC": 543894,
+        "cell": 10,
+        "INPUT_START": 543895,
+        "INPUT_SLOT_RELEASE": 544004,
+        "COEFF3_ISSUE": 544004,
+        "COEFF3_COMPLETE": 544206,
+        "REQUEST_COMPLETE": 545000,
+        "REQUEST_AUTO_RETIRE": 547044
+      },
+      {
+        "REQUEST_ALLOC": 543894,
+        "cell": 11,
+        "INPUT_START": 543895,
+        "INPUT_SLOT_RELEASE": 544002,
+        "COEFF3_ISSUE": 544002,
+        "COEFF3_COMPLETE": 544202,
+        "REQUEST_COMPLETE": 545000,
+        "REQUEST_AUTO_RETIRE": 546821
+      },
+      {
+        "REQUEST_ALLOC": 543895,
+        "cell": 12,
+        "INPUT_START": 544114,
+        "INPUT_SLOT_RELEASE": 544219,
+        "COEFF3_ISSUE": 544408,
+        "COEFF3_COMPLETE": 544608,
+        "REQUEST_COMPLETE": 545173,
+        "REQUEST_AUTO_RETIRE": 546602
+      },
+      {
+        "REQUEST_ALLOC": 543895,
+        "cell": 13,
+        "INPUT_START": 544112,
+        "INPUT_SLOT_RELEASE": 544219,
+        "COEFF3_ISSUE": 544404,
+        "COEFF3_COMPLETE": 544604,
+        "REQUEST_COMPLETE": 545173,
+        "REQUEST_AUTO_RETIRE": 546391
+      },
+      {
+        "REQUEST_ALLOC": 543895,
+        "cell": 14,
+        "INPUT_START": 544005,
+        "INPUT_SLOT_RELEASE": 544111,
+        "COEFF3_ISSUE": 544207,
+        "COEFF3_COMPLETE": 544407,
+        "REQUEST_COMPLETE": 545280,
+        "REQUEST_AUTO_RETIRE": 546054
+      },
+      {
+        "REQUEST_ALLOC": 543895,
+        "cell": 15,
+        "INPUT_START": 544003,
+        "INPUT_SLOT_RELEASE": 544113,
+        "COEFF3_ISSUE": 544203,
+        "COEFF3_COMPLETE": 544403,
+        "REQUEST_COMPLETE": 545282,
+        "REQUEST_AUTO_RETIRE": 545948
+      },
+      {
+        "REQUEST_ALLOC": 547680,
+        "cell": 16,
+        "INPUT_START": 547681,
+        "INPUT_SLOT_RELEASE": 547790,
+        "COEFF3_ISSUE": 547790,
+        "COEFF3_COMPLETE": 547990,
+        "REQUEST_COMPLETE": 548102,
+        "REQUEST_AUTO_RETIRE": 548945
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 0,
+        "INPUT_START": 564598,
+        "INPUT_SLOT_RELEASE": 564705,
+        "COEFF3_ISSUE": 564985,
+        "COEFF3_COMPLETE": 565185,
+        "REQUEST_COMPLETE": 565293,
+        "REQUEST_AUTO_RETIRE": 568053
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 1,
+        "INPUT_START": 564596,
+        "INPUT_SLOT_RELEASE": 564647,
+        "COEFF3_ISSUE": 564981,
+        "COEFF3_COMPLETE": 565181,
+        "REQUEST_COMPLETE": 565334,
+        "REQUEST_AUTO_RETIRE": 567948
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 2,
+        "INPUT_START": 564488,
+        "INPUT_SLOT_RELEASE": 564597,
+        "COEFF3_ISSUE": 564784,
+        "COEFF3_COMPLETE": 564984,
+        "REQUEST_COMPLETE": 565373,
+        "REQUEST_AUTO_RETIRE": 567618
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 3,
+        "INPUT_START": 564488,
+        "INPUT_SLOT_RELEASE": 564595,
+        "COEFF3_ISSUE": 564780,
+        "COEFF3_COMPLETE": 564980,
+        "REQUEST_COMPLETE": 565373,
+        "REQUEST_AUTO_RETIRE": 567391
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 4,
+        "INPUT_START": 564381,
+        "INPUT_SLOT_RELEASE": 564487,
+        "COEFF3_ISSUE": 564583,
+        "COEFF3_COMPLETE": 564783,
+        "REQUEST_COMPLETE": 565518,
+        "REQUEST_AUTO_RETIRE": 567175
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 5,
+        "INPUT_START": 564379,
+        "INPUT_SLOT_RELEASE": 564487,
+        "COEFF3_ISSUE": 564579,
+        "COEFF3_COMPLETE": 564779,
+        "REQUEST_COMPLETE": 565519,
+        "REQUEST_AUTO_RETIRE": 567061
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 6,
+        "INPUT_START": 564271,
+        "INPUT_SLOT_RELEASE": 564378,
+        "COEFF3_ISSUE": 564378,
+        "COEFF3_COMPLETE": 564578,
+        "REQUEST_COMPLETE": 565627,
+        "REQUEST_AUTO_RETIRE": 566427
+      },
+      {
+        "REQUEST_ALLOC": 564271,
+        "cell": 7,
+        "INPUT_START": 564271,
+        "INPUT_SLOT_RELEASE": 564380,
+        "COEFF3_ISSUE": 564380,
+        "COEFF3_COMPLETE": 564582,
+        "REQUEST_COMPLETE": 565647,
+        "REQUEST_AUTO_RETIRE": 566526
+      },
+      {
+        "REQUEST_ALLOC": 568054,
+        "cell": 8,
+        "INPUT_START": 568380,
+        "INPUT_SLOT_RELEASE": 568487,
+        "COEFF3_ISSUE": 568769,
+        "COEFF3_COMPLETE": 568969,
+        "REQUEST_COMPLETE": 569081,
+        "REQUEST_AUTO_RETIRE": 571839
+      },
+      {
+        "REQUEST_ALLOC": 568054,
+        "cell": 9,
+        "INPUT_START": 568380,
+        "INPUT_SLOT_RELEASE": 568431,
+        "COEFF3_ISSUE": 568765,
+        "COEFF3_COMPLETE": 568965,
+        "REQUEST_COMPLETE": 569121,
+        "REQUEST_AUTO_RETIRE": 571734
+      },
+      {
+        "REQUEST_ALLOC": 568054,
+        "cell": 10,
+        "INPUT_START": 568055,
+        "INPUT_SLOT_RELEASE": 568164,
+        "COEFF3_ISSUE": 568164,
+        "COEFF3_COMPLETE": 568366,
+        "REQUEST_COMPLETE": 569160,
+        "REQUEST_AUTO_RETIRE": 571204
+      },
+      {
+        "REQUEST_ALLOC": 568054,
+        "cell": 11,
+        "INPUT_START": 568055,
+        "INPUT_SLOT_RELEASE": 568162,
+        "COEFF3_ISSUE": 568162,
+        "COEFF3_COMPLETE": 568362,
+        "REQUEST_COMPLETE": 569160,
+        "REQUEST_AUTO_RETIRE": 570981
+      },
+      {
+        "REQUEST_ALLOC": 568055,
+        "cell": 12,
+        "INPUT_START": 568274,
+        "INPUT_SLOT_RELEASE": 568379,
+        "COEFF3_ISSUE": 568568,
+        "COEFF3_COMPLETE": 568768,
+        "REQUEST_COMPLETE": 569333,
+        "REQUEST_AUTO_RETIRE": 570762
+      },
+      {
+        "REQUEST_ALLOC": 568055,
+        "cell": 13,
+        "INPUT_START": 568272,
+        "INPUT_SLOT_RELEASE": 568379,
+        "COEFF3_ISSUE": 568564,
+        "COEFF3_COMPLETE": 568764,
+        "REQUEST_COMPLETE": 569333,
+        "REQUEST_AUTO_RETIRE": 570551
+      },
+      {
+        "REQUEST_ALLOC": 568055,
+        "cell": 14,
+        "INPUT_START": 568165,
+        "INPUT_SLOT_RELEASE": 568271,
+        "COEFF3_ISSUE": 568367,
+        "COEFF3_COMPLETE": 568567,
+        "REQUEST_COMPLETE": 569440,
+        "REQUEST_AUTO_RETIRE": 570214
+      },
+      {
+        "REQUEST_ALLOC": 568055,
+        "cell": 15,
+        "INPUT_START": 568163,
+        "INPUT_SLOT_RELEASE": 568273,
+        "COEFF3_ISSUE": 568363,
+        "COEFF3_COMPLETE": 568563,
+        "REQUEST_COMPLETE": 569442,
+        "REQUEST_AUTO_RETIRE": 570108
+      },
+      {
+        "REQUEST_ALLOC": 571840,
+        "cell": 16,
+        "INPUT_START": 571841,
+        "INPUT_SLOT_RELEASE": 571950,
+        "COEFF3_ISSUE": 571950,
+        "COEFF3_COMPLETE": 572150,
+        "REQUEST_COMPLETE": 572262,
+        "REQUEST_AUTO_RETIRE": 573105
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 0,
+        "INPUT_START": 588292,
+        "INPUT_SLOT_RELEASE": 588399,
+        "COEFF3_ISSUE": 588679,
+        "COEFF3_COMPLETE": 588879,
+        "REQUEST_COMPLETE": 588987,
+        "REQUEST_AUTO_RETIRE": 591646
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 1,
+        "INPUT_START": 588290,
+        "INPUT_SLOT_RELEASE": 588341,
+        "COEFF3_ISSUE": 588675,
+        "COEFF3_COMPLETE": 588875,
+        "REQUEST_COMPLETE": 589028,
+        "REQUEST_AUTO_RETIRE": 591542
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 2,
+        "INPUT_START": 588182,
+        "INPUT_SLOT_RELEASE": 588291,
+        "COEFF3_ISSUE": 588478,
+        "COEFF3_COMPLETE": 588678,
+        "REQUEST_COMPLETE": 589067,
+        "REQUEST_AUTO_RETIRE": 591215
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 3,
+        "INPUT_START": 588182,
+        "INPUT_SLOT_RELEASE": 588289,
+        "COEFF3_ISSUE": 588474,
+        "COEFF3_COMPLETE": 588674,
+        "REQUEST_COMPLETE": 589067,
+        "REQUEST_AUTO_RETIRE": 590881
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 4,
+        "INPUT_START": 588075,
+        "INPUT_SLOT_RELEASE": 588181,
+        "COEFF3_ISSUE": 588277,
+        "COEFF3_COMPLETE": 588477,
+        "REQUEST_COMPLETE": 589212,
+        "REQUEST_AUTO_RETIRE": 590765
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 5,
+        "INPUT_START": 588073,
+        "INPUT_SLOT_RELEASE": 588181,
+        "COEFF3_ISSUE": 588273,
+        "COEFF3_COMPLETE": 588473,
+        "REQUEST_COMPLETE": 589213,
+        "REQUEST_AUTO_RETIRE": 590548
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 6,
+        "INPUT_START": 587965,
+        "INPUT_SLOT_RELEASE": 588072,
+        "COEFF3_ISSUE": 588072,
+        "COEFF3_COMPLETE": 588272,
+        "REQUEST_COMPLETE": 589321,
+        "REQUEST_AUTO_RETIRE": 590223
+      },
+      {
+        "REQUEST_ALLOC": 587965,
+        "cell": 7,
+        "INPUT_START": 587965,
+        "INPUT_SLOT_RELEASE": 588074,
+        "COEFF3_ISSUE": 588074,
+        "COEFF3_COMPLETE": 588276,
+        "REQUEST_COMPLETE": 589341,
+        "REQUEST_AUTO_RETIRE": 590010
+      },
+      {
+        "REQUEST_ALLOC": 591647,
+        "cell": 8,
+        "INPUT_START": 591973,
+        "INPUT_SLOT_RELEASE": 592080,
+        "COEFF3_ISSUE": 592362,
+        "COEFF3_COMPLETE": 592562,
+        "REQUEST_COMPLETE": 592674,
+        "REQUEST_AUTO_RETIRE": 595432
+      },
+      {
+        "REQUEST_ALLOC": 591647,
+        "cell": 9,
+        "INPUT_START": 591973,
+        "INPUT_SLOT_RELEASE": 592024,
+        "COEFF3_ISSUE": 592358,
+        "COEFF3_COMPLETE": 592558,
+        "REQUEST_COMPLETE": 592714,
+        "REQUEST_AUTO_RETIRE": 595327
+      },
+      {
+        "REQUEST_ALLOC": 591647,
+        "cell": 10,
+        "INPUT_START": 591648,
+        "INPUT_SLOT_RELEASE": 591757,
+        "COEFF3_ISSUE": 591757,
+        "COEFF3_COMPLETE": 591959,
+        "REQUEST_COMPLETE": 592753,
+        "REQUEST_AUTO_RETIRE": 594797
+      },
+      {
+        "REQUEST_ALLOC": 591647,
+        "cell": 11,
+        "INPUT_START": 591648,
+        "INPUT_SLOT_RELEASE": 591755,
+        "COEFF3_ISSUE": 591755,
+        "COEFF3_COMPLETE": 591955,
+        "REQUEST_COMPLETE": 592753,
+        "REQUEST_AUTO_RETIRE": 594574
+      },
+      {
+        "REQUEST_ALLOC": 591648,
+        "cell": 12,
+        "INPUT_START": 591867,
+        "INPUT_SLOT_RELEASE": 591972,
+        "COEFF3_ISSUE": 592161,
+        "COEFF3_COMPLETE": 592361,
+        "REQUEST_COMPLETE": 592926,
+        "REQUEST_AUTO_RETIRE": 594355
+      },
+      {
+        "REQUEST_ALLOC": 591648,
+        "cell": 13,
+        "INPUT_START": 591865,
+        "INPUT_SLOT_RELEASE": 591972,
+        "COEFF3_ISSUE": 592157,
+        "COEFF3_COMPLETE": 592357,
+        "REQUEST_COMPLETE": 592926,
+        "REQUEST_AUTO_RETIRE": 594144
+      },
+      {
+        "REQUEST_ALLOC": 591648,
+        "cell": 14,
+        "INPUT_START": 591758,
+        "INPUT_SLOT_RELEASE": 591864,
+        "COEFF3_ISSUE": 591960,
+        "COEFF3_COMPLETE": 592160,
+        "REQUEST_COMPLETE": 593033,
+        "REQUEST_AUTO_RETIRE": 593807
+      },
+      {
+        "REQUEST_ALLOC": 591648,
+        "cell": 15,
+        "INPUT_START": 591756,
+        "INPUT_SLOT_RELEASE": 591866,
+        "COEFF3_ISSUE": 591956,
+        "COEFF3_COMPLETE": 592156,
+        "REQUEST_COMPLETE": 593035,
+        "REQUEST_AUTO_RETIRE": 593701
+      },
+      {
+        "REQUEST_ALLOC": 595433,
+        "cell": 16,
+        "INPUT_START": 595434,
+        "INPUT_SLOT_RELEASE": 595543,
+        "COEFF3_ISSUE": 595543,
+        "COEFF3_COMPLETE": 595743,
+        "REQUEST_COMPLETE": 595855,
+        "REQUEST_AUTO_RETIRE": 596698
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 0,
+        "INPUT_START": 611673,
+        "INPUT_SLOT_RELEASE": 611780,
+        "COEFF3_ISSUE": 612060,
+        "COEFF3_COMPLETE": 612260,
+        "REQUEST_COMPLETE": 612368,
+        "REQUEST_AUTO_RETIRE": 615233
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 1,
+        "INPUT_START": 611671,
+        "INPUT_SLOT_RELEASE": 611722,
+        "COEFF3_ISSUE": 612056,
+        "COEFF3_COMPLETE": 612256,
+        "REQUEST_COMPLETE": 612409,
+        "REQUEST_AUTO_RETIRE": 615136
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 2,
+        "INPUT_START": 611563,
+        "INPUT_SLOT_RELEASE": 611672,
+        "COEFF3_ISSUE": 611859,
+        "COEFF3_COMPLETE": 612059,
+        "REQUEST_COMPLETE": 612448,
+        "REQUEST_AUTO_RETIRE": 614700
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 3,
+        "INPUT_START": 611563,
+        "INPUT_SLOT_RELEASE": 611670,
+        "COEFF3_ISSUE": 611855,
+        "COEFF3_COMPLETE": 612055,
+        "REQUEST_COMPLETE": 612448,
+        "REQUEST_AUTO_RETIRE": 614367
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 4,
+        "INPUT_START": 611456,
+        "INPUT_SLOT_RELEASE": 611562,
+        "COEFF3_ISSUE": 611658,
+        "COEFF3_COMPLETE": 611858,
+        "REQUEST_COMPLETE": 612593,
+        "REQUEST_AUTO_RETIRE": 614254
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 5,
+        "INPUT_START": 611454,
+        "INPUT_SLOT_RELEASE": 611562,
+        "COEFF3_ISSUE": 611654,
+        "COEFF3_COMPLETE": 611854,
+        "REQUEST_COMPLETE": 612594,
+        "REQUEST_AUTO_RETIRE": 613932
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 6,
+        "INPUT_START": 611346,
+        "INPUT_SLOT_RELEASE": 611453,
+        "COEFF3_ISSUE": 611453,
+        "COEFF3_COMPLETE": 611653,
+        "REQUEST_COMPLETE": 612702,
+        "REQUEST_AUTO_RETIRE": 613502
+      },
+      {
+        "REQUEST_ALLOC": 611346,
+        "cell": 7,
+        "INPUT_START": 611346,
+        "INPUT_SLOT_RELEASE": 611455,
+        "COEFF3_ISSUE": 611455,
+        "COEFF3_COMPLETE": 611657,
+        "REQUEST_COMPLETE": 612722,
+        "REQUEST_AUTO_RETIRE": 613601
+      },
+      {
+        "REQUEST_ALLOC": 615234,
+        "cell": 8,
+        "INPUT_START": 615560,
+        "INPUT_SLOT_RELEASE": 615667,
+        "COEFF3_ISSUE": 615949,
+        "COEFF3_COMPLETE": 616149,
+        "REQUEST_COMPLETE": 616261,
+        "REQUEST_AUTO_RETIRE": 619019
+      },
+      {
+        "REQUEST_ALLOC": 615234,
+        "cell": 9,
+        "INPUT_START": 615560,
+        "INPUT_SLOT_RELEASE": 615611,
+        "COEFF3_ISSUE": 615945,
+        "COEFF3_COMPLETE": 616145,
+        "REQUEST_COMPLETE": 616301,
+        "REQUEST_AUTO_RETIRE": 618914
+      },
+      {
+        "REQUEST_ALLOC": 615234,
+        "cell": 10,
+        "INPUT_START": 615235,
+        "INPUT_SLOT_RELEASE": 615344,
+        "COEFF3_ISSUE": 615344,
+        "COEFF3_COMPLETE": 615546,
+        "REQUEST_COMPLETE": 616340,
+        "REQUEST_AUTO_RETIRE": 618384
+      },
+      {
+        "REQUEST_ALLOC": 615234,
+        "cell": 11,
+        "INPUT_START": 615235,
+        "INPUT_SLOT_RELEASE": 615342,
+        "COEFF3_ISSUE": 615342,
+        "COEFF3_COMPLETE": 615542,
+        "REQUEST_COMPLETE": 616340,
+        "REQUEST_AUTO_RETIRE": 618161
+      },
+      {
+        "REQUEST_ALLOC": 615235,
+        "cell": 12,
+        "INPUT_START": 615454,
+        "INPUT_SLOT_RELEASE": 615559,
+        "COEFF3_ISSUE": 615748,
+        "COEFF3_COMPLETE": 615948,
+        "REQUEST_COMPLETE": 616513,
+        "REQUEST_AUTO_RETIRE": 617942
+      },
+      {
+        "REQUEST_ALLOC": 615235,
+        "cell": 13,
+        "INPUT_START": 615452,
+        "INPUT_SLOT_RELEASE": 615559,
+        "COEFF3_ISSUE": 615744,
+        "COEFF3_COMPLETE": 615944,
+        "REQUEST_COMPLETE": 616513,
+        "REQUEST_AUTO_RETIRE": 617731
+      },
+      {
+        "REQUEST_ALLOC": 615235,
+        "cell": 14,
+        "INPUT_START": 615345,
+        "INPUT_SLOT_RELEASE": 615451,
+        "COEFF3_ISSUE": 615547,
+        "COEFF3_COMPLETE": 615747,
+        "REQUEST_COMPLETE": 616620,
+        "REQUEST_AUTO_RETIRE": 617394
+      },
+      {
+        "REQUEST_ALLOC": 615235,
+        "cell": 15,
+        "INPUT_START": 615343,
+        "INPUT_SLOT_RELEASE": 615453,
+        "COEFF3_ISSUE": 615543,
+        "COEFF3_COMPLETE": 615743,
+        "REQUEST_COMPLETE": 616622,
+        "REQUEST_AUTO_RETIRE": 617288
+      },
+      {
+        "REQUEST_ALLOC": 619020,
+        "cell": 16,
+        "INPUT_START": 619021,
+        "INPUT_SLOT_RELEASE": 619130,
+        "COEFF3_ISSUE": 619130,
+        "COEFF3_COMPLETE": 619330,
+        "REQUEST_COMPLETE": 619442,
+        "REQUEST_AUTO_RETIRE": 620285
+      }
+    ],
+    "divider_issue_gap_histogram": {
+      "4": 1270,
+      "16": 1,
+      "8": 2,
+      "9": 3,
+      "5": 3,
+      "7": 3,
+      "2429": 1,
+      "12": 1,
+      "6": 2,
+      "2967": 1,
+      "14": 1,
+      "47": 1,
+      "21": 1,
+      "60": 1,
+      "20": 1,
+      "59": 1,
+      "44": 1,
+      "196673": 1,
+      "36": 48,
+      "29": 48,
+      "22": 48,
+      "15": 48,
+      "79": 36,
+      "2963": 1,
+      "3063": 6,
+      "40": 6,
+      "33": 6,
+      "26": 6,
+      "19": 6,
+      "17183": 1,
+      "2756": 1,
+      "16348": 1,
+      "3062": 1,
+      "16470": 1,
+      "3059": 1,
+      "16004": 1,
+      "2958": 1,
+      "15792": 1,
+      "3164": 1
+    }
+  },
+  "n17-t4-k7-o16-inverse": {
+    "sweeps": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "forward_dma": {
+          "slot_cycles": 147831,
+          "mean": 10.815055966054576,
+          "peak": 16,
+          "capacity": 16,
+          "full_cycles": 6983,
+          "full_pct": 51.086399882946814,
+          "utilization_pct": 67.5940997878411
+        },
+        "dma_slot_cycles_by_kind": {
+          "CoeffInput": 35485,
+          "CoeffDrain": 24836,
+          "descriptor": 312,
+          "record": 87198
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 6269,
+            "mean": 0.4237242311591754,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3028,
+            "full_pct": 20.466373774923962,
+            "utilization_pct": 21.18621155795877
+          },
+          "lu_contexts": {
+            "slot_cycles": 6751,
+            "mean": 0.45630280500168974,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 3093,
+            "full_pct": 20.905711388982766,
+            "utilization_pct": 22.81514025008449
+          },
+          "solve_contexts": {
+            "slot_cycles": 11119,
+            "mean": 0.7515376816492058,
+            "peak": 2,
+            "capacity": 2,
+            "full_cycles": 5047,
+            "full_pct": 34.112875971612034,
+            "utilization_pct": 37.57688408246029
+          },
+          "request_window": {
+            "slot_cycles": 82008,
+            "mean": 5.542953700574518,
+            "peak": 8,
+            "capacity": 8,
+            "full_cycles": 8461,
+            "full_pct": 57.18823927002366,
+            "utilization_pct": 69.28692125718148
+          }
+        },
+        "tile_commits": [
+          {
+            "first": 0,
+            "data_compute_complete": 284874,
+            "commit": 287713,
+            "record_gated_delay": 2839
+          },
+          {
+            "first": 4,
+            "data_compute_complete": 285190,
+            "commit": 287714,
+            "record_gated_delay": 2524
+          },
+          {
+            "first": 8,
+            "data_compute_complete": 291053,
+            "commit": 293645,
+            "record_gated_delay": 2592
+          },
+          {
+            "first": 12,
+            "data_compute_complete": 291367,
+            "commit": 293646,
+            "record_gated_delay": 2279
+          },
+          {
+            "first": 16,
+            "data_compute_complete": 294414,
+            "commit": 295258,
+            "record_gated_delay": 844
+          }
+        ],
+        "record_retire_waits": [
+          2870,
+          2547,
+          2296,
+          1862,
+          1541,
+          1316,
+          799,
+          773,
+          2626,
+          2319,
+          2063,
+          1839,
+          1334,
+          1213,
+          773,
+          650,
+          843
+        ]
+      },
+      {
+        "token": "19",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 10207,
+          "mean": 1.7938488576449911,
+          "peak": 4,
+          "capacity": 16,
+          "full_cycles": 0,
+          "full_pct": 0.0,
+          "utilization_pct": 11.211555360281196
+        },
+        "dma_slot_cycles_by_kind": {
+          "descriptor": 312,
+          "rhs": 1973,
+          "y": 1866,
+          "ubar": 6056
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "request_window": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 8,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          }
+        },
+        "tile_commits": [],
+        "record_retire_waits": [],
+        "cached_forward_decomposition": {
+          "after_descriptor_cycles": 5583,
+          "transfer_spans": {
+            "rhs": 1476,
+            "y": 1474,
+            "ubar": 1745
+          },
+          "between_rhs_response_and_y_issue": 840,
+          "other_control_gaps": 48,
+          "cells": [
+            {
+              "rhs": [
+                491142,
+                491250
+              ],
+              "y": [
+                491274,
+                491380
+              ],
+              "ubar": [
+                491381,
+                491491
+              ]
+            },
+            {
+              "rhs": [
+                491493,
+                491543
+              ],
+              "y": [
+                491594,
+                491701
+              ],
+              "ubar": [
+                491702,
+                491811
+              ]
+            },
+            {
+              "rhs": [
+                491813,
+                491920
+              ],
+              "y": [
+                491971,
+                492078
+              ],
+              "ubar": [
+                492079,
+                492188
+              ]
+            },
+            {
+              "rhs": [
+                492190,
+                492240
+              ],
+              "y": [
+                492291,
+                492341
+              ],
+              "ubar": [
+                492342,
+                492451
+              ]
+            },
+            {
+              "rhs": [
+                492453,
+                492559
+              ],
+              "y": [
+                492610,
+                492717
+              ],
+              "ubar": [
+                492718,
+                492827
+              ]
+            },
+            {
+              "rhs": [
+                492828,
+                492935
+              ],
+              "y": [
+                492986,
+                493036
+              ],
+              "ubar": [
+                493037,
+                493146
+              ]
+            },
+            {
+              "rhs": [
+                493148,
+                493198
+              ],
+              "y": [
+                493249,
+                493355
+              ],
+              "ubar": [
+                493356,
+                493465
+              ]
+            },
+            {
+              "rhs": [
+                493467,
+                493574
+              ],
+              "y": [
+                493625,
+                493732
+              ],
+              "ubar": [
+                493733,
+                493842
+              ]
+            },
+            {
+              "rhs": [
+                493844,
+                493951
+              ],
+              "y": [
+                494002,
+                494052
+              ],
+              "ubar": [
+                494053,
+                494162
+              ]
+            },
+            {
+              "rhs": [
+                494164,
+                494214
+              ],
+              "y": [
+                494265,
+                494372
+              ],
+              "ubar": [
+                494373,
+                494482
+              ]
+            },
+            {
+              "rhs": [
+                494484,
+                494591
+              ],
+              "y": [
+                494642,
+                494749
+              ],
+              "ubar": [
+                494750,
+                494859
+              ]
+            },
+            {
+              "rhs": [
+                494861,
+                494911
+              ],
+              "y": [
+                494962,
+                495012
+              ],
+              "ubar": [
+                495013,
+                495122
+              ]
+            },
+            {
+              "rhs": [
+                495124,
+                495230
+              ],
+              "y": [
+                495281,
+                495388
+              ],
+              "ubar": [
+                495389,
+                495498
+              ]
+            },
+            {
+              "rhs": [
+                495499,
+                495606
+              ],
+              "y": [
+                495657,
+                495707
+              ],
+              "ubar": [
+                495708,
+                495817
+              ]
+            },
+            {
+              "rhs": [
+                495819,
+                495869
+              ],
+              "y": [
+                495920,
+                496026
+              ],
+              "ubar": [
+                496027,
+                496136
+              ]
+            },
+            {
+              "rhs": [
+                496138,
+                496245
+              ],
+              "y": [
+                496296,
+                496403
+              ],
+              "ubar": [
+                496404,
+                496513
+              ]
+            },
+            {
+              "rhs": [
+                496515,
+                496622
+              ],
+              "y": [
+                496673,
+                496723
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "token": "20",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 10207,
+          "mean": 1.7947951468260945,
+          "peak": 4,
+          "capacity": 16,
+          "full_cycles": 0,
+          "full_pct": 0.0,
+          "utilization_pct": 11.21746966766309
+        },
+        "dma_slot_cycles_by_kind": {
+          "descriptor": 312,
+          "rhs": 1973,
+          "y": 1863,
+          "ubar": 6059
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "request_window": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 8,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          }
+        },
+        "tile_commits": [],
+        "record_retire_waits": [],
+        "cached_forward_decomposition": {
+          "after_descriptor_cycles": 5580,
+          "transfer_spans": {
+            "rhs": 1476,
+            "y": 1471,
+            "ubar": 1745
+          },
+          "between_rhs_response_and_y_issue": 840,
+          "other_control_gaps": 48,
+          "cells": [
+            {
+              "rhs": [
+                505766,
+                505874
+              ],
+              "y": [
+                505898,
+                506004
+              ],
+              "ubar": [
+                506005,
+                506115
+              ]
+            },
+            {
+              "rhs": [
+                506117,
+                506167
+              ],
+              "y": [
+                506218,
+                506325
+              ],
+              "ubar": [
+                506326,
+                506435
+              ]
+            },
+            {
+              "rhs": [
+                506437,
+                506544
+              ],
+              "y": [
+                506595,
+                506702
+              ],
+              "ubar": [
+                506703,
+                506812
+              ]
+            },
+            {
+              "rhs": [
+                506814,
+                506864
+              ],
+              "y": [
+                506915,
+                506965
+              ],
+              "ubar": [
+                506966,
+                507075
+              ]
+            },
+            {
+              "rhs": [
+                507077,
+                507183
+              ],
+              "y": [
+                507234,
+                507341
+              ],
+              "ubar": [
+                507342,
+                507451
+              ]
+            },
+            {
+              "rhs": [
+                507452,
+                507559
+              ],
+              "y": [
+                507610,
+                507660
+              ],
+              "ubar": [
+                507661,
+                507770
+              ]
+            },
+            {
+              "rhs": [
+                507772,
+                507822
+              ],
+              "y": [
+                507873,
+                507979
+              ],
+              "ubar": [
+                507980,
+                508089
+              ]
+            },
+            {
+              "rhs": [
+                508091,
+                508198
+              ],
+              "y": [
+                508249,
+                508353
+              ],
+              "ubar": [
+                508354,
+                508463
+              ]
+            },
+            {
+              "rhs": [
+                508465,
+                508572
+              ],
+              "y": [
+                508623,
+                508673
+              ],
+              "ubar": [
+                508674,
+                508783
+              ]
+            },
+            {
+              "rhs": [
+                508785,
+                508835
+              ],
+              "y": [
+                508886,
+                508993
+              ],
+              "ubar": [
+                508994,
+                509103
+              ]
+            },
+            {
+              "rhs": [
+                509105,
+                509212
+              ],
+              "y": [
+                509263,
+                509370
+              ],
+              "ubar": [
+                509371,
+                509480
+              ]
+            },
+            {
+              "rhs": [
+                509482,
+                509532
+              ],
+              "y": [
+                509583,
+                509633
+              ],
+              "ubar": [
+                509634,
+                509743
+              ]
+            },
+            {
+              "rhs": [
+                509745,
+                509851
+              ],
+              "y": [
+                509902,
+                510009
+              ],
+              "ubar": [
+                510010,
+                510119
+              ]
+            },
+            {
+              "rhs": [
+                510120,
+                510227
+              ],
+              "y": [
+                510278,
+                510328
+              ],
+              "ubar": [
+                510329,
+                510438
+              ]
+            },
+            {
+              "rhs": [
+                510440,
+                510490
+              ],
+              "y": [
+                510541,
+                510647
+              ],
+              "ubar": [
+                510648,
+                510757
+              ]
+            },
+            {
+              "rhs": [
+                510759,
+                510866
+              ],
+              "y": [
+                510917,
+                511024
+              ],
+              "ubar": [
+                511025,
+                511134
+              ]
+            },
+            {
+              "rhs": [
+                511136,
+                511243
+              ],
+              "y": [
+                511294,
+                511344
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "token": "21",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 10313,
+          "mean": 1.8127966250659167,
+          "peak": 4,
+          "capacity": 16,
+          "full_cycles": 0,
+          "full_pct": 0.0,
+          "utilization_pct": 11.32997890666198
+        },
+        "dma_slot_cycles_by_kind": {
+          "descriptor": 418,
+          "rhs": 1973,
+          "y": 1863,
+          "ubar": 6059
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "request_window": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 8,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          }
+        },
+        "tile_commits": [],
+        "record_retire_waits": [],
+        "cached_forward_decomposition": {
+          "after_descriptor_cycles": 5580,
+          "transfer_spans": {
+            "rhs": 1476,
+            "y": 1471,
+            "ubar": 1745
+          },
+          "between_rhs_response_and_y_issue": 840,
+          "other_control_gaps": 48,
+          "cells": [
+            {
+              "rhs": [
+                519240,
+                519348
+              ],
+              "y": [
+                519372,
+                519478
+              ],
+              "ubar": [
+                519479,
+                519589
+              ]
+            },
+            {
+              "rhs": [
+                519591,
+                519641
+              ],
+              "y": [
+                519692,
+                519799
+              ],
+              "ubar": [
+                519800,
+                519909
+              ]
+            },
+            {
+              "rhs": [
+                519911,
+                520018
+              ],
+              "y": [
+                520069,
+                520176
+              ],
+              "ubar": [
+                520177,
+                520286
+              ]
+            },
+            {
+              "rhs": [
+                520288,
+                520338
+              ],
+              "y": [
+                520389,
+                520439
+              ],
+              "ubar": [
+                520440,
+                520549
+              ]
+            },
+            {
+              "rhs": [
+                520551,
+                520657
+              ],
+              "y": [
+                520708,
+                520815
+              ],
+              "ubar": [
+                520816,
+                520925
+              ]
+            },
+            {
+              "rhs": [
+                520926,
+                521033
+              ],
+              "y": [
+                521084,
+                521134
+              ],
+              "ubar": [
+                521135,
+                521244
+              ]
+            },
+            {
+              "rhs": [
+                521246,
+                521296
+              ],
+              "y": [
+                521347,
+                521453
+              ],
+              "ubar": [
+                521454,
+                521563
+              ]
+            },
+            {
+              "rhs": [
+                521565,
+                521672
+              ],
+              "y": [
+                521723,
+                521827
+              ],
+              "ubar": [
+                521828,
+                521937
+              ]
+            },
+            {
+              "rhs": [
+                521939,
+                522046
+              ],
+              "y": [
+                522097,
+                522147
+              ],
+              "ubar": [
+                522148,
+                522257
+              ]
+            },
+            {
+              "rhs": [
+                522259,
+                522309
+              ],
+              "y": [
+                522360,
+                522467
+              ],
+              "ubar": [
+                522468,
+                522577
+              ]
+            },
+            {
+              "rhs": [
+                522579,
+                522686
+              ],
+              "y": [
+                522737,
+                522844
+              ],
+              "ubar": [
+                522845,
+                522954
+              ]
+            },
+            {
+              "rhs": [
+                522956,
+                523006
+              ],
+              "y": [
+                523057,
+                523107
+              ],
+              "ubar": [
+                523108,
+                523217
+              ]
+            },
+            {
+              "rhs": [
+                523219,
+                523325
+              ],
+              "y": [
+                523376,
+                523483
+              ],
+              "ubar": [
+                523484,
+                523593
+              ]
+            },
+            {
+              "rhs": [
+                523594,
+                523701
+              ],
+              "y": [
+                523752,
+                523802
+              ],
+              "ubar": [
+                523803,
+                523912
+              ]
+            },
+            {
+              "rhs": [
+                523914,
+                523964
+              ],
+              "y": [
+                524015,
+                524121
+              ],
+              "ubar": [
+                524122,
+                524231
+              ]
+            },
+            {
+              "rhs": [
+                524233,
+                524340
+              ],
+              "y": [
+                524391,
+                524498
+              ],
+              "ubar": [
+                524499,
+                524608
+              ]
+            },
+            {
+              "rhs": [
+                524610,
+                524717
+              ],
+              "y": [
+                524768,
+                524818
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "token": "22",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 10210,
+          "mean": 1.7943760984182777,
+          "peak": 4,
+          "capacity": 16,
+          "full_cycles": 0,
+          "full_pct": 0.0,
+          "utilization_pct": 11.214850615114235
+        },
+        "dma_slot_cycles_by_kind": {
+          "descriptor": 312,
+          "rhs": 1973,
+          "y": 1866,
+          "ubar": 6059
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "request_window": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 8,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          }
+        },
+        "tile_commits": [],
+        "record_retire_waits": [],
+        "cached_forward_decomposition": {
+          "after_descriptor_cycles": 5583,
+          "transfer_spans": {
+            "rhs": 1476,
+            "y": 1474,
+            "ubar": 1745
+          },
+          "between_rhs_response_and_y_issue": 840,
+          "other_control_gaps": 48,
+          "cells": [
+            {
+              "rhs": [
+                533007,
+                533115
+              ],
+              "y": [
+                533139,
+                533245
+              ],
+              "ubar": [
+                533246,
+                533356
+              ]
+            },
+            {
+              "rhs": [
+                533358,
+                533408
+              ],
+              "y": [
+                533459,
+                533566
+              ],
+              "ubar": [
+                533567,
+                533676
+              ]
+            },
+            {
+              "rhs": [
+                533678,
+                533785
+              ],
+              "y": [
+                533836,
+                533943
+              ],
+              "ubar": [
+                533944,
+                534053
+              ]
+            },
+            {
+              "rhs": [
+                534055,
+                534105
+              ],
+              "y": [
+                534156,
+                534206
+              ],
+              "ubar": [
+                534207,
+                534316
+              ]
+            },
+            {
+              "rhs": [
+                534318,
+                534424
+              ],
+              "y": [
+                534475,
+                534582
+              ],
+              "ubar": [
+                534583,
+                534692
+              ]
+            },
+            {
+              "rhs": [
+                534693,
+                534800
+              ],
+              "y": [
+                534851,
+                534901
+              ],
+              "ubar": [
+                534902,
+                535011
+              ]
+            },
+            {
+              "rhs": [
+                535013,
+                535063
+              ],
+              "y": [
+                535114,
+                535220
+              ],
+              "ubar": [
+                535221,
+                535330
+              ]
+            },
+            {
+              "rhs": [
+                535332,
+                535439
+              ],
+              "y": [
+                535490,
+                535597
+              ],
+              "ubar": [
+                535598,
+                535707
+              ]
+            },
+            {
+              "rhs": [
+                535709,
+                535816
+              ],
+              "y": [
+                535867,
+                535917
+              ],
+              "ubar": [
+                535918,
+                536027
+              ]
+            },
+            {
+              "rhs": [
+                536029,
+                536079
+              ],
+              "y": [
+                536130,
+                536237
+              ],
+              "ubar": [
+                536238,
+                536347
+              ]
+            },
+            {
+              "rhs": [
+                536349,
+                536456
+              ],
+              "y": [
+                536507,
+                536614
+              ],
+              "ubar": [
+                536615,
+                536724
+              ]
+            },
+            {
+              "rhs": [
+                536726,
+                536776
+              ],
+              "y": [
+                536827,
+                536877
+              ],
+              "ubar": [
+                536878,
+                536987
+              ]
+            },
+            {
+              "rhs": [
+                536989,
+                537095
+              ],
+              "y": [
+                537146,
+                537253
+              ],
+              "ubar": [
+                537254,
+                537363
+              ]
+            },
+            {
+              "rhs": [
+                537364,
+                537471
+              ],
+              "y": [
+                537522,
+                537572
+              ],
+              "ubar": [
+                537573,
+                537682
+              ]
+            },
+            {
+              "rhs": [
+                537684,
+                537734
+              ],
+              "y": [
+                537785,
+                537891
+              ],
+              "ubar": [
+                537892,
+                538001
+              ]
+            },
+            {
+              "rhs": [
+                538003,
+                538110
+              ],
+              "y": [
+                538161,
+                538268
+              ],
+              "ubar": [
+                538269,
+                538378
+              ]
+            },
+            {
+              "rhs": [
+                538380,
+                538487
+              ],
+              "y": [
+                538538,
+                538588
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "token": "23",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 10313,
+          "mean": 1.8127966250659167,
+          "peak": 4,
+          "capacity": 16,
+          "full_cycles": 0,
+          "full_pct": 0.0,
+          "utilization_pct": 11.32997890666198
+        },
+        "dma_slot_cycles_by_kind": {
+          "descriptor": 418,
+          "rhs": 1973,
+          "y": 1863,
+          "ubar": 6059
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "request_window": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 8,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          }
+        },
+        "tile_commits": [],
+        "record_retire_waits": [],
+        "cached_forward_decomposition": {
+          "after_descriptor_cycles": 5580,
+          "transfer_spans": {
+            "rhs": 1476,
+            "y": 1471,
+            "ubar": 1745
+          },
+          "between_rhs_response_and_y_issue": 840,
+          "other_control_gaps": 48,
+          "cells": [
+            {
+              "rhs": [
+                546395,
+                546503
+              ],
+              "y": [
+                546527,
+                546633
+              ],
+              "ubar": [
+                546634,
+                546744
+              ]
+            },
+            {
+              "rhs": [
+                546746,
+                546796
+              ],
+              "y": [
+                546847,
+                546954
+              ],
+              "ubar": [
+                546955,
+                547064
+              ]
+            },
+            {
+              "rhs": [
+                547066,
+                547173
+              ],
+              "y": [
+                547224,
+                547331
+              ],
+              "ubar": [
+                547332,
+                547441
+              ]
+            },
+            {
+              "rhs": [
+                547443,
+                547493
+              ],
+              "y": [
+                547544,
+                547594
+              ],
+              "ubar": [
+                547595,
+                547704
+              ]
+            },
+            {
+              "rhs": [
+                547706,
+                547812
+              ],
+              "y": [
+                547863,
+                547970
+              ],
+              "ubar": [
+                547971,
+                548080
+              ]
+            },
+            {
+              "rhs": [
+                548081,
+                548188
+              ],
+              "y": [
+                548239,
+                548289
+              ],
+              "ubar": [
+                548290,
+                548399
+              ]
+            },
+            {
+              "rhs": [
+                548401,
+                548451
+              ],
+              "y": [
+                548502,
+                548608
+              ],
+              "ubar": [
+                548609,
+                548718
+              ]
+            },
+            {
+              "rhs": [
+                548720,
+                548827
+              ],
+              "y": [
+                548878,
+                548982
+              ],
+              "ubar": [
+                548983,
+                549092
+              ]
+            },
+            {
+              "rhs": [
+                549094,
+                549201
+              ],
+              "y": [
+                549252,
+                549302
+              ],
+              "ubar": [
+                549303,
+                549412
+              ]
+            },
+            {
+              "rhs": [
+                549414,
+                549464
+              ],
+              "y": [
+                549515,
+                549622
+              ],
+              "ubar": [
+                549623,
+                549732
+              ]
+            },
+            {
+              "rhs": [
+                549734,
+                549841
+              ],
+              "y": [
+                549892,
+                549999
+              ],
+              "ubar": [
+                550000,
+                550109
+              ]
+            },
+            {
+              "rhs": [
+                550111,
+                550161
+              ],
+              "y": [
+                550212,
+                550262
+              ],
+              "ubar": [
+                550263,
+                550372
+              ]
+            },
+            {
+              "rhs": [
+                550374,
+                550480
+              ],
+              "y": [
+                550531,
+                550638
+              ],
+              "ubar": [
+                550639,
+                550748
+              ]
+            },
+            {
+              "rhs": [
+                550749,
+                550856
+              ],
+              "y": [
+                550907,
+                550957
+              ],
+              "ubar": [
+                550958,
+                551067
+              ]
+            },
+            {
+              "rhs": [
+                551069,
+                551119
+              ],
+              "y": [
+                551170,
+                551276
+              ],
+              "ubar": [
+                551277,
+                551386
+              ]
+            },
+            {
+              "rhs": [
+                551388,
+                551495
+              ],
+              "y": [
+                551546,
+                551653
+              ],
+              "ubar": [
+                551654,
+                551763
+              ]
+            },
+            {
+              "rhs": [
+                551765,
+                551872
+              ],
+              "y": [
+                551923,
+                551973
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "token": "24",
+        "cache_hit": 1,
+        "forward_dma": {
+          "slot_cycles": 10207,
+          "mean": 1.7947951468260945,
+          "peak": 4,
+          "capacity": 16,
+          "full_cycles": 0,
+          "full_pct": 0.0,
+          "utilization_pct": 11.21746966766309
+        },
+        "dma_slot_cycles_by_kind": {
+          "descriptor": 312,
+          "rhs": 1973,
+          "y": 1863,
+          "ubar": 6059
+        },
+        "contexts": {
+          "input_slots": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "lu_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "solve_contexts": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 2,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          },
+          "request_window": {
+            "slot_cycles": 0,
+            "mean": 0.0,
+            "peak": 0,
+            "capacity": 8,
+            "full_cycles": 0,
+            "full_pct": 0.0,
+            "utilization_pct": 0.0
+          }
+        },
+        "tile_commits": [],
+        "record_retire_waits": [],
+        "cached_forward_decomposition": {
+          "after_descriptor_cycles": 5580,
+          "transfer_spans": {
+            "rhs": 1476,
+            "y": 1471,
+            "ubar": 1745
+          },
+          "between_rhs_response_and_y_issue": 840,
+          "other_control_gaps": 48,
+          "cells": [
+            {
+              "rhs": [
+                559523,
+                559631
+              ],
+              "y": [
+                559655,
+                559761
+              ],
+              "ubar": [
+                559762,
+                559872
+              ]
+            },
+            {
+              "rhs": [
+                559874,
+                559924
+              ],
+              "y": [
+                559975,
+                560082
+              ],
+              "ubar": [
+                560083,
+                560192
+              ]
+            },
+            {
+              "rhs": [
+                560194,
+                560301
+              ],
+              "y": [
+                560352,
+                560459
+              ],
+              "ubar": [
+                560460,
+                560569
+              ]
+            },
+            {
+              "rhs": [
+                560571,
+                560621
+              ],
+              "y": [
+                560672,
+                560722
+              ],
+              "ubar": [
+                560723,
+                560832
+              ]
+            },
+            {
+              "rhs": [
+                560834,
+                560940
+              ],
+              "y": [
+                560991,
+                561098
+              ],
+              "ubar": [
+                561099,
+                561208
+              ]
+            },
+            {
+              "rhs": [
+                561209,
+                561316
+              ],
+              "y": [
+                561367,
+                561417
+              ],
+              "ubar": [
+                561418,
+                561527
+              ]
+            },
+            {
+              "rhs": [
+                561529,
+                561579
+              ],
+              "y": [
+                561630,
+                561736
+              ],
+              "ubar": [
+                561737,
+                561846
+              ]
+            },
+            {
+              "rhs": [
+                561848,
+                561955
+              ],
+              "y": [
+                562006,
+                562110
+              ],
+              "ubar": [
+                562111,
+                562220
+              ]
+            },
+            {
+              "rhs": [
+                562222,
+                562329
+              ],
+              "y": [
+                562380,
+                562430
+              ],
+              "ubar": [
+                562431,
+                562540
+              ]
+            },
+            {
+              "rhs": [
+                562542,
+                562592
+              ],
+              "y": [
+                562643,
+                562750
+              ],
+              "ubar": [
+                562751,
+                562860
+              ]
+            },
+            {
+              "rhs": [
+                562862,
+                562969
+              ],
+              "y": [
+                563020,
+                563127
+              ],
+              "ubar": [
+                563128,
+                563237
+              ]
+            },
+            {
+              "rhs": [
+                563239,
+                563289
+              ],
+              "y": [
+                563340,
+                563390
+              ],
+              "ubar": [
+                563391,
+                563500
+              ]
+            },
+            {
+              "rhs": [
+                563502,
+                563608
+              ],
+              "y": [
+                563659,
+                563766
+              ],
+              "ubar": [
+                563767,
+                563876
+              ]
+            },
+            {
+              "rhs": [
+                563877,
+                563984
+              ],
+              "y": [
+                564035,
+                564085
+              ],
+              "ubar": [
+                564086,
+                564195
+              ]
+            },
+            {
+              "rhs": [
+                564197,
+                564247
+              ],
+              "y": [
+                564298,
+                564404
+              ],
+              "ubar": [
+                564405,
+                564514
+              ]
+            },
+            {
+              "rhs": [
+                564516,
+                564623
+              ],
+              "y": [
+                564674,
+                564781
+              ],
+              "ubar": [
+                564782,
+                564891
+              ]
+            },
+            {
+              "rhs": [
+                564893,
+                565000
+              ],
+              "y": [
+                565051,
+                565101
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "ordered_child_column_issue_gaps": {
+      "7": 112,
+      "12": 5,
+      "9": 3,
+      "28": 1,
+      "11": 2,
+      "24": 4,
+      "20": 1,
+      "436": 1,
+      "31": 1,
+      "21": 1,
+      "13": 1
+    },
+    "handoffs": [
+      {
+        "cell": 0,
+        "cycle": 284687
+      },
+      {
+        "cell": 1,
+        "cycle": 284727
+      },
+      {
+        "cell": 2,
+        "cycle": 284766
+      },
+      {
+        "cell": 3,
+        "cycle": 284805
+      },
+      {
+        "cell": 4,
+        "cycle": 284844
+      },
+      {
+        "cell": 5,
+        "cycle": 284883
+      },
+      {
+        "cell": 6,
+        "cycle": 284922
+      },
+      {
+        "cell": 7,
+        "cycle": 284961
+      },
+      {
+        "cell": 8,
+        "cycle": 290867
+      },
+      {
+        "cell": 9,
+        "cycle": 290906
+      },
+      {
+        "cell": 10,
+        "cycle": 290945
+      },
+      {
+        "cell": 11,
+        "cycle": 290984
+      },
+      {
+        "cell": 12,
+        "cycle": 291023
+      },
+      {
+        "cell": 13,
+        "cycle": 291062
+      },
+      {
+        "cell": 14,
+        "cycle": 291101
+      },
+      {
+        "cell": 15,
+        "cycle": 291140
+      },
+      {
+        "cell": 16,
+        "cycle": 294307
+      }
+    ],
+    "child_lifetimes": [
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 0,
+        "INPUT_START": 282859,
+        "INPUT_SLOT_RELEASE": 283256,
+        "LU_ISSUE": 283256,
+        "LU_COMPLETE": 283651,
+        "COEFF3_ISSUE": 284236,
+        "COEFF3_COMPLETE": 284732,
+        "REQUEST_COMPLETE": 284842,
+        "REQUEST_AUTO_RETIRE": 287712
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 1,
+        "INPUT_START": 282817,
+        "INPUT_SLOT_RELEASE": 283212,
+        "LU_ISSUE": 283212,
+        "LU_COMPLETE": 283607,
+        "COEFF3_ISSUE": 283940,
+        "COEFF3_COMPLETE": 284535,
+        "REQUEST_COMPLETE": 284835,
+        "REQUEST_AUTO_RETIRE": 287382
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 2,
+        "INPUT_START": 282421,
+        "INPUT_SLOT_RELEASE": 282858,
+        "LU_ISSUE": 282858,
+        "LU_COMPLETE": 283255,
+        "COEFF3_ISSUE": 283616,
+        "COEFF3_COMPLETE": 284235,
+        "REQUEST_COMPLETE": 284874,
+        "REQUEST_AUTO_RETIRE": 287170
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 3,
+        "INPUT_START": 282417,
+        "INPUT_SLOT_RELEASE": 282816,
+        "LU_ISSUE": 282816,
+        "LU_COMPLETE": 283211,
+        "COEFF3_ISSUE": 283236,
+        "COEFF3_COMPLETE": 283939,
+        "REQUEST_COMPLETE": 284874,
+        "REQUEST_AUTO_RETIRE": 286736
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 4,
+        "INPUT_START": 282025,
+        "INPUT_SLOT_RELEASE": 282420,
+        "LU_ISSUE": 282420,
+        "LU_COMPLETE": 282819,
+        "COEFF3_ISSUE": 282872,
+        "COEFF3_COMPLETE": 283615,
+        "REQUEST_COMPLETE": 284981,
+        "REQUEST_AUTO_RETIRE": 286522
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 5,
+        "INPUT_START": 282019,
+        "INPUT_SLOT_RELEASE": 282416,
+        "LU_ISSUE": 282416,
+        "COEFF3_ISSUE": 282584,
+        "LU_COMPLETE": 282815,
+        "COEFF3_COMPLETE": 283235,
+        "REQUEST_COMPLETE": 284981,
+        "REQUEST_AUTO_RETIRE": 286297
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 6,
+        "INPUT_START": 281697,
+        "INPUT_SLOT_RELEASE": 282024,
+        "LU_ISSUE": 282024,
+        "COEFF3_ISSUE": 282031,
+        "LU_COMPLETE": 282419,
+        "COEFF3_COMPLETE": 282871,
+        "REQUEST_COMPLETE": 285061,
+        "REQUEST_AUTO_RETIRE": 285860
+      },
+      {
+        "REQUEST_ALLOC": 281697,
+        "cell": 7,
+        "INPUT_START": 281697,
+        "INPUT_SLOT_RELEASE": 282018,
+        "LU_ISSUE": 282018,
+        "COEFF3_ISSUE": 282025,
+        "LU_COMPLETE": 282415,
+        "COEFF3_COMPLETE": 282583,
+        "REQUEST_COMPLETE": 285190,
+        "REQUEST_AUTO_RETIRE": 285963
+      },
+      {
+        "REQUEST_ALLOC": 287713,
+        "cell": 8,
+        "INPUT_START": 288875,
+        "INPUT_SLOT_RELEASE": 289271,
+        "LU_ISSUE": 289271,
+        "LU_COMPLETE": 289670,
+        "COEFF3_ISSUE": 290310,
+        "COEFF3_COMPLETE": 290907,
+        "REQUEST_COMPLETE": 291018,
+        "REQUEST_AUTO_RETIRE": 293644
+      },
+      {
+        "REQUEST_ALLOC": 287713,
+        "cell": 9,
+        "INPUT_START": 288840,
+        "INPUT_SLOT_RELEASE": 289239,
+        "LU_ISSUE": 289239,
+        "LU_COMPLETE": 289638,
+        "COEFF3_ISSUE": 289947,
+        "COEFF3_COMPLETE": 290609,
+        "REQUEST_COMPLETE": 291014,
+        "REQUEST_AUTO_RETIRE": 293333
+      },
+      {
+        "REQUEST_ALLOC": 287713,
+        "cell": 10,
+        "INPUT_START": 287714,
+        "INPUT_SLOT_RELEASE": 288047,
+        "LU_ISSUE": 288047,
+        "COEFF3_ISSUE": 288054,
+        "LU_COMPLETE": 288442,
+        "COEFF3_COMPLETE": 289946,
+        "REQUEST_COMPLETE": 291053,
+        "REQUEST_AUTO_RETIRE": 293116
+      },
+      {
+        "REQUEST_ALLOC": 287713,
+        "cell": 11,
+        "INPUT_START": 287714,
+        "INPUT_SLOT_RELEASE": 288041,
+        "LU_ISSUE": 288041,
+        "COEFF3_ISSUE": 288048,
+        "LU_COMPLETE": 288438,
+        "COEFF3_COMPLETE": 288606,
+        "REQUEST_COMPLETE": 291053,
+        "REQUEST_AUTO_RETIRE": 292892
+      },
+      {
+        "REQUEST_ALLOC": 287714,
+        "cell": 12,
+        "INPUT_START": 288444,
+        "INPUT_SLOT_RELEASE": 288874,
+        "LU_ISSUE": 288874,
+        "LU_COMPLETE": 289270,
+        "COEFF3_ISSUE": 289919,
+        "COEFF3_COMPLETE": 290309,
+        "REQUEST_COMPLETE": 291238,
+        "REQUEST_AUTO_RETIRE": 292572
+      },
+      {
+        "REQUEST_ALLOC": 287714,
+        "cell": 13,
+        "INPUT_START": 288440,
+        "INPUT_SLOT_RELEASE": 288839,
+        "LU_ISSUE": 288839,
+        "LU_COMPLETE": 289238,
+        "COEFF3_ISSUE": 289507,
+        "COEFF3_COMPLETE": 289918,
+        "REQUEST_COMPLETE": 291239,
+        "REQUEST_AUTO_RETIRE": 292452
+      },
+      {
+        "REQUEST_ALLOC": 287714,
+        "cell": 14,
+        "INPUT_START": 288048,
+        "INPUT_SLOT_RELEASE": 288443,
+        "LU_ISSUE": 288443,
+        "LU_COMPLETE": 288842,
+        "COEFF3_ISSUE": 289051,
+        "COEFF3_COMPLETE": 289506,
+        "REQUEST_COMPLETE": 291239,
+        "REQUEST_AUTO_RETIRE": 292012
+      },
+      {
+        "REQUEST_ALLOC": 287714,
+        "cell": 15,
+        "INPUT_START": 288042,
+        "INPUT_SLOT_RELEASE": 288439,
+        "LU_ISSUE": 288439,
+        "COEFF3_ISSUE": 288607,
+        "LU_COMPLETE": 288838,
+        "COEFF3_COMPLETE": 289050,
+        "REQUEST_COMPLETE": 291367,
+        "REQUEST_AUTO_RETIRE": 292017
+      },
+      {
+        "REQUEST_ALLOC": 293645,
+        "cell": 16,
+        "INPUT_START": 293646,
+        "INPUT_SLOT_RELEASE": 293771,
+        "LU_ISSUE": 293771,
+        "COEFF3_ISSUE": 293778,
+        "LU_COMPLETE": 294167,
+        "COEFF3_COMPLETE": 294284,
+        "REQUEST_COMPLETE": 294414,
+        "REQUEST_AUTO_RETIRE": 295257
+      }
+    ],
+    "divider_issue_gap_histogram": {
+      "4": 1382,
+      "10": 2,
+      "7": 2,
+      "3398": 1,
+      "55": 1,
+      "2954": 1,
+      "47": 1,
+      "13": 1,
+      "60": 1,
+      "59": 1,
+      "28": 1
+    }
+  }
+}

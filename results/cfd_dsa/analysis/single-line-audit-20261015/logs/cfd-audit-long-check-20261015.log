@@ -1,0 +1,3 @@
+long65-reuse-inverse-b8-t8-q64 cycles 55532 error 2.220446049250313e-16
+long65-reuse-direct-b8-t8-q64 cycles 62560 error 1.6653345369377348e-16
+SINGLE_LINE_OPT_CHECK_PASS 2 cases 14 sweeps

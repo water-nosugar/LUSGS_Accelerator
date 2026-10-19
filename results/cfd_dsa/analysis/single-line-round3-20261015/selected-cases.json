@@ -1,0 +1,6 @@
+{
+  "cold-direct": "cold-direct-compact",
+  "cold-inverse": "cold-inverse-compact-b4",
+  "reuse-direct": "reuse-direct-compact-b4",
+  "reuse-inverse": "reuse-inverse-compact"
+}

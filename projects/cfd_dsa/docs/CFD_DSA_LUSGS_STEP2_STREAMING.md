@@ -895,14 +895,19 @@ campaign 目录不可覆盖，重跑需换新名称。测试覆盖四组合消�
 1/2 cell、窗口 1、多 line、慢 drain/单输出槽、DMA单sweep和8sweep系数复用；检查成功标记、摘要一致、
 前瞻实际发生、提前后向实际发生，以及软件完成不早于子请求退休。
 
-**已发现的独立限制**：DMA + 3 sweeps + update interval 2 在第三次系数重建时
+**历史限制（2026-09-08 直连 DMA 通路）**：DMA + 3 sweeps + update interval 2 在第三次系数重建时
 触发 `src/mem/cache/cache.cc:1225` 的 Modified-line/WriteReq 一致性断言；关闭两个
 新开关也复现。原始证据保留在
 `results/cfd_dsa/campaigns/line-dependency-20260908/dma/simout.txt:84` 和
 `results/cfd_dsa/campaigns/line-dependency-20260908/dma-baseline-diagnostic/simout.txt:84`。
 正常 suite 只验证 DMA 单 sweep，不声明 DMA 多 sweep 已通过。独立复现入口
-`projects/cfd_dsa/suites/coeff-line-dma-rebuild-diagnostic.json` 目前预期会失败；
-需后续审查 DMA/cache 一致性与复用后重建的存储协议，本次不修改该协议。
+`projects/cfd_dsa/suites/coeff-line-dma-rebuild-diagnostic.json` 当时预期会失败；
+该轮尚未修改 DMA/cache 一致性与复用后重建的存储协议。
+
+2026-09-22 单线更新：DMA 改经 I/O cache 接入一致性总线后，单点、双点及
+17 点三 sweep（update interval 2）的专项回归通过，最终 Δq 也使用有界 timing
+写回并等待响应。证据和资源开销见[单线验收记录](CFD_DSA_SINGLE_LINE.md#实测验收2026-09-22)。
+这里的验证范围为单线；上面的历史 campaign 保留，不重写其结果。
 
 第16节阶段结束时尚未实现乘法/加法拆分；后续新增的可选拆分模型见第17节。
 多部分和、归约树、真正分量级完成和分段仿射递推仍未实现。

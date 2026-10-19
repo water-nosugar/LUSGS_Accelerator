@@ -1,0 +1,13 @@
+unordered_column_sum REJECTED ('cfd-opt-fault-bnabyynh', 'unordered column sum', ('2', '1'), [4, 1, 2, 3, 4])
+premature_tile_commit REJECTED 
+frontier_admission_reordered REJECTED ('cfd-opt-fault-2m9hry59', 'non-frontier input admission', [999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+row_product_leak REJECTED 
+premature_backward_use REJECTED 
+backward_operand_leak REJECTED 
+premature_local_ready REJECTED resident ready before SPM stores completed
+packed_record_field_changed REJECTED packed record roundtrip changed fields
+response_before_send REJECTED 
+summary_field_changed REJECTED line summary roundtrip changed fields
+missing_summary_child REJECTED 
+summary_before_child_retirement REJECTED line summary issued before its requests retired
+OPTIMIZATION_FAULT_CHECK_PASS (12 injected faults)

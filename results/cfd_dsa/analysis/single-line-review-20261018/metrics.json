@@ -1,0 +1,3595 @@
+{
+  "single-line-round3-final-20261015/n17-cold-direct-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n17-cold-direct-l11",
+    "roi_cycles": 7816,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 5331,
+    "issue_slot_pct": {
+      "mul": 18.195460513974865,
+      "add": 18.79572312886888,
+      "div": 79.15963233914837
+    },
+    "cluster_empty_pct": 8.703807915963234,
+    "bank_port_utilization": {
+      "read": {
+        "words": 1795,
+        "corrected_pct": 8.417745263552805,
+        "historical_sum_of_snapshots_pct": 8.417745263552805
+      },
+      "write": {
+        "words": 1795,
+        "corrected_pct": 8.417745263552805,
+        "historical_sum_of_snapshots_pct": 8.417745263552805
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 128,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 5331,
+        "first_math_delay": 266,
+        "completion_tail_cycles": 185,
+        "issued": {
+          "div": 1055,
+          "mul": 4850,
+          "add": 5010
+        },
+        "cluster_empty_cycles": 464,
+        "bank_words": {
+          "W": 1795,
+          "R": 1795
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "3880",
+          "write_completed": "3880",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "264924",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n17-cold-inverse-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n17-cold-inverse-l11",
+    "roi_cycles": 8966,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 6564,
+    "issue_slot_pct": {
+      "mul": 20.216331505179767,
+      "add": 20.70383912248629,
+      "div": 85.00914076782449
+    },
+    "cluster_empty_pct": 7.068860450944546,
+    "bank_port_utilization": {
+      "read": {
+        "words": 1795,
+        "corrected_pct": 6.836532602071907,
+        "historical_sum_of_snapshots_pct": 6.836532602071907
+      },
+      "write": {
+        "words": 1795,
+        "corrected_pct": 6.836532602071907,
+        "historical_sum_of_snapshots_pct": 6.836532602071907
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 2,
+    "peak_dma_packets_same_tick": 2,
+    "peak_dma_requested_bytes_per_cycle": 128,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 6564,
+        "first_math_delay": 266,
+        "completion_tail_cycles": 185,
+        "issued": {
+          "div": 1395,
+          "mul": 6635,
+          "add": 6795
+        },
+        "cluster_empty_cycles": 464,
+        "bank_words": {
+          "W": 1795,
+          "R": 1795
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "3880",
+          "write_completed": "3880",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "263114",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n17-reuse-direct-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n17-reuse-direct-l11",
+    "roi_cycles": 20746,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 16175,
+    "issue_slot_pct": {
+      "mul": 14.454404945904173,
+      "add": 15.839258114374035,
+      "div": 38.701700154559504
+    },
+    "cluster_empty_pct": 18.88098918083462,
+    "bank_port_utilization": {
+      "read": {
+        "words": 10165,
+        "corrected_pct": 15.71097372488408,
+        "historical_sum_of_snapshots_pct": 64.69860896445131
+      },
+      "write": {
+        "words": 4090,
+        "corrected_pct": 6.321483771251932,
+        "historical_sum_of_snapshots_pct": 38.732612055641425
+      }
+    },
+    "snapshots_per_bank": 7,
+    "peak_dma_packets_per_cycle": 2,
+    "peak_dma_packets_same_tick": 2,
+    "peak_dma_requested_bytes_per_cycle": 128,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 5359,
+        "first_math_delay": 266,
+        "completion_tail_cycles": 185,
+        "issued": {
+          "div": 1055,
+          "mul": 4850,
+          "add": 5010
+        },
+        "cluster_empty_cycles": 464,
+        "bank_words": {
+          "W": 3070,
+          "R": 1795
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "3880",
+          "write_completed": "3880",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "294459",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "19",
+        "cache_hit": 1,
+        "controller_cycles": 1802,
+        "first_math_delay": 222,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "cluster_empty_cycles": 431,
+        "bank_words": {
+          "R": 1395,
+          "W": 170
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "19",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "505846",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "37",
+        "cache_hit": 1,
+        "controller_cycles": 1802,
+        "first_math_delay": 222,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "cluster_empty_cycles": 431,
+        "bank_words": {
+          "R": 1395,
+          "W": 170
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "37",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "536467",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "55",
+        "cache_hit": 1,
+        "controller_cycles": 1804,
+        "first_math_delay": 224,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "cluster_empty_cycles": 433,
+        "bank_words": {
+          "R": 1395,
+          "W": 170
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "55",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "565591",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "73",
+        "cache_hit": 1,
+        "controller_cycles": 1802,
+        "first_math_delay": 222,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "cluster_empty_cycles": 431,
+        "bank_words": {
+          "R": 1395,
+          "W": 170
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "73",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "595018",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "91",
+        "cache_hit": 1,
+        "controller_cycles": 1804,
+        "first_math_delay": 224,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "cluster_empty_cycles": 433,
+        "bank_words": {
+          "R": 1395,
+          "W": 170
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "91",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "624263",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "109",
+        "cache_hit": 1,
+        "controller_cycles": 1802,
+        "first_math_delay": 222,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "div": 85,
+          "mul": 1140,
+          "add": 1300
+        },
+        "cluster_empty_cycles": 431,
+        "bank_words": {
+          "R": 1395,
+          "W": 170
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "109",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "653562",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n17-reuse-inverse-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n17-reuse-inverse-l11",
+    "roi_cycles": 18902,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 14937,
+    "issue_slot_pct": {
+      "mul": 18.725312981187656,
+      "add": 20.224944768025708,
+      "div": 37.35689897569793
+    },
+    "cluster_empty_pct": 21.644239137711722,
+    "bank_port_utilization": {
+      "read": {
+        "words": 10675,
+        "corrected_pct": 8.933353417687622,
+        "historical_sum_of_snapshots_pct": 36.52423512084086
+      },
+      "write": {
+        "words": 4090,
+        "corrected_pct": 3.422708709914976,
+        "historical_sum_of_snapshots_pct": 20.9714132690634
+      }
+    },
+    "snapshots_per_bank": 7,
+    "peak_dma_packets_per_cycle": 8,
+    "peak_dma_packets_same_tick": 8,
+    "peak_dma_requested_bytes_per_cycle": 240,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 6551,
+        "first_math_delay": 259,
+        "completion_tail_cycles": 185,
+        "issued": {
+          "div": 1395,
+          "mul": 6635,
+          "add": 6795
+        },
+        "cluster_empty_cycles": 451,
+        "bank_words": {
+          "W": 3070,
+          "R": 1795
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "3880",
+          "write_completed": "3880",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "297017",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "19",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "19",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "507430",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "20",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "20",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "517480",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "21",
+        "cache_hit": 1,
+        "controller_cycles": 1399,
+        "first_math_delay": 225,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 465,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "21",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "526452",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "22",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "22",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "535866",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "23",
+        "cache_hit": 1,
+        "controller_cycles": 1399,
+        "first_math_delay": 225,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 465,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "23",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "544778",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "24",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "24",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "553500",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n65-cold-direct-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n65-cold-direct-l11",
+    "roi_cycles": 21888,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 19568,
+    "issue_slot_pct": {
+      "mul": 19.674979558462795,
+      "add": 20.329108748977923,
+      "div": 85.34341782502044
+    },
+    "cluster_empty_pct": 4.236508585445626,
+    "bank_port_utilization": {
+      "read": {
+        "words": 7075,
+        "corrected_pct": 9.038992232215863,
+        "historical_sum_of_snapshots_pct": 9.038992232215863
+      },
+      "write": {
+        "words": 8515,
+        "corrected_pct": 10.878730580539656,
+        "historical_sum_of_snapshots_pct": 10.878730580539656
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 19568,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 4175,
+          "mul": 19250,
+          "add": 19890
+        },
+        "cluster_empty_cycles": 829,
+        "bank_words": {
+          "W": 8515,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 2074,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 346,
+          "tile_wait_counter": 261,
+          "output_queue_wait_counter": 14,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "11520",
+          "read_completed": "11520",
+          "packets_issued": "183",
+          "packets_completed": "183",
+          "last_response": "423959",
+          "stalls": "794",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "261",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n65-cold-inverse-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n65-cold-inverse-l11",
+    "roi_cycles": 26678,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 24439,
+    "issue_slot_pct": {
+      "mul": 21.33884365154057,
+      "add": 21.862596669258153,
+      "div": 89.61086787511763
+    },
+    "cluster_empty_pct": 2.958386186014158,
+    "bank_port_utilization": {
+      "read": {
+        "words": 7075,
+        "corrected_pct": 7.237407422562298,
+        "historical_sum_of_snapshots_pct": 7.237407422562298
+      },
+      "write": {
+        "words": 8515,
+        "corrected_pct": 8.710462784892998,
+        "historical_sum_of_snapshots_pct": 8.710462784892998
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 4,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 24439,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 5475,
+          "mul": 26075,
+          "add": 26715
+        },
+        "cluster_empty_cycles": 723,
+        "bank_words": {
+          "W": 8515,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1968,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 240,
+          "tile_wait_counter": 125,
+          "output_queue_wait_counter": 104,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "11520",
+          "read_completed": "11520",
+          "packets_issued": "183",
+          "packets_completed": "183",
+          "last_response": "425810",
+          "stalls": "812",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "125",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n65-reuse-direct-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n65-reuse-direct-l11",
+    "roi_cycles": 57012,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 52550,
+    "issue_slot_pct": {
+      "mul": 17.602283539486205,
+      "add": 19.30732635585157,
+      "div": 46.62226450999049
+    },
+    "cluster_empty_pct": 6.650808753568031,
+    "bank_port_utilization": {
+      "read": {
+        "words": 39925,
+        "corrected_pct": 18.993815413891532,
+        "historical_sum_of_snapshots_pct": 78.25880114176974
+      },
+      "write": {
+        "words": 18730,
+        "corrected_pct": 8.910561370123691,
+        "historical_sum_of_snapshots_pct": 53.48239771646051
+      }
+    },
+    "snapshots_per_bank": 7,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 19596,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 4175,
+          "mul": 19250,
+          "add": 19890
+        },
+        "cluster_empty_cycles": 829,
+        "bank_words": {
+          "W": 13390,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 2074,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 346,
+          "tile_wait_counter": 261,
+          "output_queue_wait_counter": 14,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "11520",
+          "read_completed": "11520",
+          "packets_issued": "183",
+          "packets_completed": "183",
+          "last_response": "540789",
+          "stalls": "794",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "261",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "67",
+        "cache_hit": 1,
+        "controller_cycles": 5492,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 325,
+          "mul": 4500,
+          "add": 5140
+        },
+        "cluster_empty_cycles": 444,
+        "bank_words": {
+          "R": 5475,
+          "W": 890
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1733,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "67",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1296749",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "133",
+        "cache_hit": 1,
+        "controller_cycles": 5494,
+        "first_math_delay": 222,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 325,
+          "mul": 4500,
+          "add": 5140
+        },
+        "cluster_empty_cycles": 446,
+        "bank_words": {
+          "R": 5475,
+          "W": 890
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1733,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "133",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1392963",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "199",
+        "cache_hit": 1,
+        "controller_cycles": 5492,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 325,
+          "mul": 4500,
+          "add": 5140
+        },
+        "cluster_empty_cycles": 444,
+        "bank_words": {
+          "R": 5475,
+          "W": 890
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1733,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "199",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1487402",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "265",
+        "cache_hit": 1,
+        "controller_cycles": 5492,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 325,
+          "mul": 4500,
+          "add": 5140
+        },
+        "cluster_empty_cycles": 444,
+        "bank_words": {
+          "R": 5475,
+          "W": 890
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1733,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "265",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1581584",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "331",
+        "cache_hit": 1,
+        "controller_cycles": 5492,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 325,
+          "mul": 4500,
+          "add": 5140
+        },
+        "cluster_empty_cycles": 444,
+        "bank_words": {
+          "R": 5475,
+          "W": 890
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1733,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "331",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1675077",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "397",
+        "cache_hit": 1,
+        "controller_cycles": 5492,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 325,
+          "mul": 4500,
+          "add": 5140
+        },
+        "cluster_empty_cycles": 444,
+        "bank_words": {
+          "R": 5475,
+          "W": 890
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1733,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "397",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1768387",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-20261015/n65-reuse-inverse-l11": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-20261015/n65-reuse-inverse-l11",
+    "roi_cycles": 53294,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 49510,
+    "issue_slot_pct": {
+      "mul": 22.227832761058373,
+      "add": 24.03756816804686,
+      "div": 44.233488184205214
+    },
+    "cluster_empty_pct": 8.422540900828116,
+    "bank_port_utilization": {
+      "read": {
+        "words": 41875,
+        "corrected_pct": 10.572359119369825,
+        "historical_sum_of_snapshots_pct": 43.255150474651586
+      },
+      "write": {
+        "words": 18730,
+        "corrected_pct": 4.728842658048879,
+        "historical_sum_of_snapshots_pct": 28.383154918198343
+      }
+    },
+    "snapshots_per_bank": 7,
+    "peak_dma_packets_per_cycle": 8,
+    "peak_dma_packets_same_tick": 8,
+    "peak_dma_requested_bytes_per_cycle": 240,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 24458,
+        "first_math_delay": 255,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 5475,
+          "mul": 26075,
+          "add": 26715
+        },
+        "cluster_empty_cycles": 742,
+        "bank_words": {
+          "W": 13390,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1999,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 271,
+          "tile_wait_counter": 186,
+          "output_queue_wait_counter": 76,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "11520",
+          "read_completed": "11520",
+          "packets_issued": "183",
+          "packets_completed": "183",
+          "last_response": "547015",
+          "stalls": "901",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "186",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "67",
+        "cache_hit": 1,
+        "controller_cycles": 4175,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "mul": 4825,
+          "add": 5465
+        },
+        "cluster_empty_cycles": 571,
+        "bank_words": {
+          "W": 890,
+          "R": 5800
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1731,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "67",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1302766",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "2600",
+          "cache_write": "2600"
+        }
+      },
+      {
+        "token": "68",
+        "cache_hit": 1,
+        "controller_cycles": 4177,
+        "first_math_delay": 222,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "mul": 4825,
+          "add": 5465
+        },
+        "cluster_empty_cycles": 573,
+        "bank_words": {
+          "W": 890,
+          "R": 5800
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1731,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "68",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1323727",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "2600",
+          "cache_write": "2600"
+        }
+      },
+      {
+        "token": "69",
+        "cache_hit": 1,
+        "controller_cycles": 4175,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "mul": 4825,
+          "add": 5465
+        },
+        "cluster_empty_cycles": 571,
+        "bank_words": {
+          "W": 890,
+          "R": 5800
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1731,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "69",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1343471",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "2600",
+          "cache_write": "2600"
+        }
+      },
+      {
+        "token": "70",
+        "cache_hit": 1,
+        "controller_cycles": 4175,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "mul": 4825,
+          "add": 5465
+        },
+        "cluster_empty_cycles": 571,
+        "bank_words": {
+          "W": 890,
+          "R": 5800
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1731,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "70",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1363613",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "2600",
+          "cache_write": "2600"
+        }
+      },
+      {
+        "token": "71",
+        "cache_hit": 1,
+        "controller_cycles": 4175,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "mul": 4825,
+          "add": 5465
+        },
+        "cluster_empty_cycles": 571,
+        "bank_words": {
+          "W": 890,
+          "R": 5800
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1731,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "71",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1383077",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "2600",
+          "cache_write": "2600"
+        }
+      },
+      {
+        "token": "72",
+        "cache_hit": 1,
+        "controller_cycles": 4175,
+        "first_math_delay": 220,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "mul": 4825,
+          "add": 5465
+        },
+        "cluster_empty_cycles": 571,
+        "bank_words": {
+          "W": 890,
+          "R": 5800
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1731,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "72",
+          "cells": "65",
+          "tile_cells": "16",
+          "forward_tiles": "5",
+          "reload_tiles": "3",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "2600",
+          "write_completed": "2600",
+          "read_issued": "1920",
+          "read_completed": "1920",
+          "packets_issued": "30",
+          "packets_completed": "30",
+          "last_response": "1402478",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "39000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "2600",
+          "cache_write": "2600"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-tile-20261015/n65-cold-direct-l11-t32": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-tile-20261015/n65-cold-direct-l11-t32",
+    "roi_cycles": 21818,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 19497,
+    "issue_slot_pct": {
+      "mul": 19.746627686310713,
+      "add": 20.403138944452994,
+      "div": 85.65420321075037
+    },
+    "cluster_empty_pct": 3.887777606811304,
+    "bank_port_utilization": {
+      "read": {
+        "words": 7075,
+        "corrected_pct": 9.071908498743396,
+        "historical_sum_of_snapshots_pct": 9.071908498743396
+      },
+      "write": {
+        "words": 8035,
+        "corrected_pct": 10.302867107760168,
+        "historical_sum_of_snapshots_pct": 10.302867107760168
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 19497,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 4175,
+          "mul": 19250,
+          "add": 19890
+        },
+        "cluster_empty_cycles": 758,
+        "bank_words": {
+          "W": 8035,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 2003,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 275,
+          "tile_wait_counter": 178,
+          "output_queue_wait_counter": 87,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "32",
+          "forward_tiles": "3",
+          "reload_tiles": "1",
+          "reserved": "119808",
+          "resident": "15360",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "7680",
+          "read_completed": "7680",
+          "packets_issued": "121",
+          "packets_completed": "121",
+          "last_response": "421793",
+          "stalls": "956",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "178",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-round3-final-tile-20261015/n65-cold-inverse-l11-t32": {
+    "case": "results/cfd_dsa/campaigns/single-line-round3-final-tile-20261015/n65-cold-inverse-l11-t32",
+    "roi_cycles": 26644,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 24406,
+    "issue_slot_pct": {
+      "mul": 21.36769646808162,
+      "add": 21.892157666147668,
+      "div": 89.73203310661313
+    },
+    "cluster_empty_pct": 2.8271736458247974,
+    "bank_port_utilization": {
+      "read": {
+        "words": 7075,
+        "corrected_pct": 7.247193313119725,
+        "historical_sum_of_snapshots_pct": 7.247193313119725
+      },
+      "write": {
+        "words": 8035,
+        "corrected_pct": 8.230558059493568,
+        "historical_sum_of_snapshots_pct": 8.230558059493568
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "650",
+        "max_abs": "2.2204460492503131e-16",
+        "max_rel": "6.6648591081375425e-16",
+        "mismatches": "0",
+        "result_hash": "b309e600d78a58e8"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 24406,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 5475,
+          "mul": 26075,
+          "add": 26715
+        },
+        "cluster_empty_cycles": 690,
+        "bank_words": {
+          "W": 8035,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 1935,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 207,
+          "tile_wait_counter": 116,
+          "output_queue_wait_counter": 81,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "32",
+          "forward_tiles": "3",
+          "reload_tiles": "1",
+          "reserved": "119808",
+          "resident": "15360",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "7680",
+          "read_completed": "7680",
+          "packets_issued": "121",
+          "packets_completed": "121",
+          "last_response": "428282",
+          "stalls": "890",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "116",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-review-20261018/fresh-n17-cold-direct": {
+    "case": "results/cfd_dsa/campaigns/single-line-review-20261018/fresh-n17-cold-direct",
+    "roi_cycles": 7814,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 5331,
+    "issue_slot_pct": {
+      "mul": 18.195460513974865,
+      "add": 18.79572312886888,
+      "div": 79.15963233914837
+    },
+    "cluster_empty_pct": 8.703807915963234,
+    "bank_port_utilization": {
+      "read": {
+        "words": 1795,
+        "corrected_pct": 8.417745263552805,
+        "historical_sum_of_snapshots_pct": 8.417745263552805
+      },
+      "write": {
+        "words": 1795,
+        "corrected_pct": 8.417745263552805,
+        "historical_sum_of_snapshots_pct": 8.417745263552805
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 128,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "170",
+        "max_abs": "5.5511151231257827e-17",
+        "max_rel": "3.7982706899506771e-16",
+        "mismatches": "0",
+        "result_hash": "3b3445baf6e7fb27"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 5331,
+        "first_math_delay": 266,
+        "completion_tail_cycles": 185,
+        "issued": {
+          "div": 1055,
+          "mul": 4850,
+          "add": 5010
+        },
+        "cluster_empty_cycles": 464,
+        "bank_words": {
+          "W": 1795,
+          "R": 1795
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 437,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "3880",
+          "write_completed": "3880",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "266589",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-review-20261018/fresh-n17-reuse-inverse": {
+    "case": "results/cfd_dsa/campaigns/single-line-review-20261018/fresh-n17-reuse-inverse",
+    "roi_cycles": 18908,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 14937,
+    "issue_slot_pct": {
+      "mul": 18.725312981187656,
+      "add": 20.224944768025708,
+      "div": 37.35689897569793
+    },
+    "cluster_empty_pct": 21.644239137711722,
+    "bank_port_utilization": {
+      "read": {
+        "words": 10675,
+        "corrected_pct": 8.933353417687622,
+        "historical_sum_of_snapshots_pct": 36.52423512084086
+      },
+      "write": {
+        "words": 4090,
+        "corrected_pct": 3.422708709914976,
+        "historical_sum_of_snapshots_pct": 20.9714132690634
+      }
+    },
+    "snapshots_per_bank": 7,
+    "peak_dma_packets_per_cycle": 8,
+    "peak_dma_packets_same_tick": 8,
+    "peak_dma_requested_bytes_per_cycle": 240,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      },
+      {
+        "version": "1",
+        "base_solve": "inverse",
+        "values": "170",
+        "max_abs": "8.3266726846886741e-17",
+        "max_rel": "4.0411059907369395e-16",
+        "mismatches": "0",
+        "result_hash": "c57989fb62eb1a23"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 6551,
+        "first_math_delay": 259,
+        "completion_tail_cycles": 185,
+        "issued": {
+          "div": 1395,
+          "mul": 6635,
+          "add": 6795
+        },
+        "cluster_empty_cycles": 451,
+        "bank_words": {
+          "W": 3070,
+          "R": 1795
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 2720,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "3880",
+          "write_completed": "3880",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "296479",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "19",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "19",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "506995",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "20",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "20",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "517032",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "21",
+        "cache_hit": 1,
+        "controller_cycles": 1399,
+        "first_math_delay": 225,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 465,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "21",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "525988",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "22",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "22",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "535410",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "23",
+        "cache_hit": 1,
+        "controller_cycles": 1399,
+        "first_math_delay": 225,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 465,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "23",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "544322",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      },
+      {
+        "token": "24",
+        "cache_hit": 1,
+        "controller_cycles": 1397,
+        "first_math_delay": 223,
+        "completion_tail_cycles": 197,
+        "issued": {
+          "mul": 1225,
+          "add": 1385
+        },
+        "cluster_empty_cycles": 463,
+        "bank_words": {
+          "W": 170,
+          "R": 1480
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 435,
+          "any_math_active_cycles": 432,
+          "math_inactive_cycles": 3,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 400,
+            "9": 400,
+            "7": 80
+          }
+        },
+        "storage": {
+          "token": "24",
+          "cells": "17",
+          "tile_cells": "16",
+          "forward_tiles": "2",
+          "reload_tiles": "0",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "680",
+          "write_completed": "680",
+          "read_issued": "0",
+          "read_completed": "0",
+          "packets_issued": "0",
+          "packets_completed": "0",
+          "last_response": "553044",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "10200",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "680",
+          "cache_write": "680"
+        }
+      }
+    ]
+  },
+  "single-line-review-20261018/fresh-n65-cold-direct": {
+    "case": "results/cfd_dsa/campaigns/single-line-review-20261018/fresh-n65-cold-direct",
+    "roi_cycles": 21818,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 19497,
+    "issue_slot_pct": {
+      "mul": 19.746627686310713,
+      "add": 20.403138944452994,
+      "div": 85.65420321075037
+    },
+    "cluster_empty_pct": 3.887777606811304,
+    "bank_port_utilization": {
+      "read": {
+        "words": 7075,
+        "corrected_pct": 9.071908498743396,
+        "historical_sum_of_snapshots_pct": 9.071908498743396
+      },
+      "write": {
+        "words": 8035,
+        "corrected_pct": 10.302867107760168,
+        "historical_sum_of_snapshots_pct": 10.302867107760168
+      }
+    },
+    "snapshots_per_bank": 1,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "650",
+        "max_abs": "1.6653345369377348e-16",
+        "max_rel": "4.9986443311031574e-16",
+        "mismatches": "0",
+        "result_hash": "c0aaaca5db0e9414"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 19497,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 4175,
+          "mul": 19250,
+          "add": 19890
+        },
+        "cluster_empty_cycles": 758,
+        "bank_words": {
+          "W": 8035,
+          "R": 7075
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 10400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 2003,
+          "any_math_active_cycles": 1728,
+          "math_inactive_cycles": 275,
+          "tile_wait_counter": 178,
+          "output_queue_wait_counter": 87,
+          "callers": {
+            "8": 1600,
+            "9": 1600,
+            "7": 320
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "65",
+          "tile_cells": "32",
+          "forward_tiles": "3",
+          "reload_tiles": "1",
+          "reserved": "119808",
+          "resident": "15360",
+          "capacity": "196608",
+          "write_issued": "15400",
+          "write_completed": "15400",
+          "read_issued": "7680",
+          "read_completed": "7680",
+          "packets_issued": "121",
+          "packets_completed": "121",
+          "last_response": "425197",
+          "stalls": "956",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "178",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-review-20261018/capacity-n115": {
+    "case": "results/cfd_dsa/campaigns/single-line-review-20261018/capacity-n115",
+    "roi_cycles": 46124,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 43418,
+    "issue_slot_pct": {
+      "mul": 19.461974296374777,
+      "add": 20.512229950711685,
+      "div": 73.70215118153762
+    },
+    "cluster_empty_pct": 3.0286977751163113,
+    "bank_port_utilization": {
+      "read": {
+        "words": 22300,
+        "corrected_pct": 12.840296651158505,
+        "historical_sum_of_snapshots_pct": 20.08095720668847
+      },
+      "write": {
+        "words": 25710,
+        "corrected_pct": 14.803768022479156,
+        "historical_sum_of_snapshots_pct": 28.66898521350592
+      }
+    },
+    "snapshots_per_bank": 2,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "1150",
+        "max_abs": "3.3306690738754696e-16",
+        "max_rel": "5.8812182590308752e-16",
+        "mismatches": "0",
+        "result_hash": "8acd20d4c7052262"
+      },
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "1150",
+        "max_abs": "3.3306690738754696e-16",
+        "max_rel": "5.8812182590308752e-16",
+        "mismatches": "0",
+        "result_hash": "8acd20d4c7052262"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 34084,
+        "first_math_delay": 266,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 7425,
+          "mul": 34250,
+          "add": 35390
+        },
+        "cluster_empty_cycles": 867,
+        "bank_words": {
+          "W": 24080,
+          "R": 12575
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 18400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 3459,
+          "any_math_active_cycles": 3078,
+          "math_inactive_cycles": 381,
+          "tile_wait_counter": 78,
+          "output_queue_wait_counter": 293,
+          "callers": {
+            "8": 2850,
+            "9": 2850,
+            "7": 570
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "115",
+          "tile_cells": "16",
+          "forward_tiles": "8",
+          "reload_tiles": "6",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "27400",
+          "write_completed": "27400",
+          "read_issued": "23040",
+          "read_completed": "23040",
+          "packets_issued": "372",
+          "packets_completed": "372",
+          "last_response": "626220",
+          "stalls": "1436",
+          "host_line_arrays": "0",
+          "cache_bytes": "69000",
+          "buffers": "2",
+          "data_wait": "78",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "117",
+        "cache_hit": 1,
+        "controller_cycles": 9334,
+        "first_math_delay": 224,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 575,
+          "mul": 8000,
+          "add": 9140
+        },
+        "cluster_empty_cycles": 448,
+        "bank_words": {
+          "R": 9725,
+          "W": 1630
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 18400,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 3083,
+          "any_math_active_cycles": 3078,
+          "math_inactive_cycles": 5,
+          "tile_wait_counter": 0,
+          "output_queue_wait_counter": 0,
+          "callers": {
+            "8": 2850,
+            "9": 2850,
+            "7": 570
+          }
+        },
+        "storage": {
+          "token": "117",
+          "cells": "115",
+          "tile_cells": "16",
+          "forward_tiles": "8",
+          "reload_tiles": "6",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "4600",
+          "write_completed": "4600",
+          "read_issued": "3840",
+          "read_completed": "3840",
+          "packets_issued": "66",
+          "packets_completed": "66",
+          "last_response": "1953438",
+          "stalls": "0",
+          "host_line_arrays": "0",
+          "cache_bytes": "69000",
+          "buffers": "2",
+          "data_wait": "0",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  },
+  "single-line-review-20261018/capacity-n116": {
+    "case": "results/cfd_dsa/campaigns/single-line-review-20261018/capacity-n116",
+    "roi_cycles": 71722,
+    "gem5_sha256": "625073a77d1aa13417a54c2e90ee0277da81b5c9652b82dae0af069e4907b3b8",
+    "controller_cycles": 68803,
+    "issue_slot_pct": {
+      "mul": 20.086333444762584,
+      "add": 20.754908942924,
+      "div": 87.08922576050463
+    },
+    "cluster_empty_pct": 2.6030841678415184,
+    "bank_port_utilization": {
+      "read": {
+        "words": 25370,
+        "corrected_pct": 9.218348037149543,
+        "historical_sum_of_snapshots_pct": 13.827522055724314
+      },
+      "write": {
+        "words": 31130,
+        "corrected_pct": 11.31128003139398,
+        "historical_sum_of_snapshots_pct": 16.96692004709097
+      }
+    },
+    "snapshots_per_bank": 2,
+    "peak_dma_packets_per_cycle": 3,
+    "peak_dma_packets_same_tick": 3,
+    "peak_dma_requested_bytes_per_cycle": 192,
+    "numeric": [
+      {
+        "version": "1",
+        "base_solve": "direct",
+        "values": "1160",
+        "max_abs": "3.3306690738754696e-16",
+        "max_rel": "5.8812182590308752e-16",
+        "mismatches": "0",
+        "result_hash": "19accc2e36756a6a"
+      },
+      {
+        "version": "2",
+        "base_solve": "direct",
+        "values": "1160",
+        "max_abs": "3.3306690738754696e-16",
+        "max_rel": "5.8812182590308752e-16",
+        "mismatches": "0",
+        "result_hash": "19accc2e36756a6a"
+      }
+    ],
+    "windows": [
+      {
+        "token": "1",
+        "cache_hit": 0,
+        "controller_cycles": 34470,
+        "first_math_delay": 263,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 7490,
+          "mul": 34550,
+          "add": 35700
+        },
+        "cluster_empty_cycles": 964,
+        "bank_words": {
+          "W": 15565,
+          "R": 12685
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 18560,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 3586,
+          "any_math_active_cycles": 3105,
+          "math_inactive_cycles": 481,
+          "tile_wait_counter": 325,
+          "output_queue_wait_counter": 128,
+          "callers": {
+            "8": 2875,
+            "9": 2875,
+            "7": 575
+          }
+        },
+        "storage": {
+          "token": "1",
+          "cells": "116",
+          "tile_cells": "16",
+          "forward_tiles": "8",
+          "reload_tiles": "6",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "27640",
+          "write_completed": "27640",
+          "read_issued": "23040",
+          "read_completed": "23040",
+          "packets_issued": "372",
+          "packets_completed": "372",
+          "last_response": "630346",
+          "stalls": "1568",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "325",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      },
+      {
+        "token": "118",
+        "cache_hit": 0,
+        "controller_cycles": 34333,
+        "first_math_delay": 264,
+        "completion_tail_cycles": 212,
+        "issued": {
+          "div": 7490,
+          "mul": 34550,
+          "add": 35700
+        },
+        "cluster_empty_cycles": 827,
+        "bank_words": {
+          "W": 15565,
+          "R": 12685
+        },
+        "metadata_dma_bytes": {
+          "descriptor": 160,
+          "record": 18560,
+          "status": 8
+        },
+        "backward": {
+          "cycles": 3448,
+          "any_math_active_cycles": 3105,
+          "math_inactive_cycles": 343,
+          "tile_wait_counter": 218,
+          "output_queue_wait_counter": 96,
+          "callers": {
+            "8": 2875,
+            "9": 2875,
+            "7": 575
+          }
+        },
+        "storage": {
+          "token": "118",
+          "cells": "116",
+          "tile_cells": "16",
+          "forward_tiles": "8",
+          "reload_tiles": "6",
+          "reserved": "119808",
+          "resident": "7680",
+          "capacity": "196608",
+          "write_issued": "27640",
+          "write_completed": "27640",
+          "read_issued": "23040",
+          "read_completed": "23040",
+          "packets_issued": "372",
+          "packets_completed": "372",
+          "last_response": "1993442",
+          "stalls": "1566",
+          "host_line_arrays": "0",
+          "cache_bytes": "0",
+          "buffers": "2",
+          "data_wait": "218",
+          "cache_read": "0",
+          "cache_write": "0"
+        }
+      }
+    ]
+  }
+}

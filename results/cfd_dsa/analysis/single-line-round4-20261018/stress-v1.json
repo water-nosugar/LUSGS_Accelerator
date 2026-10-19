@@ -1,0 +1,5809 @@
+{
+  "schema_version": 1,
+  "campaign": "single-line-round4-stress-20261019",
+  "provenance": [
+    "8ebf1e29e6b993e4b0cccef4842afc6ce8903e626b1de7a698bf4528f9fc5f4a",
+    "fd7c0760301856838ca52ebf671039a618244fcb234be62dfd53b40af3ee2f01",
+    "4effd5c8ad73338c834b0d9ecc67bd1389dd51432dbdea7f1f774b2db2fa62da"
+  ],
+  "cases": {
+    "n1-direct-credits1": {
+      "roi_cycles": 12162,
+      "controller_cycles": 8745,
+      "issue_pct": {
+        "mul": 0.2058319039451115,
+        "add": 0.2058319039451115,
+        "div": 1.1435105774728416
+      },
+      "empty_pct": 93.84791309319611,
+      "peak_bytes": 58552,
+      "reload_bytes": 0,
+      "max_abs": 0.0,
+      "bank_read_pct": 0.30017152658662094,
+      "bank_write_pct": 0.3716409376786735,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "2",
+        "depth": "1",
+        "samples": "8745",
+        "created": "24",
+        "completed": "24",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "1",
+        "full": "775",
+        "conflicts": "48"
+      },
+      "rhs": {
+        "capacity": "1",
+        "bytes": "320",
+        "peak": "1",
+        "issued": "24",
+        "completed": "24",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "1",
+        "bytes": "512",
+        "peak": "1",
+        "issued": "1",
+        "completed": "1",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 0,
+            "cache_hit": 0,
+            "cycles": 4213,
+            "empty_cycles": 3955,
+            "empty_pct": 93.87609779254687,
+            "handoff_gap_histogram": {},
+            "input_order": [
+              0
+            ],
+            "issue_utilization_pct": {
+              "add": 0.23736055067647757,
+              "div": 1.4241633040588655,
+              "mul": 0.23736055067647757
+            },
+            "issued": {
+              "add": 50,
+              "div": 15,
+              "mul": 50
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 0,
+            "math_active_cycles": 0,
+            "math_inactive_cycles": 0,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1937,
+          "numeric_ready_to_backward": 25,
+          "completion_tail": 1972,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 0,
+            "cache_hit": 1,
+            "cycles": 2266,
+            "empty_cycles": 2126,
+            "empty_pct": 93.82171226831422,
+            "handoff_gap_histogram": {},
+            "input_order": [
+              0
+            ],
+            "issue_utilization_pct": {
+              "add": 0.176522506619594,
+              "div": 0.8826125330979699,
+              "mul": 0.176522506619594
+            },
+            "issued": {
+              "add": 20,
+              "div": 5,
+              "mul": 20
+            },
+            "token": "3",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 0,
+            "math_active_cycles": 0,
+            "math_inactive_cycles": 0,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1298,
+          "numeric_ready_to_backward": 4,
+          "completion_tail": 819,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 0,
+            "cache_hit": 1,
+            "cycles": 2266,
+            "empty_cycles": 2126,
+            "empty_pct": 93.82171226831422,
+            "handoff_gap_histogram": {},
+            "input_order": [
+              0
+            ],
+            "issue_utilization_pct": {
+              "add": 0.176522506619594,
+              "div": 0.8826125330979699,
+              "mul": 0.176522506619594
+            },
+            "issued": {
+              "add": 20,
+              "div": 5,
+              "mul": 20
+            },
+            "token": "5",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 0,
+            "math_active_cycles": 0,
+            "math_inactive_cycles": 0,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1298,
+          "numeric_ready_to_backward": 4,
+          "completion_tail": 819,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 124,
+        "bytes": 1552,
+        "bytes_per_packet": 12.516129032258064,
+        "queue_cycles": {
+          "count": 124,
+          "minimum": 0.0,
+          "mean": 0.0,
+          "maximum": 0.0
+        },
+        "response_cycles": {
+          "count": 124,
+          "minimum": 50.0,
+          "mean": 64.95967741935483,
+          "maximum": 103.0
+        }
+      }
+    },
+    "n2-direct-credits1": {
+      "roi_cycles": 17704,
+      "controller_cycles": 14279,
+      "issue_pct": {
+        "mul": 0.7423489039848729,
+        "add": 0.7843686532670355,
+        "div": 2.801316618810841
+      },
+      "empty_pct": 87.39407521535122,
+      "peak_bytes": 59152,
+      "reload_bytes": 0,
+      "max_abs": 2.7755575615628914e-17,
+      "bank_read_pct": 0.6740668114013586,
+      "bank_write_pct": 0.5865256670635198,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "2",
+        "depth": "1",
+        "samples": "14279",
+        "created": "963",
+        "completed": "75",
+        "cancelled": "888",
+        "live": "0",
+        "peak": "1",
+        "full": "2617",
+        "conflicts": "150"
+      },
+      "rhs": {
+        "capacity": "1",
+        "bytes": "320",
+        "peak": "1",
+        "issued": "128",
+        "completed": "128",
+        "live": "0",
+        "stalls": "1885"
+      },
+      "completion": {
+        "depth": "1",
+        "bytes": "512",
+        "peak": "1",
+        "issued": "2",
+        "completed": "2",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 310,
+            "cache_hit": 0,
+            "cycles": 8582,
+            "empty_cycles": 7474,
+            "empty_pct": 87.08925658354696,
+            "handoff_gap_histogram": {
+              "4020": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 0.8389652761594034,
+              "div": 3.7287345607084594,
+              "mul": 0.8156606851549756
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 310,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 283,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 283
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 2371,
+          "numeric_ready_to_backward": 25,
+          "completion_tail": 1576,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 278,
+            "cache_hit": 1,
+            "cycles": 2822,
+            "empty_cycles": 2476,
+            "empty_pct": 87.73919206236711,
+            "handoff_gap_histogram": {
+              "479": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 0.7087172218284904,
+              "div": 1.4174344436569808,
+              "mul": 0.6378454996456414
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "4",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 278,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 251,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 251
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1246,
+          "numeric_ready_to_backward": 4,
+          "completion_tail": 670,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 278,
+            "cache_hit": 1,
+            "cycles": 2875,
+            "empty_cycles": 2529,
+            "empty_pct": 87.96521739130435,
+            "handoff_gap_histogram": {
+              "479": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 0.6956521739130435,
+              "div": 1.391304347826087,
+              "mul": 0.6260869565217392
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "7",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 278,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 251,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 251
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1299,
+          "numeric_ready_to_backward": 4,
+          "completion_tail": 670,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 192,
+        "bytes": 3072,
+        "bytes_per_packet": 16.0,
+        "queue_cycles": {
+          "count": 192,
+          "minimum": 0.0,
+          "mean": 0.0,
+          "maximum": 0.0
+        },
+        "response_cycles": {
+          "count": 192,
+          "minimum": 50.0,
+          "mean": 68.265625,
+          "maximum": 106.0
+        }
+      }
+    },
+    "n17-direct-random-1": {
+      "roi_cycles": 12588,
+      "controller_cycles": 9153,
+      "issue_pct": {
+        "mul": 15.57959139080083,
+        "add": 16.628427837867367,
+        "div": 53.53436031902108
+      },
+      "empty_pct": 16.49732328198405,
+      "peak_bytes": 137688,
+      "reload_bytes": 0,
+      "max_abs": 8.326672684688674e-17,
+      "bank_read_pct": 12.523216431771004,
+      "bank_write_pct": 9.313886157543974,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9153",
+        "created": "734",
+        "completed": "734",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "27",
+        "full": "0",
+        "conflicts": "2974"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "11",
+        "issued": "1688",
+        "completed": "1688",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "17",
+        "completed": "17",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 0,
+            "cycles": 5357,
+            "empty_cycles": 462,
+            "empty_pct": 8.624229979466119,
+            "handoff_gap_histogram": {
+              "210": 1,
+              "262": 11,
+              "264": 2,
+              "265": 1,
+              "303": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 18.70449878663431,
+              "div": 78.77543401157364,
+              "mul": 18.107149523987307
+            },
+            "issued": {
+              "add": 5010,
+              "div": 1055,
+              "mul": 4850
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 266,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 1,
+            "cycles": 1898,
+            "empty_cycles": 524,
+            "empty_pct": 27.608008429926237,
+            "handoff_gap_histogram": {
+              "27": 5,
+              "28": 1,
+              "37": 2,
+              "44": 1,
+              "56": 2,
+              "63": 1,
+              "85": 2,
+              "86": 2
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 13.698630136986301,
+              "div": 17.91359325605901,
+              "mul": 12.012644889357219
+            },
+            "issued": {
+              "add": 1300,
+              "div": 85,
+              "mul": 1140
+            },
+            "token": "19",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 290,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 1,
+            "cycles": 1898,
+            "empty_cycles": 524,
+            "empty_pct": 27.608008429926237,
+            "handoff_gap_histogram": {
+              "27": 5,
+              "28": 1,
+              "37": 2,
+              "44": 1,
+              "56": 2,
+              "63": 1,
+              "85": 2,
+              "86": 2
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 13.698630136986301,
+              "div": 17.91359325605901,
+              "mul": 12.012644889357219
+            },
+            "issued": {
+              "add": 1300,
+              "div": 85,
+              "mul": 1140
+            },
+            "token": "37",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 290,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 623,
+        "bytes": 25872,
+        "bytes_per_packet": 41.52808988764045,
+        "queue_cycles": {
+          "count": 623,
+          "minimum": 0.0,
+          "mean": 1.4944269662921348,
+          "maximum": 44.002
+        },
+        "response_cycles": {
+          "count": 623,
+          "minimum": 50.0,
+          "mean": 94.83792616372392,
+          "maximum": 123.0
+        }
+      }
+    },
+    "n17-direct-random-42": {
+      "roi_cycles": 12626,
+      "controller_cycles": 9153,
+      "issue_pct": {
+        "mul": 15.57959139080083,
+        "add": 16.628427837867367,
+        "div": 53.53436031902108
+      },
+      "empty_pct": 16.49732328198405,
+      "peak_bytes": 137688,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 12.523216431771004,
+      "bank_write_pct": 9.313886157543974,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9153",
+        "created": "734",
+        "completed": "734",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "27",
+        "full": "0",
+        "conflicts": "2974"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "11",
+        "issued": "1688",
+        "completed": "1688",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "17",
+        "completed": "17",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 0,
+            "cycles": 5357,
+            "empty_cycles": 462,
+            "empty_pct": 8.624229979466119,
+            "handoff_gap_histogram": {
+              "210": 1,
+              "262": 11,
+              "264": 2,
+              "265": 1,
+              "303": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 18.70449878663431,
+              "div": 78.77543401157364,
+              "mul": 18.107149523987307
+            },
+            "issued": {
+              "add": 5010,
+              "div": 1055,
+              "mul": 4850
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 266,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 1,
+            "cycles": 1898,
+            "empty_cycles": 524,
+            "empty_pct": 27.608008429926237,
+            "handoff_gap_histogram": {
+              "27": 5,
+              "28": 1,
+              "37": 2,
+              "44": 1,
+              "56": 2,
+              "63": 1,
+              "85": 2,
+              "86": 2
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 13.698630136986301,
+              "div": 17.91359325605901,
+              "mul": 12.012644889357219
+            },
+            "issued": {
+              "add": 1300,
+              "div": 85,
+              "mul": 1140
+            },
+            "token": "19",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 290,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 1,
+            "cycles": 1898,
+            "empty_cycles": 524,
+            "empty_pct": 27.608008429926237,
+            "handoff_gap_histogram": {
+              "27": 5,
+              "28": 1,
+              "37": 2,
+              "44": 1,
+              "56": 2,
+              "63": 1,
+              "85": 2,
+              "86": 2
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 13.698630136986301,
+              "div": 17.91359325605901,
+              "mul": 12.012644889357219
+            },
+            "issued": {
+              "add": 1300,
+              "div": 85,
+              "mul": 1140
+            },
+            "token": "37",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 290,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 623,
+        "bytes": 25872,
+        "bytes_per_packet": 41.52808988764045,
+        "queue_cycles": {
+          "count": 623,
+          "minimum": 0.0,
+          "mean": 1.4944269662921348,
+          "maximum": 44.002
+        },
+        "response_cycles": {
+          "count": 623,
+          "minimum": 50.0,
+          "mean": 94.83792616372392,
+          "maximum": 123.0
+        }
+      }
+    },
+    "n17-direct-scaled-42": {
+      "roi_cycles": 12646,
+      "controller_cycles": 9153,
+      "issue_pct": {
+        "mul": 15.57959139080083,
+        "add": 16.628427837867367,
+        "div": 53.53436031902108
+      },
+      "empty_pct": 16.49732328198405,
+      "peak_bytes": 137688,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 12.523216431771004,
+      "bank_write_pct": 9.313886157543974,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9153",
+        "created": "734",
+        "completed": "734",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "27",
+        "full": "0",
+        "conflicts": "2974"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "11",
+        "issued": "1688",
+        "completed": "1688",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "17",
+        "completed": "17",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 0,
+            "cycles": 5357,
+            "empty_cycles": 462,
+            "empty_pct": 8.624229979466119,
+            "handoff_gap_histogram": {
+              "210": 1,
+              "262": 11,
+              "264": 2,
+              "265": 1,
+              "303": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 18.70449878663431,
+              "div": 78.77543401157364,
+              "mul": 18.107149523987307
+            },
+            "issued": {
+              "add": 5010,
+              "div": 1055,
+              "mul": 4850
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 266,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 1,
+            "cycles": 1898,
+            "empty_cycles": 524,
+            "empty_pct": 27.608008429926237,
+            "handoff_gap_histogram": {
+              "27": 5,
+              "28": 1,
+              "37": 2,
+              "44": 1,
+              "56": 2,
+              "63": 1,
+              "85": 2,
+              "86": 2
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 13.698630136986301,
+              "div": 17.91359325605901,
+              "mul": 12.012644889357219
+            },
+            "issued": {
+              "add": 1300,
+              "div": 85,
+              "mul": 1140
+            },
+            "token": "19",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 290,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 437,
+            "cache_hit": 1,
+            "cycles": 1898,
+            "empty_cycles": 524,
+            "empty_pct": 27.608008429926237,
+            "handoff_gap_histogram": {
+              "27": 5,
+              "28": 1,
+              "37": 2,
+              "44": 1,
+              "56": 2,
+              "63": 1,
+              "85": 2,
+              "86": 2
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 13.698630136986301,
+              "div": 17.91359325605901,
+              "mul": 12.012644889357219
+            },
+            "issued": {
+              "add": 1300,
+              "div": 85,
+              "mul": 1140
+            },
+            "token": "37",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 437,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 290,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 623,
+        "bytes": 25872,
+        "bytes_per_packet": 41.52808988764045,
+        "queue_cycles": {
+          "count": 623,
+          "minimum": 0.0,
+          "mean": 1.4944269662921348,
+          "maximum": 44.002
+        },
+        "response_cycles": {
+          "count": 623,
+          "minimum": 50.0,
+          "mean": 94.83792616372392,
+          "maximum": 123.0
+        }
+      }
+    },
+    "n257-direct": {
+      "roi_cycles": 153272,
+      "controller_cycles": 149936,
+      "issue_pct": {
+        "mul": 20.50208088784548,
+        "add": 21.18503894995198,
+        "div": 88.86458222174795
+      },
+      "empty_pct": 0.9877547753708249,
+      "peak_bytes": 135168,
+      "reload_bytes": 107520,
+      "max_abs": 4.440892098500626e-16,
+      "bank_read_pct": 9.402345000533561,
+      "bank_write_pct": 11.64330114182051,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "149936",
+        "created": "21782",
+        "completed": "13230",
+        "cancelled": "8552",
+        "live": "0",
+        "peak": "32",
+        "full": "1687",
+        "conflicts": "32948"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "10",
+        "issued": "45072",
+        "completed": "45072",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "514",
+        "completed": "514",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 7135,
+            "cache_hit": 0,
+            "cycles": 74948,
+            "empty_cycles": 720,
+            "empty_pct": 0.96066606180285,
+            "handoff_gap_histogram": {
+              "208": 1,
+              "229": 1,
+              "242": 1,
+              "262": 251,
+              "264": 1,
+              "307": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255,
+              256
+            ],
+            "issue_utilization_pct": {
+              "add": 21.190692213267866,
+              "div": 88.88829588514703,
+              "mul": 20.507551902652505
+            },
+            "issued": {
+              "add": 79410,
+              "div": 16655,
+              "mul": 76850
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 7135,
+            "math_active_cycles": 6912,
+            "math_inactive_cycles": 223,
+            "wait_counters": {
+              "tile_wait": 15,
+              "output_queue_wait": 198
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 277,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 7145,
+            "cache_hit": 0,
+            "cycles": 74988,
+            "empty_cycles": 761,
+            "empty_pct": 1.0148290393129566,
+            "handoff_gap_histogram": {
+              "229": 1,
+              "262": 254,
+              "263": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255,
+              256
+            ],
+            "issue_utilization_pct": {
+              "add": 21.17938870219235,
+              "div": 88.84088120765989,
+              "mul": 20.496612791379953
+            },
+            "issued": {
+              "add": 79410,
+              "div": 16655,
+              "mul": 76850
+            },
+            "token": "259",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 7145,
+            "math_active_cycles": 6912,
+            "math_inactive_cycles": 233,
+            "wait_counters": {
+              "tile_wait": 33,
+              "output_queue_wait": 190
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 308,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 212,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 15940,
+        "bytes": 764576,
+        "bytes_per_packet": 47.96587202007528,
+        "queue_cycles": {
+          "count": 15940,
+          "minimum": 0.0,
+          "mean": 5.932390464240903,
+          "maximum": 127.002
+        },
+        "response_cycles": {
+          "count": 15940,
+          "minimum": 50.0,
+          "mean": 103.64174190715183,
+          "maximum": 186.0
+        }
+      }
+    },
+    "n65-direct-serial": {
+      "roi_cycles": 36308,
+      "controller_cycles": 32761,
+      "issue_pct": {
+        "mul": 17.246115808430755,
+        "add": 18.41824120142853,
+        "div": 58.911510637648426
+      },
+      "empty_pct": 4.871646164646989,
+      "peak_bytes": 166488,
+      "reload_bytes": 15360,
+      "max_abs": 1.6653345369377348e-16,
+      "bank_read_pct": 13.754922010927627,
+      "bank_write_pct": 11.576264460791796,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "32761",
+        "created": "3702",
+        "completed": "3110",
+        "cancelled": "592",
+        "live": "0",
+        "peak": "32",
+        "full": "161",
+        "conflicts": "11200"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "11",
+        "issued": "6680",
+        "completed": "6680",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "65",
+        "completed": "65",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 2501,
+            "cache_hit": 0,
+            "cycles": 20023,
+            "empty_cycles": 488,
+            "empty_pct": 2.4371972231933277,
+            "handoff_gap_histogram": {
+              "210": 1,
+              "262": 59,
+              "264": 2,
+              "265": 1,
+              "303": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 19.867152774309545,
+              "div": 83.40408530190281,
+              "mul": 19.227887928881785
+            },
+            "issued": {
+              "add": 19890,
+              "div": 4175,
+              "mul": 19250
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 2501,
+            "math_active_cycles": 2496,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 2501,
+            "cache_hit": 1,
+            "cycles": 6368,
+            "empty_cycles": 553,
+            "empty_pct": 8.684045226130653,
+            "handoff_gap_histogram": {
+              "27": 24,
+              "28": 1,
+              "37": 8,
+              "44": 6,
+              "49": 1,
+              "56": 1,
+              "63": 6,
+              "85": 9,
+              "86": 7,
+              "93": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 16.14321608040201,
+              "div": 20.41457286432161,
+              "mul": 14.133165829145728
+            },
+            "issued": {
+              "add": 5140,
+              "div": 325,
+              "mul": 4500
+            },
+            "token": "67",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 2501,
+            "math_active_cycles": 2496,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 321,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 2501,
+            "cache_hit": 1,
+            "cycles": 6370,
+            "empty_cycles": 555,
+            "empty_pct": 8.712715855572998,
+            "handoff_gap_histogram": {
+              "27": 24,
+              "28": 1,
+              "37": 8,
+              "44": 6,
+              "49": 1,
+              "56": 1,
+              "63": 6,
+              "85": 9,
+              "86": 7,
+              "93": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 16.138147566718995,
+              "div": 20.408163265306122,
+              "mul": 14.1287284144427
+            },
+            "issued": {
+              "add": 5140,
+              "div": 325,
+              "mul": 4500
+            },
+            "token": "133",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 2501,
+            "math_active_cycles": 2496,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 321,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 2651,
+        "bytes": 114192,
+        "bytes_per_packet": 43.075066012825346,
+        "queue_cycles": {
+          "count": 2651,
+          "minimum": 0.0,
+          "mean": 4.2437789513391175,
+          "maximum": 124.002
+        },
+        "response_cycles": {
+          "count": 2651,
+          "minimum": 50.0,
+          "mean": 95.87814258770275,
+          "maximum": 137.998
+        }
+      }
+    },
+    "n65-direct-tree": {
+      "roi_cycles": 33682,
+      "controller_cycles": 30135,
+      "issue_pct": {
+        "mul": 18.74896299983408,
+        "add": 19.386095901775345,
+        "div": 64.04513024722084
+      },
+      "empty_pct": 6.119130579060893,
+      "peak_bytes": 166488,
+      "reload_bytes": 15360,
+      "max_abs": 1.6653345369377348e-16,
+      "bank_read_pct": 14.953542392566783,
+      "bank_write_pct": 12.585034013605442,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "30135",
+        "created": "3638",
+        "completed": "3110",
+        "cancelled": "528",
+        "live": "0",
+        "peak": "32",
+        "full": "1084",
+        "conflicts": "11275"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "11",
+        "issued": "6680",
+        "completed": "6680",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "65",
+        "completed": "65",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 1793,
+            "cache_hit": 0,
+            "cycles": 19315,
+            "empty_cycles": 736,
+            "empty_pct": 3.8105099663473982,
+            "handoff_gap_histogram": {
+              "210": 1,
+              "262": 59,
+              "264": 2,
+              "265": 1,
+              "303": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 20.26404348951592,
+              "div": 86.46129950815428,
+              "mul": 19.93269479679006
+            },
+            "issued": {
+              "add": 19570,
+              "div": 4175,
+              "mul": 19250
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 1793,
+            "math_active_cycles": 1540,
+            "math_inactive_cycles": 253,
+            "wait_counters": {
+              "tile_wait": 88,
+              "output_queue_wait": 94
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 1542,
+            "cache_hit": 1,
+            "cycles": 5409,
+            "empty_cycles": 553,
+            "empty_pct": 10.22370123867628,
+            "handoff_gap_histogram": {
+              "27": 24,
+              "28": 1,
+              "37": 8,
+              "44": 6,
+              "49": 1,
+              "56": 1,
+              "63": 6,
+              "85": 9,
+              "86": 7,
+              "93": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 17.82214827139952,
+              "div": 24.034017378443334,
+              "mul": 16.638935108153078
+            },
+            "issued": {
+              "add": 4820,
+              "div": 325,
+              "mul": 4500
+            },
+            "token": "67",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 1542,
+            "math_active_cycles": 1537,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 321,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 1542,
+            "cache_hit": 1,
+            "cycles": 5411,
+            "empty_cycles": 555,
+            "empty_pct": 10.256884124930696,
+            "handoff_gap_histogram": {
+              "27": 24,
+              "28": 1,
+              "37": 8,
+              "44": 6,
+              "49": 1,
+              "56": 1,
+              "63": 6,
+              "85": 9,
+              "86": 7,
+              "93": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 17.81556089447422,
+              "div": 24.025133986324153,
+              "mul": 16.632785067455185
+            },
+            "issued": {
+              "add": 4820,
+              "div": 325,
+              "mul": 4500
+            },
+            "token": "133",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 1542,
+            "math_active_cycles": 1537,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 321,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 2651,
+        "bytes": 114192,
+        "bytes_per_packet": 43.075066012825346,
+        "queue_cycles": {
+          "count": 2651,
+          "minimum": 0.0,
+          "mean": 4.152866842700868,
+          "maximum": 117.002
+        },
+        "response_cycles": {
+          "count": 2651,
+          "minimum": 50.0,
+          "mean": 96.65227235005658,
+          "maximum": 137.998
+        }
+      }
+    },
+    "n1-inverse-credits1": {
+      "roi_cycles": 11172,
+      "controller_cycles": 8197,
+      "issue_pct": {
+        "mul": 0.5001829937782115,
+        "add": 0.5001829937782115,
+        "div": 1.7079419299743808
+      },
+      "empty_pct": 93.44882274002684,
+      "peak_bytes": 58552,
+      "reload_bytes": 0,
+      "max_abs": 2.7755575615628914e-17,
+      "bank_read_pct": 0.16011955593509822,
+      "bank_write_pct": 0.1982432597291692,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "2",
+        "depth": "1",
+        "samples": "8197",
+        "created": "38",
+        "completed": "38",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "1",
+        "full": "1081",
+        "conflicts": "12"
+      },
+      "rhs": {
+        "capacity": "1",
+        "bytes": "320",
+        "peak": "1",
+        "issued": "40",
+        "completed": "40",
+        "live": "0",
+        "stalls": "593"
+      },
+      "completion": {
+        "depth": "1",
+        "bytes": "512",
+        "peak": "1",
+        "issued": "1",
+        "completed": "1",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 0,
+            "cache_hit": 0,
+            "cycles": 4209,
+            "empty_cycles": 3718,
+            "empty_pct": 88.33452126395818,
+            "handoff_gap_histogram": {},
+            "input_order": [
+              0
+            ],
+            "issue_utilization_pct": {
+              "add": 0.7365169874079354,
+              "div": 3.3262057495842243,
+              "mul": 0.7365169874079354
+            },
+            "issued": {
+              "add": 155,
+              "div": 35,
+              "mul": 155
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 0,
+            "math_active_cycles": 0,
+            "math_inactive_cycles": 0,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1930,
+          "numeric_ready_to_backward": 15,
+          "completion_tail": 1768,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 0,
+            "cache_hit": 1,
+            "cycles": 1994,
+            "empty_cycles": 1971,
+            "empty_pct": 98.84653961885657,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 0.25075225677031093,
+              "div": 0.0,
+              "mul": 0.25075225677031093
+            },
+            "issued": {
+              "add": 25,
+              "mul": 25
+            },
+            "token": "3",
+            "warm": {
+              "rhs_prefetch_pairs": 0,
+              "slot_peak": 1,
+              "write_overlap_pairs": 0
+            }
+          },
+          "backward": {
+            "cycles": 0,
+            "math_active_cycles": 0,
+            "math_inactive_cycles": 0,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1450,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 514,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 0,
+            "cache_hit": 1,
+            "cycles": 1994,
+            "empty_cycles": 1971,
+            "empty_pct": 98.84653961885657,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 0.25075225677031093,
+              "div": 0.0,
+              "mul": 0.25075225677031093
+            },
+            "issued": {
+              "add": 25,
+              "mul": 25
+            },
+            "token": "4",
+            "warm": {
+              "rhs_prefetch_pairs": 0,
+              "slot_peak": 1,
+              "write_overlap_pairs": 0
+            }
+          },
+          "backward": {
+            "cycles": 0,
+            "math_active_cycles": 0,
+            "math_inactive_cycles": 0,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1450,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 514,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 122,
+        "bytes": 1424,
+        "bytes_per_packet": 11.672131147540984,
+        "queue_cycles": {
+          "count": 122,
+          "minimum": 0.0,
+          "mean": 0.0,
+          "maximum": 0.0
+        },
+        "response_cycles": {
+          "count": 122,
+          "minimum": 50.0,
+          "mean": 63.467213114754095,
+          "maximum": 103.0
+        }
+      }
+    },
+    "n2-inverse-credits1": {
+      "roi_cycles": 17278,
+      "controller_cycles": 14275,
+      "issue_pct": {
+        "mul": 1.064798598949212,
+        "add": 1.106830122591944,
+        "div": 3.362521891418564
+      },
+      "empty_pct": 86.6199649737303,
+      "peak_bytes": 59152,
+      "reload_bytes": 0,
+      "max_abs": 5.551115123125783e-17,
+      "bank_read_pct": 0.3371278458844133,
+      "bank_write_pct": 0.29334500875656744,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "2",
+        "depth": "1",
+        "samples": "14275",
+        "created": "1731",
+        "completed": "115",
+        "cancelled": "1616",
+        "live": "0",
+        "peak": "1",
+        "full": "3309",
+        "conflicts": "33"
+      },
+      "rhs": {
+        "capacity": "1",
+        "bytes": "320",
+        "peak": "1",
+        "issued": "160",
+        "completed": "160",
+        "live": "0",
+        "stalls": "5937"
+      },
+      "completion": {
+        "depth": "1",
+        "bytes": "512",
+        "peak": "1",
+        "issued": "2",
+        "completed": "2",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 324,
+            "cache_hit": 0,
+            "cycles": 8600,
+            "empty_cycles": 6890,
+            "empty_pct": 80.11627906976744,
+            "handoff_gap_histogram": {
+              "4095": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 1.3255813953488371,
+              "div": 5.5813953488372094,
+              "mul": 1.302325581395349
+            },
+            "issued": {
+              "add": 570,
+              "div": 120,
+              "mul": 560
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 324,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 297,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 297
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 2357,
+          "numeric_ready_to_backward": 15,
+          "completion_tail": 1309,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 487,
+            "cache_hit": 1,
+            "cycles": 2811,
+            "empty_cycles": 2711,
+            "empty_pct": 96.44254713625044,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 0.7826396300249022,
+              "div": 0.0,
+              "mul": 0.711490572749911
+            },
+            "issued": {
+              "add": 110,
+              "mul": 100
+            },
+            "token": "4",
+            "warm": {
+              "rhs_prefetch_pairs": 0,
+              "slot_peak": 1,
+              "write_overlap_pairs": 0
+            }
+          },
+          "backward": {
+            "cycles": 487,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 460,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 460
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1450,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 156,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 487,
+            "cache_hit": 1,
+            "cycles": 2864,
+            "empty_cycles": 2764,
+            "empty_pct": 96.50837988826815,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 0.7681564245810056,
+              "div": 0.0,
+              "mul": 0.6983240223463687
+            },
+            "issued": {
+              "add": 110,
+              "mul": 100
+            },
+            "token": "5",
+            "warm": {
+              "rhs_prefetch_pairs": 0,
+              "slot_peak": 1,
+              "write_overlap_pairs": 0
+            }
+          },
+          "backward": {
+            "cycles": 487,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 460,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 460
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 1503,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 156,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 204,
+        "bytes": 2944,
+        "bytes_per_packet": 14.431372549019608,
+        "queue_cycles": {
+          "count": 204,
+          "minimum": 0.0,
+          "mean": 0.0,
+          "maximum": 0.0
+        },
+        "response_cycles": {
+          "count": 204,
+          "minimum": 50.0,
+          "mean": 66.15196078431373,
+          "maximum": 106.0
+        }
+      }
+    },
+    "n17-inverse-random-1": {
+      "roi_cycles": 12390,
+      "controller_cycles": 9315,
+      "issue_pct": {
+        "mul": 19.506172839506174,
+        "add": 20.53676865271068,
+        "div": 59.90338164251208
+      },
+      "empty_pct": 14.460547504025765,
+      "peak_bytes": 137688,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 6.152710681696189,
+      "bank_write_pct": 4.575952764358561,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9315",
+        "created": "1030",
+        "completed": "1030",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "27",
+        "full": "0",
+        "conflicts": "1595"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "13",
+        "issued": "1960",
+        "completed": "1960",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "17",
+        "completed": "17",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 0,
+            "cycles": 6549,
+            "empty_cycles": 449,
+            "empty_pct": 6.856008550923805,
+            "handoff_gap_histogram": {
+              "280": 1,
+              "320": 1,
+              "329": 1,
+              "336": 1,
+              "339": 1,
+              "340": 9,
+              "344": 1,
+              "358": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 20.751259734310583,
+              "div": 85.20384791571232,
+              "mul": 20.262635516872805
+            },
+            "issued": {
+              "add": 6795,
+              "div": 1395,
+              "mul": 6635
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 259,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 1,
+            "cycles": 1383,
+            "empty_cycles": 449,
+            "empty_pct": 32.46565437454808,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 20.028922631959507,
+              "div": 0.0,
+              "mul": 17.715112075198842
+            },
+            "issued": {
+              "add": 1385,
+              "mul": 1225
+            },
+            "token": "19",
+            "warm": {
+              "rhs_prefetch_pairs": 16,
+              "slot_peak": 8,
+              "write_overlap_pairs": 16
+            }
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 223,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 1,
+            "cycles": 1383,
+            "empty_cycles": 449,
+            "empty_pct": 32.46565437454808,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 20.028922631959507,
+              "div": 0.0,
+              "mul": 17.715112075198842
+            },
+            "issued": {
+              "add": 1385,
+              "mul": 1225
+            },
+            "token": "20",
+            "warm": {
+              "rhs_prefetch_pairs": 16,
+              "slot_peak": 8,
+              "write_overlap_pairs": 16
+            }
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 223,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 619,
+        "bytes": 25744,
+        "bytes_per_packet": 41.58966074313409,
+        "queue_cycles": {
+          "count": 619,
+          "minimum": 0.0,
+          "mean": 1.3247366720516962,
+          "maximum": 44.002
+        },
+        "response_cycles": {
+          "count": 619,
+          "minimum": 50.0,
+          "mean": 96.7044620355412,
+          "maximum": 123.0
+        }
+      }
+    },
+    "n17-inverse-random-42": {
+      "roi_cycles": 12420,
+      "controller_cycles": 9315,
+      "issue_pct": {
+        "mul": 19.506172839506174,
+        "add": 20.53676865271068,
+        "div": 59.90338164251208
+      },
+      "empty_pct": 14.460547504025765,
+      "peak_bytes": 137688,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 6.152710681696189,
+      "bank_write_pct": 4.575952764358561,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9315",
+        "created": "1030",
+        "completed": "1030",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "27",
+        "full": "0",
+        "conflicts": "1595"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "13",
+        "issued": "1960",
+        "completed": "1960",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "17",
+        "completed": "17",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 0,
+            "cycles": 6549,
+            "empty_cycles": 449,
+            "empty_pct": 6.856008550923805,
+            "handoff_gap_histogram": {
+              "280": 1,
+              "320": 1,
+              "329": 1,
+              "336": 1,
+              "339": 1,
+              "340": 9,
+              "344": 1,
+              "358": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 20.751259734310583,
+              "div": 85.20384791571232,
+              "mul": 20.262635516872805
+            },
+            "issued": {
+              "add": 6795,
+              "div": 1395,
+              "mul": 6635
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 259,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 1,
+            "cycles": 1383,
+            "empty_cycles": 449,
+            "empty_pct": 32.46565437454808,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 20.028922631959507,
+              "div": 0.0,
+              "mul": 17.715112075198842
+            },
+            "issued": {
+              "add": 1385,
+              "mul": 1225
+            },
+            "token": "19",
+            "warm": {
+              "rhs_prefetch_pairs": 16,
+              "slot_peak": 8,
+              "write_overlap_pairs": 16
+            }
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 223,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 1,
+            "cycles": 1383,
+            "empty_cycles": 449,
+            "empty_pct": 32.46565437454808,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 20.028922631959507,
+              "div": 0.0,
+              "mul": 17.715112075198842
+            },
+            "issued": {
+              "add": 1385,
+              "mul": 1225
+            },
+            "token": "20",
+            "warm": {
+              "rhs_prefetch_pairs": 16,
+              "slot_peak": 8,
+              "write_overlap_pairs": 16
+            }
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 223,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 619,
+        "bytes": 25744,
+        "bytes_per_packet": 41.58966074313409,
+        "queue_cycles": {
+          "count": 619,
+          "minimum": 0.0,
+          "mean": 1.3247366720516962,
+          "maximum": 44.002
+        },
+        "response_cycles": {
+          "count": 619,
+          "minimum": 50.0,
+          "mean": 96.7093085621971,
+          "maximum": 123.0
+        }
+      }
+    },
+    "n17-inverse-scaled-42": {
+      "roi_cycles": 12422,
+      "controller_cycles": 9315,
+      "issue_pct": {
+        "mul": 19.506172839506174,
+        "add": 20.53676865271068,
+        "div": 59.90338164251208
+      },
+      "empty_pct": 14.460547504025765,
+      "peak_bytes": 137688,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 6.152710681696189,
+      "bank_write_pct": 4.575952764358561,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9315",
+        "created": "1030",
+        "completed": "1030",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "27",
+        "full": "0",
+        "conflicts": "1595"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "13",
+        "issued": "1960",
+        "completed": "1960",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "17",
+        "completed": "17",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 0,
+            "cycles": 6549,
+            "empty_cycles": 449,
+            "empty_pct": 6.856008550923805,
+            "handoff_gap_histogram": {
+              "280": 1,
+              "320": 1,
+              "329": 1,
+              "336": 1,
+              "339": 1,
+              "340": 9,
+              "344": 1,
+              "358": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "issue_utilization_pct": {
+              "add": 20.751259734310583,
+              "div": 85.20384791571232,
+              "mul": 20.262635516872805
+            },
+            "issued": {
+              "add": 6795,
+              "div": 1395,
+              "mul": 6635
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 259,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 1,
+            "cycles": 1383,
+            "empty_cycles": 449,
+            "empty_pct": 32.46565437454808,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 20.028922631959507,
+              "div": 0.0,
+              "mul": 17.715112075198842
+            },
+            "issued": {
+              "add": 1385,
+              "mul": 1225
+            },
+            "token": "19",
+            "warm": {
+              "rhs_prefetch_pairs": 16,
+              "slot_peak": 8,
+              "write_overlap_pairs": 16
+            }
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 223,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 435,
+            "cache_hit": 1,
+            "cycles": 1383,
+            "empty_cycles": 449,
+            "empty_pct": 32.46565437454808,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 20.028922631959507,
+              "div": 0.0,
+              "mul": 17.715112075198842
+            },
+            "issued": {
+              "add": 1385,
+              "mul": 1225
+            },
+            "token": "20",
+            "warm": {
+              "rhs_prefetch_pairs": 16,
+              "slot_peak": 8,
+              "write_overlap_pairs": 16
+            }
+          },
+          "backward": {
+            "cycles": 435,
+            "math_active_cycles": 432,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 223,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 183,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 619,
+        "bytes": 25744,
+        "bytes_per_packet": 41.58966074313409,
+        "queue_cycles": {
+          "count": 619,
+          "minimum": 0.0,
+          "mean": 1.3247366720516962,
+          "maximum": 44.002
+        },
+        "response_cycles": {
+          "count": 619,
+          "minimum": 50.0,
+          "mean": 96.7093085621971,
+          "maximum": 123.0
+        }
+      }
+    },
+    "n257-inverse": {
+      "roi_cycles": 193002,
+      "controller_cycles": 189851,
+      "issue_pct": {
+        "mul": 21.87715629625338,
+        "add": 22.41652664457917,
+        "div": 91.84044329500503
+      },
+      "empty_pct": 0.783772537410917,
+      "peak_bytes": 135168,
+      "reload_bytes": 107520,
+      "max_abs": 5.551115123125783e-16,
+      "bank_read_pct": 7.425560044455915,
+      "bank_write_pct": 9.195368999899921,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "189851",
+        "created": "21891",
+        "completed": "13230",
+        "cancelled": "8661",
+        "live": "0",
+        "peak": "32",
+        "full": "1663",
+        "conflicts": "33011"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "13",
+        "issued": "61520",
+        "completed": "61520",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "514",
+        "completed": "514",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 7146,
+            "cache_hit": 0,
+            "cycles": 94918,
+            "empty_cycles": 735,
+            "empty_pct": 0.7743525990855264,
+            "handoff_gap_histogram": {
+              "272": 1,
+              "312": 1,
+              "336": 1,
+              "340": 252,
+              "341": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255,
+              256
+            ],
+            "issue_utilization_pct": {
+              "add": 22.418297899239345,
+              "div": 91.84770012010367,
+              "mul": 21.878884932257318
+            },
+            "issued": {
+              "add": 106395,
+              "div": 21795,
+              "mul": 103835
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 7146,
+            "math_active_cycles": 6912,
+            "math_inactive_cycles": 234,
+            "wait_counters": {
+              "tile_wait": 13,
+              "output_queue_wait": 211
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 277,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 7137,
+            "cache_hit": 0,
+            "cycles": 94933,
+            "empty_cycles": 753,
+            "empty_pct": 0.7931909873279049,
+            "handoff_gap_histogram": {
+              "280": 1,
+              "329": 1,
+              "336": 1,
+              "340": 252,
+              "341": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255,
+              256
+            ],
+            "issue_utilization_pct": {
+              "add": 22.414755669788168,
+              "div": 91.83318761652956,
+              "mul": 21.875427933384596
+            },
+            "issued": {
+              "add": 106395,
+              "div": 21795,
+              "mul": 103835
+            },
+            "token": "259",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 7137,
+            "math_active_cycles": 6912,
+            "math_inactive_cycles": 225,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 216
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 308,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 212,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 15940,
+        "bytes": 764576,
+        "bytes_per_packet": 47.96587202007528,
+        "queue_cycles": {
+          "count": 15940,
+          "minimum": 0.0,
+          "mean": 4.8386015056461735,
+          "maximum": 121.0
+        },
+        "response_cycles": {
+          "count": 15940,
+          "minimum": 50.0,
+          "mean": 105.54933324968633,
+          "maximum": 186.0
+        }
+      }
+    },
+    "n65-inverse-serial": {
+      "roi_cycles": 39512,
+      "controller_cycles": 36430,
+      "issue_pct": {
+        "mul": 19.61295635465276,
+        "add": 20.667032665385673,
+        "div": 60.11528959648641
+      },
+      "empty_pct": 4.441394455119407,
+      "peak_bytes": 166488,
+      "reload_bytes": 15360,
+      "max_abs": 2.220446049250313e-16,
+      "bank_read_pct": 6.184806478177326,
+      "bank_write_pct": 5.205188031841889,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "36430",
+        "created": "4894",
+        "completed": "4270",
+        "cancelled": "624",
+        "live": "0",
+        "peak": "32",
+        "full": "77",
+        "conflicts": "5931"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "13",
+        "issued": "7720",
+        "completed": "7720",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "65",
+        "completed": "65",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 2499,
+            "cache_hit": 0,
+            "cycles": 24958,
+            "empty_cycles": 474,
+            "empty_pct": 1.899190640275663,
+            "handoff_gap_histogram": {
+              "280": 1,
+              "329": 1,
+              "336": 1,
+              "340": 60,
+              "341": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 21.407965381841493,
+              "div": 87.74741565830595,
+              "mul": 20.895103774340892
+            },
+            "issued": {
+              "add": 26715,
+              "div": 5475,
+              "mul": 26075
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 2499,
+            "math_active_cycles": 2496,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 255,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 2499,
+            "cache_hit": 1,
+            "cycles": 5735,
+            "empty_cycles": 571,
+            "empty_pct": 9.95640802092415,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 19.05841325196164,
+              "div": 0.0,
+              "mul": 16.826503923278118
+            },
+            "issued": {
+              "add": 5465,
+              "mul": 4825
+            },
+            "token": "67",
+            "warm": {
+              "rhs_prefetch_pairs": 64,
+              "slot_peak": 8,
+              "write_overlap_pairs": 64
+            }
+          },
+          "backward": {
+            "cycles": 2499,
+            "math_active_cycles": 2496,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 2499,
+            "cache_hit": 1,
+            "cycles": 5737,
+            "empty_cycles": 573,
+            "empty_pct": 9.98779850095869,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 19.05176921736099,
+              "div": 0.0,
+              "mul": 16.820637964092732
+            },
+            "issued": {
+              "add": 5465,
+              "mul": 4825
+            },
+            "token": "68",
+            "warm": {
+              "rhs_prefetch_pairs": 64,
+              "slot_peak": 8,
+              "write_overlap_pairs": 64
+            }
+          },
+          "backward": {
+            "cycles": 2499,
+            "math_active_cycles": 2496,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 212,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 2647,
+        "bytes": 114064,
+        "bytes_per_packet": 43.09180204004534,
+        "queue_cycles": {
+          "count": 2647,
+          "minimum": 0.0,
+          "mean": 3.61924593879864,
+          "maximum": 124.002
+        },
+        "response_cycles": {
+          "count": 2647,
+          "minimum": 50.0,
+          "mean": 98.05330789573101,
+          "maximum": 133.998
+        }
+      }
+    },
+    "n65-inverse-tree": {
+      "roi_cycles": 34984,
+      "controller_cycles": 31915,
+      "issue_pct": {
+        "mul": 22.387592041359863,
+        "add": 22.180792730690897,
+        "div": 68.61977126742912
+      },
+      "empty_pct": 6.000313332288893,
+      "peak_bytes": 166488,
+      "reload_bytes": 15360,
+      "max_abs": 2.220446049250313e-16,
+      "bank_read_pct": 7.0597681341062195,
+      "bank_write_pct": 5.941563528121573,
+      "onchip": {
+        "banks": "8",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "31915",
+        "created": "4819",
+        "completed": "4270",
+        "cancelled": "549",
+        "live": "0",
+        "peak": "32",
+        "full": "1041",
+        "conflicts": "5997"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "13",
+        "issued": "7720",
+        "completed": "7720",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "2",
+        "issued": "65",
+        "completed": "65",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 1836,
+            "cache_hit": 0,
+            "cycles": 24295,
+            "empty_cycles": 771,
+            "empty_pct": 3.173492488166289,
+            "handoff_gap_histogram": {
+              "280": 1,
+              "329": 1,
+              "336": 1,
+              "340": 60,
+              "341": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64
+            ],
+            "issue_utilization_pct": {
+              "add": 21.72875077176374,
+              "div": 90.1420045276806,
+              "mul": 21.465322082733074
+            },
+            "issued": {
+              "add": 26395,
+              "div": 5475,
+              "mul": 26075
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 1836,
+            "math_active_cycles": 1536,
+            "math_inactive_cycles": 300,
+            "wait_counters": {
+              "tile_wait": 139,
+              "output_queue_wait": 93
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 255,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 1539,
+            "cache_hit": 1,
+            "cycles": 3809,
+            "empty_cycles": 571,
+            "empty_pct": 14.990811236545024,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 23.62824888422158,
+              "div": 0.0,
+              "mul": 25.334733525859807
+            },
+            "issued": {
+              "add": 4500,
+              "mul": 4825
+            },
+            "token": "67",
+            "warm": {
+              "rhs_prefetch_pairs": 64,
+              "slot_peak": 8,
+              "write_overlap_pairs": 64
+            }
+          },
+          "backward": {
+            "cycles": 1539,
+            "math_active_cycles": 1536,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 212,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 1539,
+            "cache_hit": 1,
+            "cycles": 3811,
+            "empty_cycles": 573,
+            "empty_pct": 15.035423773287851,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 23.615848858567304,
+              "div": 0.0,
+              "mul": 25.321437942797168
+            },
+            "issued": {
+              "add": 4500,
+              "mul": 4825
+            },
+            "token": "68",
+            "warm": {
+              "rhs_prefetch_pairs": 64,
+              "slot_peak": 8,
+              "write_overlap_pairs": 64
+            }
+          },
+          "backward": {
+            "cycles": 1539,
+            "math_active_cycles": 1536,
+            "math_inactive_cycles": 3,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 222,
+          "numeric_ready_to_backward": 2,
+          "completion_tail": 212,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 2647,
+        "bytes": 114064,
+        "bytes_per_packet": 43.09180204004534,
+        "queue_cycles": {
+          "count": 2647,
+          "minimum": 0.0,
+          "mean": 3.460578768417076,
+          "maximum": 116.002
+        },
+        "response_cycles": {
+          "count": 2647,
+          "minimum": 50.0,
+          "mean": 99.74364261428032,
+          "maximum": 137.998
+        }
+      }
+    },
+    "changed-r-contract-per-cell": {
+      "roi_cycles": 0,
+      "controller_cycles": 9762,
+      "issue_pct": {
+        "mul": 7.846752714607662,
+        "add": 8.154066789592296,
+        "div": 31.550911698422453
+      },
+      "empty_pct": 49.04732636754763,
+      "peak_bytes": 123048,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 4.737758656013112,
+      "bank_write_pct": 6.210305265314485,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9762",
+        "created": "375",
+        "completed": "375",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "23",
+        "full": "0",
+        "conflicts": "1650"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "12",
+        "issued": "992",
+        "completed": "992",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "3",
+        "issued": "22",
+        "completed": "22",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1297,
+            "empty_cycles": 471,
+            "empty_pct": 36.31457208943716,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.33153430994603,
+              "div": 44.71858134155744,
+              "mul": 10.023130300693909
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 260,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 747,
+            "empty_cycles": 481,
+            "empty_pct": 64.3908969210174,
+            "handoff_gap_histogram": {
+              "28": 1,
+              "44": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 4.819277108433735,
+              "div": 8.032128514056225,
+              "mul": 4.28380187416332
+            },
+            "issued": {
+              "add": 180,
+              "div": 15,
+              "mul": 160
+            },
+            "token": "5",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 217,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 252,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1472,
+            "empty_cycles": 475,
+            "empty_pct": 32.26902173913044,
+            "handoff_gap_histogram": {
+              "316": 1,
+              "326": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 13.383152173913043,
+              "div": 55.70652173913044,
+              "mul": 13.111413043478262
+            },
+            "issued": {
+              "add": 985,
+              "div": 205,
+              "mul": 965
+            },
+            "token": "9",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 201,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 559,
+            "empty_cycles": 399,
+            "empty_pct": 71.37745974955277,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 6.976744186046512,
+              "div": 0.0,
+              "mul": 6.261180679785331
+            },
+            "issued": {
+              "add": 195,
+              "mul": 175
+            },
+            "token": "13",
+            "warm": {
+              "rhs_prefetch_pairs": 2,
+              "slot_peak": 3,
+              "write_overlap_pairs": 2
+            }
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 156,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1304,
+            "empty_cycles": 478,
+            "empty_pct": 36.65644171779141,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.276073619631902,
+              "div": 44.47852760736196,
+              "mul": 9.969325153374234
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "14",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 265,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 201,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1007,
+            "empty_cycles": 502,
+            "empty_pct": 49.851042701092354,
+            "handoff_gap_histogram": {
+              "190": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 7.149950347567031,
+              "div": 31.777557100297916,
+              "mul": 6.951340615690169
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "18",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 264,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 226,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 688,
+            "empty_cycles": 490,
+            "empty_pct": 71.22093023255815,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.9069767441860463,
+              "div": 5.813953488372093,
+              "mul": 2.616279069767442
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "21",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 221,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 257,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 997,
+            "empty_cycles": 502,
+            "empty_pct": 50.35105315947843,
+            "handoff_gap_histogram": {
+              "193": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 7.2216649949849545,
+              "div": 32.0962888665998,
+              "mul": 7.021063189568706
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "24",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 264,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 226,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1009,
+            "empty_cycles": 504,
+            "empty_pct": 49.950445986124876,
+            "handoff_gap_histogram": {
+              "190": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 7.135777998017839,
+              "div": 31.714568880079288,
+              "mul": 6.937561942517344
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "27",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 266,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 226,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 682,
+            "empty_cycles": 486,
+            "empty_pct": 71.26099706744868,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.932551319648094,
+              "div": 5.865102639296188,
+              "mul": 2.6392961876832843
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "30",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 219,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 257,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 455,
+        "bytes": 19600,
+        "bytes_per_packet": 43.07692307692308,
+        "queue_cycles": {
+          "count": 455,
+          "minimum": 0.0,
+          "mean": 1.6109978021978022,
+          "maximum": 41.002
+        },
+        "response_cycles": {
+          "count": 455,
+          "minimum": 50.0,
+          "mean": 98.49014065934065,
+          "maximum": 120.0
+        }
+      }
+    },
+    "changed-r-contract-warm-summary": {
+      "roi_cycles": 0,
+      "controller_cycles": 9854,
+      "issue_pct": {
+        "mul": 7.773492997767404,
+        "add": 8.077937893241323,
+        "div": 31.25634260198904
+      },
+      "empty_pct": 49.52303633042419,
+      "peak_bytes": 123048,
+      "reload_bytes": 0,
+      "max_abs": 1.1102230246251565e-16,
+      "bank_read_pct": 4.693525471889588,
+      "bank_write_pct": 6.152323929368785,
+      "onchip": {
+        "banks": "4",
+        "grain": "8",
+        "read_ports": "1",
+        "write_ports": "1",
+        "latency": "1",
+        "depth": "32",
+        "samples": "9854",
+        "created": "375",
+        "completed": "375",
+        "cancelled": "0",
+        "live": "0",
+        "peak": "23",
+        "full": "0",
+        "conflicts": "1650"
+      },
+      "rhs": {
+        "capacity": "16",
+        "bytes": "1280",
+        "peak": "12",
+        "issued": "992",
+        "completed": "992",
+        "live": "0",
+        "stalls": "0"
+      },
+      "completion": {
+        "depth": "4",
+        "bytes": "2048",
+        "peak": "1",
+        "issued": "15",
+        "completed": "15",
+        "live": "0"
+      },
+      "phases": [
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1297,
+            "empty_cycles": 471,
+            "empty_pct": 36.31457208943716,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.33153430994603,
+              "div": 44.71858134155744,
+              "mul": 10.023130300693909
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "1",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 260,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 199,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 757,
+            "empty_cycles": 491,
+            "empty_pct": 64.86129458388375,
+            "handoff_gap_histogram": {
+              "28": 1,
+              "44": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 4.755614266842801,
+              "div": 7.926023778071334,
+              "mul": 4.227212681638045
+            },
+            "issued": {
+              "add": 180,
+              "div": 15,
+              "mul": 160
+            },
+            "token": "5",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 217,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 262,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1472,
+            "empty_cycles": 475,
+            "empty_pct": 32.26902173913044,
+            "handoff_gap_histogram": {
+              "316": 1,
+              "326": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 13.383152173913043,
+              "div": 55.70652173913044,
+              "mul": 13.111413043478262
+            },
+            "issued": {
+              "add": 985,
+              "div": 205,
+              "mul": 965
+            },
+            "token": "9",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 263,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 201,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 59,
+            "cache_hit": 1,
+            "cycles": 559,
+            "empty_cycles": 399,
+            "empty_pct": 71.37745974955277,
+            "handoff_gap_histogram": {},
+            "input_order": [],
+            "issue_utilization_pct": {
+              "add": 6.976744186046512,
+              "div": 0.0,
+              "mul": 6.261180679785331
+            },
+            "issued": {
+              "add": 195,
+              "mul": 175
+            },
+            "token": "13",
+            "warm": {
+              "rhs_prefetch_pairs": 2,
+              "slot_peak": 3,
+              "write_overlap_pairs": 2
+            }
+          },
+          "backward": {
+            "cycles": 59,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 5,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 220,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 156,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 58,
+            "cache_hit": 0,
+            "cycles": 1304,
+            "empty_cycles": 478,
+            "empty_pct": 36.65644171779141,
+            "handoff_gap_histogram": {
+              "232": 1,
+              "265": 1
+            },
+            "input_order": [
+              0,
+              1,
+              2
+            ],
+            "issue_utilization_pct": {
+              "add": 10.276073619631902,
+              "div": 44.47852760736196,
+              "mul": 9.969325153374234
+            },
+            "issued": {
+              "add": 670,
+              "div": 145,
+              "mul": 650
+            },
+            "token": "14",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 58,
+            "math_active_cycles": 54,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 265,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 201,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1007,
+            "empty_cycles": 502,
+            "empty_pct": 49.851042701092354,
+            "handoff_gap_histogram": {
+              "190": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 7.149950347567031,
+              "div": 31.777557100297916,
+              "mul": 6.951340615690169
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "18",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 264,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 226,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 744,
+            "empty_cycles": 546,
+            "empty_pct": 73.38709677419355,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.6881720430107525,
+              "div": 5.376344086021505,
+              "mul": 2.4193548387096775
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "21",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 221,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 313,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 997,
+            "empty_cycles": 502,
+            "empty_pct": 50.35105315947843,
+            "handoff_gap_histogram": {
+              "193": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 7.2216649949849545,
+              "div": 32.0962888665998,
+              "mul": 7.021063189568706
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "24",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 264,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 226,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 0,
+            "cycles": 1009,
+            "empty_cycles": 504,
+            "empty_pct": 49.950445986124876,
+            "handoff_gap_histogram": {
+              "190": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 7.135777998017839,
+              "div": 31.714568880079288,
+              "mul": 6.937561942517344
+            },
+            "issued": {
+              "add": 360,
+              "div": 80,
+              "mul": 350
+            },
+            "token": "27",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 266,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 226,
+          "status_response": 104
+        },
+        {
+          "window": {
+            "backward_cycles": 31,
+            "cache_hit": 1,
+            "cycles": 708,
+            "empty_cycles": 512,
+            "empty_pct": 72.31638418079096,
+            "handoff_gap_histogram": {
+              "28": 1
+            },
+            "input_order": [
+              0,
+              1
+            ],
+            "issue_utilization_pct": {
+              "add": 2.824858757062147,
+              "div": 5.649717514124294,
+              "mul": 2.542372881355932
+            },
+            "issued": {
+              "add": 100,
+              "div": 10,
+              "mul": 90
+            },
+            "token": "30",
+            "warm": {}
+          },
+          "backward": {
+            "cycles": 31,
+            "math_active_cycles": 27,
+            "math_inactive_cycles": 4,
+            "wait_counters": {
+              "tile_wait": 0,
+              "output_queue_wait": 0
+            },
+            "wait_counters_additive": false
+          },
+          "startup": 219,
+          "numeric_ready_to_backward": 3,
+          "completion_tail": 283,
+          "status_response": 104
+        }
+      ],
+      "dma": {
+        "packets": 437,
+        "bytes": 18672,
+        "bytes_per_packet": 42.72768878718536,
+        "queue_cycles": {
+          "count": 437,
+          "minimum": 0.0,
+          "mean": 1.6682013729977117,
+          "maximum": 41.002
+        },
+        "response_cycles": {
+          "count": 437,
+          "minimum": 50.0,
+          "mean": 98.44395423340961,
+          "maximum": 120.0
+        }
+      }
+    }
+  },
+  "recovery": {},
+  "comparison_pairs": []
+}

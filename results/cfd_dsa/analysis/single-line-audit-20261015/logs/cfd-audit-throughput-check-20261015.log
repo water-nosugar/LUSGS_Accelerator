@@ -1,0 +1,5 @@
+cold-direct-b4-t8-q64-ii2 cycles 6706 error 5.551115123125783e-17
+cold-inverse-b8-t8-q64-ii2 cycles 6840 error 8.326672684688674e-17
+reuse-inverse-b8-t8-q64-add2 cycles 17776 error 8.326672684688674e-17
+reuse-direct-b8-t8-q64-add2 cycles 20444 error 5.551115123125783e-17
+SINGLE_LINE_OPT_CHECK_PASS 4 cases 16 sweeps

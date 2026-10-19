@@ -1,0 +1,37 @@
+[
+  {
+    "name": "fresh-n17-cold-direct",
+    "expected_valid": true,
+    "runner_exit": 0
+  },
+  {
+    "name": "fresh-n17-reuse-inverse",
+    "expected_valid": true,
+    "runner_exit": 0
+  },
+  {
+    "name": "fresh-n65-cold-direct",
+    "expected_valid": true,
+    "runner_exit": 0
+  },
+  {
+    "name": "probe-input-width41",
+    "expected_valid": false,
+    "runner_exit": 250
+  },
+  {
+    "name": "probe-interface-width7",
+    "expected_valid": false,
+    "runner_exit": 250
+  },
+  {
+    "name": "probe-tile-width41",
+    "expected_valid": false,
+    "runner_exit": 250
+  },
+  {
+    "name": "probe-pivot-failure",
+    "expected_valid": false,
+    "runner_exit": 1
+  }
+]

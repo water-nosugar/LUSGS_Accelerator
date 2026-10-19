@@ -7,16 +7,25 @@ from pathlib import Path
 import re
 
 
-def read_case(path):
-    manifest = json.loads((path / "manifest.json").read_text())
-    if manifest["status"] != "passed":
+def require_completed_simulation(manifest, path):
+    if manifest["status"] not in ("passed", "validating"):
         raise ValueError(f"{path.name}: simulation failed")
+    if manifest["status"] == "validating" and (
+            manifest.get("acceptance_policy") != "auto" or
+            manifest.get("return_code") != 0 or
+            manifest.get("provenance_errors")):
+        raise ValueError(f"{path.name}: simulation is not ready for acceptance")
+
+
+def read_case(path, require_digest=True):
+    manifest = json.loads((path / "manifest.json").read_text())
+    require_completed_simulation(manifest,path)
     text = (path / "simout.txt").read_text() + (path / "driver.log").read_text()
     if "LUSGS_STEP2_STREAMING_PASS" not in text:
         raise ValueError(f"{path.name}: missing full correctness marker")
     hashes = re.findall(r"CFD_LINE_SCHEDULE .*?result_hash=(\w+)", text)
     cycles = re.search(r"streamingStep2.totalCycles = (\d+)", text)
-    if not cycles or not hashes:
+    if not cycles or (require_digest and not hashes):
         raise ValueError(f"{path.name}: missing timing or numeric digest")
     pools = {}
     for line in text.splitlines():

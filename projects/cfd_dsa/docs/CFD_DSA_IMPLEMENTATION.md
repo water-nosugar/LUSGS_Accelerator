@@ -3,7 +3,7 @@
 > 文档版本：v13.3（2026-07-05 CFD-DSA 项目与结果目录规范化）
 > gem5 版本：gem5-stable / ARM SE O3
 > 目标架构：ARMv8-A AArch64 + SVE
-> 当前状态：Path A 保留 baseline dotp-row 路径，并新增 Path A-only streaming DSA：`patha_stream_ld5 -> patha_dotp_stream -> patha_store5_result`。该模式不改变公共 `lmat5_spm`，不影响第二种方法 Path C。LU-SGS Step4-C 已在 controller 内完成 Path A、TRSV5、Vector5 三类 event resource graph；Path A 主线语义未改变。项目 runner、benchmark、文档、binary 和 result 已分层管理，规范见 `RESULT_MANAGEMENT.md`。
+> 当前状态：Path A 保留 baseline dotp-row 路径，并新增 Path A-only streaming DSA：`patha_stream_ld5 -> patha_dotp_stream -> patha_store5_result`。该模式不改变公共 `lmat5_spm`，不影响第二种方法 Path C。LU-SGS Step4-C 已在 controller 内完成 Path A、TRSV5、Vector5 三类 event resource graph；Path A 主线语义未改变。项目 runner、benchmark、文档、binary 和 result 已分层管理，规范见 `RESULT_LIFECYCLE.md`。
 
 ---
 
@@ -80,7 +80,7 @@ benchmark unroll              true 8 matvec / loop
 | Path A benchmark C | `projects/cfd_dsa/benchmarks/patha/test_cfd_patha_extreme_perf.c` | 第一种方法 benchmark |
 | Path A binary | `build/cfd_dsa/aarch64/test_cfd_patha_extreme_arm` | 推荐输出 binary |
 | Path A sensitivity sweep | `projects/cfd_dsa/tools/run_patha_dotp_sensitivity.py` | 可选 dotp latency/count sweep，不作为主文档展开 |
-| 兼容入口 | `projects/cfd_dsa/configs/run_cfd_dsa.py` | deprecated / compatibility wrapper |
+| 共享配置实现 | `projects/cfd_dsa/configs/run_cfd_dsa.py` | 所有 profile wrapper 共用的系统配置、参数和报告实现 |
 | 历史 benchmark | `projects/cfd_dsa/benchmarks/patha/test_cfd_extreme_perf.c` | 旧文件名，仅作为兼容保留 |
 
 ### 2.2 ISA / execute 相关文件
@@ -624,7 +624,8 @@ Path A 专用参数：
 ./build/ARM/gem5.opt projects/cfd_dsa/configs/run_cfd_dsa.py ...
 ```
 
-`projects/cfd_dsa/configs/run_cfd_dsa.py` 仅作为 deprecated / compatibility wrapper 保留。新实验优先使用 `projects/cfd_dsa/configs/run_cfd_patha.py`。
+`projects/cfd_dsa/configs/run_cfd_dsa.py` 是共享完整配置实现；新实验仍应优先使用
+`projects/cfd_dsa/configs/run_cfd_patha.py` 等专用 profile 入口。
 
 ---
 
@@ -894,7 +895,7 @@ Overall: PASS
 projects/cfd_dsa/configs/run_cfd_patha.py                 Path A 推荐入口
 projects/cfd_dsa/benchmarks/patha/test_cfd_patha_extreme_perf.c    Path A 推荐 benchmark source
 build/cfd_dsa/aarch64/test_cfd_patha_extreme_arm       Path A 推荐 binary
-projects/cfd_dsa/configs/run_cfd_dsa.py                   deprecated compatibility wrapper
+projects/cfd_dsa/configs/run_cfd_dsa.py                   shared canonical implementation
 ```
 
 ### 13.4 LU-SGS Step2 扩展索引

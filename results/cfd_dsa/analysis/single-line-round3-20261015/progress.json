@@ -1,0 +1,73 @@
+{
+  "scope": "one line; one forward and backward per sweep",
+  "date": "2026-10-15",
+  "stage9": {
+    "implementation": "two bounded backward operand slots; y/Ubar loads submitted together; next point prefetched",
+    "build": "PASS with scoped LINKFLAGS_EXTRA=-Wl,--no-keep-memory",
+    "suite": "projects/cfd_dsa/suites/single-line-round3-prefetch.json",
+    "validation": "PASS 8 cases / 32 sweeps; same FP64 hashes"
+  },
+  "next": [],
+  "build_command": "scons build/ARM/gem5.opt -j2",
+  "source_before": "results/cfd_dsa/analysis/single-line-round3-20261015/source-before",
+  "no_agents": true,
+  "stage10": {
+    "implementation": "SPM-local ready bitmaps, early backward with two physical tiles, buffer reuse still fences old write responses",
+    "validation": "PASS 8 cases / 32 sweeps in preliminary binary",
+    "results": "l9 cold D8148 I9178 reuse D21312 I19574 -> l10 D8176 I9084 reuse D20970 I18952",
+    "finding": "cold direct forward handoff intervals unchanged (262 cycles), extra regression is backward tile DMA wait48->144; do not blame input interference"
+  },
+  "stage11": {
+    "implementation": "160B lossless record40fields,512B CQ reservation,64B input/drain options,RHS capacity option,DMA physical traces and endpoint latency options",
+    "validation": "corrected guest: final same-binary20case/80sweep stage campaign PASS; packed40field digests,bank/port traffic,physicalDMA all close"
+  },
+  "excluded_preliminary": [
+    "single-line-round3-packed-smoke-20261015:guest stdout interleave breaks strict digest parser",
+    "single-line-round3-smoke-final-20261015:numerical/DMA checks pass but flush was inside total_start ROI",
+    "single-line-round3-stages-20261015:interrupted after locating flush timing contamination",
+    "single-line-round3-tuning-20261015:interrupted after locating flush timing contamination"
+  ],
+  "final_build": "PASS /tmp/cfd-round3-final-build.log",
+  "final_guest_build": "PASS /tmp/cfd-round3-corrected-guest-build.log",
+  "tests": {
+    "unit": 11,
+    "opt_faults": 9,
+    "onchip_faults": 4,
+    "invalid_config": 15
+  },
+  "resource_selection": {
+    "separate_scan_cases": 32,
+    "combination_cases": 8,
+    "queue_depths": {
+      "completion": 4,
+      "onchip": 32,
+      "rhs_product": 16,
+      "shared_product": 4
+    },
+    "banks": {
+      "cold-direct": 4,
+      "cold-inverse": 4,
+      "reuse-direct": 4,
+      "reuse-inverse": 8
+    },
+    "tile": 16,
+    "DMA": 32,
+    "selection_rule": "prefer4banks only if within1pct of fastest combined choice; keep50/50/50 endpoint and3/4/12 II4 arithmetic"
+  },
+  "final_revision": {
+    "change": "opt11 output DMA gets first credit before tile prefetch; one output attempt per tick preserved; flag0 restores control",
+    "root_cause": "N65coldD had495 output_queue_stalls; operands completed before stalls, Q48/64 did not help",
+    "guest": "mode invalidation with dirty0 now checks actual generated records outsideROI",
+    "build_log": "/tmp/cfd-round3-output-priority-build.log",
+    "final_suites": [
+      "final",
+      "final-stress",
+      "final-arithmetic",
+      "final-endpoint"
+    ],
+    "preliminary_scans": "preserved as model/guestV1, not mixed into final performance table",
+    "status": "125 final model/guest simulations accepted; all mandatory checks pass"
+  },
+  "verification_command": "python3 results/cfd_dsa/analysis/single-line-round3-20261015/verify.py",
+  "final_report": "projects/cfd_dsa/docs/CFD_DSA_SINGLE_LINE_ROUND3_20261015.md"
+}
