@@ -1,0 +1,1084 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "用原生矩形、流程连线、可编辑矩阵色格和文本恢复三类运算的映射。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "工作二｜SME 风格统一计算架构",
+      "decision": "native-text"
+    },
+    {
+      "id": "problem",
+      "text": "问题：LU、RHS 与扫线形状不同",
+      "decision": "native-text"
+    },
+    {
+      "id": "mechanism",
+      "text": "机制：掩码行片段、因子广播、共享 ZA",
+      "decision": "native-text"
+    },
+    {
+      "id": "constraint",
+      "text": "约束：共享算术、端口与有界写回",
+      "decision": "native-text"
+    },
+    {
+      "id": "lu",
+      "text": "LU",
+      "decision": "native-text"
+    },
+    {
+      "id": "rhs",
+      "text": "RHS",
+      "decision": "native-text"
+    },
+    {
+      "id": "scan",
+      "text": "扫线",
+      "decision": "native-text"
+    },
+    {
+      "id": "mask",
+      "text": "掩码行片段",
+      "decision": "native-text"
+    },
+    {
+      "id": "broadcast",
+      "text": "因子广播",
+      "decision": "native-text"
+    },
+    {
+      "id": "za",
+      "text": "共享 ZA",
+      "decision": "native-text"
+    },
+    {
+      "id": "array",
+      "text": "统一阵列",
+      "decision": "native-text"
+    },
+    {
+      "id": "sme",
+      "text": "（SME/ZA）",
+      "decision": "native-text"
+    },
+    {
+      "id": "arithmetic",
+      "text": "共享算术",
+      "decision": "native-text"
+    },
+    {
+      "id": "writeback",
+      "text": "端口与有界写回",
+      "decision": "native-text"
+    },
+    {
+      "id": "validation",
+      "text": "验证：时序标定、资源消融与面积代价",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "list-markers",
+      "role": "structure",
+      "object_type": "square list markers",
+      "decision": "native-rect"
+    },
+    {
+      "id": "input-cards",
+      "role": "structure",
+      "object_type": "three two-tone work containers",
+      "decision": "native-rect"
+    },
+    {
+      "id": "operand-grids",
+      "role": "structure",
+      "object_type": "LU 5×5, RHS 1×5, and scan 2×5 matrix grids",
+      "decision": "native-table"
+    },
+    {
+      "id": "stages",
+      "role": "structure",
+      "object_type": "five flow rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "flow",
+      "role": "structure",
+      "object_type": "ordinary orthogonal branches and arrows",
+      "decision": "native-line-and-path"
+    },
+    {
+      "id": "validation-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、蓝色标题分隔线、三类运算与色格、计算映射和写回框的位置和关系。",
+    "removed_foreground": [],
+    "comparison_note": "预览保留白底与全部流程结构，矩阵网格与各单元可编辑。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "marker-1",
+      "type": "rect",
+      "box_px": [
+        61,
+        162,
+        29,
+        29
+      ],
+      "fill": "#064296",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "marker-2",
+      "type": "rect",
+      "box_px": [
+        61,
+        230,
+        29,
+        29
+      ],
+      "fill": "#064296",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "marker-3",
+      "type": "rect",
+      "box_px": [
+        61,
+        295,
+        29,
+        29
+      ],
+      "fill": "#064296",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "lu-fill",
+      "type": "rect",
+      "box_px": [
+        58,
+        377,
+        149,
+        144
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "rhs-fill",
+      "type": "rect",
+      "box_px": [
+        58,
+        545,
+        153,
+        111
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "scan-fill",
+      "type": "rect",
+      "box_px": [
+        58,
+        679,
+        154,
+        114
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "lu-box",
+      "type": "rect",
+      "box_px": [
+        58,
+        377,
+        365,
+        144
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 15
+    },
+    {
+      "id": "rhs-box",
+      "type": "rect",
+      "box_px": [
+        58,
+        545,
+        365,
+        111
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 15
+    },
+    {
+      "id": "scan-box",
+      "type": "rect",
+      "box_px": [
+        58,
+        679,
+        366,
+        114
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 15
+    },
+    {
+      "id": "mask-box",
+      "type": "rect",
+      "box_px": [
+        541,
+        454,
+        262,
+        78
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "broadcast-box",
+      "type": "rect",
+      "box_px": [
+        541,
+        558,
+        263,
+        74
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "za-box",
+      "type": "rect",
+      "box_px": [
+        541,
+        657,
+        263,
+        78
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "array-box",
+      "type": "rect",
+      "box_px": [
+        887,
+        504,
+        320,
+        188
+      ],
+      "fill": "#D4E6FB",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "writeback-box",
+      "type": "rect",
+      "box_px": [
+        1279,
+        514,
+        344,
+        166
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "validation-band",
+      "type": "rect",
+      "box_px": [
+        38,
+        837,
+        1597,
+        72
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1623,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "input-outer-merge",
+      "type": "path",
+      "box_px": [
+        423,
+        444,
+        54,
+        292
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              423,
+              444
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              477,
+              444
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              477,
+              736
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              424,
+              736
+            ]
+          ]
+        }
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "input-outer-merge",
+      "z_index": 20
+    },
+    {
+      "id": "input-merge-to-broadcast",
+      "type": "line",
+      "points_px": [
+        423,
+        600,
+        541,
+        600
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "input-merge-to-broadcast",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "mechanism-outer-merge",
+      "type": "path",
+      "box_px": [
+        803,
+        493,
+        20,
+        200
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              803,
+              493
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              823,
+              493
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              823,
+              693
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              804,
+              693
+            ]
+          ]
+        }
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 2,
+      "semantic_line_id": "mechanism-outer-merge",
+      "z_index": 20
+    },
+    {
+      "id": "mechanism-merge-to-array",
+      "type": "line",
+      "points_px": [
+        804,
+        600,
+        887,
+        600
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "mechanism-merge-to-array",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "array-to-writeback",
+      "type": "line",
+      "points_px": [
+        1207,
+        600,
+        1279,
+        600
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "array-to-writeback",
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "tables": [
+    {
+      "id": "lu-grid",
+      "box_px": [
+        235,
+        389,
+        132,
+        121
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 12,
+        "fill": "#FFFFFF",
+        "stroke": "#092F64",
+        "stroke_width": 1.2,
+        "margin_left": 0,
+        "margin_right": 0,
+        "margin_top": 0,
+        "margin_bottom": 0
+      },
+      "cells": [
+        [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          "",
+          "",
+          ""
+        ],
+        [
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          "",
+          ""
+        ],
+        [
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          ""
+        ]
+      ],
+      "z_index": 30
+    },
+    {
+      "id": "rhs-grid",
+      "box_px": [
+        235,
+        589,
+        145,
+        31
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 12,
+        "fill": "#FFFFFF",
+        "stroke": "#092F64",
+        "stroke_width": 1.2,
+        "margin_left": 0,
+        "margin_right": 0,
+        "margin_top": 0,
+        "margin_bottom": 0
+      },
+      "cells": [
+        [
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          }
+        ]
+      ],
+      "z_index": 30
+    },
+    {
+      "id": "scan-grid",
+      "box_px": [
+        232,
+        706,
+        157,
+        62
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 12,
+        "fill": "#FFFFFF",
+        "stroke": "#092F64",
+        "stroke_width": 1.2,
+        "margin_left": 0,
+        "margin_right": 0,
+        "margin_top": 0,
+        "margin_bottom": 0
+      },
+      "cells": [
+        [
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          },
+          {
+            "text": "",
+            "style": {
+              "fill": "#9CC8FC"
+            }
+          }
+        ],
+        [
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "z_index": 30
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "工作二｜SME 风格统一计算架构",
+      "box_px": [
+        53,
+        13,
+        1210,
+        102
+      ],
+      "font_size": 43,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "problem",
+      "text": "问题：LU、RHS 与扫线形状不同",
+      "box_px": [
+        112,
+        144,
+        1040,
+        66
+      ],
+      "font_size": 24,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "mechanism",
+      "text": "机制：掩码行片段、因子广播、共享 ZA",
+      "box_px": [
+        112,
+        211,
+        1110,
+        65
+      ],
+      "font_size": 24,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "constraint",
+      "text": "约束：共享算术、端口与有界写回",
+      "box_px": [
+        112,
+        276,
+        1060,
+        65
+      ],
+      "font_size": 24,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "lu",
+      "text": "LU",
+      "box_px": [
+        63,
+        404,
+        145,
+        77
+      ],
+      "font_size": 27,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "rhs",
+      "text": "RHS",
+      "box_px": [
+        63,
+        560,
+        145,
+        77
+      ],
+      "font_size": 27,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "scan",
+      "text": "扫线",
+      "box_px": [
+        63,
+        697,
+        145,
+        77
+      ],
+      "font_size": 27,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "mask",
+      "text": "掩码行片段",
+      "box_px": [
+        551,
+        461,
+        243,
+        67
+      ],
+      "font_size": 23,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "broadcast",
+      "text": "因子广播",
+      "box_px": [
+        551,
+        563,
+        243,
+        64
+      ],
+      "font_size": 23,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "za",
+      "text": "共享 ZA",
+      "box_px": [
+        551,
+        664,
+        243,
+        64
+      ],
+      "font_size": 23,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "array",
+      "text": "统一阵列",
+      "box_px": [
+        900,
+        532,
+        295,
+        63
+      ],
+      "font_size": 27,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "sme",
+      "text": "（SME/ZA）",
+      "box_px": [
+        900,
+        595,
+        295,
+        71
+      ],
+      "font_size": 27,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "arithmetic",
+      "text": "共享算术",
+      "box_px": [
+        1289,
+        532,
+        327,
+        63
+      ],
+      "font_size": 25,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "writeback",
+      "text": "端口与有界写回",
+      "box_px": [
+        1287,
+        594,
+        333,
+        59
+      ],
+      "font_size": 25,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "validation",
+      "text": "验证：时序标定、资源消融与面积代价",
+      "box_px": [
+        250,
+        837,
+        1170,
+        68
+      ],
+      "font_size": 26,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

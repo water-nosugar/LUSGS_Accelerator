@@ -1,0 +1,790 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "SME/ZA 后端整体架构",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "subtitle",
+      "text": "整线控制器维护依赖，计算后端共享 ZA 与算术资源。",
+      "decision": "native-text",
+      "size_group": "subtitle"
+    },
+    {
+      "id": "lane-caption",
+      "text": "控制与发射",
+      "decision": "native-text",
+      "size_group": "lane-caption"
+    },
+    {
+      "id": "top-0-title",
+      "text": "整线控制器",
+      "decision": "native-text",
+      "size_group": "module-title"
+    },
+    {
+      "id": "top-0-sub",
+      "text": "依赖 · DMA · 系数版本",
+      "decision": "native-text",
+      "size_group": "module-sub"
+    },
+    {
+      "id": "top-1-title",
+      "text": "阶段微程序",
+      "decision": "native-text",
+      "size_group": "module-title"
+    },
+    {
+      "id": "top-1-sub",
+      "text": "LU · RHS · 前扫 · 后扫",
+      "decision": "native-text",
+      "size_group": "module-sub"
+    },
+    {
+      "id": "top-2-title",
+      "text": "就绪与端口仲裁",
+      "decision": "native-text",
+      "size_group": "module-title"
+    },
+    {
+      "id": "top-2-sub",
+      "text": "带掩码的行片段",
+      "decision": "native-text",
+      "size_group": "module-sub"
+    },
+    {
+      "id": "top-3-title",
+      "text": "共享算术与",
+      "decision": "native-text",
+      "size_group": "module-title"
+    },
+    {
+      "id": "top-3-sub",
+      "text": "倒数单元",
+      "decision": "native-text",
+      "size_group": "module-title"
+    },
+    {
+      "id": "bottom-0-title",
+      "text": "SPM",
+      "decision": "native-text",
+      "size_group": "module-bottom-title"
+    },
+    {
+      "id": "bottom-1-title",
+      "text": "ZA tile",
+      "decision": "native-text",
+      "size_group": "module-bottom-title"
+    },
+    {
+      "id": "bottom-2-title",
+      "text": "有界返回队列",
+      "decision": "native-text",
+      "size_group": "module-bottom-title"
+    },
+    {
+      "id": "writeback-label",
+      "text": "写回",
+      "decision": "native-text",
+      "size_group": "writeback"
+    },
+    {
+      "id": "footer",
+      "text": "结果取得写回端口并可见后，才发布后续就绪条件。",
+      "decision": "native-text",
+      "size_group": "footer"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-0",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-link-0",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-1",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-link-1",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-2",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-link-2",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "top-3",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "bottom-0",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "bottom-1",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "bottom-2",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "arith-to-queue",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "queue-to-za",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "spm-to-za",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "footer-band",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保留已确认样张的白底、深蓝标题和分隔线，四个控制与发射节点、三个数据及回写节点、对应标签和箭头方向均与源图相同。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、深蓝分隔线、浅蓝面板和布局对象对应。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "已与批准的样张逐项核对两行七个模块及标签、三根控制链右向箭头、算术向返回队列的下箭头、返回队列向 ZA tile 的左向写回箭头、SPM 与 ZA tile 双向箭头和底部说明。文字无溢出，原生线宽和字体与源图略有差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "SME/ZA 后端整体架构",
+      "box_px": [
+        49,
+        15,
+        1310,
+        98
+      ],
+      "font_size": 46,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "subtitle",
+      "text": "整线控制器维护依赖，计算后端共享 ZA 与算术资源。",
+      "box_px": [
+        52,
+        145,
+        1300,
+        63
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "subtitle",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "lane-caption",
+      "text": "控制与发射",
+      "box_px": [
+        692,
+        250,
+        287,
+        63
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "lane-caption",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#0B50AD",
+      "z_index": 40
+    },
+    {
+      "id": "top-0-title",
+      "text": "整线控制器",
+      "box_px": [
+        61,
+        363,
+        348,
+        62
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "module-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-0-sub",
+      "text": "依赖 · DMA · 系数版本",
+      "box_px": [
+        62,
+        428,
+        346,
+        53
+      ],
+      "font_size": 18.9,
+      "font_size_source": "measured",
+      "size_group": "module-sub",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-1-title",
+      "text": "阶段微程序",
+      "box_px": [
+        486,
+        363,
+        347,
+        62
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "module-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-1-sub",
+      "text": "LU · RHS · 前扫 · 后扫",
+      "box_px": [
+        487,
+        428,
+        345,
+        53
+      ],
+      "font_size": 18.9,
+      "font_size_source": "measured",
+      "size_group": "module-sub",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-2-title",
+      "text": "就绪与端口仲裁",
+      "box_px": [
+        910,
+        363,
+        320,
+        62
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "module-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-2-sub",
+      "text": "带掩码的行片段",
+      "box_px": [
+        911,
+        428,
+        318,
+        53
+      ],
+      "font_size": 18.9,
+      "font_size_source": "measured",
+      "size_group": "module-sub",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-3-title",
+      "text": "共享算术与",
+      "box_px": [
+        1307,
+        363,
+        304,
+        62
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "module-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "top-3-sub",
+      "text": "倒数单元",
+      "box_px": [
+        1308,
+        428,
+        302,
+        53
+      ],
+      "font_size": 25,
+      "font_size_source": "measured",
+      "size_group": "module-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "bottom-0-title",
+      "text": "SPM",
+      "box_px": [
+        61,
+        692,
+        354,
+        103
+      ],
+      "font_size": 29,
+      "font_size_source": "measured",
+      "size_group": "module-bottom-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "bottom-1-title",
+      "text": "ZA tile",
+      "box_px": [
+        618,
+        692,
+        359,
+        103
+      ],
+      "font_size": 29,
+      "font_size_source": "measured",
+      "size_group": "module-bottom-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "bottom-2-title",
+      "text": "有界返回队列",
+      "box_px": [
+        1218,
+        692,
+        394,
+        103
+      ],
+      "font_size": 29,
+      "font_size_source": "measured",
+      "size_group": "module-bottom-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "writeback-label",
+      "text": "写回",
+      "box_px": [
+        1036,
+        678,
+        131,
+        51
+      ],
+      "font_size": 22.5,
+      "font_size_source": "measured",
+      "size_group": "writeback",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "footer",
+      "text": "结果取得写回端口并可见后，才发布后续就绪条件。",
+      "box_px": [
+        120,
+        855,
+        1430,
+        54
+      ],
+      "font_size": 23,
+      "font_size_source": "measured",
+      "size_group": "footer",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        129,
+        1622,
+        129
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "top-0",
+      "type": "rect",
+      "box_px": [
+        52,
+        337,
+        366,
+        171
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#DEEBFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "top-link-0",
+      "type": "line",
+      "points_px": [
+        418,
+        423,
+        477,
+        423
+      ],
+      "semantic_line_id": "top-link-0",
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "top-1",
+      "type": "rect",
+      "box_px": [
+        477,
+        337,
+        365,
+        171
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#DEEBFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "top-link-1",
+      "type": "line",
+      "points_px": [
+        842,
+        423,
+        901,
+        423
+      ],
+      "semantic_line_id": "top-link-1",
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "top-2",
+      "type": "rect",
+      "box_px": [
+        901,
+        337,
+        338,
+        171
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "top-link-2",
+      "type": "line",
+      "points_px": [
+        1239,
+        423,
+        1298,
+        423
+      ],
+      "semantic_line_id": "top-link-2",
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "top-3",
+      "type": "rect",
+      "box_px": [
+        1298,
+        337,
+        322,
+        171
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "bottom-0",
+      "type": "rect",
+      "box_px": [
+        51,
+        684,
+        374,
+        120
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "bottom-1",
+      "type": "rect",
+      "box_px": [
+        608,
+        684,
+        379,
+        120
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#DCEAF9",
+      "corner_category": "straight"
+    },
+    {
+      "id": "bottom-2",
+      "type": "rect",
+      "box_px": [
+        1208,
+        684,
+        414,
+        120
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "arith-to-queue",
+      "type": "line",
+      "points_px": [
+        1437,
+        508,
+        1437,
+        683
+      ],
+      "semantic_line_id": "arith-to-queue",
+      "stroke": "#073B84",
+      "stroke_width": 4,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "queue-to-za",
+      "type": "line",
+      "points_px": [
+        1208,
+        744,
+        987,
+        744
+      ],
+      "semantic_line_id": "queue-to-za",
+      "stroke": "#073B84",
+      "stroke_width": 4,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "spm-to-za",
+      "type": "line",
+      "points_px": [
+        426,
+        744,
+        608,
+        744
+      ],
+      "semantic_line_id": "spm-to-za",
+      "stroke": "#073B84",
+      "stroke_width": 4,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "triangle",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "footer-band",
+      "type": "rect",
+      "box_px": [
+        38,
+        854,
+        1593,
+        66
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#DCEBFC",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

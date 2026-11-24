@@ -1,46 +1,30 @@
-# CFD-DSA 文档入口
+# 文档入口
 
-## 当前维护入口
+| 阅读目的 | 文档 |
+|---|---|
+| 第四轮 LU/RHS 预处理与有限流水 | [双乘积槽、因子保持及最终验证](CFD_DSA_LU_RHS_OPT_20261029.md) |
+| 项目使用与目录 | [项目README](../README.md) |
+| 当前单线实现 | [单线主线](CFD_DSA_SINGLE_LINE.md) |
+| 第一轮配对机会、反馈返回与 Tile 延迟诊断 | [观测结果与优化优先级](CFD_DSA_ROUND1_DIAGNOSTICS_20261028.md) |
+| 第二轮公共 LU 操作数及缓存边界实测 | [双 RHS 实现、有限收益与负面边界](CFD_DSA_ROUND2_RHS_PAIR_20261028.md) |
+| 第三轮长线 Tile24 及短线缓存保护 | [取数等待、容量代价与三组完整 sweep 对照](CFD_DSA_ROUND3_TILE_PREFETCH_20261028.md) |
+| 以整轮周期选择5/5/1与10/10/1的参数版本 | [两套最佳已测组合](CFD_DSA_CYCLE_BEST_20261027.md) |
+| 局部乘积/RF消融、同版5/5/1与容量边界 | [局部乘积结果及适用边界](CFD_DSA_PRODUCT_LOCAL_OPT_20261027.md) |
+| 单通道下减少控制流量、5/5/1与8/7/1取舍 | [单通道优化](CFD_DSA_SINGLE_CHANNEL_OPT_20261026.md) |
+| 算术共享、固定分组与借用 | [四种资源组织](CFD_DSA_RESOURCE_PARTITION_20261026.md) |
+| 冷轮 R 供给与 RHS 分批启动 | [冷轮 R 预取](CFD_DSA_COLD_RHS_OPT_20261026.md) |
+| D 输入与 LU 提前启动 | [独立 D 就绪](CFD_DSA_FORWARD_INPUT_OPT_20261026.md) |
+| 后向依赖与回读顺序 | [独立就绪和按cell回读](CFD_DSA_READY_SUPPLY_OPT_20261026.md) |
+| 本轮架构候选与取舍 | [广播、逐lane与局部通路](CFD_DSA_LANE_DESIGN_20261025.md) |
+| 当前供给/RF配置 | [单线供给优化](CFD_DSA_STREAM_SUPPLY_OPT_20261025.md) |
+| 除法器资源协议 | [除法器模型](CFD_DSA_DIVIDER_MODEL_20261021.md) |
+| 数据、CPU基线和评测口径 | [研究评测](CFD_DSA_STUDY_OPT_20261024.md) |
+| GT01R来源及投影限制 | [真实系数数据](CFD_DSA_GT01R_20261022.md) |
+| 当前清理与结果保留 | [结果管理](RESULT_LIFECYCLE.md) |
 
-- [单线研究主线](CFD_DSA_SINGLE_LINE.md)：仅一条网格线、一次前向和一次后向；单线入口、最终向量 DMA、容量账本及验收边界。
-- [单线 D2/D3 与重叠](CFD_DSA_SINGLE_LINE_D.md)：有限 tile/系数缓存、整轮接口计时、双缓冲及模式选择。
-- [单线第四轮修复与优化（2026-10-19）](CFD_DSA_SINGLE_LINE_ROUND4_20261019.md)：失败缓存及异常收尾、统计修正、接口聚合、有限缓存策略、DMA入口限速和实验溯源。
-- [项目地图](CFD_DSA_PROJECT_STRUCTURE.md)：目录、ISA/FU、数据与控制边界。
-- [文件索引](CFD_DSA_PROJECT_FILE_INDEX.md)：逐文件定位；移动代码后同步更新。
-- [Step2 模式说明](CFD_DSA_LUSGS_STEP2.md)：prepared/raw、coarse/event 的语义。
-- [Streaming 实现](CFD_DSA_LUSGS_STEP2_STREAMING.md)：line、列消费、复用及执行边界。
-- [结果生命周期](RESULT_LIFECYCLE.md)：结果保留、引用和清理纪律。
-- [精简进度](CFD_DSA_SIMPLIFICATION.md)：各阶段修改、验证、保留边界和后续入口。
+[历史报告](history/)保留各阶段方案和负面结果，不代表当前参数或推荐开关。
+有效参数以每例`resolved_experiment.json`和`configuration_audit.json`为准。
 
-当前实验基线是固定资源 serial/divide 的 2/2 上下文，2/4 为性能参照；
-这不是修改各入口默认值的授权。具体配置由 suite 和实际代码确定，不从历史报告推断。
+- [10/10/1双五分量发射与局部数据通路](CFD_DSA_DUAL_GROUP_20261027.md)
 
-## 专题与实验
-
-- [当前单线流水与瓶颈检查（2026-10-15）](CFD_DSA_SINGLE_LINE_AUDIT_20261015.md)：逐周期气泡、资源/队列利用率、SPM读取串行门控、DMA桥接模型，以及65点和当前推荐配置的吞吐补测。
-- [单线第二轮流水与存储优化（2026-10-12）](CFD_DSA_SINGLE_LINE_ROUND2_20261012.md)：完成/输入/输出生命周期解耦、逆向 tile 留存、LU 同列并行、SPM bank/端口模型及最终验收；含固定资源和重新选参的独立对照。
-- [单线流水优化（2026-10-12）](CFD_DSA_SINGLE_LINE_OPTIMIZATION_20261012.md)：前沿准入、精简记录、warm DMA 重叠、cold 乘积提前计算和参数扫描；含同二进制对照与推荐 suite。
-- [上下文消融](CFD_DSA_CONTEXT_ABLATION.md)
-- [调度诊断](CFD_DSA_SCHEDULER_DIAGNOSTICS.md)
-- [request aging 实验](CFD_DSA_REQUEST_FRONTIER_AGING.md)：2/2退化，非推荐默认。
-- [单线逐 RHS 调度实验](CFD_DSA_SINGLE_LINE.md#2026-09-23-单线调度验证)：固定资源的数值、请求次数及周期对照；2/4 有小幅收益，2/2 退化。
-- [Path A](CFD_DSA_IMPLEMENTATION.md)、[Path B](CFD_DSA_PATHB_ZA_PIPE.md)、
-  [Path C](CFD_DSA_SME.md)、[TRSV5](CFD_DSA_TRSV5.md)
-- [Step1](CFD_DSA_LUSGS_STEP1.md)、[Step2 core](CFD_DSA_LUSGS_STEP2_CORE.md)、
-  [pretransform](CFD_DSA_LUSGS_PRETRANSFORM.md)、[Step3](CFD_DSA_LUSGS_STEP3.md)、
-  [Step4](CFD_DSA_LUSGS_STEP4.md)：保留兼容与独立研究说明。
-
-## 冻结的历史快照
-
-以下文档不再维护当前默认值和推荐路径，仅保留原版本证据与勘误：
-
-- [版本审查](CFD_DSA_VERSION_RETENTION_ANALYSIS.md)
-- [版本保留汇总](CFD_DSA_VERSIONS_AND_RETENTION.md)
-- [完整技术报告](CFD_DSA_LUSGS_FULL_TECHNICAL_REPORT.md)
-- [历史性能分析](performance_analysis.md)、[历史测试报告](test_report.md)
-
-审计记录：[既有清理报告](CFD_DSA_CLEANUP_REPORT_2026-09-09.md)、
-[Git方案标签](GIT_SCHEME_TAGS.md)。未完成引用审查的源码不删除；
-历史文档不等于无用文档，不以最新性能数字覆盖旧证据。
-
-单线第三轮优化：[2026-10-15后向预读、数值ready/写回解耦、160B记录与容量收缩](CFD_DSA_SINGLE_LINE_ROUND3_20261015.md)。
+供给与完成记录优化见[有界快照与摘要引擎](CFD_DSA_SUPPLY_OPT_20261027.md)，含硬件代价、时序与验收说明。

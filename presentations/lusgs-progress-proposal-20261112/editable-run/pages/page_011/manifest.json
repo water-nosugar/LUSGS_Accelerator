@@ -1,0 +1,356 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "page_strategy": "两张周期数字卡和三条说明底带为原生矩形，文本和数据为可编辑文本。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "专用路线的阶段结果",
+      "decision": "native-text"
+    },
+    {
+      "id": "cycles-1024",
+      "text": "59,747",
+      "decision": "native-text"
+    },
+    {
+      "id": "cycles-4096",
+      "text": "239,368",
+      "decision": "native-text"
+    },
+    {
+      "id": "case-1024",
+      "text": "周期｜独立 1024 点",
+      "decision": "native-text"
+    },
+    {
+      "id": "case-4096",
+      "text": "周期｜验证 4096 点",
+      "decision": "native-text"
+    },
+    {
+      "id": "source",
+      "text": "来源：R42 分场景配方",
+      "decision": "native-text"
+    },
+    {
+      "id": "scope",
+      "text": "GT01R 实验使用块路径投影",
+      "decision": "native-text"
+    },
+    {
+      "id": "follow-up",
+      "text": "后续验证：RTL、面积功耗与 CFD 收敛",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "cycle-cards",
+      "role": "structure",
+      "object_type": "two straight-corner data cards",
+      "decision": "native-rect"
+    },
+    {
+      "id": "evidence-bands",
+      "role": "structure",
+      "object_type": "three straight solid horizontal bands",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、蓝色标题分隔线、两个浅蓝数字框及三条下部说明色带的原位置。",
+    "removed_foreground": [],
+    "comparison_note": "预览白底与数据卡、说明色带位置保持一致。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "case-1024-box",
+      "type": "rect",
+      "box_px": [
+        53,
+        217,
+        755,
+        309
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "case-4096-box",
+      "type": "rect",
+      "box_px": [
+        862,
+        216,
+        755,
+        310
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "source-band",
+      "type": "rect",
+      "box_px": [
+        49,
+        594,
+        1573,
+        78
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "scope-band",
+      "type": "rect",
+      "box_px": [
+        49,
+        700,
+        1573,
+        80
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "follow-up-band",
+      "type": "rect",
+      "box_px": [
+        49,
+        807,
+        1573,
+        81
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1623,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "semantic_line_id": "title-rule",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "专用路线的阶段结果",
+      "box_px": [
+        51,
+        12,
+        840,
+        102
+      ],
+      "font_size": 43,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "cycles-1024",
+      "text": "59,747",
+      "box_px": [
+        98,
+        243,
+        670,
+        158
+      ],
+      "font_size": 79,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "cycles-4096",
+      "text": "239,368",
+      "box_px": [
+        900,
+        243,
+        678,
+        158
+      ],
+      "font_size": 79,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "case-1024",
+      "text": "周期｜独立 1024 点",
+      "box_px": [
+        84,
+        409,
+        702,
+        84
+      ],
+      "font_size": 34,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "case-4096",
+      "text": "周期｜验证 4096 点",
+      "box_px": [
+        895,
+        409,
+        706,
+        84
+      ],
+      "font_size": 34,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "source",
+      "text": "来源：R42 分场景配方",
+      "box_px": [
+        100,
+        594,
+        1470,
+        76
+      ],
+      "font_size": 29.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "scope",
+      "text": "GT01R 实验使用块路径投影",
+      "box_px": [
+        100,
+        700,
+        1470,
+        76
+      ],
+      "font_size": 29.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "follow-up",
+      "text": "后续验证：RTL、面积功耗与 CFD 收敛",
+      "box_px": [
+        100,
+        807,
+        1470,
+        76
+      ],
+      "font_size": 29.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

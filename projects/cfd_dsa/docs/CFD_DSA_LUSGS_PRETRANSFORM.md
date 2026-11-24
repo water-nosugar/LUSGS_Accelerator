@@ -835,7 +835,7 @@ output occupancy 最大为 1 且 drain queue stall 为 0，因此默认配置下
 
 ```bash
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-event-sensitivity.json
+  projects/cfd_dsa/suites/history/coeff-event-sensitivity.json
 ```
 
 suite 固定 8x256、interleave=4、performance validation，并覆盖 RHS lanes 1/3/5/15、

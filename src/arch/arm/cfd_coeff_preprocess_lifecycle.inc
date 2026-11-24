@@ -1,5 +1,53 @@
 // Terminal snapshots own DMA bytes independently of compute request credits.
 void
+CfdCoeffPreprocessController::detachDataCommit(Request &req)
+{
+    if (!env.dataCommitDepth || req.dataCommitDetached || !req.luDone ||
+        !req.solveDone || (req.smeInvRequested && !req.smeInvDone) ||
+        !req.dqStarReadyLocal || !req.baseComputeComplete ||
+        (req.desc.cellId && (!req.correctionComplete || !req.combineComplete)))
+        return;
+    auto owner = childLineTokens.find(req.token);
+    if (owner == childLineTokens.end()) return;
+    auto &line = *lineRequests.at(owner->second);
+    if (line.abortPending) return;
+    // Only fully submitted drains may relinquish their compute window. Their
+    // packets own independent byte snapshots, and callbacks still find this
+    // request in its reserved state slot until all acknowledgements retire.
+    std::array<bool, 7> required{};
+    required[0] = !localLu(req);
+    required[1] = req.matrixDrainMask & 1u;
+    required[2] = req.matrixDrainMask & 2u;
+    required[3] = req.matrixDrainMask & 4u;
+    required[4] = req.baseConsumerEnabled && !req.directLbarBypass;
+    required[5] = req.lbarConsumerEnabled && !req.directLbarBypass && req.desc.cellId;
+    required[6] = req.lbarConsumerEnabled;
+    bool pending = false;
+    for (unsigned i = 0; i < required.size(); ++i) {
+        if (!required[i] || req.drainDone[i]) continue;
+        const auto task = std::find_if(activeDrains.begin(),activeDrains.end(),
+            [&req,i](const DrainTask &t) {
+                return t.token == req.token && static_cast<unsigned>(t.type) == i;
+            });
+        if (task == activeDrains.end() || task->bytesIssued != drainBytes(task->type))
+            return;
+        pending = true;
+    }
+    if (!pending || !prepareOnchipCommit(req)) return;
+    if (line.dataCommitLive >= env.dataCommitDepth) {
+        dataCommitFull++;
+        return;
+    }
+    // No new request storage is allocated: compute and submitted requests
+    // share the existing capacity*8192 reservation, enforced by requests.size().
+    req.dataCommitDetached = true;
+    line.dataCommitLive++;
+    dataCommitIssued++;
+    dataCommitPeak = std::max(dataCommitPeak,line.dataCommitLive);
+    trace(req,"controller","DATA_COMMIT_DETACH");
+}
+
+void
 CfdCoeffPreprocessController::abortLine(
     LineRequest &line, CfdCoeffPreprocessStatus status)
 {
@@ -8,6 +56,11 @@ CfdCoeffPreprocessController::abortLine(
     line.abortPending = true;
     line.terminal = true; // stop admission and new numerical/output work
     line.status = status;
+    if (env.smeContexts && env.traceEnable)
+        std::fprintf(stderr, "CFD_SME_ABORT token=%llu cycle=%llu status=%llu "
+            "live=%u cache_hit=%d\n", (unsigned long long)line.token,
+            (unsigned long long)cycle(), (unsigned long long)status,
+            smeZa.pendingReturns(), line.coefficientCacheHit);
     auto cache = lineCoeffCaches.find(line.desc.lineId);
     if (cache != lineCoeffCaches.end())
         cache->second.valid = false;
@@ -22,6 +75,16 @@ CfdCoeffPreprocessController::abortLine(
     line.outputWrites.clear();
     line.warmWrites.clear();
     line.cachedForwardStarted = false;
+    if (directRhsLookahead(line)) {
+        for (auto &slot : line.warm) {
+            if (slot.valid && env.traceEnable)
+                std::fprintf(stderr,"CFD_DIRECT_RHS cycle=%llu token=%llu cell=%llu event=discard mode=%s\n",
+                    (unsigned long long)cycle(),(unsigned long long)line.token,
+                    (unsigned long long)slot.cell,
+                    coldRhsLookahead(line) ? "cold" : "warm");
+            slot=WarmSlot{};
+        }
+    }
     line.statusTransfer.reset();
     if (env.traceEnable)
         std::fprintf(stderr,"CFD_LINE_ABORT cycle=%llu token=%llu event=begin status=%llu\n",
@@ -38,6 +101,10 @@ CfdCoeffPreprocessController::processAbortedLines()
             continue;
         auto *spm = getCfdLocalSpm();
         if (line.liveChildren || line.recordsPending || !pendingOps.empty() ||
+            !smeZa.empty() || arithmeticGroups.live ||
+            (summaryHash.live && summaryHash.owner == token) ||
+            std::any_of(summarySnapshots.entries.begin(),summarySnapshots.entries.end(),
+                [token](const auto &e) { return e.live && e.owner==token; }) ||
             !sharedVectorAdds.empty() || sharedVectorsLive ||
             std::any_of(onchipQueue.begin(),onchipQueue.end(),
                 [token](const auto &a) { return a->owner == token; }))
@@ -65,6 +132,8 @@ CfdCoeffPreprocessController::processAbortedLines()
             proxy().writeBlob(line.desc.dInvOutAddr,&status,sizeof(status));
         }
         line.abortPublished = true;
+        if (env.smeContexts)
+            reportSme(line, cycle(), true);
         if (env.traceEnable)
             std::fprintf(stderr,"CFD_LINE_ABORT cycle=%llu token=%llu event=visible status=%llu dma_live=%llu records=%llu children=%llu\n",
                 (unsigned long long)cycle(),(unsigned long long)token,
@@ -119,7 +188,7 @@ CfdCoeffPreprocessController::processDetachedRecords()
 std::shared_ptr<LineTile>
 CfdCoeffPreprocessController::forwardTile(const LineRequest &line, uint64_t cell) const
 {
-    for (const auto &tile : {line.tile, line.prefetchTile}) {
+    for (const auto &tile : lineTiles(line)) {
         if (tile && tile->phase == LineTile::Phase::Forward &&
             cell >= tile->start && cell < tile->start+tile->count &&
             (tile == line.tile || env.lineOptLevel >= 5)) return tile;

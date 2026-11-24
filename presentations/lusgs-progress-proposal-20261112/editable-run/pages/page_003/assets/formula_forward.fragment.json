@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "type": "latex-formula-image-fragment",
+  "images": [
+    {
+      "id": "formula_forward",
+      "path": "assets/formula_forward.png",
+      "box_px": [
+        646.0,
+        485.0,
+        373.0,
+        64.0
+      ],
+      "alt": "y_i=b_i-\\overline{L}_i\\,y_{i-1}",
+      "z_index": 220
+    }
+  ],
+  "asset_provenance": [
+    {
+      "path": "assets/formula_forward.png",
+      "source": "assets/formula_forward.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    }
+  ],
+  "formula_inventory": [
+    {
+      "id": "formula_forward",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_forward.png",
+      "tex_source": "assets/formula_forward.tex"
+    }
+  ]
+}

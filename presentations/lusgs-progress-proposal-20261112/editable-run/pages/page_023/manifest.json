@@ -1,0 +1,351 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "研究范围、数值与公平比较",
+      "decision": "native-text"
+    },
+    {
+      "id": "coverage",
+      "required_text": [
+        "覆盖范围",
+        "从单线扩展到一般网格依赖与外迭代"
+      ],
+      "decision": "native-table-cell"
+    },
+    {
+      "id": "robustness",
+      "required_text": [
+        "数值鲁棒性",
+        "检验病态块、重关联与误差"
+      ],
+      "decision": "native-table-cell"
+    },
+    {
+      "id": "comparison",
+      "required_text": [
+        "公平比较",
+        "统一精度并计入容量、端口、带宽和时钟"
+      ],
+      "decision": "native-table-cell"
+    },
+    {
+      "id": "application",
+      "required_text": [
+        "应用价值",
+        "补齐现代 CPU/GPU 基线与收敛实验"
+      ],
+      "decision": "native-table-cell"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid-fill"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native line"
+    },
+    {
+      "id": "coverage",
+      "role": "structure",
+      "object_type": "table",
+      "decision": "Native single-row table matching the independently framed source row."
+    },
+    {
+      "id": "robustness",
+      "role": "structure",
+      "object_type": "table",
+      "decision": "Native single-row table matching the independently framed source row."
+    },
+    {
+      "id": "comparison",
+      "role": "structure",
+      "object_type": "table",
+      "decision": "Native single-row table matching the independently framed source row."
+    },
+    {
+      "id": "application",
+      "role": "structure",
+      "object_type": "table",
+      "decision": "Native single-row table matching the independently framed source row."
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "Match the white canvas, title rule and four independent straight-corner two-cell rows with native elements.",
+    "removed_foreground": "No independent foreground assets. All lettering is native.",
+    "comparison_note": "Compared against the source in the contact sheet. White page, blue title rule, four isolated two-cell rows, light blue label fills, and dark blue table outlines preserve the source geometry. All cell text is legible and native."
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "研究范围、数值与公平比较",
+      "box_px": [
+        50,
+        5,
+        1450,
+        114
+      ],
+      "font_size": 43.5,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "title",
+      "bold": true,
+      "color": "#082D62",
+      "align": "left",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "semantic_line_id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        129,
+        1622,
+        129
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 3.25,
+      "z_index": 20
+    }
+  ],
+  "tables": [
+    {
+      "id": "coverage",
+      "box_px": [
+        51,
+        202,
+        1569,
+        148
+      ],
+      "column_widths": [
+        405,
+        1164
+      ],
+      "row_heights": [
+        1
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 33,
+        "bold": true,
+        "color": "#082D62",
+        "valign": "middle",
+        "align": "left",
+        "fill": "#FFFFFF",
+        "stroke": "#0643A1",
+        "stroke_width": 3.4,
+        "margin_left": 0.38,
+        "margin_right": 0.2,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "wrap": "none"
+      },
+      "cells": [
+        [
+          {
+            "text": "覆盖范围",
+            "style": {
+              "font_size": 36,
+              "align": "center",
+              "fill": "#DFECFD",
+              "margin_left": 0.05,
+              "margin_right": 0.05
+            }
+          },
+          {
+            "text": "从单线扩展到一般网格依赖与外迭代"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "robustness",
+      "box_px": [
+        51,
+        389,
+        1569,
+        141
+      ],
+      "column_widths": [
+        405,
+        1164
+      ],
+      "row_heights": [
+        1
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 33,
+        "bold": true,
+        "color": "#082D62",
+        "valign": "middle",
+        "align": "left",
+        "fill": "#FFFFFF",
+        "stroke": "#0643A1",
+        "stroke_width": 3.4,
+        "margin_left": 0.38,
+        "margin_right": 0.2,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "wrap": "none"
+      },
+      "cells": [
+        [
+          {
+            "text": "数值鲁棒性",
+            "style": {
+              "font_size": 36,
+              "align": "center",
+              "fill": "#DFECFD",
+              "margin_left": 0.05,
+              "margin_right": 0.05
+            }
+          },
+          {
+            "text": "检验病态块、重关联与误差"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "comparison",
+      "box_px": [
+        51,
+        568,
+        1569,
+        146
+      ],
+      "column_widths": [
+        405,
+        1164
+      ],
+      "row_heights": [
+        1
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 33,
+        "bold": true,
+        "color": "#082D62",
+        "valign": "middle",
+        "align": "left",
+        "fill": "#FFFFFF",
+        "stroke": "#0643A1",
+        "stroke_width": 3.4,
+        "margin_left": 0.38,
+        "margin_right": 0.2,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "wrap": "none"
+      },
+      "cells": [
+        [
+          {
+            "text": "公平比较",
+            "style": {
+              "font_size": 36,
+              "align": "center",
+              "fill": "#DFECFD",
+              "margin_left": 0.05,
+              "margin_right": 0.05
+            }
+          },
+          {
+            "text": "统一精度并计入容量、端口、带宽和时钟"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "application",
+      "box_px": [
+        51,
+        754,
+        1569,
+        140
+      ],
+      "column_widths": [
+        405,
+        1164
+      ],
+      "row_heights": [
+        1
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 33,
+        "bold": true,
+        "color": "#082D62",
+        "valign": "middle",
+        "align": "left",
+        "fill": "#FFFFFF",
+        "stroke": "#0643A1",
+        "stroke_width": 3.4,
+        "margin_left": 0.38,
+        "margin_right": 0.2,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "wrap": "none"
+      },
+      "cells": [
+        [
+          {
+            "text": "应用价值",
+            "style": {
+              "font_size": 36,
+              "align": "center",
+              "fill": "#DFECFD",
+              "margin_left": 0.05,
+              "margin_right": 0.05
+            }
+          },
+          {
+            "text": "补齐现代 CPU/GPU 基线与收敛实验"
+          }
+        ]
+      ]
+    }
+  ],
+  "images": [],
+  "asset_provenance": [],
+  "page_strategy": "Editable title, native title rule and four native 1×2 tables preserving the spacing between framed rows."
+}

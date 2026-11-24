@@ -1,0 +1,387 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "块 LU-SGS 加速的三个问题",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "dependency-title",
+      "text": "依赖",
+      "decision": "native-text",
+      "size_group": "card-heading"
+    },
+    {
+      "id": "dependency-body",
+      "text": "关键结果何时可见",
+      "decision": "native-text",
+      "size_group": "card-body"
+    },
+    {
+      "id": "compute-title",
+      "text": "计算",
+      "decision": "native-text",
+      "size_group": "card-heading"
+    },
+    {
+      "id": "compute-body",
+      "text": "各阶段怎样共享阵列",
+      "decision": "native-text",
+      "size_group": "card-body"
+    },
+    {
+      "id": "memory-title",
+      "text": "存储",
+      "decision": "native-text",
+      "size_group": "card-heading"
+    },
+    {
+      "id": "memory-body",
+      "text": "有限端口下怎样持续供数",
+      "decision": "native-text",
+      "size_group": "card-body"
+    },
+    {
+      "id": "evaluation",
+      "text": "评价：关键路径、数据流量、目标精度",
+      "decision": "native-text",
+      "size_group": "footer"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "dependency-card",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "compute-card",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "memory-card",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "evaluation-arrow",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "evaluation-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、深蓝标题与分隔线；依赖、计算、存储三个方角面板及其标题和问句位于原位置，中央向下箭头指向同宽度的评价指标栏。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、主次色、分隔线和布局对象对应，背景无文字残影。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "逐项核对三个独立方角面板、问句、原生向下箭头与评价指标栏。所有文本均可见且无溢出，预览线宽和浅蓝色填充与源图有轻微差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "块 LU-SGS 加速的三个问题",
+      "box_px": [
+        48,
+        13,
+        1260,
+        97
+      ],
+      "font_size": 43.5,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "dependency-title",
+      "text": "依赖",
+      "box_px": [
+        53,
+        293,
+        494,
+        140
+      ],
+      "font_size": 64,
+      "font_size_source": "measured",
+      "size_group": "card-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "dependency-body",
+      "text": "关键结果何时可见",
+      "box_px": [
+        54,
+        439,
+        492,
+        82
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "card-body",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "compute-title",
+      "text": "计算",
+      "box_px": [
+        593,
+        293,
+        486,
+        140
+      ],
+      "font_size": 64,
+      "font_size_source": "measured",
+      "size_group": "card-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "compute-body",
+      "text": "各阶段怎样共享阵列",
+      "box_px": [
+        594,
+        439,
+        484,
+        82
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "card-body",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "memory-title",
+      "text": "存储",
+      "box_px": [
+        1125,
+        293,
+        494,
+        140
+      ],
+      "font_size": 64,
+      "font_size_source": "measured",
+      "size_group": "card-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "memory-body",
+      "text": "有限端口下怎样持续供数",
+      "box_px": [
+        1126,
+        439,
+        492,
+        82
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "card-body",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "evaluation",
+      "text": "评价：关键路径、数据流量、目标精度",
+      "box_px": [
+        131,
+        730,
+        1410,
+        110
+      ],
+      "font_size": 37,
+      "font_size_source": "measured",
+      "size_group": "footer",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        126,
+        1623,
+        126
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "dependency-card",
+      "type": "rect",
+      "box_px": [
+        43,
+        255,
+        514,
+        316
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "#E2EDFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "compute-card",
+      "type": "rect",
+      "box_px": [
+        583,
+        255,
+        506,
+        316
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "#E2EDFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "memory-card",
+      "type": "rect",
+      "box_px": [
+        1115,
+        255,
+        514,
+        316
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "#E2EDFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "evaluation-arrow",
+      "type": "line",
+      "points_px": [
+        836,
+        590,
+        836,
+        703
+      ],
+      "semantic_line_id": "evaluation-arrow",
+      "stroke": "#0B50AC",
+      "stroke_width": 5.5,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "evaluation-panel",
+      "type": "rect",
+      "box_px": [
+        43,
+        720,
+        1586,
+        135
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.5,
+      "z_index": 12,
+      "fill": "#E0ECFA",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

@@ -30,6 +30,14 @@ The controller's cold child Lbar/base path retains ordered column consumption.
 arbitration for this study. The fixed-resource baseline remains
 `frontier-aware`; see `../docs/CFD_DSA_SINGLE_LINE.md`.
 
+`--coeff-input-d-early=1` publishes an independent D-load token for early LU.
+`--coeff-cold-rhs-prefetch=1` additionally reuses the bounded R lookahead slots
+on cold direct lines and initializes b independently of L/U. It requires the
+D option, timed shared/row-parallel RHS, rhs-frontier, LU forwarding/early
+solve, nonzero RF ports and autonomous raw streaming. Both default to 0.
+See [cold R supply](../docs/CFD_DSA_COLD_RHS_OPT_20261026.md) for the execution
+credit protocol, measured tradeoffs and complete experiment commands.
+
 Round4 retains the existing defaults. The first three data-path alternatives
 below require opt level11; global DMA quotas also apply to compatibility modes:
 
@@ -39,4 +47,11 @@ below require opt level11; global DMA quotas also apply to compatibility modes:
 - `--coeff-dma-issue-packets=0..64` and `--coeff-dma-issue-bytes=0|64..4096`: global accepted-request quotas per controller cycle; nonzero byte limits must be divisible by 8. Zero preserves the old unbounded ingress assumption.
 - With onchip timing enabled, input, tile-read and interface widths must be divisible by 8; 40B is supported and cache-line/page boundaries can still split requests.
 
-The recommended suite explicitly uses one packet/64B per cycle. Its four-input-slot direct candidates charge an additional 16640B to the same 196608B budget; do not apply that setting to arbitrary line lengths without rechecking cache residency. `--coeff-input-pattern=baseline|random|scaled` and `--coeff-input-seed` select validation data, and `--coeff-poison-outputs=1` detects stale/missing output stores. Reference LU/Ubar are kept in a separate software workspace. Details: [round4 report](../docs/CFD_DSA_SINGLE_LINE_ROUND4_20261019.md).
+The recommended suite explicitly uses one packet/64B per cycle. Its four-input-slot direct candidates charge an additional 16640B to the same 196608B budget; do not apply that setting to arbitrary line lengths without rechecking cache residency. `--coeff-input-pattern=baseline|random|scaled` and `--coeff-input-seed` select validation data, and `--coeff-poison-outputs=1` detects stale/missing output stores. Reference LU/Ubar are kept in a separate software workspace. Details: [round4 report](../docs/history/CFD_DSA_SINGLE_LINE_ROUND4_20261019.md).
+
+Arithmetic partition experiments use `--coeff-arithmetic-mode=legacy|shared|fixed|borrow`
+and `--coeff-cluster-add-count` alongside the multiplier count. The default
+legacy path retains its prior timing. Other modes share a finite registered
+operation scoreboard and account for fragment returns through the existing RF.
+See [resource organization](../docs/CFD_DSA_RESOURCE_PARTITION_20261026.md)
+for counts, queue/timing limits, unsupported combinations and fair controls.

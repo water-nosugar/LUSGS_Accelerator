@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 import re
+from check_divider_model import check_case as check_divider
 
 
 def require_completed_simulation(manifest, path):
@@ -21,11 +22,21 @@ def read_case(path, require_digest=True):
     manifest = json.loads((path / "manifest.json").read_text())
     require_completed_simulation(manifest,path)
     text = (path / "simout.txt").read_text() + (path / "driver.log").read_text()
-    if "LUSGS_STEP2_STREAMING_PASS" not in text:
+    transition = "LUSGS_LU_OUTPUT_TRANSITION_PASS" in text.splitlines()
+    if "LUSGS_STEP2_STREAMING_PASS" not in text and not transition:
         raise ValueError(f"{path.name}: missing full correctness marker")
     hashes = re.findall(r"CFD_LINE_SCHEDULE .*?result_hash=(\w+)", text)
     cycles = re.search(r"streamingStep2.totalCycles = (\d+)", text)
-    if not cycles or (require_digest and not hashes):
+    if transition:
+        steps = [dict(re.findall(r'(\w+)=([^\s]+)',line)) for line in text.splitlines()
+                 if line.startswith('CFD_LU_OUTPUT_TRANSITION ')]
+        if len(steps) != 5 or any(int(row.get('cycles','0')) <= 0 for row in steps):
+            raise ValueError(f'{path.name}: incomplete LU transition timing')
+        measured_cycles = sum(int(row['cycles']) for row in steps)
+        hashes = re.findall(r'CFD_SINGLE_LINE_NUMERIC .*?result_hash=(\w+)', text)
+    else:
+        measured_cycles = int(cycles[1]) if cycles else None
+    if measured_cycles is None or (require_digest and not hashes):
         raise ValueError(f"{path.name}: missing timing or numeric digest")
     pools = {}
     for line in text.splitlines():
@@ -35,6 +46,10 @@ def read_case(path, require_digest=True):
             pools[name] = {key: int(value) for key, value in fields.items()}
     options = dict(arg[2:].split("=", 1) for arg in manifest["command"]
                    if arg.startswith("--") and "=" in arg)
+    from check_register_ports import case_residence_cycles
+    from check_single_line_output_dma import resolved_options
+    rf_residence = case_residence_cycles(path, resolved_options(path), text)
+    divider = check_divider(path)
     for key in ("lu5-count", "coeff3-count", "coeff-resource-stats"):
         options.pop(key, None)
     for name, p in pools.items():
@@ -46,9 +61,13 @@ def read_case(path, require_digest=True):
         if p["active_cycles"] > p["samples"]:
             raise ValueError(f"{path.name}/{name}: active fraction exceeds one")
         # These tests are non-cancelled and snapshots are at quiescence.
-        if p["occupancy_sum"] != p["issued"] * p["lat"]:
+        occupancy = (rf_residence[name] if rf_residence is not None else
+                     divider['residence_cycles'] if divider and name == 'shared_div' else p['issued']*p['lat'])
+        if rf_residence is not None and divider and name == 'shared_div' and occupancy != divider['residence_cycles']:
+            raise ValueError(f"{path.name}/{name}: RF and divider residence disagree")
+        if p["occupancy_sum"] != occupancy:
             raise ValueError(f"{path.name}/{name}: lost/duplicated pending samples")
-    return int(cycles[1]), hashes, pools, options, manifest["gem5_sha256"]
+    return measured_cycles, hashes, pools, options, manifest["gem5_sha256"]
 
 
 def check(root):

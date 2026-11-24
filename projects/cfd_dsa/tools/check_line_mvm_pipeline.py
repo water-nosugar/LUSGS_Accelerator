@@ -8,7 +8,7 @@ import re
 
 
 def check(root):
-    suite = Path(__file__).resolve().parents[1] / "suites/coeff-line-mvm-pipeline.json"
+    suite = Path(__file__).resolve().parents[1] / "suites/history/coeff-line-mvm-pipeline.json"
     records = {}
     for case in json.loads(suite.read_text())["cases"]:
         name = case["name"]

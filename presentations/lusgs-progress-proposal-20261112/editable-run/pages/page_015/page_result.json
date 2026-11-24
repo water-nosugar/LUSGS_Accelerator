@@ -1,0 +1,17 @@
+{
+  "page_manifest": "manifest.json",
+  "imagegen_jobs": "imagegen-jobs.json",
+  "page_pptx": "page.pptx",
+  "preview": "preview.png",
+  "contact_sheet": "split_assets_contact.png",
+  "validation": "validation.json",
+  "page_result": "page_result.json",
+  "hashes": {
+    "page_manifest": "85601ee2b0188bb7a04739b7c409db63531f9d2a45cb595401d695210d821b8e",
+    "imagegen_jobs": "e977492a8b5a21e72355961395b1b5e6548f10aeddbdaa361ffdc7d4485a307b",
+    "page_pptx": "b44fd2a2fd364230df3da4af2bac284dd65b3eaa86fdfd81d779b26bbc4e8b19",
+    "preview": "acb9582f3759c42086b7282647e901a0ab6e821027c8a69dbf7ff8a3181899b7",
+    "contact_sheet": "19538c58bcfa999b60e4291052dda8017cd30a9c073ad90ce232f7e45b6a82d8",
+    "validation": "06494bed75cef4df2a1f0aac0c80233abd34e34c12ea03c5bd525b3647c40bd3"
+  }
+}

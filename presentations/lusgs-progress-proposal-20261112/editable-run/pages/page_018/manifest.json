@@ -1,0 +1,503 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "工作一｜依赖感知的跨阶段调度",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "panel-0-title",
+      "text": "问题",
+      "decision": "native-text",
+      "size_group": "panel-heading"
+    },
+    {
+      "id": "panel-0-first",
+      "text": "整点门槛延长",
+      "decision": "native-text",
+      "size_group": "body-0"
+    },
+    {
+      "id": "panel-0-second",
+      "text": "关键路径",
+      "decision": "native-text",
+      "size_group": "body-0"
+    },
+    {
+      "id": "panel-1-title",
+      "text": "拟研究机制",
+      "decision": "native-text",
+      "size_group": "panel-heading"
+    },
+    {
+      "id": "panel-1-first",
+      "text": "按主元、RHS 列、反馈分量跟踪就绪",
+      "decision": "native-text",
+      "size_group": "body-1"
+    },
+    {
+      "id": "panel-1-second",
+      "text": "关键 RHS 提前发布，U 回代延后",
+      "decision": "native-text",
+      "size_group": "body-1"
+    },
+    {
+      "id": "panel-2-title",
+      "text": "验证",
+      "decision": "native-text",
+      "size_group": "panel-heading"
+    },
+    {
+      "id": "panel-2-first",
+      "text": "固定资源消融",
+      "decision": "native-text",
+      "size_group": "body-2"
+    },
+    {
+      "id": "panel-2-second",
+      "text": "整轮周期与反馈间隔",
+      "decision": "native-text",
+      "size_group": "body-2"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-0",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-0-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-0-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-1",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-1-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-1-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-2",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "panel-2-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保留白底、深蓝标题及细分隔线；问题、拟研究机制与验证使用原位置上的浅蓝标题卡和白底内容，两根箭头按原图顺序从左至右。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、深蓝分隔线、浅蓝面板和布局对象对应。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "逐项核对问题、拟研究机制与验证三张卡及右向箭头，标题及六行正文可见，RHS、U 和反馈间隔文字均完整。原生字体和线宽与源图有轻微差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "工作一｜依赖感知的跨阶段调度",
+      "box_px": [
+        49,
+        13,
+        1440,
+        103
+      ],
+      "font_size": 44,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-0-title",
+      "text": "问题",
+      "box_px": [
+        57,
+        371,
+        336,
+        85
+      ],
+      "font_size": 32,
+      "font_size_source": "measured",
+      "size_group": "panel-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-0-first",
+      "text": "整点门槛延长",
+      "box_px": [
+        58,
+        502,
+        334,
+        75
+      ],
+      "font_size": 26,
+      "font_size_source": "measured",
+      "size_group": "body-0",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-0-second",
+      "text": "关键路径",
+      "box_px": [
+        58,
+        565,
+        334,
+        75
+      ],
+      "font_size": 26,
+      "font_size_source": "measured",
+      "size_group": "body-0",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-1-title",
+      "text": "拟研究机制",
+      "box_px": [
+        473,
+        371,
+        666,
+        85
+      ],
+      "font_size": 32,
+      "font_size_source": "measured",
+      "size_group": "panel-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-1-first",
+      "text": "按主元、RHS 列、反馈分量跟踪就绪",
+      "box_px": [
+        474,
+        492,
+        664,
+        75
+      ],
+      "font_size": 23.8,
+      "font_size_source": "measured",
+      "size_group": "body-1",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-1-second",
+      "text": "关键 RHS 提前发布，U 回代延后",
+      "box_px": [
+        474,
+        568,
+        664,
+        75
+      ],
+      "font_size": 23.8,
+      "font_size_source": "measured",
+      "size_group": "body-1",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-2-title",
+      "text": "验证",
+      "box_px": [
+        1221,
+        371,
+        395,
+        85
+      ],
+      "font_size": 32,
+      "font_size_source": "measured",
+      "size_group": "panel-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-2-first",
+      "text": "固定资源消融",
+      "box_px": [
+        1222,
+        492,
+        393,
+        75
+      ],
+      "font_size": 23.8,
+      "font_size_source": "measured",
+      "size_group": "body-2",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "panel-2-second",
+      "text": "整轮周期与反馈间隔",
+      "box_px": [
+        1222,
+        568,
+        393,
+        75
+      ],
+      "font_size": 23.8,
+      "font_size_source": "measured",
+      "size_group": "body-2",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        129,
+        1622,
+        129
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "panel-0",
+      "type": "rect",
+      "box_px": [
+        47,
+        361,
+        356,
+        326
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "panel-0-header",
+      "type": "rect",
+      "box_px": [
+        50,
+        364,
+        350,
+        103
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#D1E4F8",
+      "corner_category": "straight"
+    },
+    {
+      "id": "panel-0-link",
+      "type": "line",
+      "points_px": [
+        403,
+        529,
+        463,
+        529
+      ],
+      "semantic_line_id": "panel-0-link",
+      "stroke": "#073B84",
+      "stroke_width": 4,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "panel-1",
+      "type": "rect",
+      "box_px": [
+        463,
+        361,
+        686,
+        326
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "panel-1-header",
+      "type": "rect",
+      "box_px": [
+        466,
+        364,
+        680,
+        103
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#D1E4F8",
+      "corner_category": "straight"
+    },
+    {
+      "id": "panel-1-link",
+      "type": "line",
+      "points_px": [
+        1149,
+        529,
+        1211,
+        529
+      ],
+      "semantic_line_id": "panel-1-link",
+      "stroke": "#073B84",
+      "stroke_width": 4,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "panel-2",
+      "type": "rect",
+      "box_px": [
+        1211,
+        361,
+        415,
+        326
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "panel-2-header",
+      "type": "rect",
+      "box_px": [
+        1214,
+        364,
+        409,
+        103
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#D1E4F8",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

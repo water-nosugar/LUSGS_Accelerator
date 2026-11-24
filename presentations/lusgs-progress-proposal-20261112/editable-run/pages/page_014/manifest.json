@@ -1,0 +1,498 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "以原生矩形和连线恢复分解步骤、原生表格恢复 R/L/U 三个单元、原生文本恢复标题和说明。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "LU 与多 RHS 的阵列映射",
+      "decision": "native-text"
+    },
+    {
+      "id": "crout",
+      "text": "Crout LU",
+      "decision": "native-text"
+    },
+    {
+      "id": "rhs-count",
+      "text": "内部点：1 + 5 + 5 = 11 个 RHS",
+      "decision": "native-text"
+    },
+    {
+      "id": "reciprocal",
+      "text": "主元倒数",
+      "decision": "native-text"
+    },
+    {
+      "id": "scaling",
+      "text": "行缩放",
+      "decision": "native-text"
+    },
+    {
+      "id": "masked-fma",
+      "text": "掩码 FMA",
+      "decision": "native-text"
+    },
+    {
+      "id": "shared",
+      "text": "R、L、U 共用同一 LU 因子",
+      "decision": "native-text"
+    },
+    {
+      "id": "cold",
+      "text": "R/L 独立推进，冷轮 U 回代延后",
+      "decision": "native-text"
+    },
+    {
+      "id": "rhs-panels",
+      "items": [
+        "R",
+        "L",
+        "U"
+      ],
+      "decision": "native-table-cells"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "containers",
+      "role": "structure",
+      "object_type": "two rectangular containers with solid header fills",
+      "decision": "native-rect"
+    },
+    {
+      "id": "crout-steps",
+      "role": "structure",
+      "object_type": "three flow boxes and arrows",
+      "decision": "native-rect-and-line"
+    },
+    {
+      "id": "rhs-panels",
+      "role": "structure",
+      "object_type": "one row of three labeled cells",
+      "decision": "native-table"
+    },
+    {
+      "id": "cold-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保留白底、左右两个蓝框与浅蓝标题栏、R/L/U 三个面板及页脚的位置。",
+    "removed_foreground": [],
+    "comparison_note": "预览白底、两侧框与子对象的位置和层次与源页一致。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "crout-head-fill",
+      "type": "rect",
+      "box_px": [
+        28,
+        247,
+        787,
+        134
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "rhs-head-fill",
+      "type": "rect",
+      "box_px": [
+        850,
+        247,
+        794,
+        134
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "crout-outline",
+      "type": "rect",
+      "box_px": [
+        28,
+        248,
+        787,
+        489
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 2.7,
+      "corner_category": "straight",
+      "z_index": 15
+    },
+    {
+      "id": "rhs-outline",
+      "type": "rect",
+      "box_px": [
+        850,
+        248,
+        794,
+        489
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 2.7,
+      "corner_category": "straight",
+      "z_index": 15
+    },
+    {
+      "id": "reciprocal-box",
+      "type": "rect",
+      "box_px": [
+        51,
+        479,
+        216,
+        127
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 2.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "scaling-box",
+      "type": "rect",
+      "box_px": [
+        322,
+        479,
+        199,
+        127
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 2.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "masked-fma-box",
+      "type": "rect",
+      "box_px": [
+        579,
+        479,
+        216,
+        127
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 2.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "cold-band",
+      "type": "rect",
+      "box_px": [
+        39,
+        804,
+        1593,
+        104
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1623,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "reciprocal-to-scaling",
+      "type": "line",
+      "points_px": [
+        267,
+        543,
+        322,
+        543
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.6,
+      "semantic_line_id": "reciprocal-to-scaling",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "scaling-to-fma",
+      "type": "line",
+      "points_px": [
+        521,
+        543,
+        579,
+        543
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.6,
+      "semantic_line_id": "scaling-to-fma",
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "tables": [
+    {
+      "id": "rhs-panels",
+      "box_px": [
+        873,
+        468,
+        749,
+        100
+      ],
+      "column_widths": [
+        104,
+        314,
+        331
+      ],
+      "row_heights": [
+        100
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 31.5,
+        "align": "center",
+        "valign": "middle",
+        "wrap": "none",
+        "fit_text": false,
+        "color": "#092F64",
+        "bold": true,
+        "fill": "#DFECFC",
+        "stroke": "#064296",
+        "stroke_width": 2.5,
+        "margin_left": 0.04,
+        "margin_right": 0.04,
+        "margin_top": 0.04,
+        "margin_bottom": 0.04
+      },
+      "cells": [
+        [
+          "R",
+          "L",
+          "U"
+        ]
+      ],
+      "z_index": 30
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "LU 与多 RHS 的阵列映射",
+      "box_px": [
+        53,
+        12,
+        915,
+        97
+      ],
+      "font_size": 43.5,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "crout",
+      "text": "Crout LU",
+      "box_px": [
+        44,
+        269,
+        756,
+        91
+      ],
+      "font_size": 39,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "rhs-count",
+      "text": "内部点：1 + 5 + 5 = 11 个 RHS",
+      "box_px": [
+        861,
+        271,
+        770,
+        88
+      ],
+      "font_size": 32,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "reciprocal",
+      "text": "主元倒数",
+      "box_px": [
+        61,
+        504,
+        197,
+        77
+      ],
+      "font_size": 24.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "scaling",
+      "text": "行缩放",
+      "box_px": [
+        333,
+        504,
+        178,
+        77
+      ],
+      "font_size": 24.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "masked-fma",
+      "text": "掩码 FMA",
+      "box_px": [
+        588,
+        504,
+        196,
+        77
+      ],
+      "font_size": 24.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "shared",
+      "text": "R、L、U 共用同一 LU 因子",
+      "box_px": [
+        870,
+        608,
+        756,
+        78
+      ],
+      "font_size": 32,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "cold",
+      "text": "R/L 独立推进，冷轮 U 回代延后",
+      "box_px": [
+        325,
+        811,
+        1020,
+        84
+      ],
+      "font_size": 31.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

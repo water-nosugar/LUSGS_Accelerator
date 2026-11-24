@@ -1,0 +1,197 @@
+{
+  "source": "input/块LU-SGS专用加速架构_图片版.pptx",
+  "notes": [
+    {
+      "page_index": 1,
+      "text": "这次汇报围绕 CFD 块 LU-SGS 的单线加速展开。先说明求解过程中为什么会同时遇到小块运算、相邻点依赖和供数压力。然后介绍已经在 gem5 中完成的专用加速器和 SME/ZA 风格后端，最后把现阶段的结果和问题落到开题研究计划上。",
+      "text_sha256": "c1adf74d7a9a159ff10d11ac1d81a17150d6eae5bbc2c03a96fc26d9aa32ce61",
+      "source_slide": "ppt/slides/slide1.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide1.xml",
+      "notes_xml": "input/notes/page_001/notesSlide.xml"
+    },
+    {
+      "page_index": 2,
+      "text": "CFD 隐式迭代既有局部小块运算，也有跨网格点的前后扫。我们先把范围收敛到 5×5 FP64 块和一条线上的双向递推，在同一单线接口下比较两种计算组织。这样能用一套输入、输出和数值参考定位差异来自调度、算术还是供数。",
+      "text_sha256": "5ed30fa217d2c02332730f20128fe145765ced4619e0aaababe3add3120f4a58",
+      "source_slide": "ppt/slides/slide2.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide2.xml",
+      "notes_xml": "input/notes/page_002/notesSlide.xml"
+    },
+    {
+      "page_index": 3,
+      "text": "每个点有 D、L、U 三个 5×5 块，以及五维 RHS R。对 D 做局部 LU，再通过三角求解得到 b 和变换后的 L、U。沿线正向计算 y，反向计算 Δq，两个方向都要等相邻点反馈。一般块稀疏网格可能有多个前驱，当前模型覆盖的是单线相邻依赖。",
+      "text_sha256": "a2031f5a51f8fa0f16c9da49e5a707c0382e9a808278856ff9501927bd18cb9a",
+      "source_slide": "ppt/slides/slide3.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide3.xml",
+      "notes_xml": "input/notes/page_003/notesSlide.xml"
+    },
+    {
+      "page_index": 4,
+      "text": "CPU 上主要借助数据布局、向量化和任务组织。GPU 上常见分层、着色、分块和分治。不同方案可能改变求解顺序或预条件方式，因此后续要同时比较三角核耗时、单轮耗时以及达到同一容限的总时间。参考：DCSolver（TACO 2025，https://doi.org/10.1145/3746233）与生产级 CFD GPU 实现（https://www.mdpi.com/2076-3417/13/10/6193）。",
+      "text_sha256": "0a1b17704f5b7f0ce414330232c2c1f7c9fb86e87e526aeca7a1735d5981bb16",
+      "source_slide": "ppt/slides/slide4.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide4.xml",
+      "notes_xml": "input/notes/page_004/notesSlide.xml"
+    },
+    {
+      "page_index": 5,
+      "text": "LevelST 展示了 FPGA 上的稀疏三角流式供数，Telos 代表面向稀疏迭代的专用数据流，ASM-SpMM 说明 SME 外积映射的做法。这些工作覆盖的算子和应用各有侧重。本课题需要同时处理局部块分解、多 RHS 和递推反馈。参考：https://github.com/OswaldHe/LevelST ，https://www.iscaconf.org/isca2025/program/ ，https://ppopp26.sigplan.org/details/PPoPP-2026-papers/12/ASM-SpMM-Unleashing-the-Potential-of-Arm-SME-for-Sparse-Matrix-Multiplication-Accele 。",
+      "text_sha256": "d04ab999a143e188154f94445eb553c0ef7843e2705b6f2b0528108026103829",
+      "source_slide": "ppt/slides/slide5.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide5.xml",
+      "notes_xml": "input/notes/page_005/notesSlide.xml"
+    },
+    {
+      "page_index": 6,
+      "text": "我们把问题放在三个层次。首先找出哪些结果应当优先返回。然后研究一套有限算术资源如何覆盖形状不同的多个阶段。最后把数据的容量、端口和搬运纳入时序。效果用关键路径、整线周期、数据流量和误差来解释。",
+      "text_sha256": "c682ee5b86c6bf722f85dd76a6c085191da25c2f793cdcb83e10b032f530630e",
+      "source_slide": "ppt/slides/slide6.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide6.xml",
+      "notes_xml": "input/notes/page_006/notesSlide.xml"
+    },
+    {
+      "page_index": 7,
+      "text": "ARM guest 通过描述符提交原始 D、L、U、R。加速器自主完成单线预处理、双向递推、写回及通知。模型已经覆盖有限请求、缓冲、DMA 和背压。数值参考、资源轨迹和配置记录用于复现实验。当前保留 R40 实现，R41/R42 按场景选型。",
+      "text_sha256": "f8f1855fd4dd3d55a62ae8cf9a14d6533349370029b716dea512d53e380a1338",
+      "source_slide": "ppt/slides/slide7.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide7.xml",
+      "notes_xml": "input/notes/page_007/notesSlide.xml"
+    },
+    {
+      "page_index": 8,
+      "text": "上方是控制路径，负责提交任务、识别就绪并安排阶段执行。中间是数据路径，主存经 timing DMA 和分 bank SPM 向局部缓冲和算术单元供数。前扫产生的 y 在后扫被消费，Δq 通过 FIFO 写回。输出响应和完成栅栏决定整线何时对主机可见。",
+      "text_sha256": "ae4dda6a45f7be941eabbe2b8be55b60ca835eb62577635b14d4988cdaa33a1e",
+      "source_slide": "ppt/slides/slide8.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide8.xml",
+      "notes_xml": "input/notes/page_008/notesSlide.xml"
+    },
+    {
+      "page_index": 9,
+      "text": "图中的两个点说明预处理和递推的区别。后一点评估系数的工作可以提前，但它的前扫必须等前一点的真实反馈。同一个点也可复用 LU 因子推进多个 RHS。有限上下文和转发缓冲决定能提前多少。实验要测整线关键路径是否实际缩短。",
+      "text_sha256": "c031e8e673e60b6dfac99d6f7f37b703aa06f4e1cc49fe92f94b5fa277fa22e7",
+      "source_slide": "ppt/slides/slide9.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide9.xml",
+      "notes_xml": "input/notes/page_009/notesSlide.xml"
+    },
+    {
+      "page_index": 10,
+      "text": "冷轮要建立系数变换。暖轮只有在版本匹配且缓存有效时才复用，R 仍要重新处理。前扫和后扫消费方向相反，需要管理 y 和变换后 U 的驻留、回读和释放。Tile 预取和 DMA 重叠受到容量、端口、在途额度和完成语义限制。",
+      "text_sha256": "a0d33580ee0972fb7bea12de417755d04aa26b4e8cb86aa3ba81a882b112a81e",
+      "source_slide": "ppt/slides/slide10.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide10.xml",
+      "notes_xml": "input/notes/page_010/notesSlide.xml"
+    },
+    {
+      "page_index": 11,
+      "text": "R42 的分场景配方记录中，独立 1024 点用时 59,747 周期，验证 4096 点用时 239,368 周期。各数字对应各自的配方。GT01R 实验使用真实矩阵的块路径投影。接下来要补齐 RTL 时序、面积功耗和完整 CFD 收敛。来源：results/cfd_dsa/analysis/round42-four-ddr-rf-read64-20261104/selected-recipes-v1.json。",
+      "text_sha256": "99edfdddb0feba9d3df85903ffbff59c3b17674ed11f38866b449583ac117329",
+      "source_slide": "ppt/slides/slide11.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide11.xml",
+      "notes_xml": "input/notes/page_011/notesSlide.xml"
+    },
+    {
+      "page_index": 12,
+      "text": "局部 LU 的尾块更新、多 RHS 的因子复用和扫线的小矩阵向量乘，能够映射到共享通道与 ZA。我们沿用整线控制框架，把阶段算术集中到同一后端。gem5_SME 是面向自研 ASIC 数据通路的仿真路线，当前端口、阵列和入口由本项目定义。",
+      "text_sha256": "179156ebe5122c35d94631e7f184f41c052ef5b7c982277aea1c823c30acf4e2",
+      "source_slide": "ppt/slides/slide12.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide12.xml",
+      "notes_xml": "input/notes/page_012/notesSlide.xml"
+    },
+    {
+      "page_index": 13,
+      "text": "从左到右依次是整线控制、阶段微程序、就绪与端口仲裁、共享算术与倒数单元。控制器管理 DMA 和系数版本，微程序产生掩码行片段。算术结果先进入有界返回队列，拿到端口后写回 ZA，结果可见才发布新的就绪条件。SPM、ZA、上下文和队列一起计入存储预算。",
+      "text_sha256": "d977c0735672db88580ffeca1dcb533baf386e53cf14107a31c6aacd7c73a6ad",
+      "source_slide": "ppt/slides/slide13.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide13.xml",
+      "notes_xml": "input/notes/page_013/notesSlide.xml"
+    },
+    {
+      "page_index": 14,
+      "text": "当前 Crout LU 中，下三角含对角，上三角单位对角。每个主元先求倒数并缩放，再通过掩码 FMA 更新子块。内部点的 11 个 RHS 来自 R 的一列、L 的五列和 U 的五列，共用同一 LU 因子。R 与 L 可独立推进，冷轮 U 面板的上三角回代可延后。",
+      "text_sha256": "ef7b0794e3fa0301dfdbdd750529fe921df9042c15eac398f03bbd6b18de0c3e",
+      "source_slide": "ppt/slides/slide14.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide14.xml",
+      "notes_xml": "input/notes/page_014/notesSlide.xml"
+    },
+    {
+      "page_index": 15,
+      "text": "扫线将五个列乘积写入 ZA，再经加减树得到 y 或 Δq。基础解就绪和反馈就绪分别管理。冷轮后扫与延后的 U 回代共享算术和端口。V14 暖轮把后向反馈分为 3+2 两组，让下一点收到部分分量后即可启动对应列乘。后续需按浮点结合顺序选择一致性验证标准。",
+      "text_sha256": "efc8acd78178e7a5060963dbd22d1c2e0c0a8c157b62f70e0c8f5a907448c043",
+      "source_slide": "ppt/slides/slide15.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide15.xml",
+      "notes_xml": "input/notes/page_015/notesSlide.xml"
+    },
+    {
+      "page_index": 16,
+      "text": "这一页只比较 V14 同输入同配置下的 4096 点暖轮。整向量反馈是 66,340 周期，3+2 反馈是 64,295 周期，减少约 3.08%。前后扫稳态有效发射利用率为 74.71% 和 90.91%。冷轮记录为 179,502 周期，工作量不同。现有结果对回传延迟和端口敏感，硬件校准后需要复测。来源：results/cfd_dsa/analysis/sme-za-20261109/V14_EVIDENCE.md。",
+      "text_sha256": "cfcd2a5397cf35d0227a30389e92b1b9cd1c70583dcd0de5120758c6d04c2f78",
+      "source_slide": "ppt/slides/slide16.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide16.xml",
+      "notes_xml": "input/notes/page_016/notesSlide.xml"
+    },
+    {
+      "page_index": 17,
+      "text": "开题问题是如何在可实现的资源预算内降低整线成本。第一项关注关键路径调度，第二项关注跨算子计算复用，第三项关注数据生命周期和有限存储。三项使用统一输入、精度标准和资源约束，先分别做消融，再验证组合收益。",
+      "text_sha256": "465699d663e2fe727b69f4f825bf80b769b1236139385a26c0ceca3f2f143812",
+      "source_slide": "ppt/slides/slide17.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide17.xml",
+      "notes_xml": "input/notes/page_017/notesSlide.xml"
+    },
+    {
+      "page_index": 18,
+      "text": "调度工作将整点就绪拆到主元、RHS 列和反馈分量。计划把关键 RHS 提前发布、U 回代延后以及受限部分反馈放在同一有界调度中，检验哪些组合真正缩短递推等待。实验固定算术和端口预算，比较整轮周期、反馈间隔及额外状态。",
+      "text_sha256": "6ccf3057ca7b8a72721a6899cf13c583028362ce08e99a7f3a40bb7a11c82f8f",
+      "source_slide": "ppt/slides/slide18.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide18.xml",
+      "notes_xml": "input/notes/page_018/notesSlide.xml"
+    },
+    {
+      "page_index": 19,
+      "text": "统一计算工作研究适合 5×5 和 5×6 小块的执行粒度。拟用掩码行片段、因子广播、共享 ZA 及有界写回覆盖分解、求解与扫线。将分立和统一后端置于可比资源预算下，扫描通道、端口、上下文和反馈延迟，并补充时序与面积代价。",
+      "text_sha256": "cc01fd6255f2829b6faf8370abd79da7152b2464cb4883d97c31ebd8aaccacfa",
+      "source_slide": "ppt/slides/slide19.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide19.xml",
+      "notes_xml": "input/notes/page_019/notesSlide.xml"
+    },
+    {
+      "page_index": 20,
+      "text": "存储工作关注不同对象的驻留价值。系数、U 面板和 y 的生命周期不同。根据线长、更新频率和复用窗口决定布局与驻留，协调预取、回读和释放。与静态策略做固定容量对照，记录真实流量、bank 冲突、溢出和整线周期。",
+      "text_sha256": "1fe32a544dc39bc670423f291999ab2cd32e04c5d9f379a43210411fd5168354",
+      "source_slide": "ppt/slides/slide20.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide20.xml",
+      "notes_xml": "input/notes/page_020/notesSlide.xml"
+    },
+    {
+      "page_index": 21,
+      "text": "实验从高精度数值参考、优化 CPU、专用后端和 SME 后端开始。覆盖短长线、冷暖轮、版本失效及数值压力工况。报告核级、整线及应用时间时采用各自的口径。固定资源机制消融与扩资源实验分别记录。未来补齐 GPU 基线和相同容限下的 CFD 收敛。",
+      "text_sha256": "5bd6b0f1cc66d4d4f0c9f682f1bb2e045be16ecf2e39c59d6034c1162aa8836d",
+      "source_slide": "ppt/slides/slide21.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide21.xml",
+      "notes_xml": "input/notes/page_021/notesSlide.xml"
+    },
+    {
+      "page_index": 22,
+      "text": "从模型到硬件需要逐级标定。FP64 的延迟、启动间隔和依赖可见时刻分别测量。ZA 的多端口、广播和写回要落到具体 bank 和寄存器边界。SPM 用 SRAM 宏和仲裁时序估计。先做单通道、单 bank 与 DMA 微测试，再回填整线。",
+      "text_sha256": "730c27aa726237fd186578f961cbcd93dfabfddef70e2de8220998e39ee1c48f",
+      "source_slide": "ppt/slides/slide22.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide22.xml",
+      "notes_xml": "input/notes/page_022/notesSlide.xml"
+    },
+    {
+      "page_index": 23,
+      "text": "单线模型尚需扩展到一般网格的多前驱、线外耦合和外迭代。数值上保留病态块和重关联的失败案例，使用独立高精度参考。架构比较同时计入容量、端口、带宽、时钟和精度。最后在真实算例上补齐 CPU/GPU 基线和收敛结果。",
+      "text_sha256": "5c7c910673e4376e74f337cde7ba43b974f298da583f8aa6b208932234eb9c2d",
+      "source_slide": "ppt/slides/slide23.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide23.xml",
+      "notes_xml": "input/notes/page_023/notesSlide.xml"
+    },
+    {
+      "page_index": 24,
+      "text": "下一步先固定可复现实验配方，并确定硬件标定的基准规格。随后完成调度、统一计算、存储供给三项的逐项消融，最后接入真实应用场景并验证收敛。计划交付可复现模拟器、硬件标定依据、代表性实验和明确的适用边界。",
+      "text_sha256": "4b86941217c66604ca165b82e8cccc71925862f912f655ca5c8cfc25f8ec03c1",
+      "source_slide": "ppt/slides/slide24.xml",
+      "source_notes_part": "ppt/notesSlides/notesSlide24.xml",
+      "notes_xml": "input/notes/page_024/notesSlide.xml"
+    }
+  ]
+}

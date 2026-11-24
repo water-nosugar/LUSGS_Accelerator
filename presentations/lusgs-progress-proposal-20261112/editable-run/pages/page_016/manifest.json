@@ -1,0 +1,624 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "V14 暖轮的配对实验",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "subtitle",
+      "text": "4096 点暖轮｜同输入、同配置",
+      "decision": "native-text",
+      "size_group": "subtitle"
+    },
+    {
+      "id": "metric-0-label",
+      "text": "整向量反馈",
+      "decision": "native-text",
+      "size_group": "metric-label"
+    },
+    {
+      "id": "metric-0-number",
+      "text": "66,340",
+      "decision": "native-text",
+      "size_group": "metric-number"
+    },
+    {
+      "id": "metric-0-unit",
+      "text": "周期",
+      "decision": "native-text",
+      "size_group": "metric-unit"
+    },
+    {
+      "id": "metric-1-label",
+      "text": "3+2 分组反馈",
+      "decision": "native-text",
+      "size_group": "metric-label"
+    },
+    {
+      "id": "metric-1-number",
+      "text": "64,295",
+      "decision": "native-text",
+      "size_group": "metric-number"
+    },
+    {
+      "id": "metric-1-unit",
+      "text": "周期",
+      "decision": "native-text",
+      "size_group": "metric-unit"
+    },
+    {
+      "id": "drop-label",
+      "text": "整轮周期降低",
+      "decision": "native-text",
+      "size_group": "drop-label"
+    },
+    {
+      "id": "drop-number",
+      "text": "3.08%",
+      "decision": "native-text",
+      "size_group": "drop-number"
+    },
+    {
+      "id": "utilization-label",
+      "text": "前扫 / 后扫有效发射利用率：74.71% / 90.91%",
+      "decision": "native-text",
+      "size_group": "footnote"
+    },
+    {
+      "id": "sensitivity-label",
+      "text": "仿真结果对回传延迟与端口条件敏感",
+      "decision": "native-text",
+      "size_group": "footnote"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "metric-0",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "metric-0-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "metric-1",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "metric-1-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "drop-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "metric-arrow",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "utilization-band",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "utilization-bullet",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "sensitivity-band",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "sensitivity-bullet",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "原生白底、蓝色标题分隔线、两组对照结果和周期降幅、指向降幅的原生箭头及底部两条实验说明与源图对应。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、深蓝分隔线、浅蓝面板和布局对象对应。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "对照源图及 V14 实验记录核对 4096 点暖轮同输入同配置、整向量反馈 66,340 周期、3+2 分组反馈 64,295 周期、降幅 3.08%、有效发射利用率 74.71% 和 90.91%，以及仿真条件说明。两张对照卡、降幅卡和原生箭头均保留，预览无溢出，字体和线宽有轻微差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "V14 暖轮的配对实验",
+      "box_px": [
+        48,
+        14,
+        1280,
+        100
+      ],
+      "font_size": 46,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "subtitle",
+      "text": "4096 点暖轮｜同输入、同配置",
+      "box_px": [
+        49,
+        154,
+        1300,
+        74
+      ],
+      "font_size": 30.5,
+      "font_size_source": "measured",
+      "size_group": "subtitle",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "metric-0-label",
+      "text": "整向量反馈",
+      "box_px": [
+        53,
+        330,
+        496,
+        107
+      ],
+      "font_size": 33.5,
+      "font_size_source": "measured",
+      "size_group": "metric-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "metric-0-number",
+      "text": "66,340",
+      "box_px": [
+        81,
+        461,
+        347,
+        131
+      ],
+      "font_size": 61,
+      "font_size_source": "measured",
+      "size_group": "metric-number",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "metric-0-unit",
+      "text": "周期",
+      "box_px": [
+        421,
+        486,
+        120,
+        94
+      ],
+      "font_size": 30,
+      "font_size_source": "measured",
+      "size_group": "metric-unit",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "metric-1-label",
+      "text": "3+2 分组反馈",
+      "box_px": [
+        614,
+        330,
+        497,
+        107
+      ],
+      "font_size": 33.5,
+      "font_size_source": "measured",
+      "size_group": "metric-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "metric-1-number",
+      "text": "64,295",
+      "box_px": [
+        642,
+        461,
+        347,
+        131
+      ],
+      "font_size": 61,
+      "font_size_source": "measured",
+      "size_group": "metric-number",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "metric-1-unit",
+      "text": "周期",
+      "box_px": [
+        982,
+        486,
+        120,
+        94
+      ],
+      "font_size": 30,
+      "font_size_source": "measured",
+      "size_group": "metric-unit",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "drop-label",
+      "text": "整轮周期降低",
+      "box_px": [
+        1245,
+        343,
+        367,
+        97
+      ],
+      "font_size": 32,
+      "font_size_source": "measured",
+      "size_group": "drop-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "drop-number",
+      "text": "3.08%",
+      "box_px": [
+        1244,
+        445,
+        369,
+        137
+      ],
+      "font_size": 64,
+      "font_size_source": "measured",
+      "size_group": "drop-number",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "utilization-label",
+      "text": "前扫 / 后扫有效发射利用率：74.71% / 90.91%",
+      "box_px": [
+        132,
+        720,
+        1470,
+        74
+      ],
+      "font_size": 28,
+      "font_size_source": "measured",
+      "size_group": "footnote",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "sensitivity-label",
+      "text": "仿真结果对回传延迟与端口条件敏感",
+      "box_px": [
+        132,
+        826,
+        1470,
+        74
+      ],
+      "font_size": 28,
+      "font_size_source": "measured",
+      "size_group": "footnote",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        128,
+        1621,
+        128
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "metric-0",
+      "type": "rect",
+      "box_px": [
+        43,
+        321,
+        516,
+        286
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.5,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "metric-0-header",
+      "type": "rect",
+      "box_px": [
+        47,
+        325,
+        508,
+        117
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#D6E7FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "metric-1",
+      "type": "rect",
+      "box_px": [
+        604,
+        321,
+        517,
+        286
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.5,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "metric-1-header",
+      "type": "rect",
+      "box_px": [
+        608,
+        325,
+        509,
+        117
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#D6E7FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "drop-panel",
+      "type": "rect",
+      "box_px": [
+        1230,
+        323,
+        397,
+        280
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.6,
+      "z_index": 12,
+      "fill": "#DFEBFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "metric-arrow",
+      "type": "rect",
+      "box_px": [
+        1138,
+        430,
+        84,
+        70
+      ],
+      "polygon_px": [
+        [
+          1138,
+          449
+        ],
+        [
+          1187,
+          449
+        ],
+        [
+          1187,
+          430
+        ],
+        [
+          1222,
+          465
+        ],
+        [
+          1187,
+          500
+        ],
+        [
+          1187,
+          481
+        ],
+        [
+          1138,
+          481
+        ]
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#0B50AD"
+    },
+    {
+      "id": "utilization-band",
+      "type": "rect",
+      "box_px": [
+        39,
+        713,
+        1592,
+        88
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#DCEBFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "utilization-bullet",
+      "type": "rect",
+      "box_px": [
+        77,
+        744,
+        27,
+        27
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#0B3F89",
+      "corner_category": "straight"
+    },
+    {
+      "id": "sensitivity-band",
+      "type": "rect",
+      "box_px": [
+        39,
+        819,
+        1592,
+        88
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#DCEBFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "sensitivity-bullet",
+      "type": "rect",
+      "box_px": [
+        77,
+        850,
+        27,
+        27
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#0B3F89",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

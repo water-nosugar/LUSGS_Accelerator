@@ -1,0 +1,519 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "有限 Tile 中的数据生命周期",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "cold-label",
+      "text": "冷轮",
+      "decision": "native-text",
+      "size_group": "panel-title"
+    },
+    {
+      "id": "cold-body",
+      "text": "构造系数变换",
+      "decision": "native-text",
+      "size_group": "panel-body"
+    },
+    {
+      "id": "warm-label",
+      "text": "暖轮",
+      "decision": "native-text",
+      "size_group": "panel-title"
+    },
+    {
+      "id": "warm-body",
+      "text": "版本命中时复用系数，重新处理 R",
+      "decision": "native-text",
+      "size_group": "panel-body"
+    },
+    {
+      "id": "node-label-0",
+      "text": "前扫写入 y",
+      "decision": "native-text",
+      "size_group": "process"
+    },
+    {
+      "id": "node-label-1",
+      "text": "后扫逆向回读",
+      "decision": "native-text",
+      "size_group": "process"
+    },
+    {
+      "id": "node-label-2",
+      "text": "释放 Tile",
+      "decision": "native-text",
+      "size_group": "process"
+    },
+    {
+      "id": "footer",
+      "text": "Tile 预取受容量、端口和在途额度约束",
+      "decision": "native-text",
+      "size_group": "footer"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "cold-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "cold-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "warm-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "warm-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "node-0",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "link-0",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "node-1",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "link-1",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "node-2",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "footer-band",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底与标题分隔线，左右冷轮和暖轮面板保留色带和原位置，前扫、后扫及释放节点按从左至右连接，底部浅蓝色带保留预取限制。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、深蓝分隔线、浅蓝面板和布局对象对应。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "逐项核对冷轮、暖轮及各自说明、前扫至后扫再至释放 Tile 的箭头方向、底部预取限制。文字可见且无溢出，预览线宽和字体与源图略有差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "有限 Tile 中的数据生命周期",
+      "box_px": [
+        48,
+        15,
+        1290,
+        98
+      ],
+      "font_size": 44.5,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "cold-label",
+      "text": "冷轮",
+      "box_px": [
+        57,
+        219,
+        726,
+        99
+      ],
+      "font_size": 39.5,
+      "font_size_source": "measured",
+      "size_group": "panel-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "cold-body",
+      "text": "构造系数变换",
+      "box_px": [
+        65,
+        355,
+        710,
+        102
+      ],
+      "font_size": 28,
+      "font_size_source": "measured",
+      "size_group": "panel-body",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "warm-label",
+      "text": "暖轮",
+      "box_px": [
+        842,
+        218,
+        774,
+        99
+      ],
+      "font_size": 39.5,
+      "font_size_source": "measured",
+      "size_group": "panel-title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "warm-body",
+      "text": "版本命中时复用系数，重新处理 R",
+      "box_px": [
+        850,
+        354,
+        758,
+        102
+      ],
+      "font_size": 28,
+      "font_size_source": "measured",
+      "size_group": "panel-body",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "node-label-0",
+      "text": "前扫写入 y",
+      "box_px": [
+        73,
+        593,
+        422,
+        122
+      ],
+      "font_size": 31.5,
+      "font_size_source": "measured",
+      "size_group": "process",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "node-label-1",
+      "text": "后扫逆向回读",
+      "box_px": [
+        625,
+        594,
+        426,
+        118
+      ],
+      "font_size": 31.5,
+      "font_size_source": "measured",
+      "size_group": "process",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "node-label-2",
+      "text": "释放 Tile",
+      "box_px": [
+        1182,
+        594,
+        420,
+        118
+      ],
+      "font_size": 31.5,
+      "font_size_source": "measured",
+      "size_group": "process",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "footer",
+      "text": "Tile 预取受容量、端口和在途额度约束",
+      "box_px": [
+        190,
+        819,
+        1292,
+        71
+      ],
+      "font_size": 29,
+      "font_size_source": "measured",
+      "size_group": "footer",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        129,
+        1622,
+        129
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "cold-panel",
+      "type": "rect",
+      "box_px": [
+        49,
+        209,
+        742,
+        282
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "cold-header",
+      "type": "rect",
+      "box_px": [
+        52,
+        212,
+        736,
+        118
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#C8DFF9",
+      "corner_category": "straight"
+    },
+    {
+      "id": "warm-panel",
+      "type": "rect",
+      "box_px": [
+        834,
+        208,
+        790,
+        282
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "warm-header",
+      "type": "rect",
+      "box_px": [
+        837,
+        211,
+        784,
+        118
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#C8DFF9",
+      "corner_category": "straight"
+    },
+    {
+      "id": "node-0",
+      "type": "rect",
+      "box_px": [
+        61,
+        583,
+        446,
+        142
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "#DBE9FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "link-0",
+      "type": "line",
+      "points_px": [
+        507,
+        655,
+        613,
+        655
+      ],
+      "semantic_line_id": "link-0",
+      "stroke": "#073B84",
+      "stroke_width": 3.7,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "node-1",
+      "type": "rect",
+      "box_px": [
+        613,
+        584,
+        450,
+        138
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "#DBE9FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "link-1",
+      "type": "line",
+      "points_px": [
+        1063,
+        655,
+        1170,
+        655
+      ],
+      "semantic_line_id": "link-1",
+      "stroke": "#073B84",
+      "stroke_width": 3.7,
+      "z_index": 12,
+      "fill": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "node-2",
+      "type": "rect",
+      "box_px": [
+        1170,
+        584,
+        444,
+        138
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "#DBE9FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "footer-band",
+      "type": "rect",
+      "box_px": [
+        38,
+        811,
+        1593,
+        90
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#DCE9FC",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

@@ -1,0 +1,578 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "工作三｜有限存储与供给协同",
+      "decision": "native-text",
+      "font_size": 44.5,
+      "size_group": "title"
+    },
+    {
+      "id": "problem",
+      "text": "问题：面板、y 与系数的生命周期不同",
+      "decision": "native-text",
+      "font_size": 31,
+      "size_group": "problem"
+    },
+    {
+      "id": "residence-heading",
+      "text": "安排驻留",
+      "decision": "native-text",
+      "font_size": 33,
+      "size_group": "heading"
+    },
+    {
+      "id": "access-heading",
+      "text": "协调访问",
+      "decision": "native-text",
+      "font_size": 33,
+      "size_group": "heading"
+    },
+    {
+      "id": "metric-heading",
+      "text": "验证指标",
+      "decision": "native-text",
+      "font_size": 33,
+      "size_group": "heading"
+    },
+    {
+      "id": "residence-line-1",
+      "text": "按复用窗口",
+      "decision": "native-text",
+      "font_size": 29,
+      "size_group": "body"
+    },
+    {
+      "id": "residence-line-2",
+      "text": "安排驻留与布局",
+      "decision": "native-text",
+      "font_size": 29,
+      "size_group": "body"
+    },
+    {
+      "id": "access-line-1",
+      "text": "协调预取、回读、",
+      "decision": "native-text",
+      "font_size": 29,
+      "size_group": "body"
+    },
+    {
+      "id": "access-line-2",
+      "text": "释放与输出",
+      "decision": "native-text",
+      "font_size": 29,
+      "size_group": "body"
+    },
+    {
+      "id": "metric-line-1",
+      "text": "固定容量下的流量、",
+      "decision": "native-text",
+      "font_size": 29,
+      "size_group": "body"
+    },
+    {
+      "id": "metric-line-2",
+      "text": "bank 冲突与周期",
+      "decision": "native-text",
+      "font_size": 29,
+      "size_group": "body"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid-fill"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "residence-body",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "residence-heading-fill",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "access-body",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "access-heading-fill",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "metric-body",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "metric-heading-fill",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "residence-to-access",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "access-to-metrics",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native structural shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "Match white canvas, three straight-corner cards, blue header rule, light-blue panel headers and dark-blue connectors.",
+    "removed_foreground": "No independent foreground assets. Text is native.",
+    "comparison_note": "Compared against the source in the contact sheet. The white page, header divider, three straight-corner panels, blue header fills and two directional arrows preserve the source layout. All text is legible and native."
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "工作三｜有限存储与供给协同",
+      "box_px": [
+        50,
+        5,
+        1430,
+        111
+      ],
+      "font_size": 44.5,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "title",
+      "bold": true,
+      "color": "#082D62",
+      "align": "left",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "problem",
+      "text": "问题：面板、y 与系数的生命周期不同",
+      "box_px": [
+        51,
+        174,
+        1435,
+        86
+      ],
+      "font_size": 31,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "problem",
+      "bold": true,
+      "color": "#082D62",
+      "align": "left",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "residence-heading",
+      "text": "安排驻留",
+      "box_px": [
+        56,
+        400,
+        465,
+        91
+      ],
+      "font_size": 33,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "heading",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "access-heading",
+      "text": "协调访问",
+      "box_px": [
+        604,
+        400,
+        464,
+        91
+      ],
+      "font_size": 33,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "heading",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "metric-heading",
+      "text": "验证指标",
+      "box_px": [
+        1154,
+        400,
+        462,
+        91
+      ],
+      "font_size": 33,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "heading",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "residence-line-1",
+      "text": "按复用窗口",
+      "box_px": [
+        59,
+        547,
+        456,
+        76
+      ],
+      "font_size": 29,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "residence-line-2",
+      "text": "安排驻留与布局",
+      "box_px": [
+        59,
+        618,
+        456,
+        76
+      ],
+      "font_size": 29,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "access-line-1",
+      "text": "协调预取、回读、",
+      "box_px": [
+        610,
+        547,
+        451,
+        76
+      ],
+      "font_size": 29,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "access-line-2",
+      "text": "释放与输出",
+      "box_px": [
+        610,
+        618,
+        451,
+        76
+      ],
+      "font_size": 29,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "metric-line-1",
+      "text": "固定容量下的流量、",
+      "box_px": [
+        1158,
+        547,
+        452,
+        76
+      ],
+      "font_size": 29,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    },
+    {
+      "id": "metric-line-2",
+      "text": "bank 冲突与周期",
+      "box_px": [
+        1158,
+        618,
+        452,
+        76
+      ],
+      "font_size": 29,
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "semantic_line_id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        129,
+        1623,
+        129
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 3.25,
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "residence-body",
+      "type": "rect",
+      "box_px": [
+        52,
+        378,
+        471,
+        358
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#0643A1",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "residence-heading-fill",
+      "type": "rect",
+      "box_px": [
+        55,
+        382,
+        465,
+        125
+      ],
+      "fill": "#D8E8FB",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 11
+    },
+    {
+      "id": "access-body",
+      "type": "rect",
+      "box_px": [
+        600,
+        378,
+        471,
+        358
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#0643A1",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "access-heading-fill",
+      "type": "rect",
+      "box_px": [
+        603,
+        382,
+        465,
+        125
+      ],
+      "fill": "#D8E8FB",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 11
+    },
+    {
+      "id": "metric-body",
+      "type": "rect",
+      "box_px": [
+        1148,
+        378,
+        472,
+        358
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#0643A1",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "metric-heading-fill",
+      "type": "rect",
+      "box_px": [
+        1151,
+        382,
+        466,
+        125
+      ],
+      "fill": "#D8E8FB",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 11
+    },
+    {
+      "id": "residence-to-access",
+      "semantic_line_id": "residence-to-access",
+      "type": "line",
+      "points_px": [
+        524,
+        574,
+        598,
+        574
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 4.5,
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "access-to-metrics",
+      "semantic_line_id": "access-to-metrics",
+      "type": "line",
+      "points_px": [
+        1073,
+        574,
+        1147,
+        574
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 4.5,
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "images": [],
+  "asset_provenance": [],
+  "page_strategy": "Editable text and native PowerPoint shapes for the structural panels and arrows."
+}

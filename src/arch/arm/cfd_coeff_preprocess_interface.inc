@@ -19,7 +19,8 @@ CfdCoeffPreprocessController::stepInterfaceTransfer(
     const auto packet = spm->issueDma(tc, t.write, addr, bytes,
         t.bytes.data()+t.issued, env.spmOutstanding,
         [this, owner, transfer, bytes, local](uint64_t packetId) {
-            auto publish = [this,owner,transfer,bytes,packetId] {
+            const uint64_t job=local ? local->id : 0;
+            auto publish = [this,owner,transfer,bytes,packetId,job] {
             auto &t = *transfer;
             t.completed += bytes;
             t.packetsCompleted++;
@@ -37,18 +38,14 @@ CfdCoeffPreprocessController::stepInterfaceTransfer(
             }
             if (env.traceEnable)
                 std::fprintf(stderr, "%s cycle=%llu token=%llu "
-                    "event=response kind=%s cell=%llu bytes=%u packet=%llu\n",
+                    "event=response kind=%s cell=%llu bytes=%u packet=%llu job=%llu\n",
                     t.interface ? "CFD_INTERFACE_DMA" : "CFD_CACHE_DMA",
                     (unsigned long long)cycle(), (unsigned long long)owner,
-                    t.kind.c_str(), (unsigned long long)t.cell, bytes, (unsigned long long)packetId);
+                    t.kind.c_str(), (unsigned long long)t.cell, bytes, (unsigned long long)packetId,
+                    (unsigned long long)job);
             };
             if (local) {
-                        local->active = true;
-                        local->eligibleCycle = cycle()+1;
-                        local->completion = std::move(publish);
-                        if (env.traceEnable)
-                            std::fprintf(stderr,"CFD_ONCHIP_ACTIVATE cycle=%llu id=%llu\n",
-                                (unsigned long long)cycle(),(unsigned long long)local->id);
+                        activateOnchip(local, std::move(publish));
                     }
             else publish();
         });
@@ -71,10 +68,11 @@ CfdCoeffPreprocessController::stepInterfaceTransfer(
     }
     if (env.traceEnable)
         std::fprintf(stderr, "%s cycle=%llu token=%llu event=issue "
-            "kind=%s cell=%llu bytes=%u packet=%llu\n",
+            "kind=%s cell=%llu bytes=%u packet=%llu job=%llu\n",
             t.interface ? "CFD_INTERFACE_DMA" : "CFD_CACHE_DMA",
                     (unsigned long long)cycle(), (unsigned long long)owner,
-            t.kind.c_str(), (unsigned long long)t.cell, bytes, (unsigned long long)packet.packetId);
+            t.kind.c_str(), (unsigned long long)t.cell, bytes, (unsigned long long)packet.packetId,
+            (unsigned long long)(local ? local->id : 0));
 }
 
 void

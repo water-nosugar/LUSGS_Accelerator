@@ -9,7 +9,9 @@ from check_single_line_c import fields
 def check_dma_packets(text,path,config):
     system=json.loads((path/'config.json').read_text())['system']
     cache=system['coeff_dma_cache']
-    expected=dict(size=1024,assoc=8,mshrs=20,tgts_per_mshr=12)
+    expected=dict(size=int(config.get('--coeff-dma-cache-size','1024')),assoc=8,
+                  mshrs=int(config.get('--coeff-dma-cache-mshrs','20')),tgts_per_mshr=12,
+                  write_buffers=int(config.get('--coeff-dma-cache-write-buffers','8')))
     expected.update({name+'_latency':int(config.get('--coeff-dma-cache-'+name+'-latency','50'))
                      for name in ('tag','data','response')})
     assert all(cache[k]==v for k,v in expected.items()), 'DMA endpoint differs from declared sensitivity'

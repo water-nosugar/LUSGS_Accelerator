@@ -52,3 +52,11 @@ configs/dram/lowp_sweep.cfg
 .vscode
 typings
 .DS_Store
+
+# Generated experiment payloads must not grow repository history.
+/results/cfd_dsa/analysis/**/gem5.*
+/results/cfd_dsa/analysis/**/*.o
+/results/cfd_dsa/analysis/**/*.tar.gz
+/results/cfd_dsa/analysis/**/simout.txt*
+/results/cfd_dsa/analysis/**/stats.txt
+/results/cfd_dsa/analysis/**/*trace*.csv*

@@ -1,0 +1,433 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "page_strategy": "纯白基底与结构化分叉框图采用原生对象重建。正文均为可编辑文本。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "从 CFD 隐式求解到两条架构路线",
+      "decision": "native-text"
+    },
+    {
+      "id": "application",
+      "text": "CFD 隐式迭代",
+      "decision": "native-text"
+    },
+    {
+      "id": "kernel",
+      "text": "5×5 块与单线前后扫",
+      "decision": "native-text"
+    },
+    {
+      "id": "gem5",
+      "text": "gem5 专用数据通路",
+      "decision": "native-text"
+    },
+    {
+      "id": "sme",
+      "text": "SME/ZA 统一后端",
+      "decision": "native-text"
+    },
+    {
+      "id": "shared",
+      "text": "共同问题：依赖、计算、供数",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "flow-cards",
+      "role": "structure",
+      "object_type": "four straight-corner rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "split-flow",
+      "role": "structure",
+      "object_type": "ordinary arrows and orthogonal flow lines",
+      "decision": "native-line-and-path"
+    },
+    {
+      "id": "summary-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "白底、深蓝线条与浅蓝矩形区域保持与来源对应的几何位置和颜色。",
+    "removed_foreground": [],
+    "comparison_note": "白底保留，浅蓝色块与分叉框图用原生对象还原。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "application-box",
+      "type": "rect",
+      "box_px": [
+        53,
+        400,
+        411,
+        154
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "kernel-box",
+      "type": "rect",
+      "box_px": [
+        549,
+        400,
+        482,
+        154
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "gem5-box",
+      "type": "rect",
+      "box_px": [
+        1151,
+        273,
+        473,
+        140
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "sme-box",
+      "type": "rect",
+      "box_px": [
+        1152,
+        532,
+        473,
+        141
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.1,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "summary-band",
+      "type": "rect",
+      "box_px": [
+        32,
+        795,
+        1606,
+        105
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1621,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.2,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "application-to-kernel",
+      "type": "line",
+      "points_px": [
+        464,
+        477,
+        549,
+        477
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.7,
+      "semantic_line_id": "application-to-kernel",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "split-stem",
+      "type": "line",
+      "points_px": [
+        1031,
+        477,
+        1078,
+        477
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.7,
+      "semantic_line_id": "split-stem",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "split-to-gem5",
+      "type": "path",
+      "box_px": [
+        1078,
+        347,
+        73,
+        130
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              1078,
+              477
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1078,
+              347
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1151,
+              347
+            ]
+          ]
+        }
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.5,
+      "end_arrow": "triangle",
+      "fill": "none",
+      "semantic_line_id": "split-to-gem5",
+      "z_index": 20
+    },
+    {
+      "id": "split-to-sme",
+      "type": "path",
+      "box_px": [
+        1078,
+        477,
+        74,
+        126
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              1078,
+              477
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1078,
+              603
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1152,
+              603
+            ]
+          ]
+        }
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.5,
+      "end_arrow": "triangle",
+      "fill": "none",
+      "semantic_line_id": "split-to-sme",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "从 CFD 隐式求解到两条架构路线",
+      "box_px": [
+        53,
+        14,
+        1150,
+        94
+      ],
+      "font_size": 42.5,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "application",
+      "text": "CFD 隐式迭代",
+      "box_px": [
+        65,
+        434,
+        385,
+        86
+      ],
+      "font_size": 26.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "kernel",
+      "text": "5×5 块与单线前后扫",
+      "box_px": [
+        556,
+        433,
+        469,
+        87
+      ],
+      "font_size": 26.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "gem5",
+      "text": "gem5 专用数据通路",
+      "box_px": [
+        1159,
+        300,
+        453,
+        86
+      ],
+      "font_size": 26.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "sme",
+      "text": "SME/ZA 统一后端",
+      "box_px": [
+        1160,
+        560,
+        454,
+        86
+      ],
+      "font_size": 26.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "shared",
+      "text": "共同问题：依赖、计算、供数",
+      "box_px": [
+        447,
+        807,
+        778,
+        77
+      ],
+      "font_size": 31,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

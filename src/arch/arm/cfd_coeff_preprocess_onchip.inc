@@ -6,6 +6,14 @@ CfdCoeffPreprocessController::startOnchip(uint64_t owner, Addr base, unsigned wo
     unsigned stride, bool write, unsigned priority, bool active)
 {
     if (onchipQueue.size() >= env.onchipDepth) { onchipFull++; return {}; }
+    // Pending DMA writes own guaranteed response capacity, but may not use
+    // the final compute credits. Already-active reads/stores share these
+    // credits and continue to arbitrate through the same physical banks.
+    if (!active && onchipQueue.size() >=
+        env.onchipDepth-env.onchipComputeReserve) {
+        onchipReserveStalls++;
+        return {};
+    }
     const bool aligned = base % 8 == 0 && stride % 8 == 0;
     panic_if(!words || !aligned || !env.onchipTiming,
              "CFD invalid onchip access");
@@ -20,8 +28,9 @@ CfdCoeffPreprocessController::startOnchip(uint64_t owner, Addr base, unsigned wo
     access->write = write;
     access->priority = priority;
     access->active = active;
-    access->eligibleCycle = cycle()+1;
+    access->eligibleCycle = cycle()+env.onchipArbLatency;
     onchipQueue.push_back(access);
+    onchipInactive += !active;
     onchipCreated++;
     onchipPeak = std::max<uint64_t>(onchipPeak,onchipQueue.size());
     if (env.traceEnable)
@@ -41,9 +50,27 @@ CfdCoeffPreprocessController::cancelOnchip(const std::shared_ptr<OnchipAccess> &
     auto it = std::find(onchipQueue.begin(),onchipQueue.end(),access);
     panic_if(it == onchipQueue.end(), "CFD missing cancelled SPM job");
     onchipQueue.erase(it);
+    panic_if(!onchipInactive, "CFD inactive SPM credit underflow");
+    onchipInactive--;
     onchipCancelled++;
     if (env.traceEnable)
         std::fprintf(stderr,"CFD_ONCHIP_CANCEL cycle=%llu id=%llu\n",
+            (unsigned long long)cycle(),(unsigned long long)access->id);
+}
+
+void
+CfdCoeffPreprocessController::activateOnchip(
+    const std::shared_ptr<OnchipAccess> &access,
+    std::function<void()> completion)
+{
+    panic_if(!access || access->active || !onchipInactive,
+             "CFD invalid DMA response activation");
+    onchipInactive--;
+    access->active = true;
+    access->eligibleCycle = cycle()+env.onchipArbLatency;
+    access->completion = std::move(completion);
+    if (env.traceEnable)
+        std::fprintf(stderr,"CFD_ONCHIP_ACTIVATE cycle=%llu id=%llu\n",
             (unsigned long long)cycle(),(unsigned long long)access->id);
 }
 
@@ -77,8 +104,11 @@ CfdCoeffPreprocessController::processOnchip()
     std::stable_sort(ready.begin(),ready.end(),[](const auto &a,const auto &b) {
         return std::tie(a->priority,a->id) < std::tie(b->priority,b->id);
     });
+    unsigned grantedTasks = 0;
     for (const auto &a : ready) {
         if (!a->active || a->readyCycle || cycle() < a->eligibleCycle) continue;
+        if (env.onchipArbTasks && grantedTasks >= env.onchipArbTasks) break;
+        const unsigned before = a->next;
         while (a->next < a->words) {
             const Addr address = a->base+a->next*a->stride;
             const unsigned bank = (address/env.spmBankGranularity)%env.spmBanks;
@@ -94,6 +124,7 @@ CfdCoeffPreprocessController::processOnchip()
                     (unsigned long long)a->owner,a->write ? "W" : "R",
                     (unsigned long long)address,bank,a->priority);
         }
+        grantedTasks += a->next != before;
         if (a->next == a->words) a->readyCycle = cycle()+env.onchipLatency;
     }
 }
@@ -101,7 +132,27 @@ CfdCoeffPreprocessController::processOnchip()
 Addr
 CfdCoeffPreprocessController::tileOnchipAddr(const LineRequest &line,const LineTile &tile) const
 {
-    return line.tileReserve+tile.storageIndex*tile.y.size()*(MatrixBytes+VectorBytes);
+    return line.tileReserve+tile.storageIndex*
+        (tile.y.size()*VectorBytes+tile.u.size()*MatrixBytes);
+}
+
+Addr
+CfdCoeffPreprocessController::inputOnchipAddr(const Request &req) const
+{
+    panic_if(req.slot<0,"CFD input SPM access without a slot");
+    return CfdSpmSlotRotation::input(env.spmSlotRotation,req.slot);
+}
+
+void
+CfdCoeffPreprocessController::traceSpmInputStore(const Request &req,
+    const std::shared_ptr<OnchipAccess> &access,uint64_t offset,uint64_t packet)
+{
+    if(!env.traceEnable || !env.spmSlotRotation || !access)return;
+    std::fprintf(stderr,"CFD_SPM_SLOT_STORE cycle=%llu request=%llu generation=%llu cell=%llu token=%llu owner=%llu slot=%d job=%llu offset=%llu packet=%llu\n",
+        (unsigned long long)cycle(),(unsigned long long)req.record.requestId,
+        (unsigned long long)req.desc.generation,(unsigned long long)req.desc.cellId,
+        (unsigned long long)req.token,(unsigned long long)access->owner,req.slot,
+        (unsigned long long)access->id,(unsigned long long)offset,(unsigned long long)packet);
 }
 
 Addr
@@ -109,7 +160,7 @@ CfdCoeffPreprocessController::warmOnchipAddr(const LineRequest &line,uint64_t ce
 {
     const uint64_t base = (env.inputSlots+env.luPendingDepth+env.solvePendingDepth+env.outputDepth)*8192+
         16384+(env.rhsRowParallel ? env.rhsProductDepth*64+256 : 0)+env.completionDepth*completionEntryBytes(env.lineOptLevel);
-    return base+(cell%warmDepth(line))*128;
+    return base+CfdSpmSlotRotation::rhs(env.spmSlotRotation,cell%warmDepth(line));
 }
 
 bool
@@ -145,7 +196,7 @@ CfdCoeffPreprocessController::onchipColumnReady(LineRequest &line,unsigned conte
     }
     Addr base = context == 1 && !cachedUbar(line) ?
         tileOnchipAddr(line,*line.tile)+line.tile->y.size()*VectorBytes+(cell-line.tile->start)*MatrixBytes :
-        line.tileReserve+line.tileAllocated+cell*3*MatrixBytes+kind*MatrixBytes;
+        cacheEntryAddr(line, cell) + smeCacheTagBytes() + kind*MatrixBytes;
     const std::array<double,N*N> *matrix = nullptr;
     if (context == 1 && !cachedUbar(line)) matrix = &line.tile->u[cell-line.tile->start];
     else {
@@ -171,13 +222,71 @@ CfdCoeffPreprocessController::cachedRegistersReady(Request &req)
     auto &line = *lineRequests.at(childLineTokens.at(req.token));
     auto &memory = onchipContexts[req.token];
     if (!memory.cacheRead) memory.cacheRead = startOnchip(line.token,
-        line.tileReserve+line.tileAllocated+req.desc.cellId*cacheMatrices(line)*MatrixBytes,
-        N*N*(req.desc.cellId ? 2 : 1),8,false,0);
+        cacheEntryAddr(line, req.desc.cellId),
+        (smeCacheTagBytes() + MatrixBytes*(req.desc.cellId ? 2 : 1))/8,
+        8,false,0);
     if (!memory.cacheRead || !memory.cacheRead->done) return false;
     if (!memory.cacheReadyTraced) {
         memory.cacheReadyTraced = true;
         trace(req,"onchip","CACHE_REGISTER_READY",-1,-1,-1,-1,
               "RF-load", "Onchip",memory.cacheRead->id);
+    }
+    return true;
+}
+
+bool
+CfdCoeffPreprocessController::prepareCachedUbar(Request &req)
+{
+    if (!env.onchipTiming)
+        return true;
+    auto &line = *lineRequests.at(childLineTokens.at(req.token));
+    if (!line.tileYOnly || line.coefficientCacheHit || req.cacheUbarPublished)
+        return true;
+    const uint64_t cell = req.desc.cellId;
+    if (line.localUbar && cell+1 == line.cells)
+        return true;
+    const bool ready = req.smeDeferUpper ? req.smeUpperPartial && req.luDone :
+        (cell+1 < line.cells ? req.record.uBarReadyCycle != 0 : req.solveDone);
+    if (!ready)
+        return false;
+    auto &store = onchipContexts[req.token].commit[1];
+    const Addr base = line.localUbar ? smeUpperAddr(line, cell) :
+        cacheEntryAddr(line, cell) + smeCacheTagBytes() + 2*MatrixBytes;
+    const unsigned words = N*N +
+        (req.smeDeferUpper ? smeUpperFactorWords() : 0);
+    if (!store)
+        store = startOnchip(line.token,base,words,8,true,
+            cell+1 < line.cells ? 1 : 2);
+    if (!store || !store->done)
+        return false;
+    if (req.smeDeferUpper) {
+        auto factors = line.smeUpperFactors.begin() + cell*smeUpperFactorWords();
+        unsigned index = 0;
+        for (unsigned k = env.smeUpperSplit; k < N; ++k)
+            factors[index++] = req.reciprocal[k];
+        for (unsigned row = env.smeUpperSplit+1; row < N; ++row)
+            for (unsigned col = env.smeUpperSplit; col < row; ++col)
+                factors[index++] = req.lu[row*N+col];
+        for (unsigned row = 0; row < N; ++row)
+            for (unsigned col = row+1; col < N; ++col)
+                factors[index++] = req.lu[row*N+col];
+        assert(index == smeUpperFactorWords());
+        lineCoeffCaches.at(line.desc.lineId).uBar[cell] = req.uBar;
+        req.cacheUbarPublished = true;
+    } else {
+        publishCachedUbar(line,req,store->id);
+    }
+    if (line.localUbar) {
+        ++line.smeUpperStored;
+        traceSmeUpperMatrix(line, cell, "d", req.d);
+        traceSmeUpperMatrix(line, cell, "u", req.upper);
+        if (!req.smeDeferUpper)
+            traceSmeUpperMatrix(line, cell, "ubar", req.uBar);
+        if (env.traceEnable)
+            std::fprintf(stderr,"CFD_SME_UPPER_MEMORY cycle=%llu token=%llu cell=%llu "
+                "event=store job=%llu words=%u\n", (unsigned long long)cycle(),
+                (unsigned long long)line.token, (unsigned long long)cell,
+                (unsigned long long)store->id, words);
     }
     return true;
 }
@@ -194,6 +303,8 @@ CfdCoeffPreprocessController::prepareOnchipCommit(Request &req)
     const Addr base = tileOnchipAddr(line,*tile);
     if (!memory.commit[0]) memory.commit[0] = startOnchip(line.token,base+(cell-tile->start)*VectorBytes,N,8,true,1);
     if (!memory.commit[0] || !memory.commit[0]->done) return false;
+    if (line.tileYOnly && cell+1 < line.cells && !prepareCachedUbar(req))
+        return false;
     if (cell+1 < line.cells && !cachedUbar(line)) {
         if (!memory.commit[1]) memory.commit[1] = startOnchip(line.token,
             base+tile->y.size()*VectorBytes+(cell-tile->start)*MatrixBytes,N*N,8,true,1);
@@ -202,15 +313,21 @@ CfdCoeffPreprocessController::prepareOnchipCommit(Request &req)
     if (env.lineOptLevel >= 10 && !req.localTilePublished) {
         const auto index = cell-tile->start;
         tile->y[index] = req.dqStar;
-        tile->u[index] = req.uBar;
+        if (!line.tileYOnly)
+            tile->u[index] = req.uBar;
         markLocalTileReady(line,tile,cell,memory.commit[0]->id,
-                          memory.commit[1] ? memory.commit[1]->id : 0);
+            !line.tileYOnly && memory.commit[1] ? memory.commit[1]->id : 0,
+            line.tileYOnly && req.cacheUbarPublished && memory.commit[1] ?
+                memory.commit[1]->id : 0);
         req.localTilePublished = true;
     }
     if (line.coefficientCacheEnabled && !line.coefficientCacheHit) {
+        if (!req.luDone || (req.smeInvRequested && !req.smeInvDone)) return false;
+        if (line.tileYOnly && !prepareCachedUbar(req)) return false;
         if (!memory.commit[2]) memory.commit[2] = startOnchip(line.token,
-            line.tileReserve+line.tileAllocated+cell*cacheMatrices(line)*MatrixBytes,
-            cacheMatrices(line)*N*N,8,true,2);
+            cacheEntryAddr(line, cell),
+            (cacheEntryBytes(line)-(line.tileYOnly && !line.localUbar ? MatrixBytes : 0))/8,
+            8,true,2);
         if (!memory.commit[2] || !memory.commit[2]->done) return false;
     }
     return true;

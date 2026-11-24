@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "backend": "builtin-ink",
+  "source": {
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "lines": [
+    {
+      "box_px": [
+        156,
+        3,
+        185,
+        117
+      ],
+      "glyph_height_px": 73.0,
+      "line_count": 1,
+      "id": "L01",
+      "size_group": "g1",
+      "group_glyph_px": 73.0,
+      "font_pt_if_cjk": 44.0,
+      "font_pt_if_latin": 58.0
+    },
+    {
+      "box_px": [
+        536,
+        810,
+        254,
+        84
+      ],
+      "glyph_height_px": 52.0,
+      "line_count": 1,
+      "id": "L02",
+      "size_group": "g2",
+      "group_glyph_px": 52.0,
+      "font_pt_if_cjk": 31.5,
+      "font_pt_if_latin": 41.5
+    },
+    {
+      "box_px": [
+        815,
+        810,
+        143,
+        84
+      ],
+      "glyph_height_px": 52.0,
+      "line_count": 1,
+      "id": "L03",
+      "size_group": "g2",
+      "group_glyph_px": 52.0,
+      "font_pt_if_cjk": 31.5,
+      "font_pt_if_latin": 41.5
+    },
+    {
+      "box_px": [
+        426,
+        812,
+        116,
+        86
+      ],
+      "glyph_height_px": 54.0,
+      "line_count": 1,
+      "id": "L04",
+      "size_group": "g2",
+      "group_glyph_px": 52.0,
+      "font_pt_if_cjk": 31.5,
+      "font_pt_if_latin": 41.5
+    }
+  ],
+  "note": "ADVISORY ONLY: these measurements are a reference, and some text lines may be missed or merged with graphics. Lines sharing a size_group are the same text level and must use exactly one font size. When assembling the final PPT: keep same-level text at identical font sizes (apply the group's size to similar lines, including ones you add yourself), and fill in every text the detector missed from your own reading of the source image. box_px values are source pixels usable directly in text_boxes. Pick font_pt_if_cjk for CJK text and font_pt_if_latin for Latin text, and add \"font_size_source\": \"measured\" to boxes you size from these hints."
+}

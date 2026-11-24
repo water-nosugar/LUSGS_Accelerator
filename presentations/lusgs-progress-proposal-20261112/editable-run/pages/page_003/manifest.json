@@ -1,0 +1,540 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "块 LU-SGS 的计算过程",
+      "decision": "native-text",
+      "font_size": 44.5,
+      "size_group": "title"
+    },
+    {
+      "id": "inputs",
+      "text": "D、L、U：5×5 块，R：五维向量",
+      "decision": "native-text",
+      "font_size": 30,
+      "size_group": "body"
+    },
+    {
+      "id": "pre-label",
+      "text": "局部预处理",
+      "decision": "native-text",
+      "font_size": 33,
+      "size_group": "panel-label"
+    },
+    {
+      "id": "forward-label",
+      "text": "前扫",
+      "decision": "native-text",
+      "font_size": 33,
+      "size_group": "panel-label"
+    },
+    {
+      "id": "reverse-label",
+      "text": "后扫",
+      "decision": "native-text",
+      "font_size": 33,
+      "size_group": "panel-label"
+    },
+    {
+      "id": "scope",
+      "text": "当前范围：单线相邻依赖",
+      "decision": "native-text",
+      "font_size": 30,
+      "size_group": "body"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid-fill"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "preprocess-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "forward-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "reverse-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "forward-direction",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "reverse-direction",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "scope-strip",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native structural shape"
+    },
+    {
+      "id": "formula_db",
+      "role": "formula",
+      "object_type": "math-expression",
+      "decision": "LaTeX transcription"
+    },
+    {
+      "id": "formula_l",
+      "role": "formula",
+      "object_type": "math-expression",
+      "decision": "LaTeX transcription"
+    },
+    {
+      "id": "formula_u",
+      "role": "formula",
+      "object_type": "math-expression",
+      "decision": "LaTeX transcription"
+    },
+    {
+      "id": "formula_forward",
+      "role": "formula",
+      "object_type": "math-expression",
+      "decision": "LaTeX transcription"
+    },
+    {
+      "id": "formula_reverse",
+      "role": "formula",
+      "object_type": "math-expression",
+      "decision": "LaTeX transcription"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "Match white canvas, straight-corner pale-blue panels, blue title rule, and pale-blue footer strip using native structure.",
+    "removed_foreground": "No independent foreground assets. Source text and formulas are rebuilt separately.",
+    "comparison_note": "The contact sheet preserves the white canvas, straight-corner panels, title rule and footer strip. Native text and two directional connectors match source positions. All five LaTeX formula assets retain source subscripts, overbars and signs, with slightly lighter typesetting."
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "块 LU-SGS 的计算过程",
+      "box_px": [
+        50,
+        5,
+        1050,
+        110
+      ],
+      "font_size": 44.5,
+      "font": "Noto Sans CJK SC",
+      "font_size_source": "measured",
+      "size_group": "title",
+      "bold": true,
+      "color": "#082D62",
+      "align": "left",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "inputs",
+      "text": "D、L、U：5×5 块，R：五维向量",
+      "box_px": [
+        52,
+        147,
+        1030,
+        86
+      ],
+      "font_size": 30,
+      "font": "Noto Sans CJK SC",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "left",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "pre-label",
+      "text": "局部预处理",
+      "box_px": [
+        104,
+        326,
+        390,
+        89
+      ],
+      "font_size": 33,
+      "font": "Noto Sans CJK SC",
+      "font_size_source": "measured",
+      "size_group": "panel-label",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "forward-label",
+      "text": "前扫",
+      "box_px": [
+        622,
+        326,
+        413,
+        89
+      ],
+      "font_size": 33,
+      "font": "Noto Sans CJK SC",
+      "font_size_source": "measured",
+      "size_group": "panel-label",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "reverse-label",
+      "text": "后扫",
+      "box_px": [
+        1148,
+        326,
+        438,
+        89
+      ],
+      "font_size": 33,
+      "font": "Noto Sans CJK SC",
+      "font_size_source": "measured",
+      "size_group": "panel-label",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "id": "scope",
+      "text": "当前范围：单线相邻依赖",
+      "box_px": [
+        470,
+        822,
+        731,
+        77
+      ],
+      "font_size": 30,
+      "font": "Noto Sans CJK SC",
+      "font_size_source": "measured",
+      "size_group": "body",
+      "bold": true,
+      "color": "#082D62",
+      "align": "center",
+      "valign": "middle",
+      "z_index": 40,
+      "margin_left": 0,
+      "margin_right": 0,
+      "margin_top": 0,
+      "margin_bottom": 0,
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "semantic_line_id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        129,
+        1623,
+        129
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 3.25,
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "preprocess-panel",
+      "type": "rect",
+      "box_px": [
+        53,
+        300,
+        492,
+        441
+      ],
+      "fill": "#E2EEFE",
+      "stroke": "#0643A1",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "forward-panel",
+      "type": "rect",
+      "box_px": [
+        585,
+        300,
+        488,
+        441
+      ],
+      "fill": "#E2EEFE",
+      "stroke": "#0643A1",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "reverse-panel",
+      "type": "rect",
+      "box_px": [
+        1113,
+        300,
+        508,
+        441
+      ],
+      "fill": "#E2EEFE",
+      "stroke": "#0643A1",
+      "stroke_width": 3.4,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "forward-direction",
+      "semantic_line_id": "forward-direction",
+      "type": "line",
+      "points_px": [
+        688,
+        648,
+        979,
+        648
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 4.5,
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "reverse-direction",
+      "semantic_line_id": "reverse-direction",
+      "type": "line",
+      "points_px": [
+        1526,
+        648,
+        1214,
+        648
+      ],
+      "stroke": "#0643A1",
+      "stroke_width": 4.5,
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "scope-strip",
+      "type": "rect",
+      "box_px": [
+        38,
+        820,
+        1595,
+        87
+      ],
+      "fill": "#DDECFE",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    }
+  ],
+  "images": [
+    {
+      "id": "formula_db",
+      "path": "assets/formula_db.png",
+      "box_px": [
+        199.236,
+        447.936,
+        206.529,
+        60.129
+      ],
+      "alt": "Db=R",
+      "z_index": 220
+    },
+    {
+      "id": "formula_l",
+      "path": "assets/formula_l.png",
+      "box_px": [
+        193.021,
+        533.062,
+        218.29,
+        71.876
+      ],
+      "alt": "D\\overline{L}=L",
+      "z_index": 220
+    },
+    {
+      "id": "formula_u",
+      "path": "assets/formula_u.png",
+      "box_px": [
+        186.806,
+        628.242,
+        235.742,
+        73.161
+      ],
+      "alt": "D\\overline{U}=U",
+      "z_index": 220
+    },
+    {
+      "id": "formula_forward",
+      "path": "assets/formula_forward.png",
+      "box_px": [
+        634.503,
+        476.762,
+        402.38,
+        80.476
+      ],
+      "alt": "y_i=b_i-\\overline{L}_i\\,y_{i-1}",
+      "z_index": 220
+    },
+    {
+      "id": "formula_reverse",
+      "path": "assets/formula_reverse.png",
+      "box_px": [
+        1139.022,
+        478.467,
+        472.055,
+        76.846
+      ],
+      "alt": "\\Delta q_i=y_i-\\overline{U}_i\\,\\Delta q_{i+1}",
+      "z_index": 220
+    }
+  ],
+  "asset_provenance": [
+    {
+      "path": "assets/formula_db.png",
+      "source": "assets/formula_db.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    },
+    {
+      "path": "assets/formula_l.png",
+      "source": "assets/formula_l.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    },
+    {
+      "path": "assets/formula_u.png",
+      "source": "assets/formula_u.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    },
+    {
+      "path": "assets/formula_forward.png",
+      "source": "assets/formula_forward.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    },
+    {
+      "path": "assets/formula_reverse.png",
+      "source": "assets/formula_reverse.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    }
+  ],
+  "formula_inventory": [
+    {
+      "id": "formula_db",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_db.png",
+      "tex_source": "assets/formula_db.tex"
+    },
+    {
+      "id": "formula_l",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_l.png",
+      "tex_source": "assets/formula_l.tex"
+    },
+    {
+      "id": "formula_u",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_u.png",
+      "tex_source": "assets/formula_u.tex"
+    },
+    {
+      "id": "formula_forward",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_forward.png",
+      "tex_source": "assets/formula_forward.tex"
+    },
+    {
+      "id": "formula_reverse",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_reverse.png",
+      "tex_source": "assets/formula_reverse.tex"
+    }
+  ],
+  "page_strategy": "Pure native layout, editable text and direction connectors, plus individually rendered LaTeX formulas."
+}

@@ -175,7 +175,7 @@ split 为 8,118 周期，serial 为 8,310 周期。资源池并未证明面积�
 
 原计划的“通用网格基线”因研究范围改为单线而未完成。单线版 A/B 使用原始 D/L/U/R 和 Step2 软件参考；固定资源 trace 核对了 17/64 点 cold sweep 每个 cell 恰好分配一次系数 child，三 sweep 的分配为第 1、3 次各一次、第 2 次缓存命中。每次 sweep 的 y/Δq 全量数值校验通过。这不构成真实 CFD 的收敛基线。
 
-可选 `--coeff3-schedule=rhs-frontier` 每周期汇集已就绪 RHS，先选当前前向 cell 缺少的 Lbar/DInv 列；后台 RHS 等待超过 256 周期后可提升。排序本身的硬件面积和周期尚未建模；原 `frontier-aware` 保持默认。运行 `suites/single-line-rhs-frontier.json` 并用 `tools/check_single_line_rhs_frontier.py` 检查：最终 8 项均通过，检查器输出 `SINGLE_LINE_RHS_FRONTIER_CHECK_PASS`，同组 FP64 摘要、每点 child 次数及各 FU 发射总数相同。证据在 `results/cfd_dsa/campaigns/single-line-rhs-frontier-final-20260923/`。
+可选 `--coeff3-schedule=rhs-frontier` 每周期汇集已就绪 RHS，先选当前前向 cell 缺少的 Lbar/DInv 列；后台 RHS 等待超过 256 周期后可提升。排序本身的硬件面积和周期尚未建模；原 `frontier-aware` 保持默认。运行 `suites/history/single-line-rhs-frontier.json` 并用 `tools/check_single_line_rhs_frontier.py` 检查：最终 8 项均通过，检查器输出 `SINGLE_LINE_RHS_FRONTIER_CHECK_PASS`，同组 FP64 摘要、每点 child 次数及各 FU 发射总数相同。证据在 `results/cfd_dsa/campaigns/single-line-rhs-frontier-final-20260923/`。
 
 | 单线负载 | LU/TRSM | 原模式周期 | 逐 RHS 模式周期 | 变化 |
 | --- | --- | ---: | ---: | ---: |

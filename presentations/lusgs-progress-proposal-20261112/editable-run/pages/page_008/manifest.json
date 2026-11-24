@@ -1,0 +1,904 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "专用加速器整体架构",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "control-label",
+      "text": "控制链",
+      "decision": "native-text",
+      "size_group": "lane-label"
+    },
+    {
+      "id": "control-0-name",
+      "text": "ARM guest",
+      "decision": "native-text",
+      "size_group": "main-node"
+    },
+    {
+      "id": "control-1-name",
+      "text": "描述符",
+      "decision": "native-text",
+      "size_group": "main-node"
+    },
+    {
+      "id": "control-2-name",
+      "text": "整线控制器",
+      "decision": "native-text",
+      "size_group": "main-node"
+    },
+    {
+      "id": "data-label",
+      "text": "数据链",
+      "decision": "native-text",
+      "size_group": "lane-label"
+    },
+    {
+      "id": "data-0-name",
+      "text": "主存",
+      "decision": "native-text",
+      "size_group": "data-node"
+    },
+    {
+      "id": "data-1-name",
+      "text": "timing DMA",
+      "decision": "native-text",
+      "size_group": "data-node"
+    },
+    {
+      "id": "data-2-name",
+      "text": "分 bank SPM",
+      "decision": "native-text",
+      "size_group": "data-node"
+    },
+    {
+      "id": "data-3-name",
+      "text": "RF/局部缓冲",
+      "decision": "native-text",
+      "size_group": "data-node"
+    },
+    {
+      "id": "data-4-name",
+      "text": "算术单元",
+      "decision": "native-text",
+      "size_group": "arithmetic-label"
+    },
+    {
+      "id": "data-4-sub",
+      "text": "LU · RHS · 向量扫线",
+      "decision": "native-text",
+      "size_group": "arithmetic-sub"
+    },
+    {
+      "id": "output-label",
+      "text": "输出链",
+      "decision": "native-text",
+      "size_group": "lane-label"
+    },
+    {
+      "id": "output-0-name",
+      "text": "Δq FIFO",
+      "decision": "native-text",
+      "size_group": "main-node"
+    },
+    {
+      "id": "output-1-name",
+      "text": "写回响应",
+      "decision": "native-text",
+      "size_group": "main-node"
+    },
+    {
+      "id": "output-2-name",
+      "text": "完成通知",
+      "decision": "native-text",
+      "size_group": "main-node"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "control-0-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "control-0-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "control-1-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "control-1-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "control-2-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-0-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-0-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-1-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-1-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-2-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-2-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-3-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-3-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "data-4-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "output-0-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "output-0-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "output-1-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "output-1-link",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "output-2-box",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "原生白底和标题分隔线，保持控制、数据、输出三条平行链的方角浅蓝节点、所有标签及箭头方向。数据链四根连接箭头保留双向，控制链和输出链保留从左向右。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、主次色、分隔线和布局对象对应，背景无文字残影。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "逐项核对 3 条链、11 个方角节点和 8 个箭头，数据链 4 个箭头双向，其他箭头从左到右。微调数据链统一字号后预览文字完整，矩形框及箭头的线宽有轻微差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "专用加速器整体架构",
+      "box_px": [
+        48,
+        15,
+        1120,
+        97
+      ],
+      "font_size": 45,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "control-label",
+      "text": "控制链",
+      "box_px": [
+        47,
+        236,
+        180,
+        82
+      ],
+      "font_size": 30,
+      "font_size_source": "measured",
+      "size_group": "lane-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "control-0-name",
+      "text": "ARM guest",
+      "box_px": [
+        265,
+        226,
+        348,
+        102
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "main-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "control-1-name",
+      "text": "描述符",
+      "box_px": [
+        720,
+        226,
+        299,
+        102
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "main-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "control-2-name",
+      "text": "整线控制器",
+      "box_px": [
+        1125,
+        226,
+        319,
+        102
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "main-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-label",
+      "text": "数据链",
+      "box_px": [
+        47,
+        492,
+        180,
+        82
+      ],
+      "font_size": 30,
+      "font_size_source": "measured",
+      "size_group": "lane-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-0-name",
+      "text": "主存",
+      "box_px": [
+        261,
+        482,
+        156,
+        101
+      ],
+      "font_size": 20.5,
+      "font_size_source": "measured",
+      "size_group": "data-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-1-name",
+      "text": "timing DMA",
+      "box_px": [
+        490,
+        482,
+        218,
+        101
+      ],
+      "font_size": 20.5,
+      "font_size_source": "measured",
+      "size_group": "data-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-2-name",
+      "text": "分 bank SPM",
+      "box_px": [
+        782,
+        482,
+        218,
+        101
+      ],
+      "font_size": 20.5,
+      "font_size_source": "measured",
+      "size_group": "data-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-3-name",
+      "text": "RF/局部缓冲",
+      "box_px": [
+        1074,
+        482,
+        218,
+        101
+      ],
+      "font_size": 20.5,
+      "font_size_source": "measured",
+      "size_group": "data-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-4-name",
+      "text": "算术单元",
+      "box_px": [
+        1367,
+        482,
+        254,
+        58
+      ],
+      "font_size": 23.8,
+      "font_size_source": "measured",
+      "size_group": "arithmetic-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "data-4-sub",
+      "text": "LU · RHS · 向量扫线",
+      "box_px": [
+        1367,
+        535,
+        254,
+        43
+      ],
+      "font_size": 15.4,
+      "font_size_source": "measured",
+      "size_group": "arithmetic-sub",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "output-label",
+      "text": "输出链",
+      "box_px": [
+        47,
+        736,
+        180,
+        82
+      ],
+      "font_size": 30,
+      "font_size_source": "measured",
+      "size_group": "lane-label",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "output-0-name",
+      "text": "Δq FIFO",
+      "box_px": [
+        264,
+        727,
+        341,
+        100
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "main-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "output-1-name",
+      "text": "写回响应",
+      "box_px": [
+        703,
+        727,
+        323,
+        100
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "main-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "output-2-name",
+      "text": "完成通知",
+      "box_px": [
+        1124,
+        727,
+        321,
+        100
+      ],
+      "font_size": 26.5,
+      "font_size_source": "measured",
+      "size_group": "main-node",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        128,
+        1623,
+        128
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3.1,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "control-0-box",
+      "type": "rect",
+      "box_px": [
+        258,
+        219,
+        362,
+        116
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "control-0-link",
+      "type": "line",
+      "points_px": [
+        620,
+        277,
+        713,
+        277
+      ],
+      "semantic_line_id": "control-0-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "control-1-box",
+      "type": "rect",
+      "box_px": [
+        713,
+        219,
+        313,
+        116
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "control-1-link",
+      "type": "line",
+      "points_px": [
+        1026,
+        277,
+        1118,
+        277
+      ],
+      "semantic_line_id": "control-1-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "control-2-box",
+      "type": "rect",
+      "box_px": [
+        1118,
+        219,
+        333,
+        116
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "data-0-box",
+      "type": "rect",
+      "box_px": [
+        254,
+        475,
+        170,
+        115
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "data-0-link",
+      "type": "line",
+      "points_px": [
+        424,
+        533,
+        483,
+        533
+      ],
+      "semantic_line_id": "data-0-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "triangle",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "data-1-box",
+      "type": "rect",
+      "box_px": [
+        483,
+        475,
+        232,
+        115
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "data-1-link",
+      "type": "line",
+      "points_px": [
+        715,
+        533,
+        775,
+        533
+      ],
+      "semantic_line_id": "data-1-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "triangle",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "data-2-box",
+      "type": "rect",
+      "box_px": [
+        775,
+        475,
+        232,
+        115
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "data-2-link",
+      "type": "line",
+      "points_px": [
+        1007,
+        533,
+        1067,
+        533
+      ],
+      "semantic_line_id": "data-2-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "triangle",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "data-3-box",
+      "type": "rect",
+      "box_px": [
+        1067,
+        475,
+        232,
+        115
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "data-3-link",
+      "type": "line",
+      "points_px": [
+        1299,
+        533,
+        1359,
+        533
+      ],
+      "semantic_line_id": "data-3-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "triangle",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "data-4-box",
+      "type": "rect",
+      "box_px": [
+        1359,
+        475,
+        270,
+        115
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "output-0-box",
+      "type": "rect",
+      "box_px": [
+        257,
+        720,
+        355,
+        114
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "output-0-link",
+      "type": "line",
+      "points_px": [
+        612,
+        777,
+        696,
+        777
+      ],
+      "semantic_line_id": "output-0-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "output-1-box",
+      "type": "rect",
+      "box_px": [
+        696,
+        720,
+        337,
+        114
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    },
+    {
+      "id": "output-1-link",
+      "type": "line",
+      "points_px": [
+        1033,
+        777,
+        1117,
+        777
+      ],
+      "semantic_line_id": "output-1-link",
+      "stroke": "#0B50AD",
+      "stroke_width": 3.3,
+      "z_index": 12,
+      "fill": "none",
+      "start_arrow": "none",
+      "end_arrow": "triangle"
+    },
+    {
+      "id": "output-2-box",
+      "type": "rect",
+      "box_px": [
+        1117,
+        720,
+        335,
+        114
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.8,
+      "z_index": 12,
+      "fill": "#DCECFB",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 """Summarize accepted cases and explicitly verify same-resource A/B pairs."""
 import argparse
-import hashlib
 import json
 from pathlib import Path
 
 from analyze_single_line_metrics import metrics
-
-
-def sha256(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+from artifact_hash import file_sha256 as sha256
 
 
 def summarize(campaign, suite, report):

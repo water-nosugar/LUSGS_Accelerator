@@ -1,0 +1,441 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "page_strategy": "用原生矩形和连线重建四步计划，用原生文本重建每步说明与交付结果。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "下一步计划与预期交付",
+      "decision": "native-text"
+    },
+    {
+      "id": "baseline",
+      "text": "固定可复现基线",
+      "decision": "native-text"
+    },
+    {
+      "id": "calibration-a",
+      "text": "完成硬件时序",
+      "decision": "native-text"
+    },
+    {
+      "id": "calibration-b",
+      "text": "标定",
+      "decision": "native-text"
+    },
+    {
+      "id": "evaluation-a",
+      "text": "验证调度、计算",
+      "decision": "native-text"
+    },
+    {
+      "id": "evaluation-b",
+      "text": "与存储机制",
+      "decision": "native-text"
+    },
+    {
+      "id": "application-a",
+      "text": "接入真实场景",
+      "decision": "native-text"
+    },
+    {
+      "id": "application-b",
+      "text": "并评估收敛",
+      "decision": "native-text"
+    },
+    {
+      "id": "delivery",
+      "text": "交付：模拟器、标定依据、实验与适用边界",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "plan-cards",
+      "role": "structure",
+      "object_type": "four pale-blue straight-corner rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "plan-flow",
+      "role": "structure",
+      "object_type": "three horizontal arrows",
+      "decision": "native-line"
+    },
+    {
+      "id": "delivery-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、深蓝色分隔线、四张浅蓝计划卡和浅蓝交付色带的位置。",
+    "removed_foreground": [],
+    "comparison_note": "预览保持白底和全部四步结构，文字与箭头清晰。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "baseline-box",
+      "type": "rect",
+      "box_px": [
+        50,
+        364,
+        353,
+        193
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "calibration-box",
+      "type": "rect",
+      "box_px": [
+        460,
+        364,
+        350,
+        193
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "evaluation-box",
+      "type": "rect",
+      "box_px": [
+        868,
+        364,
+        352,
+        193
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "application-box",
+      "type": "rect",
+      "box_px": [
+        1276,
+        364,
+        347,
+        193
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "delivery-band",
+      "type": "rect",
+      "box_px": [
+        38,
+        769,
+        1594,
+        113
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        129,
+        1622,
+        129
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "baseline-to-calibration",
+      "type": "line",
+      "points_px": [
+        403,
+        462,
+        460,
+        462
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "baseline-to-calibration",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "calibration-to-evaluation",
+      "type": "line",
+      "points_px": [
+        810,
+        462,
+        868,
+        462
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "calibration-to-evaluation",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "evaluation-to-application",
+      "type": "line",
+      "points_px": [
+        1220,
+        462,
+        1276,
+        462
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "evaluation-to-application",
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "下一步计划与预期交付",
+      "box_px": [
+        50,
+        12,
+        860,
+        106
+      ],
+      "font_size": 43.5,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "baseline",
+      "text": "固定可复现基线",
+      "box_px": [
+        61,
+        420,
+        334,
+        88
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "calibration-a",
+      "text": "完成硬件时序",
+      "box_px": [
+        470,
+        394,
+        329,
+        69
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "calibration-b",
+      "text": "标定",
+      "box_px": [
+        470,
+        455,
+        329,
+        69
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "evaluation-a",
+      "text": "验证调度、计算",
+      "box_px": [
+        879,
+        394,
+        329,
+        69
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "evaluation-b",
+      "text": "与存储机制",
+      "box_px": [
+        879,
+        455,
+        329,
+        69
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "application-a",
+      "text": "接入真实场景",
+      "box_px": [
+        1285,
+        393,
+        328,
+        69
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "application-b",
+      "text": "并评估收敛",
+      "box_px": [
+        1285,
+        454,
+        328,
+        69
+      ],
+      "font_size": 25.8,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "delivery",
+      "text": "交付：模拟器、标定依据、实验与适用边界",
+      "box_px": [
+        180,
+        778,
+        1310,
+        93
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

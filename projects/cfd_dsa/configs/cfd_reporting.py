@@ -2,6 +2,24 @@
 import re
 from types import SimpleNamespace
 
+
+def dram_statistics(stats_text):
+    """Sum physical channels, selecting each counter's final snapshot once."""
+    values={}
+    pattern=re.compile(r'^\s*(system\.(?:dram(?:\.dram)?|dram_ctrls\d+\.dram))\.(bytesRead|bytesWritten)::total\s+(\d+)',re.M)
+    for match in pattern.finditer(stats_text):
+        path,kind,value=match.groups()
+        child=path.endswith('.dram') and path!='system.dram'
+        controller=path.removesuffix('.dram') if child else path
+        key=controller,kind
+        if key not in values or child>=values[key][0]:values[key]=(child,int(value))
+    result={}
+    for kind,key in [('bytesRead','dram_bytes_read'),('bytesWritten','dram_bytes_written')]:
+        found=[v for (path,k),(priority,v) in values.items() if k==kind]
+        if found:result[key]=sum(found)
+    if values:result['dram_reported_channels']=len({path for path,kind in values})
+    return result
+
 CONFIG_KEYS = ('local_spm_bank_granularity', 'local_spm_banks', 'local_spm_read_ports', 'patha_acc_mode', 'patha_async_store', 'patha_dotp_count', 'patha_dotp_lat', 'patha_input_buffer_depth', 'patha_kernel', 'patha_matld_extra_per_run', 'patha_pack_count', 'patha_result_buffer_depth', 'patha_spm_mode', 'patha_spm_read_width', 'patha_store_mode', 'patha_store_queue_depth', 'patha_store_stride', 'patha_stream_read_ports', 'patha_streaming', 'patha_unroll', 'readport_count', 'report_focus', 'sme_fmopa_array_lat', 'sme_fmopa_count', 'sme_fmopa_lat', 'sme_outer_count', 'sme_outer_full_array', 'sme_outer_lat', 'sme_pipe_count', 'sme_pipe_lat')
 THEORY = {
     'N': 5,
@@ -848,6 +866,7 @@ class ReportContext:
 
         for key, (names, dtype) in specs.items():
             self._add_stat(stats, stats_text, key, names, dtype)
+        stats.update(dram_statistics(stats_text))
 
         if 'l1d_hits' in stats and 'l1d_misses' in stats:
             total = stats['l1d_hits'] + stats['l1d_misses']

@@ -10,52 +10,75 @@ import re
 import statistics
 
 from check_context_ablation import read_case, require_completed_simulation
-from check_single_line_output_dma import options, validate_row
-
-
-def fields(text, prefix):
-    return [dict(re.findall(r'(\w+)=([^ ]+)', line))
-            for line in text.splitlines() if line.startswith(prefix + ' ')]
+from check_single_line_output_dma import options, resolved_options, validate_row, output_depth
+from check_divider_model import check_case as check_divider
+from trace_text import fields
 
 
 def validate_cluster_trace(rows, config):
+    dedicated_sub = config.get('--coeff-line-final-subtract', 'shared') == 'dedicated'
     lat = {'mul': int(config['--coeff-cluster-mul-lat']),
            'add': int(config['--coeff-cluster-add-lat']),
-           'div': int(config['--coeff-cluster-div-lat'])}
+           'div': int(config['--coeff-cluster-div-lat']),
+           'sub': int(config.get('--forward-combine-latency', '1'))}
+    fma_count=int(config.get('--coeff-rhs-fma-count','0'))
+    if fma_count: lat['fma']=5
+    lu_fma_count=int(config.get('--coeff-lu-fma-count','0'))
+    if lu_fma_count:lat['lu_fma']=5
+    upper=config.get('--coeff-rhs-upper-inverse','0')=='1'
     counts = Counter()
     per_cycle = Counter()
-    last_div = None
+    non_lu_mul = Counter()
+    mul_count = int(config.get('--coeff-cluster-mul-count', '5'))
+    div_count = int(config.get('--coeff-cluster-div-count', '1'))
+    div_ready = [0] * div_count
     for row in rows:
         pool, cycle = row['pool'], int(row['cycle'])
         lanes, caller = int(row['lanes']), int(row['caller'])
         expected_pool = {0: 'div', 1: 'mul', 2: 'add', 3: 'div', 4: 'mul',
-                         5: 'add', 7: 'add', 8: 'mul', 9: 'add'}
-        if pool not in lat or caller not in range(10) or \
+                         5: 'add', 7: ('sub' if dedicated_sub else 'add'),
+                         8: 'mul', 9: 'add'}
+        if pool not in lat or not (caller in range(10) or (caller==14 and upper and pool=='fma') or (caller==15 and lu_fma_count and pool=='lu_fma')) or \
                 (caller == 6 and pool not in ('mul', 'add')) or \
-                (caller != 6 and expected_pool[caller] != pool):
+                (caller not in (6,14,15) and expected_pool[caller] != pool and not (pool=='fma' and caller==4 and fma_count)):
             raise ValueError('operation bypassed or used the wrong shared bank')
         row_parallel = config.get('--coeff-rhs-row-parallel','0') == '1'
         valid_width = (1 <= lanes <= 4) if (row_parallel and caller in (4,5)) or (int(config.get('--coeff-line-opt-level','0'))>=7 and caller in (1,2)) else \
                       lanes == (5 if caller >= 6 else 1)
+        if config.get('--coeff-lane-mvm','0')=='1' and caller in (7,8,9) and lanes==1:
+            valid_width=True
+        if config.get('--coeff-arithmetic-mode','legacy')!='legacy' and pool!='div':
+            valid_width=1<=lanes<=(5 if caller>=6 else 4)
+        if caller==14:valid_width=upper and pool=='fma' and lanes==1
+        if caller==15:valid_width=bool(lu_fma_count) and pool=='lu_fma' and 1<=lanes<=4
         if not valid_width or \
                 int(row['complete_cycle']) != cycle + lat[pool]:
             raise ValueError('incorrect lane width or completion latency')
         per_cycle[pool, cycle] += lanes
-        if per_cycle[pool, cycle] > (1 if pool == 'div' else 5):
+        if per_cycle[pool, cycle] > (lu_fma_count if pool=='lu_fma' else fma_count if pool=='fma' else div_count if pool == 'div' else mul_count if pool == 'mul' else int(config.get('--coeff-cluster-add-count','5')) if pool=='add' else 5):
             raise ValueError('shared bank oversubscribed')
+        if pool == 'mul' and caller != 1:
+            non_lu_mul[cycle] += lanes
+            if config.get('--coeff-extra-mul-policy','shared') == 'lu-only' and non_lu_mul[cycle] > 5:
+                raise ValueError('non-LU operation used the LU-only multiplier')
         if pool == 'div':
-            if last_div is not None and cycle - last_div < int(config['--coeff-cluster-div-ii']):
+            core = next((i for i, ready in enumerate(div_ready) if ready <= cycle), None)
+            if core is None:
                 raise ValueError('shared divider II violated')
-            last_div = cycle
+            div_ready[core] = cycle + int(config['--coeff-cluster-div-ii'])
         counts['shared_' + pool] += lanes
     return counts
 
 
-def work(n, sweeps, interval, algo, mvm, reciprocal, shared):
+def work(n, sweeps, interval, algo, mvm, reciprocal, shared, dedicated_sub=False,
+         cached_reciprocal=False, warm_forward_tree=False, lu_reciprocal_share=False, rhs_fma=False, rhs_upper=False, lu_fma=False,
+         cold_forward_tree=False):
     rebuilds = (sweeps + interval - 1) // interval
     reuse = sweeps - rebuilds
     direct = algo == 'direct'
-    rhs = rebuilds * ((11 if direct else 15)*n - 10) + (reuse*n if direct else 0)
+    cold_rhs = rebuilds * ((11 if direct else 15)*n - 10)
+    warm_rhs = reuse*n if direct else 0
+    rhs = cold_rhs + warm_rhs
     requests = n * (sweeps if direct else rebuilds)
     col = rebuilds * ((0 if direct else 5*n) + 5*(n-1))
     col += 5*(n-1)*reuse if direct else 0
@@ -64,14 +87,50 @@ def work(n, sweeps, interval, algo, mvm, reciprocal, shared):
         col += 5*(n-1)*sweeps + (0 if direct else (10*n-5)*reuse)
     else:
         line_products = 5*(n-1)*sweeps + (0 if direct else (10*n-5)*reuse)
+    if warm_forward_tree and direct:
+        converted = 5*(n-1)*reuse
+        col -= converted
+        line_products += converted
+    if cold_forward_tree:
+        assert direct and warm_forward_tree and mvm == 'tree'
+        converted = 5*(n-1)*rebuilds
+        col -= converted
+        line_products += converted
     line_adds = line_products if mvm != 'tree' else line_products//5*4
-    div = 5*requests if reciprocal else 5*rhs
-    mul = (25 if reciprocal else 20)*rhs
+    # Cold multi-RHS solves share five reciprocals; cached direct sweeps have
+    # only one RHS per request and still use five direct divisions. The n=1
+    # direct boundary is also a one-RHS request.
+    reciprocal_rhs = cold_rhs if reciprocal and (not direct or n > 1 or lu_reciprocal_share) else 0
+    reciprocal_requests = n*rebuilds if reciprocal_rhs else 0
+    if cached_reciprocal and reciprocal and direct and (n > 1 or lu_reciprocal_share):
+        # Cached reciprocals were produced by the cold multi-RHS solve. Warm
+        # uses a multiply, with no new reciprocal divide and no extra SRAM.
+        reciprocal_rhs += warm_rhs
+    div = 5*(reciprocal_requests + rhs-reciprocal_rhs)
+    mul = 20*rhs + 5*reciprocal_rhs
     sub = 20*rhs
+    combine = 10*(n-1)*sweeps
+    if lu_reciprocal_share:
+        assert shared and reciprocal
     if shared:
-        issues = dict(shared_div=10*n*rebuilds+div,
-                      shared_mul=30*n*rebuilds+mul+5*(col+line_products),
-                      shared_add=30*n*rebuilds+sub+5*(col+line_adds)+10*(n-1)*sweeps)
+        issues = dict(shared_div=(0 if lu_reciprocal_share else 10)*n*rebuilds+div,
+                      shared_mul=(40 if lu_reciprocal_share else 30)*n*rebuilds+mul+5*(col+line_products),
+                      shared_add=30*n*rebuilds+sub+5*(col+line_adds)+
+                                 (0 if dedicated_sub else combine))
+        if rhs_fma:
+            issues['shared_mul']-=20*rhs
+            issues['shared_add']-=20*rhs
+            issues['shared_fma']=20*rhs
+            if rhs_upper:
+                assert direct
+                if n>1:issues['shared_fma']+=10*n*rebuilds
+        if lu_fma:
+            assert lu_reciprocal_share
+            issues['shared_mul']-=30*n*rebuilds
+            issues['shared_add']-=30*n*rebuilds
+            issues['shared_lu_fma']=30*n*rebuilds
+        if dedicated_sub:
+            issues['shared_sub'] = combine
     else:
         issues = dict(lu_div=10*n*rebuilds, lu_mul=30*n*rebuilds,
                       lu_sub=30*n*rebuilds, coeff_div=div, coeff_mul=mul,
@@ -99,15 +158,23 @@ def check_numeric(text, cells):
 
 
 def check_shared(path, config, pools, wanted, col):
+    from check_register_ports import case_residence_cycles
+    rf_residence = case_residence_cycles(path, config)
+    divider = check_divider(path, config)
     if pools.keys() != wanted.keys():
         raise ValueError(f'{path.name}: additional or missing physical banks')
+    div_count = int(config.get('--coeff-cluster-div-count', '1'))
     for name, expected in wanted.items():
         p = pools[name]
         short = name.removeprefix('shared_')
-        if p['count'] != (1 if short == 'div' else 5) or \
-                p['lat'] != int(config[f'--coeff-cluster-{short}-lat']) or \
-                p['ii'] != (int(config['--coeff-cluster-div-ii']) if short == 'div' else 1) or \
-                p['issued'] != expected or p['occupancy_sum'] != expected*p['lat']:
+        count = int(config['--coeff-lu-fma-count']) if short=='lu_fma' else int(config['--coeff-rhs-fma-count']) if short=='fma' else int(config.get('--coeff-cluster-mul-count','5')) if short == 'mul' else int(config.get('--coeff-cluster-add-count','5')) if short=='add' else 5 if short=='sub' else div_count
+        latency = 5 if short in ('fma','lu_fma') else int(config['--forward-combine-latency']) if short == 'sub' else \
+                  int(config[f'--coeff-cluster-{short}-lat'])
+        ii = int(config['--forward-combine-ii']) if short == 'sub' else \
+             (int(config['--coeff-cluster-div-ii']) if short == 'div' else 1)
+        occupancy = rf_residence[name] if rf_residence is not None else (divider['residence_cycles'] if divider and short == 'div' else expected*p['lat'])
+        if p['count'] != count or p['lat'] != latency or p['ii'] != ii or \
+                p['issued'] != expected or p['occupancy_sum'] != occupancy:
             raise ValueError(f'{path.name}/{name}: wrong physical budget or work')
         if p['samples'] != p['issue_cycles']+p['blocked_cycles']+p['no_attempt_cycles'] or \
                 not p['issued'] <= p['eligible_slots'] <= p['samples']*p['count']:
@@ -126,13 +193,21 @@ def check_shared(path, config, pools, wanted, col):
 
 def regular(path):
     cycles, hashes, pools, _, binary = read_case(path)
-    config = options(json.loads((path/'manifest.json').read_text())['command'])
+    config = resolved_options(path)
     n, sweeps = int(config['--lusgs-cells']), int(config['--bench-iters'])
     interval = int(config['--coefficient-update-interval']) or 1
     algo, mvm = config['--coeff-base-solve'], config['--coeff-line-mvm-model']
     shared = config['--coeff-compute-model'] == 'shared'
     expected = work(n, sweeps, interval, algo, mvm,
-                    config['--coeff3-div-mode'] == 'reciprocal', shared)
+                    config['--coeff3-div-mode'] == 'reciprocal', shared,
+                    config.get('--coeff-line-final-subtract', 'shared') == 'dedicated',
+                    config.get('--coeff-warm-diagonal','divide') == 'reciprocal',
+                    config.get('--coeff-warm-forward-tree','0') == '1',
+                    config.get('--coeff-lu-reciprocal-share','0') == '1',
+                    int(config.get('--coeff-rhs-fma-count','0')) > 0,
+                    config.get('--coeff-rhs-upper-inverse','0')=='1',
+                    int(config.get('--coeff-lu-fma-count','0'))>0,
+                    config.get('--coeff-cold-forward-tree','0')=='1')
     text = (path/'simout.txt').read_text()
     error = check_numeric(text, [n]*sweeps)
     lines = sorted(fields(text, 'CFD_LINE_SCHEDULE'), key=lambda r: int(r['token']))
@@ -141,7 +216,7 @@ def regular(path):
     for s, row in enumerate(lines):
         if int(row['cache_hit']) != int(s % interval != 0):
             raise ValueError(f'{path.name}: version/dirty contract changed')
-        validate_row(row, n, int(config['--coeff-drain-queue-depth']),
+        validate_row(row, n, output_depth(config),
                      config['--coeff-spm-model'] == 'dma')
     if sum(int(r['line_products']) for r in lines) != expected['line_products'] or \
             sum(int(r['line_adds']) for r in lines) != expected['line_adds'] or \
@@ -248,7 +323,7 @@ def regular(path):
 def contract(path):
     manifest = json.loads((path/'manifest.json').read_text())
     text = (path/'simout.txt').read_text()
-    config = options(manifest['command'])
+    config = resolved_options(path)
     require_completed_simulation(manifest,path)
     if 'LUSGS_CACHE_CONTRACT_PASS' not in text:
         raise ValueError(f'{path.name}: cache contract simulation failed')
@@ -280,11 +355,27 @@ def contract(path):
     for row, hit in zip(rows, hits):
         n = int(row['cells'])
         cold = work(n, 1, 1, row['mode'], config['--coeff-line-mvm-model'],
-                    config['--coeff3-div-mode'] == 'reciprocal', shared)
+                    config['--coeff3-div-mode'] == 'reciprocal', shared,
+                    config.get('--coeff-line-final-subtract', 'shared') == 'dedicated',
+                    config.get('--coeff-warm-diagonal','divide') == 'reciprocal',
+                    config.get('--coeff-warm-forward-tree','0') == '1',
+                    config.get('--coeff-lu-reciprocal-share','0') == '1',
+                    int(config.get('--coeff-rhs-fma-count','0')) > 0,
+                    config.get('--coeff-rhs-upper-inverse','0')=='1',
+                    int(config.get('--coeff-lu-fma-count','0'))>0,
+                    config.get('--coeff-cold-forward-tree','0')=='1')
         step = cold
         if hit:
             combined = work(n, 2, 2, row['mode'], config['--coeff-line-mvm-model'],
-                            config['--coeff3-div-mode'] == 'reciprocal', shared)
+                            config['--coeff3-div-mode'] == 'reciprocal', shared,
+                            config.get('--coeff-line-final-subtract', 'shared') == 'dedicated',
+                            config.get('--coeff-warm-diagonal','divide') == 'reciprocal',
+                    config.get('--coeff-warm-forward-tree','0') == '1',
+                    config.get('--coeff-lu-reciprocal-share','0') == '1',
+                    int(config.get('--coeff-rhs-fma-count','0')) > 0,
+                    config.get('--coeff-rhs-upper-inverse','0')=='1',
+                    int(config.get('--coeff-lu-fma-count','0'))>0,
+                    config.get('--coeff-cold-forward-tree','0')=='1')
             step = dict(issues={k: v-cold['issues'][k]
                                 for k, v in combined['issues'].items()},
                         col=combined['col']-cold['col'])

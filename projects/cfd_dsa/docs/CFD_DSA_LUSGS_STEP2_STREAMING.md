@@ -513,7 +513,7 @@ PASS：
 | Stage 7 hit/rebuild 生命周期 | `src/arch/arm/cfd_coeff_preprocess_controller.cc:1063-1143,1150-1160,1210-1260,1332-1427` |
 | Stage 7 guest publisher | `projects/cfd_dsa/benchmarks/lusgs/test_cfd_lusgs_patha_step2.c:5805-5830,6353-6365` |
 | Stage 8 solve | `src/arch/arm/cfd_coeff_preprocess_controller.cc:2875-2942`；配置校验/传递为 `projects/cfd_dsa/configs/run_cfd_dsa.py:1356-1360,1603-1607` |
-| 集中回归 | `projects/cfd_dsa/suites/coeff-streaming-boundaries.json:1-45` |
+| 集中回归 | `projects/cfd_dsa/suites/history/coeff-streaming-boundaries.json:1-45` |
 
 frontier-aware RHS 调度在未老化时优先 DInv、Lbar，再做后台 Ubar；ready 超过 64 cycles
 的 RHS 优先提升，避免永久饥饿。4-line B5 相对 round-robin-ready 从 29890 降至
@@ -808,25 +808,25 @@ build/ARM/gem5.opt -d results/cfd_dsa/runs/step2-stream-b5-w8-1x17 \
 
 ```bash
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-auto-retire.json
+  projects/cfd_dsa/suites/history/coeff-streaming-auto-retire.json
 
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-correctness.json
+  projects/cfd_dsa/suites/history/coeff-streaming-correctness.json
 
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-boundary-mask.json
+  projects/cfd_dsa/suites/history/coeff-streaming-boundary-mask.json
 
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-reaper.json
+  projects/cfd_dsa/suites/history/coeff-streaming-reaper.json
 
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-dinv-consumer.json
+  projects/cfd_dsa/suites/history/coeff-streaming-dinv-consumer.json
 
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-lbar-consumer.json
+  projects/cfd_dsa/suites/history/coeff-streaming-lbar-consumer.json
 
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-streaming-boundaries.json
+  projects/cfd_dsa/suites/history/coeff-streaming-boundaries.json
 ```
 
 ## 16. 保持递推语义的依赖链优化
@@ -885,7 +885,7 @@ functional 访问，并未在本次改成 timed DMA。系数子请求的原 drai
 
 ```bash
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-line-dependency.json \
+  projects/cfd_dsa/suites/history/coeff-line-dependency.json \
   --campaign line-dependency-check
 python3 projects/cfd_dsa/tools/check_line_dependency.py \
   results/cfd_dsa/campaigns/line-dependency-check
@@ -901,7 +901,7 @@ campaign 目录不可覆盖，重跑需换新名称。测试覆盖四组合消�
 `results/cfd_dsa/campaigns/line-dependency-20260908/dma/simout.txt:84` 和
 `results/cfd_dsa/campaigns/line-dependency-20260908/dma-baseline-diagnostic/simout.txt:84`。
 正常 suite 只验证 DMA 单 sweep，不声明 DMA 多 sweep 已通过。独立复现入口
-`projects/cfd_dsa/suites/coeff-line-dma-rebuild-diagnostic.json` 当时预期会失败；
+`projects/cfd_dsa/suites/history/coeff-line-dma-rebuild-diagnostic.json` 当时预期会失败；
 该轮尚未修改 DMA/cache 一致性与复用后重建的存储协议。
 
 2026-09-22 单线更新：DMA 改经 I/O cache 接入一致性总线后，单点、双点及
@@ -957,7 +957,7 @@ RHS/系数数值不用于代表真实 CFD 收敛实验。不得将该11.22%外�
 ## 17. 可选 line MVM 乘积流水（experimental）
 
 后续第一轮（固定serial、LU/TRSM上下文1/2/4消融和统计校正）的独立说明见
-`projects/cfd_dsa/docs/CFD_DSA_CONTEXT_ABLATION.md`，本轮不启用split或改变算术资源。
+`projects/cfd_dsa/docs/history/CFD_DSA_CONTEXT_ABLATION.md`，本轮不启用split或改变算术资源。
 
 当前默认仍为 `--coeff-line-mvm-model=serial`。`split` 是显式的硬件模型实验，
 不是给原 ColumnFma 免费降低 latency，也不是保证在任何资源假设下加速。
@@ -1023,7 +1023,7 @@ line包含85次base、80次correction、80次backward，各245次乘/加。
 
 ```bash
 python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/coeff-line-mvm-pipeline.json \
+  projects/cfd_dsa/suites/history/coeff-line-mvm-pipeline.json \
   --campaign line-mvm-pipeline-check
 python3 projects/cfd_dsa/tools/check_line_mvm_pipeline.py \
   results/cfd_dsa/campaigns/line-mvm-pipeline-check

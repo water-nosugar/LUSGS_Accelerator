@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "run_id": "editable-run",
+  "status": "complete",
+  "page_count": 24,
+  "output": "/home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/editable-run/final/块LU-SGS专用加速架构_图片版_edited.pptx",
+  "validation": "/home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/editable-run/final/validation.json",
+  "completed_at": "2026-11-13T00:09:08Z"
+}

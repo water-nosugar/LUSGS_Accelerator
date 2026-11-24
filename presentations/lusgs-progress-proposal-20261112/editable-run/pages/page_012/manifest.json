@@ -1,0 +1,413 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "三类运算通过原生线形与箭头汇入统一后端，所有框和文字均为原生可编辑对象。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "为何采用 SME 风格统一后端",
+      "decision": "native-text"
+    },
+    {
+      "id": "lu",
+      "text": "LU：尾块外积更新",
+      "decision": "native-text"
+    },
+    {
+      "id": "rhs",
+      "text": "多 RHS：复用因子与广播",
+      "decision": "native-text"
+    },
+    {
+      "id": "scan",
+      "text": "前后扫：小矩阵向量乘与反馈",
+      "decision": "native-text"
+    },
+    {
+      "id": "backend",
+      "text": "统一后端：",
+      "decision": "native-text"
+    },
+    {
+      "id": "shared",
+      "text": "共享 ZA 和算术资源",
+      "decision": "native-text"
+    },
+    {
+      "id": "objective",
+      "text": "研究目标：自研 ASIC 数据通路",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "workload-cards",
+      "role": "structure",
+      "object_type": "three straight-corner operation rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "backend-card",
+      "role": "structure",
+      "object_type": "straight-corner output rectangle",
+      "decision": "native-rect"
+    },
+    {
+      "id": "flow",
+      "role": "structure",
+      "object_type": "ordinary lines with common backend arrow",
+      "decision": "native-line"
+    },
+    {
+      "id": "objective-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、浅蓝矩形、蓝色汇流连线与大标题的位置和关系。",
+    "removed_foreground": [],
+    "comparison_note": "预览中的白底、三类运算、汇流连线及统一后端与源页构图一致。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "lu-box",
+      "type": "rect",
+      "box_px": [
+        53,
+        220,
+        760,
+        134
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "rhs-box",
+      "type": "rect",
+      "box_px": [
+        54,
+        402,
+        760,
+        137
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "scan-box",
+      "type": "rect",
+      "box_px": [
+        54,
+        586,
+        761,
+        135
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "backend-box",
+      "type": "rect",
+      "box_px": [
+        1023,
+        334,
+        599,
+        268
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.7,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "objective-band",
+      "type": "rect",
+      "box_px": [
+        37,
+        792,
+        1596,
+        110
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        48,
+        129,
+        1623,
+        129
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "outer-merge",
+      "type": "path",
+      "box_px": [
+        813,
+        286,
+        101,
+        365
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              813,
+              286
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              914,
+              286
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              914,
+              651
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              815,
+              651
+            ]
+          ]
+        }
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.5,
+      "fill": "none",
+      "semantic_line_id": "outer-merge",
+      "z_index": 20
+    },
+    {
+      "id": "merge-to-backend",
+      "type": "line",
+      "points_px": [
+        814,
+        469,
+        1023,
+        469
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.5,
+      "semantic_line_id": "merge-to-backend",
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "为何采用 SME 风格统一后端",
+      "box_px": [
+        52,
+        12,
+        1070,
+        99
+      ],
+      "font_size": 43,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "lu",
+      "text": "LU：尾块外积更新",
+      "box_px": [
+        78,
+        241,
+        711,
+        90
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "rhs",
+      "text": "多 RHS：复用因子与广播",
+      "box_px": [
+        68,
+        424,
+        734,
+        90
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "scan",
+      "text": "前后扫：小矩阵向量乘与反馈",
+      "box_px": [
+        63,
+        606,
+        743,
+        90
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "backend",
+      "text": "统一后端：",
+      "box_px": [
+        1040,
+        379,
+        565,
+        86
+      ],
+      "font_size": 33.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "shared",
+      "text": "共享 ZA 和算术资源",
+      "box_px": [
+        1040,
+        468,
+        565,
+        83
+      ],
+      "font_size": 33.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "objective",
+      "text": "研究目标：自研 ASIC 数据通路",
+      "box_px": [
+        305,
+        804,
+        1062,
+        87
+      ],
+      "font_size": 34.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

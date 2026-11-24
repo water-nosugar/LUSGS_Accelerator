@@ -1,0 +1,42 @@
+{
+  "slide": 21,
+  "title": "统一实验与验证方案",
+  "prompt": "# Codex PPT Slide Image Prompt\n\n## Canvas\n{\n  \"type\": \"16:9 full-slide PowerPoint image\",\n  \"language\": \"简体中文\",\n  \"slide_number\": 21,\n  \"render_slide_number\": false\n}\n\n## Deck Goal\n汇报两条 gem5 仿真路线的已完成工作、研究任务及验证方案\n\n## Required Background\n{\n  \"deck_context\": {\n    \"source_summary\": \"已确认的 24 页提纲。工作覆盖 5×5 FP64 局部块与单线双向递推。gem5 专用路线与 gem5_SME 共用单线接口。\",\n    \"core_claim\": \"依赖调度、统一计算、有限存储共同决定块 LU-SGS 整线周期。两套后端结果是 gem5 仿真结果。\",\n    \"canonical_terms\": [\n      \"LU-SGS\",\n      \"gem5\",\n      \"gem5_SME\",\n      \"SME/ZA\",\n      \"SPM\",\n      \"RHS\",\n      \"V14\"\n    ]\n  },\n  \"slide_local_context\": {\n    \"required_background\": \"所有可见文字以 title 和 key_points 为准。背景说明仅作约束。精确保留数字、术语、箭头含义及中文。\"\n  }\n}\n\n## Global Style\n{\n  \"name\": \"科研答辩风\",\n  \"visual_direction\": \"真实的白底 16:9 中国高校科研答辩 PowerPoint 页面。深蓝左对齐大标题，细横线，正文层次清楚。每页布局依内容而异。扁平单色方框、箭头与表格，便于后续重建。\",\n  \"color_palette\": \"纯白 #FFFFFF，深蓝 #003F8F，次蓝 #0B5CAD，浅蓝 #EAF2FF，必要时用深灰\",\n  \"typography\": \"清晰准确的中文黑体，投影字号，短句，足够留白\",\n  \"texture_and_finish\": \"纯色，简单几何，无纹理、照片、渐变、阴影、复杂装饰\"\n}\n\n## Input Images\n\n- Image 1: /home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/origin_image/slide_13.png — approved sample slide style reference; 沿用风格，不复制样张的标题、文字、内容和布局\n\n\n## Slide\n{\n  \"number\": 21,\n  \"title\": \"统一实验与验证方案\",\n  \"role\": \"评估矩阵\",\n  \"intent\": \"四行精简表格，分别为基线、工况、消融和指标。\"\n}\n\n## Text\n{\n  \"title\": \"统一实验与验证方案\",\n  \"key_points\": [\n    \"基线：高精度参考、CPU、专用、SME\",\n    \"工况：短线/长线，冷轮/暖轮，版本失效\",\n    \"消融：调度、计算、存储及其组合\",\n    \"指标：精度、整线周期、流量与资源\",\n    \"后续：GPU 基线与相同容限下的 CFD 收敛\"\n  ],\n  \"speaker_focus\": null\n}\n\n## Layout\n{\n  \"composition\": \"四行精简表格，分别为基线、工况、消融和指标。\"\n}\n\n## Visual Elements\n{\n  \"main_visual\": \"四行精简表格，分别为基线、工况、消融和指标。\"\n}\n\n## Constraints\n[\n  \"输出一张单独的 16:9 横向完整幻灯片，白底，保持约 4% 安全边距。\",\n  \"可见文字仅为标题、给出的要点及必要的极短框图标签。不重复要点。不要显示页码、水印、校名或虚构数据。\",\n  \"使用平直方框、线、箭头、圆或简单表格，避免复杂图像。\"\n]\n\n## Style Reference Rule\nUse Image 1 as the approved sample-slide style reference. Match its palette, typography mood, density, texture, and overall visual identity. Do not copy its exact layout unless this slide's layout explicitly asks for it.\n\n## Input Image Handling Rules\nFor any input image marked as a strict input asset, include it visibly and preserve its content. Do not redraw, replace, relabel, or invent a similar figure. Scale and crop only as needed for composition while keeping the important labels, arrows, data, and relationships recognizable.\n\n## Universal Constraints\n- The final image itself must contain the title and key points.\n- Render Chinese text exactly and legibly; avoid garbled characters.\n- Keep the confirmed deck style consistent while varying layout by slide role.\n- No watermark, unrelated logo, or extra slide number.\n",
+  "out": "slide_21.png",
+  "input_images": [
+    {
+      "path": "/home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/origin_image/slide_13.png",
+      "role": "approved sample slide style reference",
+      "fidelity": "沿用风格，不复制样张的标题、文字、内容和布局"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "built-in image tool",
+  "sample_generation_method": {
+    "backend_used": "built-in image tool",
+    "tool_name": "image_gen.imagegen",
+    "mode": "generate",
+    "prompt_source": "经用户确认的第 13 页架构样张提示",
+    "size": "16:9 横向，内置工具默认参数",
+    "quality": "built-in default",
+    "approved_sample_path": "/home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/origin_image/slide_13.png",
+    "input_context_preparation": "查看样张，作为新幻灯片生成的纯风格参考图",
+    "handoff_rule": "用内置工具生成全新的一页，沿用已确认的白底深蓝科研答辩风；无法调用时报告阻塞。"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  }
+}

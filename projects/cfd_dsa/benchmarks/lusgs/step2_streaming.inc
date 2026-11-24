@@ -332,6 +332,47 @@ poll_streaming_reaper(StreamingCompletionEntry *entries, uint64_t capacity,
     return poll_streaming_entry(entries, capacity, entry, stats);
 }
 
+// Report before cache conditioning and the measured interval. The monotonic
+// call index also identifies invocations in functional policy-transition tests.
+static void
+report_lu_output_range(const Problem *p, const Config *cfg, uint64_t generation)
+{
+    static uint64_t round = 0;
+    printf("CFD_LU_OUTPUT_RANGE round=%llu generation=%llu publish=%d "
+           "base=0x%llx bytes=%llu cells=%llu\n",
+           (unsigned long long)++round, (unsigned long long)generation,
+           cfg->coeff_publish_lu, (unsigned long long)(uintptr_t)p->lu_d,
+           (unsigned long long)(p->lines*p->cells*N*N*sizeof(double)),
+           (unsigned long long)(p->lines*p->cells));
+}
+
+// The private ABI promises that the external LU destination is untouched.
+// Debug reconstruction below must never turn this buffer into a CPU output.
+static int
+validate_local_matrix_poison(const Problem *p, const double *matrix,
+                             const char *name)
+{
+    const double poison = NAN;
+    uint64_t expected;
+    memcpy(&expected, &poison, sizeof(expected));
+    for (size_t i = 0; i < p->lines*p->cells*N*N; ++i) {
+        uint64_t actual;
+        memcpy(&actual, &matrix[i], sizeof(actual));
+        if (actual != expected) {
+            fprintf(stderr, "CFD_LOCAL_%s_UNEXPECTED_WRITE index=%lu\n",
+                    name, (unsigned long)i);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static int
+validate_local_lu_poison(const Problem *p)
+{
+    return validate_local_matrix_poison(p, p->lu_d, "LU");
+}
+
 static int
 validate_streaming_coefficients(Problem *p, const Config *cfg, Stats *stats,
                                 PretransformCheck *check,
@@ -351,14 +392,29 @@ validate_streaming_coefficients(Problem *p, const Config *cfg, Stats *stats,
         const double *raw_d = mat_const_at(p->d_mat, p, line, cell);
         const double *lower = mat_const_at(p->l_mat, p, line, cell);
         const double *upper = mat_const_at(p->u_mat, p, line, cell);
-        const double *lu = mat_const_at(p->lu_d, p, line, cell);
+        double debug_lu[N*N];
+        const double *lu;
+        if (cfg->coeff_publish_lu) {
+            lu = mat_const_at(p->lu_d, p, line, cell);
+        } else {
+            // Reference-only sanity check outside all performance ROIs. This
+            // is not a validation or reconstruction of private hardware LU;
+            // the original y/dq recurrence and independent oracle test that.
+            if (!cfd_lu5_factor(raw_d, debug_lu,
+                               cfg->pretransform_diag_epsilon)) {
+                all_valid = 0;
+                continue;
+            }
+            lu = debug_lu;
+        }
         const double *d_inv = mat_const_at(p->d_inv, p, line, cell);
         const double *l_bar =
             mat_const_at(p->l_bar_precomputed, p, line, cell);
         const double *u_bar = mat_const_at(p->u_bar, p, line, cell);
         stats->lu5_factor_cells++;
         stats->lu5_factor_input_bytes += N * N * sizeof(double);
-        stats->lu5_factor_output_bytes += N * N * sizeof(double);
+        if (cfg->coeff_publish_lu)
+            stats->lu5_factor_output_bytes += N * N * sizeof(double);
         stats->ubar_generated += need_ubar;
         stats->coeff3_issued++;
         stats->coeff3_completed++;
@@ -370,7 +426,7 @@ validate_streaming_coefficients(Problem *p, const Config *cfg, Stats *stats,
         for (int i = 0; i < N * N; i++) {
             if (!isfinite(lu[i]) || (!direct && !isfinite(d_inv[i])) ||
                 (need_lbar && !isfinite(l_bar[i])) ||
-                (need_ubar && !isfinite(u_bar[i])))
+                (need_ubar && !cfg->coeff_local_ubar && !isfinite(u_bar[i])))
                 all_valid = 0;
         }
         int validate = !strcmp(cfg->coeff_validation, "full") ||
@@ -393,6 +449,11 @@ validate_streaming_coefficients(Problem *p, const Config *cfg, Stats *stats,
             // the debug matrix outside the measured streaming solve.
             trsm5_mrhs_software(lu, lower, lbar_debug);
             l_bar = lbar_debug;
+        }
+        double ubar_debug[N * N];
+        if (cfg->coeff_local_ubar && need_ubar) {
+            trsm5_mrhs_software(lu, upper, ubar_debug);
+            u_bar = ubar_debug;
         }
         double l_residual = need_lbar ?
             matrix_residual_max(lu, l_bar, lower) : 0.0;
@@ -670,6 +731,28 @@ compare_shadow_base(Stats *stats, size_t cell, const double expected[N],
     return valid;
 }
 
+static void
+pack_sme_fixture_input(Problem *p, uint64_t generation)
+{
+    const uint64_t start = read_cycle_counter();
+    if (!p->sme_cold_input)
+        allocate_sme_cold_input(p);
+    const size_t matrix_bytes = N * N * sizeof(double);
+    for (size_t cell = 0; cell < p->cells; ++cell) {
+        double *row = p->sme_cold_input + cell * SmeColdInputWords;
+        memcpy(row, mat_const_at(p->d_mat, p, 0, cell), matrix_bytes);
+        memcpy(row + N*N, mat_const_at(p->l_mat, p, 0, cell), matrix_bytes);
+        memcpy(row + 2*N*N, mat_const_at(p->u_mat, p, 0, cell), matrix_bytes);
+        memcpy(row + 3*N*N, vec_const_at(p->rhs, p, 0, cell), N * sizeof(double));
+    }
+    const uint64_t cycles = read_cycle_counter() - start;
+    printf("CFD_INPUT_LAYOUT_SOURCE layout=packed source=fixture generation=%llu "
+           "cells=%lu bytes=%lu cycles=%llu\n",
+           (unsigned long long)generation, (unsigned long)p->cells,
+           (unsigned long)(p->cells * SmeColdInputWords * sizeof(double)),
+           (unsigned long long)cycles);
+}
+
 static int
 compare_shadow_forward_vector(uint64_t *mismatches, uint64_t *first_cell,
                               uint64_t *first_lane, double *max_abs,
@@ -750,9 +833,26 @@ run_pretransform_raw_stream_line_once(
             for (size_t i = 0; i < total_cells*N*N; ++i)
                 p->lu_d[i] = p->u_bar[i] = NAN;
     }
+    if (!cfg->coeff_publish_lu && coefficient_dirty)
+        for (size_t i = 0; i < total_cells*N*N; ++i)
+            p->lu_d[i] = NAN;
+    report_lu_output_range(p, cfg, next_line_generation);
+    if (cfg->coeff_local_ubar) {
+        for (size_t i = 0; i < total_cells*N*N; ++i)
+            p->u_bar[i] = NAN;
+        printf("CFD_UBAR_OUTPUT_RANGE generation=%llu base=0x%llx bytes=%llu\n",
+               (unsigned long long)next_line_generation,
+               (unsigned long long)(uintptr_t)p->u_bar,
+               (unsigned long long)matrix_bytes);
+    }
+    // File-backed runs decode the source directly to this layout. Fixtures
+    // may change D or R between calls, including failed attempts and retries.
+    if (cfg->coeff_sme_packed_input && !p->dataset_oracle_y)
+        pack_sme_fixture_input(p, next_line_generation);
     // Reporting from the preceding sweep must reach the console before new
     // asynchronous controller traces; flushing is outside the measured solve.
     fflush(stdout);
+    const uint64_t study_round = study_condition_cache(p, cfg);
     const uint64_t total_start = read_cycle_counter();
 
     for (size_t line = 0; line < p->lines; ++line) {
@@ -777,6 +877,10 @@ run_pretransform_raw_stream_line_once(
         desc->flags |= COEFF_PRE_WARM_SUMMARY;
     if (direct_solve)
         desc->flags |= COEFF_PRE_BASE_DIRECT_SOLVE;
+    if (!cfg->coeff_publish_lu)
+        desc->flags |= COEFF_PRE_LOCAL_LU;
+    if (cfg->coeff_local_ubar)
+        desc->flags |= COEFF_PRE_LOCAL_UBAR;
     if (cache_enabled)
         desc->flags |= COEFF_PRE_LINE_COEFF_CACHE;
     if (cache_enabled && coefficient_dirty)
@@ -814,6 +918,13 @@ run_pretransform_raw_stream_line_once(
     desc->pivot_epsilon = cfg->pretransform_diag_epsilon;
     desc->reserved[0] = (uint64_t)(uintptr_t)
         vec_at(p->rhs, p, line, 0);
+    if (cfg->coeff_sme_packed_input) {
+        desc->flags |= COEFF_PRE_PACKED_COLD_INPUT;
+        desc->d_addr = (uint64_t)(uintptr_t)p->sme_cold_input;
+        desc->l_addr = desc->d_addr + N*N*sizeof(double);
+        desc->u_addr = desc->d_addr + 2*N*N*sizeof(double);
+        desc->reserved[0] = desc->d_addr + 3*N*N*sizeof(double);
+    }
     desc->reserved[1] = cfg->coeff_stream_window;
     desc->reserved[2] = (uint64_t)(uintptr_t)
         vec_at(dq, p, line, 0);
@@ -940,12 +1051,18 @@ run_pretransform_raw_stream_line_once(
         stats->streaming_backward_finish_cycle = read_cycle_counter();
     } else {
         stats->common_preprocess_fallback_runs++;
-        memcpy(dq_star, p->dq_star_raw_ref, rhs_bytes);
-        memcpy(dq, p->dq_raw_ref, rhs_bytes);
+        memcpy(dq_star, study_cache_enabled(cfg) ? p->dataset_oracle_y : p->dq_star_raw_ref, rhs_bytes);
+        memcpy(dq, study_cache_enabled(cfg) ? p->dataset_oracle_dq : p->dq_raw_ref, rhs_bytes);
     }
 
     const uint64_t compute_finish = read_cycle_counter();
     stats->streaming_total_cycles += compute_finish - total_start;
+    if (study_round)
+        printf("CFD_STUDY_ACCEL_ROI round=%llu start=%llu finish=%llu cycles=%llu "
+            "coefficients=%s\n", (unsigned long long)study_round,
+            (unsigned long long)total_start, (unsigned long long)compute_finish,
+            (unsigned long long)(compute_finish-total_start),
+            coefficient_dirty ? "rebuild" : "reuse");
     if (compact_records)
         printf("CFD_RECORD_FORMAT bytes=%lu full_diagnostics=0 diagnostics_source=trace\n",
                (unsigned long)record_stride);
@@ -957,7 +1074,9 @@ run_pretransform_raw_stream_line_once(
         uint64_t mismatches = 0;
         uint64_t result_hash = 14695981039346656037ULL;
         const double *got[] = {dq_star, dq};
-        const double *reference[] = {p->dq_star_raw_ref, p->dq_raw_ref};
+        const double *reference[] = {
+            study_cache_enabled(cfg) ? p->dataset_oracle_y : p->dq_star_raw_ref,
+            study_cache_enabled(cfg) ? p->dataset_oracle_dq : p->dq_raw_ref};
         for (int phase = 0; phase < 2; ++phase) {
             for (size_t index = 0; index < total_cells * N; ++index) {
                 uint64_t bits;
@@ -983,6 +1102,7 @@ run_pretransform_raw_stream_line_once(
                (unsigned long)(2 * total_cells * N), max_abs, max_rel,
                (unsigned long)mismatches, (unsigned long)result_hash, residual);
         all_valid &= mismatches == 0;
+        all_valid &= validate_dataset_oracle(p,dq_star,dq,"accelerator");
     }
     // Stable-record verification and aggregation are reporting work.  Keep
     // them outside the measured solve so the controller-to-backward handoff
@@ -1095,6 +1215,10 @@ run_pretransform_raw_stream_line_once(
             stats->streaming_backward_finish_cycle -
             stats->streaming_backward_start_cycle;
     finalize_streaming_timeline(stats);
+    if (!cfg->coeff_publish_lu)
+        all_valid &= validate_local_lu_poison(p);
+    if (cfg->coeff_local_ubar)
+        all_valid &= validate_local_matrix_poison(p, p->u_bar, "UBAR");
     if (all_valid && coefficient_dirty)
         all_valid &= validate_streaming_coefficients(
             p, cfg, stats, check, NULL);
@@ -1122,6 +1246,63 @@ run_pretransform_raw_stream_line_once(
     free(records);
     fflush(stdout);
     return all_valid;
+}
+
+// Functional ABI transition test. A publication-policy change with the same
+// coefficient version must not reuse an entry promising different outputs.
+// This is not a performance experiment; expected cache decisions are checked
+// independently against the controller trace by the host acceptance tool.
+static int
+run_lu_output_transition_test(const Config *original)
+{
+    const int published[] = {0, 0, 1, 1, 0};
+    const int expected_hit[] = {0, 1, 0, 1, 0};
+    Config cfg = *original;
+    cfg.lines = cfg.interleave = 1;
+    cfg.sweeps = cfg.coefficient_update_interval = 2;
+    cfg.coeff_warm_summary = 0;
+    cfg.coeff_poison_outputs = 1;
+    cfg.coeff_cancel_after_polls = 0;
+    Problem p;
+    init_problem(&p, 1, cfg.cells);
+    apply_raw_input_pattern(&p, &cfg);
+    load_step2_dataset(&p, &cfg);
+    Stats reference = {};
+    int valid = raw_reference_solve(&p, &reference);
+    if (valid)
+        valid &= validate_dataset_oracle(
+            &p, p.dq_star_raw_ref, p.dq_raw_ref, "cpu");
+    for (unsigned step = 0; valid && step < 5; ++step) {
+        cfg.coeff_publish_lu = published[step];
+        if (!cfg.coeff_publish_lu)
+            for (size_t i = 0; i < p.cells*N*N; ++i)
+                p.lu_d[i] = NAN;
+        Stats stats = {};
+        PretransformCheck check = {};
+        int ok = run_pretransform_raw_stream_line_once(&p, &cfg, &stats,
+            p.dq_star_pretransform_raw_stream, p.dq_pretransform_raw_stream,
+            &check, 1, step == 0);
+        int output_ok = cfg.coeff_publish_lu ? 1 : validate_local_lu_poison(&p);
+        if (cfg.coeff_publish_lu)
+            for (size_t cell = 0; cell < p.cells; ++cell) {
+                const double *lu = mat_const_at(p.lu_d, &p, 0, cell);
+                for (unsigned i = 0; i < N*N; ++i)
+                    output_ok &= isfinite(lu[i]);
+                output_ok &= lu_factor_residual_max(
+                    mat_const_at(p.d_mat, &p, 0, cell), lu) <= 1e-9;
+            }
+        printf("CFD_LU_OUTPUT_TRANSITION step=%u cells=%lu version=1 publish=%d "
+               "expected_cache_hit=%d numeric_pass=%d output_contract_pass=%d cycles=%lu\n",
+               step, (unsigned long)cfg.cells, published[step],
+               expected_hit[step], ok, output_ok,
+               (unsigned long)stats.streaming_total_cycles);
+        valid &= ok && output_ok;
+        fflush(stdout);
+    }
+    free_problem(&p);
+    puts(valid ? "LUSGS_LU_OUTPUT_TRANSITION_PASS" :
+                 "LUSGS_LU_OUTPUT_TRANSITION_FAIL");
+    return valid;
 }
 
 static int

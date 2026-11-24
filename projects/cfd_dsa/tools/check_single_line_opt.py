@@ -10,6 +10,24 @@ from check_single_line_storage import check_case
 from check_single_line_c import fields
 from check_single_line_onchip import check_onchip
 from check_single_line_dma_packets import check_dma_packets
+from check_divider_model import actual_divider_completions
+from check_register_ports import replay_register_ports
+from trace_text import compact_trace
+
+
+# These diagnostic samples do not enter any acceptance proof below. Keep all
+# other events, including unknown stages, errors, packet responses and cancels.
+# Physical bank, DMA and arithmetic checks still replay their complete streams.
+DIAGNOSTIC_ONLY_STAGES = frozenset((
+    'TRSM_WAIT_LU_STEP', 'SCHED_SELECT', 'SCHED_SCAN', 'SCHED_NO_READY',
+    'SCHED_NO_SELECTION', 'SPM_PACKET_STALL_OUTSTANDING', 'STALL_OUTPUT_RING'))
+
+
+def acceptance_trace(path,rhs_pair=False):
+    # Pair consumers are independently joined to ordinary RHS selections.
+    # Those records become proof inputs when this datapath is enabled.
+    skipped=DIAGNOSTIC_ONLY_STAGES-{'SCHED_SELECT'} if rhs_pair else DIAGNOSTIC_ONLY_STAGES
+    return compact_trace(path,skipped)
 
 
 def union_length(intervals):
@@ -25,11 +43,66 @@ def analyze(path, row):
     text = (path/'simout.txt').read_text()
     config = row['config']
     level = int(config.get('--coeff-line-opt-level', '0'))
-    with (path/'coeff_preprocess_trace.csv').open() as src:
-        trace = list(csv.DictReader(src))
-    check_onchip(text,config,row['storage'],trace)
+    trace = acceptance_trace(path/'coeff_preprocess_trace.csv',config.get('--coeff-rhs-pair','0')=='1')
+    onchip=check_onchip(text,config,row['storage'],trace)
     with (path/'coeff_preprocess_trace.csv.cluster.csv').open() as src:
         cluster = list(csv.DictReader(src))
+    rf = replay_register_ports(text,config,cluster)
+    physical_cluster,physical_rf=cluster,rf
+    from check_arithmetic_groups import replay_arithmetic_groups
+    grouped,cluster,rf=replay_arithmetic_groups(text,config,cluster,rf)
+    from check_single_line_recurrence import check_tree, check_data_commit, check_cached_diagonal, check_wait_accounting
+    recurrence = dict(tree=check_tree(text,config,cluster,rf),
+                      data_commit=check_data_commit(text,config,trace),
+                      cached_diagonal=check_cached_diagonal(text,config,trace,row['storage']))
+    recurrence['wait_accounting'] = check_wait_accounting(text)
+    from check_single_line_frontier import check_forward_tree, check_rhs_tree, check_drain_arb, check_tail_overlap, check_lu_lookahead
+    recurrence.update(forward_tree=check_forward_tree(text,config,trace),
+                      rhs_tree=check_rhs_tree(text,config,trace,cluster,rf),
+                      drain_arb=check_drain_arb(text,config,trace),
+                      tail_overlap=check_tail_overlap(text,config,trace,row['storage']),
+                      lu_lookahead=check_lu_lookahead(text,config,cluster))
+    recurrence['register_ports'] = rf.summary if rf is not None else {}
+    from check_rhs_upper import check_rhs_upper_schedule
+    recurrence['rhs_upper_schedule']=check_rhs_upper_schedule(config,trace,rf.summary.get('rhs_upper',{}) if rf is not None else {})
+    from check_lu_rank1 import check_rank1_schedule
+    recurrence['lu_rank1_schedule'] = check_rank1_schedule(text,config,trace)
+    from check_rhs_admission import check_rhs_admission
+    recurrence['rhs_admission']=check_rhs_admission(text,config,trace)
+    from check_lu_reciprocal import check_lu_reciprocal
+    divider_rows=[]
+    if config.get('--coeff-lu-reciprocal-share','0')=='1':
+        with (path/'coeff_preprocess_trace.csv.divider.csv').open(newline='') as source:
+            divider_rows = list(csv.DictReader(source))
+    recurrence['lu_reciprocal_share'] = check_lu_reciprocal(text,config,trace,rf,divider_rows)
+    from check_rhs_upper_stream import check_rhs_stream_schedule
+    recurrence['rhs_upper_stream']=check_rhs_stream_schedule(config,trace,rf.summary.get('rhs_upper_stream',{}) if rf is not None else {},divider_rows)
+    from check_lu_pivot_prefetch import check_pivot_prefetch_schedule
+    recurrence['lu_pivot_prefetch']=check_pivot_prefetch_schedule(text,config,trace,divider_rows)
+    from check_summary_hash import check_summary_hash
+    recurrence['summary_hash'] = check_summary_hash(text,config,trace)
+    recurrence['arithmetic_groups'] = grouped
+    from check_lane_mvm import check_lane_mvm
+    recurrence['lane_mvm'] = check_lane_mvm(text,config,cluster,rf)
+    from check_register_ports import check_preprocess_broadcast
+    recurrence['preprocess_broadcast'] = check_preprocess_broadcast(text,config,trace)
+    from check_single_line_supply import check_rhs_bursts, check_streamed_tiles, check_direct_rhs, check_output_bursts
+    clock=int(json.loads((path/'config.json').read_text())['system']['clk_domain']['clock'][0])
+    recurrence.update(rhs_bursts=check_rhs_bursts(text,config,trace,clock),
+                      streamed_tiles=check_streamed_tiles(text,config,clock),
+                      direct_rhs=check_direct_rhs(text,config,trace,clock))
+    recurrence['output_bursts']=check_output_bursts(text,config,clock)
+    cluster,rf=physical_cluster,physical_rf
+    divider_completions = actual_divider_completions(path)
+    if rf is not None:
+        cluster = rf.actual_cluster
+    for r in cluster:
+        if r['pool'] == 'div' and int(r['cycle']) in divider_completions:
+            actual = divider_completions[int(r['cycle'])]
+            if rf is not None:
+                assert int(r['complete_cycle']) == actual, 'divider response did not match RF result write'
+            else:
+                r['complete_cycle'] = str(actual)
     schedule = fields(text, 'CFD_LINE_SCHEDULE')
     interface = fields(text, 'CFD_INTERFACE_DMA')
     cache = fields(text, 'CFD_CACHE_DMA')
@@ -41,7 +114,7 @@ def analyze(path, row):
         assert int(rows['capacity'])==capacity and int(rows['bytes'])==capacity*64+256
         assert int(rows['live'])==0 and int(rows['issued'])==int(rows['completed'])
         assert 0 <= int(rows['peak']) <= capacity
-        assert int(rows['issued']) == 8*sum(r['stage']=='RHS_COMPLETE' for r in trace)
+        assert int(rows['issued']) == (0 if int(config.get('--coeff-rhs-fma-count','0')) else 8)*sum(r['stage']=='RHS_COMPLETE' for r in trace)
     if level>=5:
         for lifetime in [r for r in fields(text,'CFD_LINE_LIFETIME') if r.get('phase')=='complete']:
             assert int(lifetime['records_pending'])==0
@@ -117,7 +190,7 @@ def analyze(path, row):
         bp=[p for p in fields(text,'CFD_TILE_DMA') if p['token']==token]
         storage=next(r for r in row['storage'] if r['token']==token)
         full_cache=int(storage['cache_bytes'])==600*int(storage['cells'])
-        if level>=3 and int(s['cache_hit']) and full_cache:
+        if storage.get('tile_y_only','0')=='1' or (level>=3 and int(s['cache_hit']) and full_cache):
             assert not any(p['region']=='1' for p in bp), 'cached Ubar reloaded through DMA'
         warm=dict()
         mode = fixture[sweep]['mode'] if fixture else config['--coeff-base-solve']
@@ -155,7 +228,7 @@ def analyze(path, row):
                          r['stage']=='HANDOFF_PRODUCE' and start<=int(r['cycle'])<end)
         gaps=Counter(b[1]-a[1] for a,b in zip(handoffs,handoffs[1:]))
         windows.append(dict(token=token,cache_hit=int(s['cache_hit']),cycles=duration,
-            issued=dict(count),issue_utilization_pct={p:100*count[p]*(int(config['--coeff-cluster-div-ii']) if p=='div' else 1)/(duration*(1 if p=='div' else 5)) for p in ('mul','add','div')},
+            issued=dict(count),issue_utilization_pct={p:100*count[p]*(int(config['--coeff-cluster-div-ii']) if p=='div' else 1)/(duration*(int(config.get('--coeff-cluster-div-count','1')) if p=='div' else int(config.get('--coeff-cluster-mul-count','5')) if p=='mul' else int(config.get('--coeff-cluster-add-count','5')))) for p in ('mul','add','div')},
             empty_cycles=duration-union_length(intervals),
             empty_pct=100*(duration-union_length(intervals))/duration,
             backward_cycles=int(s['backward_done'])-int(s['backward_start']),
@@ -166,7 +239,8 @@ def analyze(path, row):
         assert sum(w['issued'].get(p,0) for w in windows)==int(pools['shared_'+p]['issued'])
     return dict(cycles=row['cycles'],hashes=row['hashes'],max_abs=row['max_abs'],
                 binary=row['binary'],config=config,windows=windows,
-                pools=pools,storage=row['storage'],cluster_buffer=fields(text,'CFD_CLUSTER_BUFFER')[-1])
+                pools=pools,storage=row['storage'],cluster_buffer=fields(text,'CFD_CLUSTER_BUFFER')[-1],
+                recurrence=recurrence,onchip_replay=onchip)
 
 
 def check(root,suite_path,report):

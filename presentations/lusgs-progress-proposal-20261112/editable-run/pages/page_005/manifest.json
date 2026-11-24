@@ -1,0 +1,244 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "page_strategy": "文献比较以原生 PowerPoint 表格重建，标题和页脚以原生文本重建。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "硬件加速研究与算子范围",
+      "decision": "native-text"
+    },
+    {
+      "id": "literature-table",
+      "items": [
+        "工作",
+        "加速对象",
+        "机制",
+        "LevelST (FPGA 2024)",
+        "SpTRSV",
+        "流式供数",
+        "Telos (ISCA 2025)",
+        "稀疏迭代",
+        "专用数据流",
+        "ASM-SpMM (PPoPP 2026)",
+        "SpMM",
+        "SME 外积映射"
+      ],
+      "decision": "native-table-cells"
+    },
+    {
+      "id": "summary",
+      "text": "本研究：局部 LU、多 RHS 与递推协同",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "literature-table",
+      "role": "structure",
+      "object_type": "editable 4-row 3-column table",
+      "decision": "native-table"
+    },
+    {
+      "id": "summary-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "复现白色背景、表头及页脚浅蓝色块、蓝色分隔线与直角边框。",
+    "removed_foreground": [],
+    "comparison_note": "白色背景、浅蓝表头和页脚底条对应来源，表格原生重建。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        50,
+        126,
+        1622,
+        126
+      ],
+      "stroke": "#0C4092",
+      "stroke_width": 3.2,
+      "semantic_line_id": "title-rule",
+      "z_index": 100
+    },
+    {
+      "id": "summary-band",
+      "type": "rect",
+      "box_px": [
+        46,
+        763,
+        1580,
+        113
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 100
+    }
+  ],
+  "tables": [
+    {
+      "id": "literature-table",
+      "box_px": [
+        52,
+        203,
+        1570,
+        495
+      ],
+      "column_widths": [
+        718,
+        389,
+        463
+      ],
+      "row_heights": [
+        120,
+        124,
+        125,
+        126
+      ],
+      "style": {
+        "font": "Noto Sans CJK SC",
+        "font_size": 30.4,
+        "align": "center",
+        "valign": "middle",
+        "wrap": "none",
+        "fit_text": false,
+        "color": "#092F64",
+        "bold": true,
+        "fill": "#FFFFFF",
+        "stroke": "#0C4092",
+        "stroke_width": 2.7,
+        "margin_left": 0.04,
+        "margin_right": 0.04,
+        "margin_top": 0.04,
+        "margin_bottom": 0.04
+      },
+      "cells": [
+        [
+          {
+            "text": "工作",
+            "style": {
+              "fill": "#DFECFC",
+              "font_size": 32
+            }
+          },
+          {
+            "text": "加速对象",
+            "style": {
+              "fill": "#DFECFC",
+              "font_size": 32
+            }
+          },
+          {
+            "text": "机制",
+            "style": {
+              "fill": "#DFECFC",
+              "font_size": 32
+            }
+          }
+        ],
+        [
+          "LevelST (FPGA 2024)",
+          "SpTRSV",
+          "流式供数"
+        ],
+        [
+          "Telos (ISCA 2025)",
+          "稀疏迭代",
+          "专用数据流"
+        ],
+        [
+          "ASM-SpMM (PPoPP 2026)",
+          "SpMM",
+          "SME 外积映射"
+        ]
+      ],
+      "z_index": 250
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "硬件加速研究与算子范围",
+      "box_px": [
+        54,
+        13,
+        900,
+        95
+      ],
+      "font_size": 42.5,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "color": "#092F64",
+      "valign": "middle",
+      "wrap": "none",
+      "text_fit_safety": 1,
+      "z_index": 300
+    },
+    {
+      "id": "summary",
+      "text": "本研究：局部 LU、多 RHS 与递推协同",
+      "box_px": [
+        295,
+        777,
+        1082,
+        80
+      ],
+      "font_size": 34.3,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "color": "#092F64",
+      "valign": "middle",
+      "wrap": "none",
+      "text_fit_safety": 1,
+      "z_index": 300
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

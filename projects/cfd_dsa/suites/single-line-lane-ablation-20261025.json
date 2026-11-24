@@ -1,0 +1,279 @@
+{
+  "campaign": "single-line-lane-ablation-20261025",
+  "description": "Research ablations. Negative performance results are retained. Same single line and four SPM banks; every optional state/port/latency is charged. These are not recommended defaults.",
+  "common_args": [
+    "--lusgs-mode=step2-pretransform-raw-optprep-stream",
+    "--coeff-preprocess-model=event",
+    "--lu5-model=event",
+    "--coeff-line-base-ahead=1",
+    "--coeff-line-early-backward=1",
+    "--coeff-validation=full",
+    "--coeff-stream-retire-mode=auto",
+    "--coeff-stream-boundary-mask=1",
+    "--coeff-stream-dinv-consumer=direct",
+    "--coeff-stream-lbar-consumer=direct",
+    "--coeff-stream-ubar-consumer=direct",
+    "--coeff-stream-line-autonomous=1",
+    "--coeff3-schedule=rhs-frontier",
+    "--lusgs-lines=1",
+    "--lusgs-interleave=1",
+    "--coeff-preprocess-trace-enable=1",
+    "--coeff-resource-stats=1",
+    "--lu5-pending-depth=1",
+    "--coeff3-pending-depth=1",
+    "--coeff-output-buffer-depth=5",
+    "--lu5-div-count=1",
+    "--lu5-mulsub-count=1",
+    "--lu5-div-lat=12",
+    "--lu5-div-ii=12",
+    "--lu5-mul-lat=3",
+    "--lu5-sub-lat=4",
+    "--coeff3-div-count=1",
+    "--coeff-mulsub-count=1",
+    "--coeff3-div-lat=12",
+    "--coeff3-div-ii=4",
+    "--coeff-mul-lat=3",
+    "--coeff-sub-lat=4",
+    "--coeff3-rhs-lanes=15",
+    "--lu-forwarding=1",
+    "--lu-solve-early-start=1",
+    "--coeff-column-fma-count=1",
+    "--coeff-column-fma-latency=4",
+    "--coeff-column-fma-ii=1",
+    "--coeff-column-fma-queue-depth=5",
+    "--forward-combine-count=1",
+    "--forward-combine-latency=1",
+    "--forward-combine-ii=1",
+    "--forward-combine-queue-depth=2",
+    "--coeff-spm-model=dma",
+    "--coeff-spm-layout=legacy",
+    "--coeff-spm-write-ports=1",
+    "--coeff-drain-width=64",
+    "--coeff-drain-ports=1",
+    "--coeff-drain-lat=1",
+    "--coeff-drain-outstanding=5",
+    "--coeff-compute-model=shared",
+    "--coeff-cluster-mul-lat=3",
+    "--coeff-cluster-div-lat=12",
+    "--coeff-cluster-product-depth=4",
+    "--coeff-line-product-depth=5",
+    "--coeff-line-tile-cells=16",
+    "--coeff-interface-timing=1",
+    "--coeff-line-storage=tiled",
+    "--coeff-line-tile-buffers=2",
+    "--coeff-line-tile-dma-width=64",
+    "--coeff-line-cache-cells=128",
+    "--coeff-rhs-row-parallel=1",
+    "--coeff-spm-bank-granularity=8",
+    "--coeff-spm-write-width=64",
+    "--coeff-completion-depth=4",
+    "--coeff-poison-outputs=1",
+    "--coeff3-div-mode=reciprocal",
+    "--coeff-spm-banks=4",
+    "--coeff-base-solve=direct",
+    "--coeff-dma-output-priority=1",
+    "--coeff-line-cache-policy=adaptive",
+    "--coeff-warm-y-source=fifo",
+    "--coeff-input-pattern=baseline",
+    "--coeff-input-seed=1",
+    "--coeff-divider-model=pipelined",
+    "--coeff-divider-inflight=0",
+    "--coeff-divider-result-depth=2",
+    "--coeff-divider-writeback-ii=1",
+    "--coeff-spm-read-ports=1",
+    "--lu5-count=4",
+    "--coeff-cluster-add-lat=4",
+    "--coeff-rhs-product-depth=16",
+    "--coeff3-count=4",
+    "--coeff-cluster-div-ii=4",
+    "--coeff-dma-issue-packets=1",
+    "--coeff-dma-issue-bytes=64",
+    "--coeff-record-policy=per-cell",
+    "--coeff-data-commit-depth=5",
+    "--coeff-warm-diagonal=reciprocal",
+    "--coeff-line-opt-level=13",
+    "--coeff-line-mvm-model=tree",
+    "--coeff-drain-queue-depth=18",
+    "--trsv5-trace-file=/home/zyy/gem5/results/cfd_dsa/analysis/frontier-opt-20261021/tttttttttttttttttttttttttttttttttttttttt.csv",
+    "--coeff-warm-forward-tree=1",
+    "--coeff-warm-rhs-tree=1",
+    "--coeff-drain-policy=age",
+    "--coeff-rhs-lookahead=8",
+    "--coeff-tile-reload=reverse-stream",
+    "--max-ticks=1000000000000",
+    "--dram-size=128MiB",
+    "--coeff-onchip-compute-reserve=8",
+    "--coeff-tile-operand-stream=1",
+    "--coeff-output-coalesce=1",
+    "--coeff-dma-cache-write-buffers=32",
+    "--coeff-backward-feedback-tree=1",
+    "--coeff-cold-rhs-tree=none",
+    "--coeff-tail-ubar-overlap=0",
+    "--coeff-lu-lookahead=1",
+    "--coeff-cold-b-tree=0",
+    "--coeff-study-cache=prepared",
+    "--coeff-publish-lu=0",
+    "--coeff-rf-read-words=16",
+    "--coeff-rf-write-words=8",
+    "--coeff-onchip-arb-tasks=4",
+    "--dram-model=ddr4",
+    "--coeff-stream-window=13",
+    "--coeff-spm-outstanding=128",
+    "--coeff-line-spm-bytes=262144",
+    "--coeff-input-slots=8",
+    "--coeff-onchip-queue-depth=128",
+    "--coeff-dma-cache-mshrs=128",
+    "--coeff-tile-prefetch-buffers=4",
+    "--coeff-rf-broadcast=1",
+    "--coeff-rf-split-writeback=1",
+    "--coeff-line-output-depth=64",
+    "--bench-iters=1",
+    "--coefficient-update-interval=1"
+  ],
+  "cases": [
+    {
+      "name": "train1024-baseline",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-baseline"
+    },
+    {
+      "name": "train1024-lane",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-lane-mvm=1"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-lane"
+    },
+    {
+      "name": "train1024-local",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-local"
+    },
+    {
+      "name": "train1024-look4",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-back-operand-depth=4"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-look4"
+    },
+    {
+      "name": "train1024-local-width5",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1",
+        "--coeff-lane-issue-width=5"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-local-width5"
+    },
+    {
+      "name": "train1024-local-pipe2",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1",
+        "--coeff-lane-select-latency=2",
+        "--coeff-lane-route-latency=2"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-local-pipe2"
+    },
+    {
+      "name": "train1024-local-mul6",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1",
+        "--coeff-cluster-mul-count=6"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-local-mul6"
+    },
+    {
+      "name": "train1024-local-lu-mul6",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/academic-opt-20261024/stationary-train-s101-c035-n1024.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1",
+        "--coeff-cluster-mul-count=6",
+        "--coeff-extra-mul-policy=lu-only"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/train1024-local-lu-mul6"
+    },
+    {
+      "name": "holdout1024-baseline",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/datasets/single-line-study-v2-20261024/stationary-holdout-s211-c140-n1024.cfd5"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-main-20261025/holdout1024-baseline"
+    },
+    {
+      "name": "holdout1024-local-width5",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=1024",
+        "--coeff-preprocess-trace-cells=1024",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/datasets/single-line-study-v2-20261024/stationary-holdout-s211-c140-n1024.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1",
+        "--coeff-lane-issue-width=5"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-holdout-20261025/holdout1024-local-width5"
+    },
+    {
+      "name": "holdout4096-baseline",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=4096",
+        "--coeff-preprocess-trace-cells=4096",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/memory-rf-opt-20261024/stationary-holdout-s307-c035-n4096.cfd5"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-large-20261025/holdout4096-baseline"
+    },
+    {
+      "name": "holdout4096-local-width5",
+      "target": "lusgs-single-line",
+      "args": [
+        "--lusgs-cells=4096",
+        "--coeff-preprocess-trace-cells=4096",
+        "--coeff-input-file=/home/zyy/gem5/results/cfd_dsa/analysis/memory-rf-opt-20261024/stationary-holdout-s307-c035-n4096.cfd5",
+        "--coeff-lane-mvm=1",
+        "--coeff-lane-local=1",
+        "--coeff-lane-issue-width=5"
+      ],
+      "evidence": "/home/zyy/gem5/results/cfd_dsa/campaigns/lane-design-large-20261025/holdout4096-local-width5"
+    }
+  ]
+}

@@ -1,0 +1,381 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "path": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "native-layout-rebuild",
+  "background": "#FFFFFF",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "软件加速中的并行度与收敛",
+      "decision": "native-text",
+      "size_group": "title"
+    },
+    {
+      "id": "cpu-heading",
+      "text": "CPU",
+      "decision": "native-text",
+      "size_group": "column-heading"
+    },
+    {
+      "id": "gpu-heading",
+      "text": "GPU",
+      "decision": "native-text",
+      "size_group": "column-heading"
+    },
+    {
+      "id": "cpu-strategy",
+      "text": "块布局、向量化、任务并行",
+      "decision": "native-text",
+      "size_group": "strategy"
+    },
+    {
+      "id": "gpu-strategy",
+      "text": "分层、着色、分块、分治",
+      "decision": "native-text",
+      "size_group": "strategy"
+    },
+    {
+      "id": "reference",
+      "text": "代表工作：DCSolver（TACO 2025）",
+      "decision": "native-text",
+      "size_group": "reference"
+    },
+    {
+      "id": "measure",
+      "text": "分别测量三角核、单轮及收敛总时间",
+      "decision": "native-text",
+      "size_group": "footer"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "background",
+      "role": "background",
+      "object_type": "solid-background",
+      "decision": "native white slide background"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "line",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "cpu-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "gpu-panel",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "cpu-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "gpu-header",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "work-inset",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    },
+    {
+      "id": "bottom-band",
+      "role": "structure",
+      "object_type": "rect",
+      "decision": "native PowerPoint shape"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、左上标题与深蓝分隔线，CPU/GPU 两个独立比较面板、标题栏、GPU 面板中的代表工作标注与底部测量口径浅蓝条均保持相同布局。",
+    "removed_foreground": [],
+    "comparison_note": "源图与预览的白底、主次色、分隔线和布局对象对应，背景无文字残影。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true,
+    "preview_compared": true,
+    "notes": "逐项核对 CPU/GPU 两列、DCSolver 及页脚文字与源图相同，预览无溢出；矩形框的原生线宽和字体略有差异。"
+  },
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "软件加速中的并行度与收敛",
+      "box_px": [
+        48,
+        16,
+        1140,
+        94
+      ],
+      "font_size": 43.5,
+      "font_size_source": "measured",
+      "size_group": "title",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "left",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "cpu-heading",
+      "text": "CPU",
+      "box_px": [
+        60,
+        228,
+        717,
+        114
+      ],
+      "font_size": 45,
+      "font_size_source": "measured",
+      "size_group": "column-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "gpu-heading",
+      "text": "GPU",
+      "box_px": [
+        835,
+        228,
+        780,
+        114
+      ],
+      "font_size": 45,
+      "font_size_source": "measured",
+      "size_group": "column-heading",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "cpu-strategy",
+      "text": "块布局、向量化、任务并行",
+      "box_px": [
+        77,
+        463,
+        683,
+        87
+      ],
+      "font_size": 31,
+      "font_size_source": "measured",
+      "size_group": "strategy",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "gpu-strategy",
+      "text": "分层、着色、分块、分治",
+      "box_px": [
+        865,
+        398,
+        720,
+        86
+      ],
+      "font_size": 31,
+      "font_size_source": "measured",
+      "size_group": "strategy",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "reference",
+      "text": "代表工作：DCSolver（TACO 2025）",
+      "box_px": [
+        871,
+        551,
+        713,
+        69
+      ],
+      "font_size": 24,
+      "font_size_source": "measured",
+      "size_group": "reference",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    },
+    {
+      "id": "measure",
+      "text": "分别测量三角核、单轮及收敛总时间",
+      "box_px": [
+        170,
+        786,
+        1332,
+        91
+      ],
+      "font_size": 34,
+      "font_size_source": "measured",
+      "size_group": "footer",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "bold": true,
+      "align": "center",
+      "valign": "middle",
+      "color": "#082D64",
+      "z_index": 40
+    }
+  ],
+  "shapes": [
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        128,
+        1623,
+        128
+      ],
+      "semantic_line_id": "title-rule",
+      "stroke": "#073B84",
+      "stroke_width": 3.2,
+      "z_index": 12,
+      "fill": "none"
+    },
+    {
+      "id": "cpu-panel",
+      "type": "rect",
+      "box_px": [
+        51,
+        222,
+        735,
+        462
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.5,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "gpu-panel",
+      "type": "rect",
+      "box_px": [
+        827,
+        222,
+        796,
+        462
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.5,
+      "z_index": 12,
+      "fill": "#FFFFFF",
+      "corner_category": "straight"
+    },
+    {
+      "id": "cpu-header",
+      "type": "rect",
+      "box_px": [
+        52,
+        222,
+        733,
+        127
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.2,
+      "z_index": 12,
+      "fill": "#D6E8FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "gpu-header",
+      "type": "rect",
+      "box_px": [
+        828,
+        222,
+        795,
+        128
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 2.2,
+      "z_index": 12,
+      "fill": "#D6E8FA",
+      "corner_category": "straight"
+    },
+    {
+      "id": "work-inset",
+      "type": "rect",
+      "box_px": [
+        854,
+        536,
+        747,
+        100
+      ],
+      "stroke": "#073B84",
+      "stroke_width": 1.9,
+      "z_index": 12,
+      "fill": "#DCEBFC",
+      "corner_category": "straight"
+    },
+    {
+      "id": "bottom-band",
+      "type": "rect",
+      "box_px": [
+        42,
+        779,
+        1585,
+        108
+      ],
+      "stroke": "none",
+      "stroke_width": 0,
+      "z_index": 12,
+      "fill": "#DCEBFC",
+      "corner_category": "straight"
+    }
+  ],
+  "tables": [],
+  "images": [],
+  "asset_provenance": []
+}

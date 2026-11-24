@@ -13,6 +13,7 @@ sys.path.insert(0,str(REPO/'projects/cfd_dsa/tools'))
 from check_single_line_c import fields
 from check_single_line_opt import union_length
 from single_line_metrics import bank_utilization, phase_breakdown
+from check_divider_model import actual_divider_completions
 
 
 def distribution(values):
@@ -28,6 +29,10 @@ def metrics(campaign,name,row):
     path=ROOT/campaign/name;text=(path/'simout.txt').read_text();cfg=row['config']
     schedules=fields(text,'CFD_LINE_SCHEDULE');interfaces=fields(text,'CFD_INTERFACE_DMA')
     with (path/'coeff_preprocess_trace.csv.cluster.csv').open() as f:ops=list(csv.DictReader(f))
+    completions=actual_divider_completions(path)
+    for r in ops:
+        if r['pool']=='div' and int(r['cycle']) in completions:
+            r['complete_cycle']=str(completions[int(r['cycle'])])
     ready=fields(text,'CFD_LOCAL_READY');phases=[]
     for w,s in zip(row['windows'],schedules):
         token=s['token'];end=int(s['visible_done'])+1;start=end-w['cycles']
@@ -63,8 +68,9 @@ def metrics(campaign,name,row):
             response_cycles=distribution([(response[k]-send[k])/clock for k in packets]))
     banks=fields(text,'CFD_ONCHIP_BANK');onchip=fields(text,'CFD_ONCHIP_SUMMARY')[-1]
     bank=bank_utilization(banks,samples,int(onchip['banks']),int(onchip['read_ports']),int(onchip['write_ports']))
+    div_count=int(cfg.get('--coeff-cluster-div-count','1'))
     return dict(roi_cycles=row['cycles'],controller_cycles=samples,
-        issue_pct={p:100*issued[p]*(int(cfg['--coeff-cluster-div-ii']) if p=='div' else 1)/(samples*(1 if p=='div' else 5)) for p in issued},
+        issue_pct={p:100*issued[p]*(int(cfg['--coeff-cluster-div-ii']) if p=='div' else 1)/(samples*(div_count if p=='div' else int(cfg.get('--coeff-cluster-mul-count','5')) if p=='mul' else 5)) for p in issued},
         empty_pct=100*sum(w['empty_cycles'] for w in row['windows'])/samples,
         peak_bytes=max(int(s['reserved'])+int(s['resident'])+int(s['cache_bytes']) for s in row['storage']),
         reload_bytes=sum(int(s['read_completed']) for s in row['storage']),max_abs=row['max_abs'],
@@ -87,7 +93,7 @@ def main():
         summaries[c]={n:metrics(c,n,r) for n,r in data.items() if r['config'].get('--coeff-cache-contract-test')!='1'}
         for n,r in data.items():
             cfg=r['config']
-            key=tuple(cfg.get(k) for k in ('--coeff-base-solve','--lusgs-cells','--bench-iters','--coefficient-update-interval','--coeff-line-mvm-model','--coeff-input-pattern','--coeff-input-seed'))
+            key=tuple(cfg.get(k) for k in ('--coeff-base-solve','--lusgs-cells','--bench-iters','--coefficient-update-interval','--coeff-line-mvm-model','--coeff-input-pattern','--coeff-input-seed','--coeff-input-file','--coeff-backward-feedback-tree','--coeff-cold-b-tree','--coeff-cold-rhs-tree','--coeff-warm-forward-tree','--coeff-warm-rhs-tree'))
             hash_groups[key].append((c,n,r['hashes']))
 
     for rows in hash_groups.values():

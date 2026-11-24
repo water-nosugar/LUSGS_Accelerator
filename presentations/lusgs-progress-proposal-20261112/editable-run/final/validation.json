@@ -1,0 +1,16 @@
+{
+  "pptx": "/home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/editable-run/final/块LU-SGS专用加速架构_图片版_edited.pptx",
+  "deck_manifest": "/home/zyy/gem5/presentations/lusgs-progress-proposal-20261112/editable-run/deck_manifest.json",
+  "expected_pages": 24,
+  "slides": 24,
+  "page_manifests_missing": [],
+  "page_validation_missing": [],
+  "failed_page_validations": [],
+  "page_contract_violations": [],
+  "notes_expected": 24,
+  "notes_found": 24,
+  "notes_hash_mismatches": [],
+  "missing_parts": [],
+  "warnings": [],
+  "passed": true
+}

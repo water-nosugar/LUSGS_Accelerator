@@ -43,9 +43,9 @@ reserved + resident + cache <= spm_bytes
 ```bash
 scons build/ARM/gem5.opt -j2
 python3 projects/cfd_dsa/tools/build_benchmarks.py --opt=-O2 lusgs-step2
-python3 projects/cfd_dsa/tools/run_suite.py projects/cfd_dsa/suites/single-line-d-storage.json --campaign single-line-d-storage-verified-20261009
-python3 projects/cfd_dsa/tools/run_suite.py projects/cfd_dsa/suites/single-line-d-optimization.json --campaign single-line-d-optimization-accepted-20261009
-python3 projects/cfd_dsa/tools/run_suite.py projects/cfd_dsa/suites/single-line-d-mode-selection.json --campaign single-line-d-mode-accepted-20261009
+python3 projects/cfd_dsa/tools/run_suite.py projects/cfd_dsa/suites/history/single-line-d-storage.json --campaign single-line-d-storage-verified-20261009
+python3 projects/cfd_dsa/tools/run_suite.py projects/cfd_dsa/suites/history/single-line-d-optimization.json --campaign single-line-d-optimization-accepted-20261009
+python3 projects/cfd_dsa/tools/run_suite.py projects/cfd_dsa/suites/history/single-line-d-mode-selection.json --campaign single-line-d-mode-accepted-20261009
 ```
 
 `check_single_line_storage.py --suite <suite>` 校验资源工作量、容量峰值、tile 顺序、所有 DMA 字节/包响应、整轮完成门槛和完整数值结果。存储对照按 FP64 摘要逐位比较；tree 的重排单独评估误差。`check_single_line_storage_faults.py <case>` 用损坏的容量、响应、完成时刻、缓存账本及重复终端事件验证验收器能拒绝错误。

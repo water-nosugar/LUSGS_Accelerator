@@ -20,7 +20,80 @@ def options(command):
     return result
 
 
-def validate_row(row, cells, depth, dma):
+def resolved_options(path):
+    """Include profile defaults, checking explicit arguments against execution."""
+    path = Path(path)
+    config = options(json.loads((path / 'manifest.json').read_text())['command'])
+    resolved_path = path / 'resolved_experiment.json'
+    if resolved_path.exists():
+        actual = json.loads(resolved_path.read_text()).get('options', {})
+        sme_2d_defaults = {'coeff_sme_array_mode': '1d', 'coeff_sme_2d_segments': 1,
+                           'coeff_sme_2d_panel_pack': False,
+                           'coeff_sme_2d_mixed_kind': False,
+                           'coeff_sme_2d_panel_b_overlap': False,
+                           'coeff_sme_forward_tile_rotate': False,
+                           'coeff_sme_2d_candidate_window': 0,
+                           'coeff_sme_feedback_reg': False}
+        for key in ('coeff_data_commit_depth', 'coeff_warm_diagonal',
+                    'coeff_line_mvm_model', 'coeff_warm_forward_tree', 'coeff_cold_forward_tree',
+                    'coeff_extended_input_slots', 'coeff_compute_backend',
+                    'coeff_warm_rhs_tree', 'coeff_drain_policy',
+                    'coeff_drain_arb_latency', 'coeff_drain_arb_ii',
+                    'coeff_rhs_input_coalesce', 'coeff_tile_reload','coeff_rhs_lookahead',
+                    'coeff_onchip_compute_reserve','coeff_tile_operand_stream',
+                    'coeff_output_coalesce','coeff_dma_cache_size',
+                    'coeff_dma_cache_mshrs','coeff_dma_cache_write_buffers',
+                    'coeff_cluster_mul_count','coeff_extra_mul_policy',
+                    'coeff_backward_feedback_tree','coeff_rhs_supply_priority','coeff_cold_b_tree',
+                    'coeff_cold_rhs_tree','coeff_tail_ubar_overlap','coeff_lu_lookahead',
+                    'coeff_publish_lu','coeff_lu_output_transition_test',
+                    'coeff_rf_read_words','coeff_rf_write_words',
+                    'coeff_onchip_arb_latency','coeff_onchip_arb_tasks',
+                    'coeff_line_output_depth','coeff_tile_prefetch_buffers',
+                    'coeff_rf_broadcast','coeff_rf_split_writeback',
+                    'coeff_sme_packed_input', *sme_2d_defaults):
+            flag = '--' + key.replace('_', '-')
+            if key not in actual and (key not in sme_2d_defaults or flag not in config):
+                continue
+            effective = actual.get(key, sme_2d_defaults.get(key))
+            value = str(int(effective)) if isinstance(effective, bool) else str(effective)
+            explicit = config.get(flag)
+            if explicit is not None and key in sme_2d_defaults:
+                if isinstance(effective, bool):
+                    spelling = explicit.lower()
+                    if spelling in ('1', 'true', 'yes', 'on'):
+                        explicit = '1'
+                    elif spelling in ('0', 'false', 'no', 'off'):
+                        explicit = '0'
+                elif isinstance(effective, int):
+                    explicit = str(int(explicit))
+                else:
+                    explicit = explicit.strip().lower()
+            inherited_output = (key == 'coeff_line_output_depth' and
+                                explicit == '0')
+            if explicit is not None and explicit != value and not inherited_output:
+                raise ValueError(f'{flag}: manifest disagrees with resolved configuration')
+            config[flag] = value
+    return config
+
+
+def output_depth(config):
+    """Independent final FIFO; old manifests inherit preprocessing depth."""
+    return int(config.get('--coeff-line-output-depth','0')) or int(config['--coeff-drain-queue-depth'])
+
+
+def fixed_control_reserve(config):
+    """Explicit FIFO allocation was added after the legacy 16 KiB allowance."""
+    extra=64*max(0,drain_task_depth(config)-int(config.get('--coeff-output-buffer-depth','4')))
+    extra+=128*int(config.get('--coeff-summary-engines','1'))+512*int(config.get('--coeff-summary-depth','0')) if config.get('--coeff-record-policy') in ('line-summary','cold-summary') else 0
+    return 16384+(64*output_depth(config) if '--coeff-line-output-depth' in config else 0)+extra
+
+
+def drain_task_depth(config):
+    return int(config.get('--coeff-drain-task-depth','0')) or int(config.get('--coeff-output-buffer-depth','4'))
+
+
+def validate_row(row, cells, depth, dma, coalesced=False):
     get = lambda key: int(row[key])
     if not (get("backward_start") <= get("backward_done") <= get("visible_done")):
         raise ValueError("invalid numerical/visible completion order")
@@ -32,7 +105,7 @@ def validate_row(row, cells, depth, dma):
     if get("output_packets_issued") != get("output_packets_completed"):
         raise ValueError("outstanding final-vector DMA at completion")
     if dma:
-        if get("output_packets_issued") < cells:
+        if get("output_packets_issued") < ((cells*40+63)//64 if coalesced else cells):
             raise ValueError("too few final-vector packets")
         if not 1 <= get("output_queue_max") <= depth:
             raise ValueError("output queue capacity violated")
@@ -52,14 +125,14 @@ def check(root):
         manifest = json.loads((path / "manifest.json").read_text())
         if manifest["status"] != "passed":
             raise ValueError(f"{name}: simulation failed")
-        config = options(manifest["command"])
+        config = resolved_options(path)
         if config.get("--lusgs-lines") != "1" or config.get("--lusgs-interleave") != "1":
             raise ValueError(f"{name}: outside single-line scope")
         if not any(str(arg).endswith("run_cfd_lusgs_single_line.py")
                    for arg in manifest["command"]):
             raise ValueError(f"{name}: not using the scope-checked runner")
         cells = int(config["--lusgs-cells"])
-        depth = int(config["--coeff-drain-queue-depth"])
+        depth = output_depth(config)
         sweeps = int(config["--bench-iters"])
         dma = config["--coeff-spm-model"] == "dma"
         text = (path / "simout.txt").read_text() + (path / "driver.log").read_text()

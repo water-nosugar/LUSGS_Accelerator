@@ -6,6 +6,9 @@
 #include <string.h>
 
 #define N 5
+enum { SmeColdInputWords = 3 * N * N + N, SmeColdInputAlign = 64 };
+_Static_assert(SmeColdInputWords * sizeof(double) % SmeColdInputAlign == 0,
+               "SME cold input records must start on cache lines");
 #define SPM_BASE 0x70000000ULL
 #define SPM_STRIDE_BYTES 40ULL
 #define SPM_STRIDE_ELEMS (SPM_STRIDE_BYTES / sizeof(double))
@@ -80,10 +83,13 @@ typedef struct {
     double *u_bar_precomputed;
     uint8_t *pretransform_valid;
     double *rhs;
+    double *sme_cold_input;
     double *dq_star_ref;
     double *dq_ref;
     double *dq_star_raw_ref;
     double *dq_raw_ref;
+    double *dataset_oracle_y;
+    double *dataset_oracle_dq;
     double *dq_star_step1;
     double *dq_step1;
     double *dq_star_step2;
@@ -187,10 +193,18 @@ typedef struct {
     int coeff_line_cache_allowed;
     int coeff_warm_summary;
     int coeff_poison_outputs;
+    int coeff_publish_lu;
+    int coeff_local_ubar;
+    int coeff_sme_packed_input;
+    int coeff_lu_output_transition_test;
     int coeff_recovery_test;
+    int coeff_recovery_warm;
+    uint64_t coeff_recovery_late_polls;
     uint64_t coeff_cancel_after_polls;
     const char *coeff_input_pattern;
     uint64_t coeff_input_seed;
+    const char *coeff_input_file;
+    const char *coeff_study_cache;
     uint64_t coeff_line_opt_level;
     uint64_t coeff_stream_window;
     const char *coeff_stream_retire_mode;
@@ -734,6 +748,11 @@ enum {
     COEFF_PRE_COMPACT_RECORD = 1ULL << 22,
     COEFF_PRE_PACKED_RECORD = 1ULL << 23,
     COEFF_PRE_WARM_SUMMARY = 1ULL << 24,
+    // LU remains internal to this direct autonomous invocation. Ubar backing,
+    // y/dq outputs and terminal records retain their public contracts.
+    COEFF_PRE_LOCAL_LU = 1ULL << 25,
+    COEFF_PRE_LOCAL_UBAR = 1ULL << 26,
+    COEFF_PRE_PACKED_COLD_INPUT = 1ULL << 27,
     COEFF_PRE_STATUS_COMPLETE = 0,
     COEFF_PRE_STATUS_BUSY = 1,
     COEFF_PRE_STATUS_BAD_TOKEN = 5,
@@ -3190,10 +3209,13 @@ free_problem(Problem *p)
     free(p->l_bar_precomputed);
     free(p->pretransform_valid);
     free(p->rhs);
+    free(p->sme_cold_input);
     free(p->dq_star_ref);
     free(p->dq_ref);
     free(p->dq_star_raw_ref);
     free(p->dq_raw_ref);
+    free(p->dataset_oracle_y);
+    free(p->dataset_oracle_dq);
     free(p->dq_star_step1);
     free(p->dq_step1);
     free(p->dq_star_step2);
@@ -5116,7 +5138,123 @@ prepare_raw_event(Problem *p, const Config *cfg, Stats *stats,
     return all_valid;
 }
 
+// Opt-in fair-study cache conditioning. Both CPU and accelerator studies use
+// identical original-input touches or the same finite eviction buffer. This
+// controls capacity pressure; it is not a promise that every cache is cold.
+#define STUDY_EVICTION_BYTES (16ULL * 1024 * 1024)
+static uint64_t *study_eviction;
+static uint64_t study_condition_round;
+
+static int
+study_cache_enabled(const Config *cfg)
+{
+    return cfg->coeff_study_cache && strcmp(cfg->coeff_study_cache, "legacy");
+}
+
+static uint64_t
+study_touch_array(const double *array, size_t elements, uint64_t checksum)
+{
+    const volatile double *data = array;
+    for (size_t i = 0; i < elements; i += 8) {
+        double value = data[i];
+        uint64_t bits;
+        memcpy(&bits, &value, sizeof(bits));
+        checksum = (checksum ^ bits) * 1099511628211ULL;
+    }
+    if (elements && (elements - 1) % 8) {
+        double value = data[elements - 1];
+        uint64_t bits;
+        memcpy(&bits, &value, sizeof(bits));
+        checksum = (checksum ^ bits) * 1099511628211ULL;
+    }
+    return checksum;
+}
+
+static void
+allocate_sme_cold_input(Problem *p)
+{
+    const size_t stride = SmeColdInputWords * sizeof(double);
+    if (p->lines != 1 || p->cells > SIZE_MAX / stride) {
+        fputs("invalid SME cold input dimensions\n", stderr);
+        exit(2);
+    }
+    p->sme_cold_input = aligned_alloc(SmeColdInputAlign, p->cells * stride);
+    if (!p->sme_cold_input) {
+        fputs("cannot allocate SME cold input records\n", stderr);
+        exit(2);
+    }
+}
+
+static uint64_t
+study_condition_cache(const Problem *p, const Config *cfg)
+{
+    if (!study_cache_enabled(cfg)) return 0;
+    uint64_t checksum = 14695981039346656037ULL;
+    const int evicted = !strcmp(cfg->coeff_study_cache, "evicted");
+    uint64_t span_bytes;
+    if (evicted) {
+        if (!study_eviction) {
+            study_eviction = xcalloc_raw(STUDY_EVICTION_BYTES / sizeof(uint64_t),
+                sizeof(uint64_t), "study_cache_eviction");
+            for (size_t i = 0; i < STUDY_EVICTION_BYTES / sizeof(uint64_t); ++i)
+                study_eviction[i] = (uint64_t)i ^ 0x9e3779b97f4a7c15ULL;
+        }
+        const volatile uint64_t *buffer = study_eviction;
+        for (size_t i = 0; i < STUDY_EVICTION_BYTES / sizeof(uint64_t); i += 8)
+            checksum = (checksum ^ buffer[i]) * 1099511628211ULL;
+        span_bytes = STUDY_EVICTION_BYTES;
+    } else if (p->sme_cold_input) {
+        const size_t elements = p->cells * SmeColdInputWords;
+        checksum = study_touch_array(p->sme_cold_input, elements, checksum);
+        span_bytes = elements * sizeof(double);
+    } else {
+        const size_t matrices = p->lines * p->cells * N * N;
+        const size_t vectors = p->lines * p->cells * N;
+        checksum = study_touch_array(p->d_mat, matrices, checksum);
+        checksum = study_touch_array(p->l_mat, matrices, checksum);
+        checksum = study_touch_array(p->u_mat, matrices, checksum);
+        checksum = study_touch_array(p->rhs, vectors, checksum);
+        span_bytes = (3 * matrices + vectors) * sizeof(double);
+    }
+#if defined(__aarch64__)
+    __asm__ __volatile__("dsb sy\n\tisb" ::: "memory");
+#else
+    __sync_synchronize();
+#endif
+    if (!study_condition_round)
+        printf("CFD_STUDY_ACCEL_CONFIG cache=%s eviction_bytes=%llu "
+            "reference_before_roi=0 validation=external-oracle "
+            "cpu_reference=after-all-performance-rois initial_state=capacity-conditioned\n",
+            cfg->coeff_study_cache,
+            (unsigned long long)(evicted ? STUDY_EVICTION_BYTES : 0));
+    ++study_condition_round;
+    printf("CFD_STUDY_ACCEL_CONDITION round=%llu cache=%s span_bytes=%llu "
+        "checksum=%llu label=cache-conditioning-not-guaranteed-cold\n",
+        (unsigned long long)study_condition_round, cfg->coeff_study_cache,
+        (unsigned long long)span_bytes, (unsigned long long)checksum);
+    fflush(stdout);
+    return study_condition_round;
+}
+
 #include "step2_numerical_contract.inc"
+#include "step2_dataset.inc"
+
+static void
+load_step2_dataset(Problem *p, const Config *cfg)
+{
+    if (!cfg->coeff_input_file)
+        return;
+    const uint64_t start = read_cycle_counter();
+    if (cfg->coeff_sme_packed_input)
+        allocate_sme_cold_input(p);
+    load_raw_dataset(p, cfg, p->sme_cold_input);
+    const uint64_t cycles = read_cycle_counter() - start;
+    printf("CFD_INPUT_LAYOUT_SOURCE layout=%s source=dataset cells=%lu bytes=%lu cycles=%llu\n",
+           p->sme_cold_input ? "packed" : "soa", (unsigned long)p->cells,
+           (unsigned long)(p->cells * SmeColdInputWords * sizeof(double)),
+           (unsigned long long)cycles);
+}
+
 #include "step2_streaming.inc"
 #include "step2_cache_contract.inc"
 #include "step2_recovery_contract.inc"
@@ -5463,12 +5601,15 @@ main(int argc, char **argv)
     step2_pretransform_optprep_context_vs_context_cmp.first_lane = -1;
 
     parse_args(argc, argv, &cfg);
+    if (cfg.coeff_lu_output_transition_test)
+        return run_lu_output_transition_test(&cfg) ? 0 : 1;
     if (cfg.coeff_recovery_test)
         return run_recovery_contract_test(&cfg) ? 0 : 1;
     if (cfg.coeff_cache_contract_test)
         return run_cache_contract_test(&cfg) ? 0 : 1;
     init_problem(&problem, cfg.lines, cfg.cells);
     apply_raw_input_pattern(&problem,&cfg);
+    load_step2_dataset(&problem, &cfg);
     int cancel_test_pass = cfg.coeff_cancel_test ?
         run_coeff_cancel_test(&problem, &cfg) : 1;
 
@@ -5511,6 +5652,9 @@ main(int argc, char **argv)
     printf("streaming.dinvConsumer = %s\n",
            cfg.coeff_stream_dinv_consumer);
     printf("streaming.baseSolve = %s\n", cfg.coeff_base_solve);
+    printf("CFD_LU_OUTPUT contract=%s bytes_per_cell=%u\n",
+           cfg.coeff_publish_lu ? "published" : "local",
+           cfg.coeff_publish_lu ? N*N*(unsigned)sizeof(double) : 0);
     printf("streaming.lbarConsumer = %s\n",
            cfg.coeff_stream_lbar_consumer);
     printf("streaming.columnFmaLatency = %lu\n",
@@ -5556,11 +5700,15 @@ main(int argc, char **argv)
         cfg.run_step2_pretransform_raw_optprep_context ||
         cfg.run_step2_pretransform_raw_stream;
     int raw_reference_valid = 1;
-    if (any_raw && cfg.check)
+    if (any_raw && cfg.check && !study_cache_enabled(&cfg))
         raw_reference_valid = raw_reference_solve(&problem, &raw_ref_stats);
+    if (any_raw && cfg.check && raw_reference_valid && !study_cache_enabled(&cfg))
+        raw_reference_valid &= validate_dataset_oracle(&problem,
+            problem.dq_star_raw_ref, problem.dq_raw_ref, "cpu");
 
-    step1_stats.software_trsv_cycles =
-        measure_software_trsv_cycles(&problem, cfg.sweeps);
+    if (!study_cache_enabled(&cfg))
+        step1_stats.software_trsv_cycles =
+            measure_software_trsv_cycles(&problem, cfg.sweeps);
     step1_stats.trsv5_latency_configured = cfg.trsv5_lat;
     step2_stats.trsv5_latency_configured = cfg.trsv5_lat;
     step2_core_stats.trsv5_latency_configured = cfg.trsv5_lat;
@@ -5896,6 +6044,17 @@ main(int argc, char **argv)
             step2_pretransform_raw_optprep_stats.
                 fair_extra_pretransform_cycles;
         gem5_m5_dump_stats();
+    }
+
+    // Study measurements finish before running any numerical CPU reference.
+    // Final original CPU comparisons and the external-oracle gate remain on.
+    if (study_cache_enabled(&cfg) && any_raw && cfg.check) {
+        raw_reference_valid = raw_reference_solve(&problem, &raw_ref_stats);
+        if (raw_reference_valid)
+            raw_reference_valid &= validate_dataset_oracle(&problem,
+                problem.dq_star_raw_ref, problem.dq_raw_ref, "cpu");
+        printf("CFD_STUDY_ACCEL_REFERENCE phase=after-all-performance-rois valid=%d\n",
+            raw_reference_valid);
     }
 
     int counts_ok = 1;
@@ -6925,6 +7084,7 @@ main(int argc, char **argv)
                                "LUSGS_STEP2_AUTO_FAIL");
     printf("%s\n", pass ? "LUSGS_STEP2_PASS" : "LUSGS_STEP2_FAIL");
 
+    free(study_eviction);
     free_problem(&problem);
     return pass ? 0 : 1;
 }

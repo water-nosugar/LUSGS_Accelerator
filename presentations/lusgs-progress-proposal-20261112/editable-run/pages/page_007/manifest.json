@@ -1,0 +1,418 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "时序阶段用原生直角卡片与连线重建，卡片及基线标签为可编辑文本。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "gem5 已建立单线时序模型",
+      "decision": "native-text"
+    },
+    {
+      "id": "descriptor",
+      "text": "整线描述符",
+      "decision": "native-text"
+    },
+    {
+      "id": "input",
+      "text": "提交 D/L/U/R",
+      "decision": "native-text"
+    },
+    {
+      "id": "local",
+      "text": "局部预处理与",
+      "decision": "native-text"
+    },
+    {
+      "id": "recursion",
+      "text": "双向递推",
+      "decision": "native-text"
+    },
+    {
+      "id": "resources",
+      "text": "有限缓冲、DMA",
+      "decision": "native-text"
+    },
+    {
+      "id": "output",
+      "text": "与结果写回",
+      "decision": "native-text"
+    },
+    {
+      "id": "validation",
+      "text": "独立数值参考与资源轨迹检查",
+      "decision": "native-text"
+    },
+    {
+      "id": "baseline",
+      "text": "基线：R40 实现与 R41/R42 场景选型",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "stage-cards",
+      "role": "structure",
+      "object_type": "three straight-corner stage cards",
+      "decision": "native-rect"
+    },
+    {
+      "id": "stage-flow",
+      "role": "structure",
+      "object_type": "two flow arrows",
+      "decision": "native-lines"
+    },
+    {
+      "id": "checks-and-baseline",
+      "role": "structure",
+      "object_type": "two straight-corner cards",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、蓝色标题分隔线、三个浅蓝阶段框与两个白色结果框的原位置。",
+    "removed_foreground": [],
+    "comparison_note": "预览保留白底、直角框、两条流程箭头和原来的两层位置关系。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "descriptor-box",
+      "type": "rect",
+      "box_px": [
+        51,
+        286,
+        476,
+        245
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.2,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "local-box",
+      "type": "rect",
+      "box_px": [
+        600,
+        286,
+        473,
+        245
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.2,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "resource-box",
+      "type": "rect",
+      "box_px": [
+        1148,
+        286,
+        475,
+        245
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.2,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "validation-box",
+      "type": "rect",
+      "box_px": [
+        51,
+        652,
+        737,
+        188
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.2,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "baseline-box",
+      "type": "rect",
+      "box_px": [
+        829,
+        652,
+        796,
+        188
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.2,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1623,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "descriptor-to-preprocessing",
+      "type": "line",
+      "points_px": [
+        527,
+        413,
+        600,
+        413
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "descriptor-to-preprocessing",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "preprocessing-to-buffer",
+      "type": "line",
+      "points_px": [
+        1073,
+        413,
+        1148,
+        413
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4,
+      "semantic_line_id": "preprocessing-to-buffer",
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "gem5 已建立单线时序模型",
+      "box_px": [
+        54,
+        13,
+        1050,
+        98
+      ],
+      "font_size": 44,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "descriptor",
+      "text": "整线描述符",
+      "box_px": [
+        64,
+        334,
+        449,
+        77
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "input",
+      "text": "提交 D/L/U/R",
+      "box_px": [
+        64,
+        407,
+        449,
+        76
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "local",
+      "text": "局部预处理与",
+      "box_px": [
+        614,
+        334,
+        446,
+        77
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "recursion",
+      "text": "双向递推",
+      "box_px": [
+        614,
+        407,
+        446,
+        76
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "resources",
+      "text": "有限缓冲、DMA",
+      "box_px": [
+        1160,
+        334,
+        450,
+        77
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "output",
+      "text": "与结果写回",
+      "box_px": [
+        1160,
+        407,
+        450,
+        76
+      ],
+      "font_size": 30.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "validation",
+      "text": "独立数值参考与资源轨迹检查",
+      "box_px": [
+        65,
+        703,
+        710,
+        87
+      ],
+      "font_size": 26.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "baseline",
+      "text": "基线：R40 实现与 R41/R42 场景选型",
+      "box_px": [
+        843,
+        702,
+        770,
+        87
+      ],
+      "font_size": 26.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

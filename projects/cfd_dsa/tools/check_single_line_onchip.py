@@ -2,6 +2,26 @@
 """Validate bank/port limits, readiness latency and exact SPM word traffic."""
 from collections import Counter
 from check_single_line_c import fields
+from onchip_replay import replay_onchip
+from check_input_split import check_input_split
+from check_cold_rhs import check_cold_rhs
+
+
+def check_onchip_arbitration(starts, activations, accesses, latency, tasks):
+    """Count tasks that transfer words, rather than scheduler queue visits."""
+    assert latency >= 1 and tasks >= 0
+    jobs={r['id']:r for r in starts}
+    activated={r['id']:int(r['cycle']) for r in activations}
+    progress={}
+    for row in accesses:
+        job=jobs[row['id']];cycle=int(row['cycle'])
+        assert cycle>=int(job['cycle'])+latency, 'SPM access bypassed arbitration latency'
+        if job['active']=='0':
+            assert row['id'] in activated and cycle>=activated[row['id']]+latency, 'inactive SPM task bypassed activation arbitration latency'
+        progress.setdefault(cycle,set()).add(row['id'])
+        assert not tasks or len(progress[cycle])<=tasks, 'SPM arbiter serviced too many distinct tasks'
+    return dict(arb_latency=latency, arb_tasks=tasks,
+                peak_progress_tasks=max(map(len,progress.values()),default=0))
 
 
 def check_onchip(text,config,storage,trace):
@@ -9,44 +29,10 @@ def check_onchip(text,config,storage,trace):
     if config.get('--coeff-onchip-timing','1' if level>=8 else '0')!='1':
         assert not fields(text,'CFD_ONCHIP_SUMMARY')
         return
-    summary=fields(text,'CFD_ONCHIP_SUMMARY')[-1]
-    depth=int(config.get('--coeff-onchip-queue-depth','64'))
-    banks=int(config['--coeff-spm-banks']);grain=int(config['--coeff-spm-bank-granularity'])
-    ports={'R':int(config['--coeff-spm-read-ports']),'W':int(config['--coeff-spm-write-ports'])}
-    latency=int(config.get('--coeff-onchip-latency','1'))
-    assert int(summary['depth'])==depth and int(summary['peak'])<=depth and int(summary['live'])==0
-    assert int(summary['banks'])==banks and int(summary['grain'])==grain
-    assert int(summary['read_ports'])==ports['R'] and int(summary['write_ports'])==ports['W']
-    assert int(summary['latency'])==latency
-    starts=fields(text,'CFD_ONCHIP_START');done=fields(text,'CFD_ONCHIP_COMPLETE')
-    cancellations=fields(text,'CFD_ONCHIP_CANCEL');activations=fields(text,'CFD_ONCHIP_ACTIVATE')
-    ids={r['id']:r for r in starts};ends={r['id']:r for r in done};cancelled={r['id'] for r in cancellations}
-    activated={r['id']:int(r['cycle']) for r in activations}
-    assert len(ids)==len(starts)==int(summary['created'])
-    assert len(ends)==len(done)==int(summary['completed'])
-    assert len(cancelled)==len(cancellations)==int(summary['cancelled'])
-    assert set(ids)==set(ends)|cancelled and not set(ends)&cancelled
-    per_port=Counter();words=Counter();word_counts=Counter();last={}
-    for r in fields(text,'CFD_ONCHIP_ACCESS'):
-        job=ids[r['id']];cycle=int(r['cycle']);bank=int(r['bank']);op=r['op']
-        address=int(r['addr'],16);index=words[r['id']]
-        assert r['id'] not in cancelled and op==job['op'] and r['owner']==job['owner']
-        assert address==int(job['base'],16)+index*int(job['stride'])
-        assert address+8<=int(config['--coeff-line-spm-bytes'])
-        assert bank==(address//grain)%banks
-        assert cycle>=int(job['cycle'])+1
-        if job['active']=='0':assert cycle>=activated[r['id']]+1
-        per_port[cycle,bank,op]+=1
-        assert per_port[cycle,bank,op]<=ports[op], 'SPM bank port oversubscribed'
-        words[r['id']]+=1;word_counts[op,bank]+=1;last[r['id']]=cycle
-    for id,end in ends.items():
-        assert words[id]==int(ids[id]['words'])
-        assert int(end['cycle'])==last[id]+latency, 'SPM access completed before its latency'
-    latest={int(r['bank']):r for r in fields(text,'CFD_ONCHIP_BANK')}
-    assert len(latest)==banks
-    for bank,r in latest.items():
-        assert int(r['read_words'])==word_counts['R',bank]
-        assert int(r['write_words'])==word_counts['W',bank]
+    summary,ids,ends,word_counts,replay = replay_onchip(text,config)
+    from check_spm_slot_rotation import check_spm_slot_rotation
+    rotation=check_spm_slot_rotation(text,config,trace,ids,ends)
+    if rotation:replay['spm_slot_rotation']=rotation
     # Derive traffic from the actual sweep contract, independent of scheduler.
     schedules=fields(text,'CFD_LINE_SCHEDULE');fixture=fields(text,'CFD_CACHE_CONTRACT')
     read=write=0;t=int(config['--coeff-line-tile-cells'])
@@ -60,6 +46,8 @@ def check_onchip(text,config,storage,trace):
         if not hit:
             read+=110*n-75
             write+=110*n-75+30*prefix+int(s['cache_bytes'])//8
+            if s.get('tile_y_only','0')=='1':
+                write-=25*(n-1+prefix)
         else:
             read+=(85*n-50 if mode=='direct' else 90*n-50)
             write+=10*n+5*prefix
@@ -81,13 +69,21 @@ def check_onchip(text,config,storage,trace):
         if r['requestId'] in reused and r['stage']=='COLUMN_FMA_ISSUE':
             assert int(r['cycle'])>=int(ready[r['requestId']]['cycle']), 'cached Lbar consumed before bank response'
     if level>=9:
-        check_backward_operands(text,config,ids,ends)
+        backward=check_backward_operands(text,config,ids,ends)
+        if config.get('--coeff-back-independent-ready','0')=='1':
+            replay['backward_independent_ready']=backward
     if level>=10:
-        check_local_ready(text,config,ids,ends)
+        check_local_ready(text,config,ids,ends,storage)
+    check_cached_ubar(text,storage,ids,ends)
+    replay['input_split'] = check_input_split(text,config,trace,ids,ends)
+    replay['cold_rhs'] = check_cold_rhs(text,config,trace)
+    return replay
 
 
 def check_backward_operands(text,config,jobs,completed):
     active={};cells={};used=Counter();reads={};allocated=set();released=set()
+    independent=config.get('--coeff-back-independent-ready','0')=='1'
+    y_uses={};column_uses={};early_operands=0
     schedules=fields(text,'CFD_LINE_SCHEDULE');fixture=fields(text,'CFD_CACHE_CONTRACT')
     expected=set()
     for i,s in enumerate(schedules):
@@ -95,7 +91,7 @@ def check_backward_operands(text,config,jobs,completed):
         expected.update((s['token'],str(c)) for c in range(n-1))
     for r in fields(text,'CFD_BACK_OPERAND'):
         key=r['token'],r['cell'];cycle=int(r['cycle']);event=r['event']
-        slot=r['token'],int(r['cell'])%2
+        slot=r['token'],int(r['cell'])%int(config.get('--coeff-back-operand-depth','2'))
         if event=='allocate':
             assert key not in allocated and slot not in active
             assert int(r['slot'])==slot[1]
@@ -111,10 +107,19 @@ def check_backward_operands(text,config,jobs,completed):
         elif event=='use':
             assert active[slot]==key and cycle>=cells[key]
             column=int(r['column'])
-            assert r['job']==reads[key,column] and r['y_job']==reads[key,-1]
+            assert column in range(5) and r['job']==reads[key,column]
             assert cycle>=int(completed[r['job']]['cycle'])
-            assert cycle>=int(completed[r['y_job']]['cycle']), 'backward operands consumed before SPM response'
+            if not independent or r['y_job']!='0':
+                assert r['y_job']==reads[key,-1]
+                assert cycle>=int(completed[r['y_job']]['cycle']), 'backward operands consumed before SPM response'
             used[key,column]+=1
+            column_uses[key,column]=cycle
+            early_operands+=cycle<int(completed[reads[key,-1]]['cycle']) if (key,-1) in reads else 1
+        elif event=='y_use':
+            assert independent and active[slot]==key and key not in y_uses
+            assert r['job']==reads[key,-1]
+            assert cycle>=int(completed[r['job']]['cycle']), 'backward y consumed before SPM response'
+            y_uses[key]=cycle
         elif event=='release':
             assert active.pop(slot)==key and key not in released
             assert all(used[key,col]==1 for col in range(5))
@@ -123,14 +128,45 @@ def check_backward_operands(text,config,jobs,completed):
         else:raise ValueError('unknown backward operand event')
     assert not active and allocated==released==expected
     assert len(reads)==6*len(expected) and sum(used.values())==5*len(expected)
+    early_products=set()
+    if independent:
+        assert set(y_uses)==expected, 'backward y consumption missing or repeated'
+        consumers=Counter()
+        for prefix,scalar in (('CFD_MVM_FEEDBACK',False),('CFD_LANE_MVM',True)):
+            for r in fields(text,prefix):
+                if r['context']!='1' or r['event']!='issue' or int(r['node'])!=(5 if scalar else 0):continue
+                key=r['token'],r['cell'];cycle=int(r['cycle'])
+                assert key in y_uses and cycle>=y_uses[key], 'signed reduction bypassed y publication'
+                assert cycle>=int(completed[reads[key,-1]]['cycle']), 'signed reduction used y before its SPM response'
+                consumers[key]+=1
+        per_cell=5 if config.get('--coeff-lane-mvm','0')=='1' else 1
+        assert set(consumers)==expected and all(n==per_cell for n in consumers.values()), 'backward y consumer missing or duplicated'
+        products=Counter()
+        for prefix,scalar in (('CFD_MVM_PRODUCT',False),('CFD_LANE_MVM',True)):
+            for r in fields(text,prefix):
+                if r['context']!='1' or r['event']!='issue':continue
+                col=int(r['node'] if scalar else r['column'])
+                if col>=5:continue
+                key=r['token'],r['cell'];cycle=int(r['cycle'])
+                assert cycle>=column_uses[key,col], 'product bypassed its SPM operand publication'
+                assert cycle>=int(completed[reads[key,col]]['cycle'])
+                if cycle<int(completed[reads[key,-1]]['cycle']):early_products.add((key,col))
+                products[key,col]+=1
+        assert set(products)=={(key,col) for key in expected for col in range(5)}
+        assert all(n==per_cell for n in products.values()), 'backward products missing or duplicated'
+    return dict(cells=len(expected),early_operand_columns=early_operands,
+                early_product_columns=len(early_products),y_consumptions=len(y_uses))
 
 
-def check_local_ready(text,config,jobs,completed):
+def check_local_ready(text,config,jobs,completed,storage):
     ready={};schedules=fields(text,'CFD_LINE_SCHEDULE');fixture=fields(text,'CFD_CACHE_CONTRACT')
     expected=set();sizes={};cache={}
     for i,s in enumerate(schedules):
         n=int(fixture[i]['cells']) if fixture else int(config['--lusgs-cells'])
-        expected.update((s['token'],str(c)) for c in range(n));sizes[s['token']]=n;cache[s['token']]=int(s['cache_hit'])
+        expected.update((s['token'],str(c)) for c in range(n));sizes[s['token']]=n
+        allocation=next(r for r in storage if r['token']==s['token'])
+        cache[s['token']]=(allocation.get('tile_y_only','0')=='1' or
+            (int(s['cache_hit']) and int(allocation['cache_bytes'])==600*n))
     for r in fields(text,'CFD_LOCAL_READY'):
         key=r['token'],r['cell'];assert key not in ready
         ready[key]=r;cycle=int(r['cycle'])
@@ -150,3 +186,70 @@ def check_local_ready(text,config,jobs,completed):
         job=jobs[r['tail_job']]
         assert job['op']=='R' and job['words']=='5'
         assert int(tail['cycle'])<=int(job['cycle'])<=int(completed[r['tail_job']]['cycle'])<=int(r['cycle'])
+
+
+def check_cached_ubar(text,storage,jobs,completed):
+    """Prove cold reads use the one cache copy after its physical write."""
+    lines={r['token']:r for r in fields(text,'CFD_LINE_SCHEDULE')}
+    layouts={r['token']:r for r in storage if r.get('tile_y_only','0')=='1'}
+    ready={}
+    # Older logs also publish cache entries, but retain their original layout.
+    events=[r for r in fields(text,'CFD_UBAR_CACHE_READY') if r['token'] in layouts]
+    for r in events:
+        token=r['token'];cell=int(r['cell']);s=layouts[token];key=(token,cell)
+        assert key not in ready, 'duplicate cached Ubar publication'
+        assert not int(lines[token]['cache_hit'])
+        assert 0<=cell<int(s['cells']) and int(r['version'])>0
+        job=jobs[r['job']]
+        stride=int(s['cache_bytes'])//int(s['cells'])
+        assert stride in (600, 608), 'unexpected full cache entry stride'
+        base=int(s['reserved'])+int(s['resident'])+stride*cell+(stride-200)
+        assert job['owner']==token and job['op']=='W'
+        assert int(job['words'])==25 and int(job['stride'])==8
+        assert int(job['base'],16)==base, 'Ubar was stored outside its cache cell'
+        assert int(completed[r['job']]['cycle'])<=int(r['cycle'])
+        ready[key]=r
+    expected={(token,cell) for token,s in layouts.items()
+              if not int(lines[token]['cache_hit']) for cell in range(int(s['cells']))}
+    assert set(ready)==expected, 'missing cached Ubar publication'
+    for r in fields(text,'CFD_LOCAL_READY'):
+        token=r['token'];cell=int(r['cell'])
+        if token not in layouts or cell+1==int(layouts[token]['cells']):continue
+        if not int(lines[token]['cache_hit']):
+            store=ready[token,cell]
+            assert r.get('cache_job')==store['job'], 'local-ready lost its cache write dependency'
+            assert int(r['cycle'])>=int(store['cycle']), 'local-ready preceded cached Ubar'
+    for r in fields(text,'CFD_BACK_OPERAND'):
+        token=r['token']
+        if token not in layouts or r['event']!='read' or int(r['column'])<0:continue
+        cell=int(r['cell']);col=int(r['column']);s=layouts[token];job=jobs[r['job']]
+        stride=int(s['cache_bytes'])//int(s['cells'])
+        base=int(s['reserved'])+int(s['resident'])+stride*cell+(stride-200)+8*col
+        assert int(job['base'],16)==base, 'backward Ubar did not come from the cache'
+        if not int(lines[token]['cache_hit']):
+            assert int(r['cycle'])>=int(ready[token,cell]['cycle']), 'backward read before cached Ubar was ready'
+
+
+def check_onchip_credits(text,depth,reserve):
+    """Replay credit ownership, including inactive DMA reservations."""
+    live={}; inactive=0
+    for line in text.splitlines():
+        kind=line.split(' ',1)[0]
+        if kind not in ('CFD_ONCHIP_START','CFD_ONCHIP_ACTIVATE',
+                        'CFD_ONCHIP_CANCEL','CFD_ONCHIP_COMPLETE'):continue
+        r=dict(w.split('=',1) for w in line.split()[1:] if '=' in w)
+        ident=r['id']
+        if kind=='CFD_ONCHIP_START':
+            assert ident not in live
+            if r['active']=='0':
+                assert len(live)<depth-reserve, 'DMA occupied reserved compute credit'
+            live[ident]=r['active']=='0';inactive+=live[ident]
+        elif kind=='CFD_ONCHIP_ACTIVATE':
+            assert live[ident]
+            live[ident]=False;inactive-=1
+        else:
+            if kind=='CFD_ONCHIP_CANCEL':assert live[ident]
+            else:assert not live[ident]
+            inactive-=live.pop(ident)
+        assert len(live)<=depth and 0<=inactive<=depth-reserve
+    assert not live and inactive==0

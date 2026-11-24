@@ -1,0 +1,543 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.0033756641870352766,
+    "top": 0,
+    "width": 13.32624867162593,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1672,
+    "height_px": 941
+  },
+  "page_strategy": "原生形状与线段保留共同目标、三项研究、统一验证的分叉汇聚结构，所有标签可编辑。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "开题目标与三项研究工作",
+      "decision": "native-text"
+    },
+    {
+      "id": "objective",
+      "text": "目标：在可实现资源预算下降低整线成本",
+      "decision": "native-text"
+    },
+    {
+      "id": "work-one",
+      "text": "工作一",
+      "decision": "native-text"
+    },
+    {
+      "id": "work-two",
+      "text": "工作二",
+      "decision": "native-text"
+    },
+    {
+      "id": "work-three",
+      "text": "工作三",
+      "decision": "native-text"
+    },
+    {
+      "id": "dependency",
+      "text": "依赖感知调度",
+      "decision": "native-text"
+    },
+    {
+      "id": "compute",
+      "text": "SME 风格统一计算",
+      "decision": "native-text"
+    },
+    {
+      "id": "storage",
+      "text": "有限存储与供给",
+      "decision": "native-text"
+    },
+    {
+      "id": "evaluation",
+      "text": "统一输入、精度口径与资源约束",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "objective",
+      "role": "structure",
+      "object_type": "straight-corner objective rectangle",
+      "decision": "native-rect"
+    },
+    {
+      "id": "research-cards",
+      "role": "structure",
+      "object_type": "three straight-corner research rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "branches",
+      "role": "structure",
+      "object_type": "three downward arrows and common branch lines",
+      "decision": "native-line-and-path"
+    },
+    {
+      "id": "merge",
+      "role": "structure",
+      "object_type": "three branches joining a common validation arrow",
+      "decision": "native-line-and-path"
+    },
+    {
+      "id": "evaluation",
+      "role": "structure",
+      "object_type": "straight-corner evaluation rectangle",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持源页白底、浅蓝总目标和验证框、白色研究框及蓝色分叉汇合关系。",
+    "removed_foreground": [],
+    "comparison_note": "预览保留白底与三层原始构图，箭头和文字无重叠。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "objective-box",
+      "type": "rect",
+      "box_px": [
+        111,
+        188,
+        1450,
+        124
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "work-one-box",
+      "type": "rect",
+      "box_px": [
+        54,
+        449,
+        489,
+        207
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "work-two-box",
+      "type": "rect",
+      "box_px": [
+        592,
+        449,
+        489,
+        207
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "work-three-box",
+      "type": "rect",
+      "box_px": [
+        1131,
+        449,
+        487,
+        207
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "evaluation-box",
+      "type": "rect",
+      "box_px": [
+        53,
+        805,
+        1567,
+        109
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1623,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.3,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    },
+    {
+      "id": "upper-lateral-branches",
+      "type": "path",
+      "box_px": [
+        298,
+        377,
+        1075,
+        72
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              298,
+              449
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              298,
+              377
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1373,
+              377
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1373,
+              449
+            ]
+          ]
+        }
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 4.5,
+      "semantic_line_id": "upper-lateral-branches",
+      "start_arrow": "triangle",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "objective-to-work-two",
+      "type": "line",
+      "points_px": [
+        836,
+        312,
+        836,
+        449
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.5,
+      "semantic_line_id": "objective-to-work-two",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "lower-lateral-branches",
+      "type": "path",
+      "box_px": [
+        298,
+        656,
+        1077,
+        66
+      ],
+      "path_px": [
+        {
+          "op": "moveTo",
+          "points": [
+            [
+              298,
+              656
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              298,
+              722
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1375,
+              722
+            ]
+          ]
+        },
+        {
+          "op": "lnTo",
+          "points": [
+            [
+              1375,
+              656
+            ]
+          ]
+        }
+      ],
+      "fill": "none",
+      "stroke": "#064296",
+      "stroke_width": 4.5,
+      "semantic_line_id": "lower-lateral-branches",
+      "z_index": 20
+    },
+    {
+      "id": "work-two-to-validation",
+      "type": "line",
+      "points_px": [
+        836,
+        656,
+        836,
+        805
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.5,
+      "semantic_line_id": "work-two-to-validation",
+      "end_arrow": "triangle",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "开题目标与三项研究工作",
+      "box_px": [
+        50,
+        12,
+        956,
+        103
+      ],
+      "font_size": 44.5,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "objective",
+      "text": "目标：在可实现资源预算下降低整线成本",
+      "box_px": [
+        125,
+        197,
+        1423,
+        102
+      ],
+      "font_size": 36,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "work-one",
+      "text": "工作一",
+      "box_px": [
+        65,
+        465,
+        466,
+        83
+      ],
+      "font_size": 31,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "work-two",
+      "text": "工作二",
+      "box_px": [
+        604,
+        465,
+        464,
+        83
+      ],
+      "font_size": 31,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "work-three",
+      "text": "工作三",
+      "box_px": [
+        1144,
+        465,
+        461,
+        83
+      ],
+      "font_size": 31,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "dependency",
+      "text": "依赖感知调度",
+      "box_px": [
+        62,
+        551,
+        471,
+        81
+      ],
+      "font_size": 29.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "compute",
+      "text": "SME 风格统一计算",
+      "box_px": [
+        600,
+        551,
+        472,
+        81
+      ],
+      "font_size": 29.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "storage",
+      "text": "有限存储与供给",
+      "box_px": [
+        1140,
+        551,
+        469,
+        81
+      ],
+      "font_size": 29.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "evaluation",
+      "text": "统一输入、精度口径与资源约束",
+      "box_px": [
+        77,
+        812,
+        1516,
+        93
+      ],
+      "font_size": 33.5,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

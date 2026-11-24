@@ -1,69 +1,24 @@
-# CFD-DSA File and Result Management
+# CFD-DSA 文件与结果管理
 
-## Ownership Boundaries
+源码在 `src/` 和 `projects/cfd_dsa/`，可再生成二进制在 `build/`，输入与结果在 `results/cfd_dsa/`。
 
-| Content | Canonical location |
-| --- | --- |
-| gem5 C++/ISA implementation | `src/` |
-| gem5 experiment configs | `projects/cfd_dsa/configs/` |
-| AArch64 benchmark sources | `projects/cfd_dsa/benchmarks/` |
-| generated AArch64 binaries | `build/cfd_dsa/aarch64/` |
-| design and result documents | `projects/cfd_dsa/docs/` |
-| reusable experiment suites | `projects/cfd_dsa/suites/` |
-| generated simulation results | `results/cfd_dsa/` |
+## 保留规则
 
-The root-level `run_cfd_*.py` compatibility shims were removed on 2026-09-09.
-All commands must use `projects/cfd_dsa/configs/`.
+1. 日常保留当前采用方案、必要基线、独立输入和边界/恢复验证。原始输入及其来源信息必须保留。
+2. 失败、退化和已替代方案只保留简短结论、参数、指标与验收状态；结束诊断后删除大轨迹和旧可执行程序。
+3. 不再为每轮保留一份 gem5 二进制，不再把所有旧结果搬进 archive 长期堆积。Git 不收录实验二进制、轨迹和大型结果包。
+4. 正在运行或被其他聊天使用的结果不能清理。清理前检查当前入口、输入链接和活跃实验。
+5. 保留的完整证据可无损压缩；已经删除原始轨迹的结果必须标明仅剩摘要，不能宣称可重新重放验收。
+6. 标准运行入口在每例启动前检查结果盘，余量低于 10 GiB 时拒绝运行。直接调用 gem5 的脚本需要自行检查磁盘余量。每轮收敛后清理淘汰候选。
 
-## Result Lifecycle
-
-1. Development runs go to `results/cfd_dsa/runs/`. Discard only after checking
-   document references, manifests, duplicates and diagnostic value.
-2. Complete experiment batches go to `campaigns/<campaign>/<case>/` and are
-   immutable.
-3. Results cited by a document are listed in `baseline-index.json` and exposed
-   under `baselines/`.
-4. Failed and incomplete runs go to `failed/`; a zero-byte `stats.txt` is never
-   treated as a baseline.
-5. Superseded campaigns are moved intact to a dated `archive/` directory.
-
-No result is named `final`, `final2`, `fix`, or `rerun`. Start a new campaign
-or case with a descriptive name.
-
-## Managed Run
+## 运行入口
 
 ```bash
 python3 projects/cfd_dsa/tools/run_experiment.py \
-  --target lusgs-step4 \
-  --campaign step4c-validation \
-  --case correctness-1x64 -- \
-  --lusgs-step4-stage=C --lusgs-lines=1 --lusgs-cells=64
+  --target lusgs-single-line --campaign <新名称> --case <算例> -- <配置参数>
+python3 projects/cfd_dsa/tools/run_suite.py <套件.json> --campaign <新名称>
 ```
 
-Named campaign paths are immutable. The special `development` campaign adds a
-UTC timestamp and is suitable for disposable work.
+结果目录拒绝覆盖；`development` 使用时间戳。每例的 `resolved_experiment.json` 记录有效参数，`manifest.json` 与验收记录说明当时执行状态。
 
-## Reusable Suites
-
-```bash
-python3 projects/cfd_dsa/tools/run_suite.py \
-  projects/cfd_dsa/suites/core-regression.json \
-  --campaign core-regression-2026-07-05
-```
-
-## Legacy Migration
-
-The 2026-07-05 migration moved 150 top-level output directories without
-deleting data. The exact source-to-destination mapping, original size, category,
-and stats status are in `results/cfd_dsa/migration-inventory.json`.
-
-```text
-archive:  89
-campaign: 55
-baseline:  2
-failed:    4
-total:   150 directories, 237706260 bytes before migration manifests
-```
-
-Step4-C baselines are symbolic links to immutable campaign cases, so there is
-only one physical copy of each raw result.
+2026-10-30 清理删除了旧冷归档与过期大文件。以前文档中的无损归档/可恢复承诺不再适用于已删除数据，当前保留范围以 `results/cfd_dsa/README.md` 为准。

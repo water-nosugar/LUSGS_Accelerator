@@ -90,6 +90,13 @@ enum CfdCoeffPreprocessFlags : uint64_t
     CFD_COEFF_PRE_COMPACT_RECORD = 1ull << 22,
     CFD_COEFF_PRE_PACKED_RECORD = 1ull << 23,
     CFD_COEFF_PRE_WARM_SUMMARY = 1ull << 24,
+    // Direct autonomous solve: LU stays private, never published to luOutAddr.
+    CFD_COEFF_PRE_LOCAL_LU = 1ull << 25,
+    // Autonomous SME lines consume Ubar in the private timed upper bank.
+    CFD_COEFF_PRE_LOCAL_UBAR = 1ull << 26,
+    // D/L/U/R are the fields of a cache-line-aligned 640-byte cell record.
+    // The four addresses still identify the respective fields of cell zero.
+    CFD_COEFF_PRE_PACKED_COLD_INPUT = 1ull << 27,
 };
 
 constexpr uint64_t CfdLineSummaryMagic = 0x43464453554d3031ull;

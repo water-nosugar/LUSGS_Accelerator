@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "type": "latex-formula-image-fragment",
+  "images": [
+    {
+      "id": "formula_l",
+      "path": "assets/formula_l.png",
+      "box_px": [
+        205.0,
+        543.0,
+        193.0,
+        52.0
+      ],
+      "alt": "D\\overline{L}=L",
+      "z_index": 220
+    }
+  ],
+  "asset_provenance": [
+    {
+      "path": "assets/formula_l.png",
+      "source": "assets/formula_l.tex",
+      "source_type": "latex-rendered-formula",
+      "provenance_note": "Rendered from LaTeX by editppt formula render-latex; visual fidelity is prioritized over formula editability."
+    }
+  ],
+  "formula_inventory": [
+    {
+      "id": "formula_l",
+      "decision": "latex-rendered-image",
+      "editable": false,
+      "image": "assets/formula_l.png",
+      "tex_source": "assets/formula_l.tex"
+    }
+  ]
+}

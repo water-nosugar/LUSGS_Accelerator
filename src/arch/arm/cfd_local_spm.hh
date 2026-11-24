@@ -166,6 +166,11 @@ class CfdLocalSpm : public SimObject
     unsigned dmaChunkSize(
         ThreadContext *tc, Addr vaddr, unsigned requested) const;
     uint64_t dmaOutstanding() const { return dmaLivePackets; }
+    bool dmaOutstandingFull(uint64_t outstanding) const
+    {
+        return dmaLivePackets >= std::max<uint64_t>(1, outstanding);
+    }
+    void noteDmaOutstandingStall() { coeffDmaOutstandingStalls++; }
 
   private:
     using ZaColumn = std::array<double, 5>;

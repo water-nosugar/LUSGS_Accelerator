@@ -1,0 +1,544 @@
+{
+  "slide": {
+    "width": 13.333,
+    "height": 7.5,
+    "size_mode": "wide",
+    "background": "#FFFFFF"
+  },
+  "content_box": {
+    "left": 0.007360786397449637,
+    "top": 0,
+    "width": 13.318278427205101,
+    "height": 7.5,
+    "fit": "contain"
+  },
+  "source": {
+    "image": "source.png",
+    "width_px": 1671,
+    "height_px": 941
+  },
+  "page_strategy": "四条独立的验证映射由原生矩形、箭头和文本重建。",
+  "text_inventory": [
+    {
+      "id": "title",
+      "text": "从周期模型走向可实现硬件",
+      "decision": "native-text"
+    },
+    {
+      "id": "fp64-label",
+      "text": "FP64",
+      "decision": "native-text"
+    },
+    {
+      "id": "fp64-description",
+      "text": "执行延迟、II 与反馈可见时间",
+      "decision": "native-text"
+    },
+    {
+      "id": "za-label",
+      "text": "ZA",
+      "decision": "native-text"
+    },
+    {
+      "id": "za-description",
+      "text": "bank、选路、写回与转发",
+      "decision": "native-text"
+    },
+    {
+      "id": "spm-label",
+      "text": "SPM",
+      "decision": "native-text"
+    },
+    {
+      "id": "spm-description",
+      "text": "SRAM 宏、端口与仲裁",
+      "decision": "native-text"
+    },
+    {
+      "id": "system-label",
+      "text": "系统",
+      "decision": "native-text"
+    },
+    {
+      "id": "system-description",
+      "text": "DMA 在途额度、互连与时钟域",
+      "decision": "native-text"
+    },
+    {
+      "id": "summary",
+      "text": "先做 RTL 与存储宏微测，再回填整线模型",
+      "decision": "native-text"
+    }
+  ],
+  "visual_inventory": [
+    {
+      "id": "white-background",
+      "role": "background",
+      "object_type": "solid",
+      "decision": "native-white"
+    },
+    {
+      "id": "title-rule",
+      "role": "structure",
+      "object_type": "divider",
+      "decision": "native-line"
+    },
+    {
+      "id": "hardware-labels",
+      "role": "structure",
+      "object_type": "four solid pale-blue rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "hardware-details",
+      "role": "structure",
+      "object_type": "four white rectangles",
+      "decision": "native-rect"
+    },
+    {
+      "id": "flow",
+      "role": "structure",
+      "object_type": "four horizontal structural arrows",
+      "decision": "native-line"
+    },
+    {
+      "id": "summary-band",
+      "role": "structure",
+      "object_type": "solid rectangular band",
+      "decision": "native-rect"
+    }
+  ],
+  "background_strategy": {
+    "mode": "native-or-script",
+    "source_consistency_contract": "保持白底、浅蓝硬件标签、四条横向箭头、说明框和页脚底带的原位置。",
+    "removed_foreground": [],
+    "comparison_note": "预览保留白底与蓝色框图及原有行列对齐关系。"
+  },
+  "quality_checks": {
+    "font_size_calibrated": true,
+    "visual_inventory_matched": true,
+    "background_strategy_checked": true,
+    "shape_corner_geometry_checked": true
+  },
+  "shapes": [
+    {
+      "id": "fp64-label-box",
+      "type": "rect",
+      "box_px": [
+        79,
+        201,
+        397,
+        108
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "fp64-description-box",
+      "type": "rect",
+      "box_px": [
+        575,
+        201,
+        1018,
+        108
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "fp64-arrow",
+      "type": "line",
+      "points_px": [
+        476,
+        255,
+        575,
+        255
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.4,
+      "semantic_line_id": "fp64-arrow",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "za-label-box",
+      "type": "rect",
+      "box_px": [
+        79,
+        351,
+        397,
+        109
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "za-description-box",
+      "type": "rect",
+      "box_px": [
+        575,
+        351,
+        1018,
+        109
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "za-arrow",
+      "type": "line",
+      "points_px": [
+        476,
+        405,
+        575,
+        405
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.4,
+      "semantic_line_id": "za-arrow",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "spm-label-box",
+      "type": "rect",
+      "box_px": [
+        79,
+        502,
+        397,
+        108
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "spm-description-box",
+      "type": "rect",
+      "box_px": [
+        575,
+        502,
+        1018,
+        108
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "spm-arrow",
+      "type": "line",
+      "points_px": [
+        476,
+        556,
+        575,
+        556
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.4,
+      "semantic_line_id": "spm-arrow",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "system-label-box",
+      "type": "rect",
+      "box_px": [
+        79,
+        653,
+        397,
+        109
+      ],
+      "fill": "#DFECFC",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "system-description-box",
+      "type": "rect",
+      "box_px": [
+        575,
+        653,
+        1018,
+        109
+      ],
+      "fill": "#FFFFFF",
+      "stroke": "#064296",
+      "stroke_width": 3.15,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "system-arrow",
+      "type": "line",
+      "points_px": [
+        476,
+        707,
+        575,
+        707
+      ],
+      "stroke": "#064296",
+      "stroke_width": 4.4,
+      "semantic_line_id": "system-arrow",
+      "end_arrow": "triangle",
+      "z_index": 20
+    },
+    {
+      "id": "summary-band",
+      "type": "rect",
+      "box_px": [
+        40,
+        821,
+        1592,
+        91
+      ],
+      "fill": "#DFECFC",
+      "stroke": "none",
+      "stroke_width": 0,
+      "corner_category": "straight",
+      "z_index": 10
+    },
+    {
+      "id": "title-rule",
+      "type": "line",
+      "points_px": [
+        49,
+        130,
+        1623,
+        130
+      ],
+      "stroke": "#064296",
+      "stroke_width": 3.4,
+      "semantic_line_id": "title-rule",
+      "end_arrow": "none",
+      "z_index": 20
+    }
+  ],
+  "text_boxes": [
+    {
+      "id": "title",
+      "text": "从周期模型走向可实现硬件",
+      "box_px": [
+        51,
+        12,
+        1030,
+        102
+      ],
+      "font_size": 43.5,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "fp64-label",
+      "text": "FP64",
+      "box_px": [
+        88,
+        212,
+        378,
+        86
+      ],
+      "font_size": 38,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "fp64-description",
+      "text": "执行延迟、II 与反馈可见时间",
+      "box_px": [
+        661,
+        213,
+        901,
+        84
+      ],
+      "font_size": 32,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "za-label",
+      "text": "ZA",
+      "box_px": [
+        88,
+        362,
+        378,
+        87
+      ],
+      "font_size": 38,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "za-description",
+      "text": "bank、选路、写回与转发",
+      "box_px": [
+        661,
+        363,
+        901,
+        85
+      ],
+      "font_size": 32,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "spm-label",
+      "text": "SPM",
+      "box_px": [
+        88,
+        513,
+        378,
+        86
+      ],
+      "font_size": 38,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "spm-description",
+      "text": "SRAM 宏、端口与仲裁",
+      "box_px": [
+        661,
+        514,
+        901,
+        84
+      ],
+      "font_size": 32,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "system-label",
+      "text": "系统",
+      "box_px": [
+        88,
+        664,
+        378,
+        87
+      ],
+      "font_size": 38,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1
+    },
+    {
+      "id": "system-description",
+      "text": "DMA 在途额度、互连与时钟域",
+      "box_px": [
+        661,
+        665,
+        901,
+        85
+      ],
+      "font_size": 32,
+      "align": "left",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    },
+    {
+      "id": "summary",
+      "text": "先做 RTL 与存储宏微测，再回填整线模型",
+      "box_px": [
+        120,
+        824,
+        1432,
+        84
+      ],
+      "font_size": 32,
+      "align": "center",
+      "font": "Noto Sans CJK SC",
+      "preview_font": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+      "color": "#092F64",
+      "bold": true,
+      "valign": "middle",
+      "wrap": "none",
+      "z_index": 40,
+      "text_fit_safety": 1,
+      "font_size_source": "measured"
+    }
+  ],
+  "images": [],
+  "asset_provenance": []
+}

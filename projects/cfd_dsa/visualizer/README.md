@@ -60,7 +60,7 @@ Tile A/B、8 个输出槽与 8 个完成记录槽，以及 O3 流水和实际 ca
 
 原型尚未直接解析 gem5 输出，也不提供性能归因、完整逐周期状态恢复、
 实际队列占用或具体 lane ID。真实接入边界详见
-[设计说明](../docs/CFD_DSA_VISUALIZER_DESIGN.md)。
+[设计说明](../docs/history/CFD_DSA_VISUALIZER_DESIGN.md)。
 
 ## 开发与验证
 

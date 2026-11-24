@@ -121,10 +121,18 @@ parse_args(int argc, char **argv, Config *cfg)
     cfg->coeff_line_opt_level = 0;
     cfg->coeff_warm_summary = 0;
     cfg->coeff_poison_outputs = 1;
+    cfg->coeff_publish_lu = 1;
+    cfg->coeff_local_ubar = 0;
+    cfg->coeff_sme_packed_input = 0;
+    cfg->coeff_lu_output_transition_test = 0;
     cfg->coeff_recovery_test = 0;
+    cfg->coeff_recovery_warm = 0;
+    cfg->coeff_recovery_late_polls = 0;
     cfg->coeff_cancel_after_polls = 0;
     cfg->coeff_input_pattern = "baseline";
     cfg->coeff_input_seed = 1;
+    cfg->coeff_input_file = NULL;
+    cfg->coeff_study_cache = "legacy";
     cfg->coeff_stream_window = 8;
     cfg->coeff_stream_retire_mode = "auto";
     cfg->coeff_stream_boundary_mask = 1;
@@ -499,8 +507,42 @@ parse_args(int argc, char **argv, Config *cfg)
                          "--coeff-poison-outputs")) != NULL) {
             cfg->coeff_poison_outputs = parse_bool_arg(value);
         } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-publish-lu")) != NULL) {
+            cfg->coeff_publish_lu = parse_bool_arg(value);
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-local-ubar")) != NULL) {
+            cfg->coeff_local_ubar = parse_bool_arg(value);
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-sme-packed-input")) != NULL) {
+            cfg->coeff_sme_packed_input = parse_bool_arg(value);
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-lu-output-transition-test")) != NULL) {
+            cfg->coeff_lu_output_transition_test = parse_bool_arg(value);
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-recovery-warm")) != NULL) {
+            cfg->coeff_recovery_warm = parse_bool_arg(value);
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-recovery-late-polls")) != NULL) {
+            if (!parse_uint64(value, &cfg->coeff_recovery_late_polls) ||
+                cfg->coeff_recovery_late_polls < 2 ||
+                cfg->coeff_recovery_late_polls > 1024) {
+                fprintf(stderr, "invalid --coeff-recovery-late-polls: %s\n", value);
+                exit(2);
+            }
+        } else if ((value = option_value(argc, argv, &idx, arg,
                          "--coeff-recovery-test")) != NULL) {
             cfg->coeff_recovery_test = parse_bool_arg(value);
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-input-file")) != NULL) {
+            if (!*value) exit(2);
+            cfg->coeff_input_file = value;
+        } else if ((value = option_value(argc, argv, &idx, arg,
+                         "--coeff-study-cache")) != NULL) {
+            if (strcmp(value,"legacy") && strcmp(value,"prepared") && strcmp(value,"evicted")) {
+                fprintf(stderr, "invalid --coeff-study-cache: %s\n", value);
+                exit(2);
+            }
+            cfg->coeff_study_cache = value;
         } else if ((value = option_value(argc, argv, &idx, arg,
                          "--coeff-input-pattern")) != NULL) {
             if (strcmp(value,"baseline") && strcmp(value,"random") && strcmp(value,"scaled")) exit(2);
@@ -631,7 +673,7 @@ parse_args(int argc, char **argv, Config *cfg)
         } else if ((value = option_value(argc, argv, &idx, arg,
                          "--coeff-line-opt-level")) != NULL) {
             if (!parse_uint64(value, &cfg->coeff_line_opt_level) ||
-                cfg->coeff_line_opt_level > 11) {
+                cfg->coeff_line_opt_level > 13) {
                 fprintf(stderr, "invalid --coeff-line-opt-level\n");
                 exit(2);
             }
@@ -645,10 +687,7 @@ parse_args(int argc, char **argv, Config *cfg)
         } else if ((value = option_value(argc, argv, &idx, arg,
                          "--coeff-stream-window")) != NULL) {
             if (!parse_uint64(value, &cfg->coeff_stream_window) ||
-                (cfg->coeff_stream_window != 1 &&
-                 cfg->coeff_stream_window != 2 &&
-                 cfg->coeff_stream_window != 4 &&
-                 cfg->coeff_stream_window != 8)) {
+                cfg->coeff_stream_window < 1 || cfg->coeff_stream_window > 32) {
                 fprintf(stderr, "invalid --coeff-stream-window: %s\n", value);
                 exit(2);
             }
@@ -851,6 +890,22 @@ parse_args(int argc, char **argv, Config *cfg)
         fprintf(stderr, "raw optprep modes require --trsm5-coeff3-enable=1\n");
         exit(2);
     }
+    if (cfg->coeff_input_file &&
+        (!cfg->run_step2_pretransform_raw_stream || cfg->lines != 1 ||
+         strcmp(cfg->coeff_input_pattern,"baseline") || cfg->coeff_recovery_test ||
+         cfg->coeff_cache_contract_test || cfg->coeff_cancel_test || !cfg->check)) {
+        fprintf(stderr, "--coeff-input-file requires single-line raw stream, checking, baseline pattern and no fault-contract tests\n");
+        exit(2);
+    }
+    if (strcmp(cfg->coeff_study_cache, "legacy") &&
+        (!cfg->coeff_input_file || !cfg->run_step2_pretransform_raw_stream ||
+         !cfg->coeff_stream_line_autonomous || strcmp(cfg->coeff_base_solve, "direct") ||
+         strcmp(cfg->coeff_stream_ubar_consumer, "direct") || cfg->lines != 1 ||
+         cfg->lusgs_pretransform_auto || cfg->coeff_cancel_test ||
+         cfg->coeff_cache_contract_test || cfg->coeff_recovery_test || !cfg->check)) {
+        fprintf(stderr, "--coeff-study-cache requires a checked external dataset, direct autonomous single-line stream, and no fault-contract/auto-selection tests\n");
+        exit(2);
+    }
     if (cfg->ubar_inplace) {
         fprintf(stderr,
                 "--ubar-inplace=1 is reserved; raw correctness requires 0\n");
@@ -944,6 +999,41 @@ parse_args(int argc, char **argv, Config *cfg)
          strcmp(cfg->coeff_stream_ubar_consumer, "direct"))) {
         fprintf(stderr, "direct base solve requires one autonomous streaming "
                 "line and direct Ubar\n");
+        exit(2);
+    }
+    if ((!cfg->coeff_publish_lu || cfg->coeff_lu_output_transition_test) &&
+        (!cfg->run_step2_pretransform_raw_stream ||
+         !cfg->coeff_stream_line_autonomous || cfg->lines != 1 ||
+         strcmp(cfg->coeff_base_solve, "direct") || !cfg->lu_forwarding ||
+         strcmp(cfg->coeff_stream_dinv_consumer, "direct") ||
+         strcmp(cfg->coeff_stream_lbar_consumer, "direct") ||
+         strcmp(cfg->coeff_stream_ubar_consumer, "direct") || !cfg->check ||
+         cfg->lusgs_pretransform_auto)) {
+        fprintf(stderr, "--coeff-publish-lu=0 requires checked direct autonomous single-line streaming with LU forwarding\n");
+        exit(2);
+    }
+    if (cfg->coeff_lu_output_transition_test &&
+        (!cfg->coeff_line_cache_allowed || cfg->coeff_cancel_test ||
+         cfg->coeff_cache_contract_test || cfg->coeff_recovery_test)) {
+        fprintf(stderr, "LU output transition test requires cache permission and no other fault-contract test\n");
+        exit(2);
+    }
+    if (cfg->coeff_stream_window > 16 && !cfg->coeff_local_ubar) {
+        fputs("stream windows above 16 require private SME Ubar\n", stderr);
+        exit(2);
+    }
+    if (cfg->coeff_local_ubar &&
+        (strcmp(cfg->coeff_base_solve, "direct") || !cfg->check ||
+         !cfg->run_step2_pretransform_raw_stream || cfg->lusgs_pretransform_auto ||
+         cfg->coeff_line_opt_level != 13)) {
+        fprintf(stderr, "--coeff-local-ubar requires checked level-13 direct single-line streaming\n");
+        exit(2);
+    }
+    if (cfg->coeff_sme_packed_input &&
+        (strcmp(cfg->coeff_base_solve, "direct") || !cfg->check ||
+         !cfg->run_step2_pretransform_raw_stream || cfg->lusgs_pretransform_auto ||
+         cfg->coeff_line_opt_level != 13)) {
+        fprintf(stderr, "--coeff-sme-packed-input requires checked level-13 direct single-line streaming\n");
         exit(2);
     }
     if (cfg->lusgs_pretransform_auto) {

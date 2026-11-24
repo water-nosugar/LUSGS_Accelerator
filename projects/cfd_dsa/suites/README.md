@@ -1,125 +1,47 @@
-# CFD-DSA Suites
+# 当前测试套件
 
-Suite files define repeatable correctness, regression, sensitivity, and fault
-campaigns. They are consumed by `projects/cfd_dsa/tools/run_suite.py`.
+日常从下表选择；已删除无运行工具引用的历史试验套件；`history/`仅保留4个工具依赖定义。
 
-- `single-line-audit-20261015.json`: two N=65 cold-plus-six-reuse checks at
-  the current tile8/DMA32 settings.
-- `single-line-audit-throughput-20261015.json`: four single-parameter
-  divider-II/add-latency diagnostics at the current measured configurations.
-  Use `tools/check_single_line_opt.py`; interpretation and source provenance
-  are in `docs/CFD_DSA_SINGLE_LINE_AUDIT_20261015.md`.
-- `single-line-round2-final-stages.json`: levels 4–8, including independent
-  completion/warm queues, retained reverse tile and grouped LU targets.
-- `single-line-round2-tuning.json`, `single-line-round2-selection.json`:
-  finite queue/context/tile/DMA/bank combinations; selection includes a
-  level5 baseline with the same banked SPM timing rules.
-- `single-line-round2-stress.json`: boundary lengths, single credits, finite
-  cache, dirty/version/R contracts and arithmetic controls.
-- `single-line-round2-arithmetic.json`: separately measured add latency,
-  divider II and reciprocal experiments under the new storage model.
-- `single-line-round2-recommended.json`: four measured fixed 5/5/1 arithmetic
-  cold/reuse settings. Validate using `tools/check_single_line_opt.py`; it
-  also invokes the per-word bank/port/readiness checker. See
-  `docs/CFD_DSA_SINGLE_LINE_ROUND2_20261012.md` for capacity, hardware tradeoffs,
-  same-binary results and evidence verification.
-- `single-line-d-storage.json`: 24 full/tiled pairs, one/two/partial/all-fit/long
-  lines and ordered/tree arithmetic. Validate finite capacity, reload responses
-  and FP64 output identity with `tools/check_single_line_storage.py`.
-- `single-line-d-optimization.json`: 25 cases for finite coefficient caching,
-  version/dirty keys with changing R, double buffers, cache-line reloads and DMA
-  pressure. Use the same checker with `--suite` and `--report`.
-- `single-line-d-mode-selection.json`: 26 fixed-resource comparisons across
-  line length, tile size, coefficient update interval and window. Validate with
-  the storage checker, then use `tools/analyze_single_line_d.py` to compare
-  complete sweep cycles and select an exact measured configuration. See
-  `docs/CFD_DSA_SINGLE_LINE_D.md` for scope and timing boundaries.
-- `single-line-d-tuning.json`: 10 finite timed cold cases varying DMA
-  outstanding 8/16, logical contexts 1/2 and tile sizes 4/8/16, with fixed
-  shared arithmetic. Validate with the storage checker.
-- `single-line-d-mode-tuned.json`: 6 seven-sweep mode comparisons after raising
-  DMA outstanding to 16; combine its report using `--tuned-mode-report` in
-  `tools/analyze_single_line_d.py`.
-- `single-line-c-complete.json`: 35 cases covering shared 5/5/1 arithmetic,
-  LU reuse, serial/split/tree, full numeric validation, product pressure,
-  latency/context sensitivity and DMA. The two cache-contract fixtures change
-  R, coefficients, size, mode, version and dirty state. Validate with
-  `tools/check_single_line_c.py`; `--report` exports physical issue counts and
-  backward feedback intervals. Physical lane traces include every operation.
-- `single-line-base-solve.json`: cold single-line direct `D*b=R` versus inverse,
-  exact RHS/FU counts, boundary sizes, split, DMA pressure and repeated rebuilds.
-  Validate with `tools/check_single_line_base_solve.py`; `--report` exports the
-  simulator resource inventory. This suite explicitly rebuilds every sweep.
-- `single-line-rhs-frontier.json`: fixed-resource single-line RHS arbitration
-  against frontier-aware controls (17/64 cells, cold/reuse); validate with
-  `tools/check_single_line_rhs_frontier.py`. Experimental mode is opt-in.
-- `single-line-output-dma.json`: single-line-only final-vector timing DMA,
-  bounded output queues, completion ordering and numerical controls. Validate
-  with `tools/check_single_line_output_dma.py`; implementation boundaries and
-  measured status are documented in `docs/CFD_DSA_SINGLE_LINE.md`.
-- `core-regression.json`: cross-path/Step smoke and correctness regression.
-- `coeff-event-sensitivity.json`: coefficient-controller resource sensitivity.
-- `request-frontier-aging.json`: fixed-resource request-priority experiment,
-  2/2 baseline and 2/4 reference; validate with
-  `tools/check_request_frontier_aging.py`. Default scheduler is unchanged.
-- `coeff-context-ablation.json`: fixed-FU LU/TRSM context 1/2/4 matrix,
-  cold/mixed sweeps and observer-off control; validate with
-  `tools/check_context_ablation.py`. See `docs/CFD_DSA_CONTEXT_ABLATION.md`.
-- `coeff-line-mvm-pipeline.json`: experimental split line-MVM arithmetic,
-  latency/depth sensitivity, numeric digests, exact operation counts and
-  lifecycle checks via `tools/check_line_mvm_pipeline.py`.
-- `coeff-line-dependency.json`: autonomous-line base-ahead/early-backward
-  ablation, cache hit/dirty rebuild, short lines, window one, multi-line,
-  slow drain and DMA. Run `tools/check_line_dependency.py` on the resulting
-  campaign to check result digests and compute/retirement ordering.
-- `coeff-line-dma-rebuild-diagnostic.json`: historical direct-DMA multi-sweep
-  rebuild reproducer (both scheduling switches off versus on). The single-line
-  coherent-DMA regression now passes; see streaming documentation section 16.
-- `coeff-streaming-correctness.json`: Step2 Streaming Stage A boundary sizes,
-  window depths, and internal packet/backpressure correctness.
-- `coeff-streaming-boundary-mask.json`: Stage B2 N=1/head/interior/tail RHS
-  worklist and drain-skip correctness regression.
-- `coeff-streaming-reaper.json`: Stage B1 detached completion lifetime plus
-  single-entry output/packet/SPM backpressure regression. It pins
-  `--coeff-stream-retire-mode=queue` so the legacy pressure path remains live.
-- `coeff-streaming-auto-retire.json`: Stage B1.5/B2.5 stable completion-record
-  auto-retire correctness across boundary/window/pressure configurations.
-- `coeff-streaming-dinv-consumer.json`: Stage B3 DInv ColumnFma5 consumer
-  off/shadow/direct coverage, latency/II/queue sensitivity, real R/base SPM
-  pressure, partial-column cancel/generation, and out-of-order-ready checks.
-- `coeff-streaming-lbar-consumer.json`: Stage B4 Lbar ColumnFma5/forward
-  accumulator off/shadow/direct coverage, controller-local adjacent-cell
-  dq-star handoff, ForwardCombine and timed dq-star output, plus window,
-  shared-resource, packet/backpressure, cancel/generation, and ready-order
-  pressure and explicit wrong-cell/wrong-generation handoff injection. The
-  four deterministic cancel phases. The 33-case suite is the required B4
-  regression.
-- `step4c-sensitivity.json`: Step4-C event-controller exploration.
-- `single-line-opt-final-stages.json`: cumulative optimization levels 0–4 and
-  optional RHS row parallelism under the same 5/5/1 shared arithmetic budget.
-- `single-line-opt-tuning.json`, `single-line-opt-selection.json`: bounded
-  context/tile/output/DMA scans and final parameter combinations.
-- `single-line-opt-stress.json`: boundary sizes, single-credit pressure,
-  serial/split/tree, cache capacity and version/dirty/R contracts.
-- `single-line-opt-divider.json`, `single-line-opt-scheduler.json`: separate
-  divider throughput and global RHS frontier arbitration evaluations.
-- `single-line-opt-recommended.json`: four tested N=17 cold/reuse × direct/inverse
-  settings. Run `tools/check_single_line_opt.py` with `--suite` and `--report`;
-  details and model limits are in `docs/CFD_DSA_SINGLE_LINE_OPTIMIZATION_20261012.md`.
+| 目的 | 套件 |
+|---|---|
+| 第四轮LU/RHS：按实测选择双槽/因子保持，保护65/71/72完整缓存 | `single-line-lu-rhs-20261029.json` |
+| 第三轮10/10/1长线Tile24、Tile16基线及短线缓存保护 | `single-line-tile24-20261028.json` |
+| 1024点冷轮：分别调优的5/5/1与10/10/1周期对照 | `single-line-cycle-best-20261027.json` |
+| 局部乘积/RF消融、同版5/5/1及71点容量边界 | `single-line-product-local-20261027.json` |
+| 单通道控制流量优化，原5/5/1与优化5/5/1、8/7/1 | `single-line-single-channel-optimized-20261027.json` |
+| 当前单线资源与供给对照 | `single-line-stream-supply-optimized-20261025.json` |
+| 公共因子广播开关对照 | `single-line-preprocess-broadcast-20261025.json` |
+| 逐lane/局部RF消融，包含负面结果 | `single-line-lane-ablation-20261025.json` |
+| 独立数据与CPU研究 | `single-line-study-v2-20261024.json` |
+| GT01R真实系数投影 | `single-line-gt01r-recommended.json` |
+| 256～4096点规模压力 | `single-line-scale.json` |
+| 单线物理发射、数值、缓存契约 | `single-line-c-complete.json` |
+| direct/inverse求解对照 | `single-line-base-solve.json` |
+| 输出DMA与完成顺序 | `single-line-output-dma.json` |
+| 除法器有限资源协议 | `single-line-divider-model.json` |
+| Ubar系数缓存回归 | `single-line-ubar-cache-regression.json` |
+| 冷/热取消及恢复 | `single-line-round4-recovery.json` |
+| 跨路径基础回归 | `core-regression.json` |
 
-- `single-line-round3-stages.json`: same-binary level8/9/10/11,40B/64B transfer controls.
-- `single-line-round3-tuning.json`, `single-line-round3-selection.json`: separate resource reductions and combined configurations.
-- `single-line-round3-recommended.json`: tested level11 fixed-latency N=17 configurations; see `docs/CFD_DSA_SINGLE_LINE_ROUND3_20261015.md`.
-- `single-line-round3-long.json`, `single-line-round3-stress.json`: N=65 finite spills, boundary sizes, credit1 and cache/version contracts.
-- `single-line-round3-arithmetic.json`, `single-line-round3-endpoint.json`: timing capability sensitivities; these do not change the fixed-latency baseline.
+```bash
+python3 projects/cfd_dsa/tools/run_suite.py \
+  projects/cfd_dsa/suites/single-line-preprocess-broadcast-20261025.json \
+  --campaign <新的实验名称>
+```
 
-- `single-line-round3-final.json`, `single-line-round3-final-tile.json`: final same-binary old/new pairs and output-credit A/B; `--coeff-dma-output-priority=0` restores the competing prefetch order.
-- `single-line-round3-final-stress.json`: final packed-record mode/size/version contracts and finite-credit stress.
-- `single-line-round3-long-recommended.json`: N=65 cold tile32 / warm tile16 configurations under the same 196608B budget.
-- `single-line-round3-fast-recommended.json`: optional addlat2/divII2 capability profile; keep separate from fixed-latency comparisons.
+新实验使用新名称，不覆盖历史目录。每例`resolved_experiment.json`才是有效参数来源。
+广播在4096点的测试中有回退；名称含optimized/recommended不表示全部开关都应开启。
+单通道新套件保留原数值检查和资源时序；其5/5/1候选只增加576 B状态预约及一个有时序的整数摘要单元。参数、热轮保护和完整规模结果见[优化说明](../docs/CFD_DSA_SINGLE_CHANNEL_OPT_20261026.md)。
+旧原始结果和冷归档已清理，无法从本地归档恢复；保留范围见结果目录 README。
 
-- `single-line-round4-performance.json`: 33 fixed-timing cache/record/FIFO comparisons, with explicit A/B pairs.
-- `single-line-round4-stress.json`: 24 numeric, bank/port, DMA quota and finite-credit cases. The frozen accepted set uses `single-line-round4-stress-main.json` plus the separately rerun `single-line-round4-cache-contract.json`.
-- `single-line-round4-recovery.json`: 10 real LU-failure/cancellation/retry scenarios, including full-storage compatibility.
-- `single-line-round4-input-tuning.json`: 12 cases comparing two/four input slots within the same 192KiB capacity and fixed arithmetic banks.
-- `single-line-round4-recommended.json`: nine tested workload candidates. Defaults are preserved; summaries favor traffic reduction and are not automatically faster. See [the round4 results](../docs/CFD_DSA_SINGLE_LINE_ROUND4_20261019.md) for the capacity and latency tradeoffs.
+- `single-line-dual-group-20261027.json`：10/10/1双五分量发射、局部乘积与同版5/5/1、8/7/1对照；包含65点冷热缓存配置，详见[设计说明](../docs/CFD_DSA_DUAL_GROUP_20261027.md)。
+
+`single-line-supply-20261027.json`：10/10/1完成快照与1/2整数摘要引擎对照、同条件5/5/1、65点缓存边界及独立4096点。解释见[供给与完成记录优化](../docs/CFD_DSA_SUPPLY_OPT_20261027.md)。
+
+`single-line-product-local-20261027.json`：固定未启用跟踪参数后的 15 个正式验收工作点。局部乘积与广播均为消融开关；4096 点广播没有正收益，71 点局部存储预约触发缓存容量回退，不作为通用默认。完整结论见[局部乘积结果及适用边界](../docs/CFD_DSA_PRODUCT_LOCAL_OPT_20261027.md)。
+
+`single-line-cycle-best-20261027.json`：以整轮周期最少为目标，包含 `best551-1024` 和 `best10101-1024` 两个去掉重复参数的配置。5/5/1 采用精简预处理与有界完成快照；10/10/1 采用双组发射、局部 LU/RHS 乘积及广播。该 Tile16 配方在对应输入的已测周期为 136042 和 129331；线长与冷热条件的适用范围见[比较说明](../docs/CFD_DSA_CYCLE_BEST_20261027.md)。
+
+`single-line-tile24-20261028.json`：第三轮已测10/10/1长线配置。训练1024、另一组1024及已有4096点输入分别减少0.4361%、0.3321%、0.1322%的完整控制器周期；增加11520 B Tile载荷，仍在256 KiB预算内。套件同时包含显式Tile16基线、23/24/25与47/48/49及73点边界、49点取消恢复，65/71/72点冷热配置保持Tile16与完整缓存。第二轮RHS配对关闭，不作全局Tile默认切换。详见[第三轮结果与适用范围](../docs/CFD_DSA_ROUND3_TILE_PREFETCH_20261028.md)。
+
+`single-line-lu-rhs-20261029.json`：LU双乘积槽与RHS跨周期因子保持的最终实测配置，保留原浮点顺序及10/10/1、RF16R/8W、单DDR约束。不同线长采用明确静态资源配置，开启冷轮功能仍支付全部硬件预留。结果与验收类型见[第四轮说明](../docs/CFD_DSA_LU_RHS_OPT_20261029.md)。
