@@ -66,14 +66,14 @@ CfdCoeffPreprocessController::offerSme2d(
         smeZa.noteDependency2d(seg.phase);
         return false;
     }
-    Sme2dOffer offer;
-    offer.seg = seg;
-    offer.priority = priority;
-    offer.critGroup = critGroup;
-    offer.activePes = CfdSmeZa::activePes2d(seg);
-    offer.orderIndex = sme2dOffers.size();
-    offer.commit = std::move(commit);
-    sme2dOffers.push_back(std::move(offer));
+    Sme2dCandidateMeta meta{};
+    meta.seg = seg;
+    meta.priority = priority;
+    meta.critGroup = critGroup;
+    meta.activePes = CfdSmeZa::activePes2d(seg);
+    meta.orderIndex = sme2dOfferMetas.size();
+    sme2dOfferMetas.push_back(meta);
+    sme2dOfferCommits.push_back(std::move(commit));
     return true;
 }
 
@@ -2362,212 +2362,34 @@ CfdCoeffPreprocessController::processSmeSplitBack2d(LineRequest &line)
 void
 CfdCoeffPreprocessController::commitSme2dBundle()
 {
-    if (!smeZa.is2d() || sme2dOffers.empty()) {
-        sme2dOffers.clear();
-        return;
-    }
-    if (!smeOwner) {
-        sme2dOffers.clear();
+    auto clearOffers = [this]() {
+        sme2dOfferMetas.clear();
+        sme2dOfferCommits.clear();
+    };
+    if (!smeZa.is2d() || sme2dOfferMetas.empty() || !smeOwner) {
+        clearOffers();
         return;
     }
     auto ownerIt = lineRequests.find(smeOwner);
     if (ownerIt == lineRequests.end() || ownerIt->second->terminal) {
-        sme2dOffers.clear();
+        clearOffers();
         return;
     }
 
-    const unsigned end = env.sme2dCandidateWindow ?
-        std::min<unsigned>(sme2dOffers.size(), env.sme2dCandidateWindow) :
-        sme2dOffers.size();
-    unsigned totalOfferedPes = 0;
-    for (unsigned i = 0; i < end; ++i)
-        totalOfferedPes += sme2dOffers[i].activePes;
-    smeZa.noteOffered2d(totalOfferedPes);
-
-    if (smeZa.queueFull()) {
-        auto best = std::min_element(sme2dOffers.begin(), sme2dOffers.begin() + end,
-            [](const Sme2dOffer &a, const Sme2dOffer &b) {
-                return std::tie(a.critGroup, a.priority, a.orderIndex) <
-                       std::tie(b.critGroup, b.priority, b.orderIndex);
-            });
-        smeZa.noteStall2d(best->seg.phase, CfdSmeZa::Queue);
-        sme2dOffers.clear();
+    const Sme2dBundleChoice choice = selectSme2dBundle(
+        smeZa, sme2dOfferMetas.data(), sme2dOfferMetas.size(),
+        env.sme2dCandidateWindow);
+    if (!choice.chosenCount) {
+        clearOffers();
         return;
-    }
-
-    const bool mixedKind = smeZa.config().mixedKind;
-    struct Operands
-    {
-        CfdSmeZa::SegmentReads slices{};
-        unsigned count = 0;
-        bool writebackConflict = false;
-    };
-    std::vector<Operands> operands(end);
-    for (unsigned i = 0; i < end; ++i) {
-        auto &ops = operands[i];
-        const auto &seg = sme2dOffers[i].seg;
-        CfdSmeZa::SegmentReads slices{};
-        const unsigned count = smeZa.collectReads2d(seg, slices);
-        for (unsigned r = 0; r < count; ++r)
-            if (!smeZa.readSliceUsed(slices[r]))
-                ops.slices[ops.count++] = slices[r];
-        ops.writebackConflict = smeZa.willCollideWriteback2d(seg);
-    }
-
-    auto anchorBefore = [&](unsigned a, unsigned b) {
-        const auto &oa = sme2dOffers[a];
-        const auto &ob = sme2dOffers[b];
-        if (mixedKind) {
-            return std::make_tuple(oa.critGroup, oa.priority, operands[a].writebackConflict,
-                                   -int(oa.activePes), oa.orderIndex) <
-                   std::make_tuple(ob.critGroup, ob.priority, operands[b].writebackConflict,
-                                   -int(ob.activePes), ob.orderIndex);
-        }
-        return std::tie(oa.priority, oa.orderIndex) <
-               std::tie(ob.priority, ob.orderIndex);
-    };
-
-    const unsigned availLanes = smeZa.freeLanes();
-    const unsigned availReads = smeZa.freeReads();
-    const unsigned availIngress = smeZa.freeIngress();
-    unsigned anchorIdx = end;
-    unsigned blockedIdx = end;
-    for (unsigned i = 0; i < end; ++i) {
-        const auto &o = sme2dOffers[i];
-        const bool fitsLanes = o.activePes <= availLanes;
-        const bool fitsIngress = availIngress || !CfdSmeZa::opUsesIngress(o.seg.op);
-        auto &best = fitsLanes && fitsIngress && operands[i].count <= availReads ?
-            anchorIdx : blockedIdx;
-        if (best == end || anchorBefore(i, best))
-            best = i;
-    }
-    if (anchorIdx == end) {
-        const auto &blockedOffer = sme2dOffers[blockedIdx];
-        const auto &blocked = blockedOffer.seg;
-        const auto stallReason = blockedOffer.activePes > availLanes ? CfdSmeZa::Lanes :
-            CfdSmeZa::opUsesIngress(blocked.op) && !availIngress ? CfdSmeZa::Ingress :
-            CfdSmeZa::ReadPort;
-        smeZa.noteStall2d(blocked.phase, stallReason);
-        sme2dOffers.clear();
-        return;
-    }
-
-    std::array<CfdSmeZa::ReadSlice, 16> pickedReads{};
-    unsigned pickedReadCount = 0;
-    auto newReads = [&](unsigned i, bool claim) {
-        const auto &ops = operands[i];
-        unsigned count = 0;
-        for (unsigned r = 0; r < ops.count; ++r) {
-            bool seen = false;
-            for (unsigned p = 0; p < pickedReadCount; ++p)
-                seen |= pickedReads[p] == ops.slices[r];
-            if (!seen) {
-                if (claim)
-                    pickedReads[pickedReadCount++] = ops.slices[r];
-                ++count;
-            }
-        }
-        return count;
-    };
-
-    std::array<unsigned, 4> chosen{};
-    unsigned chosenCount = 0;
-    std::vector<bool> usedOffer(sme2dOffers.size(), false);
-    chosen[chosenCount++] = anchorIdx;
-    usedOffer[anchorIdx] = true;
-    const auto &anchor = sme2dOffers[anchorIdx];
-    const auto kind = CfdSmeZa::opKind(anchor.seg.op);
-    uint8_t usedRows = anchor.seg.rowMask;
-    uint8_t usedCols = anchor.seg.colMask;
-    unsigned usedLanes = anchor.activePes;
-    unsigned usedIngress = CfdSmeZa::opUsesIngress(anchor.seg.op) ? 1u : 0u;
-    newReads(anchorIdx, true);
-
-    const auto mode = smeZa.config().arrayMode;
-    const unsigned maxSeg = smeZa.config().maxSegments;
-    auto fillerKey = [&](unsigned i) {
-        const auto &o = sme2dOffers[i];
-        return std::make_tuple(o.critGroup, operands[i].writebackConflict,
-                               -int(o.activePes), o.priority, o.orderIndex);
-    };
-    if (mode != CfdSmeZa::ArrayMode::TwoDBase && maxSeg > 1) {
-        while (chosenCount < maxSeg && usedRows != 0xFFu) {
-            unsigned bestCand = end;
-            bool anyRowBlocked = false;
-            bool anyColBlocked = false;
-            bool anyReadBlocked = false;
-            bool anyIngressBlocked = false;
-
-            for (unsigned idx = 0; idx < end; ++idx) {
-                if (usedOffer[idx])
-                    continue;
-                const auto &c = sme2dOffers[idx];
-                if (!mixedKind && CfdSmeZa::opKind(c.seg.op) != kind)
-                    continue;
-                if (CfdSmeZa::opIsBypass(c.seg.op)) {
-                    bool dupLatch = false;
-                    for (unsigned k = 0; k < chosenCount; ++k) {
-                        const auto &prev = sme2dOffers[chosen[k]].seg;
-                        if (CfdSmeZa::opIsBypass(prev.op) &&
-                            prev.dstTile == c.seg.dstTile) {
-                            dupLatch = true;
-                            break;
-                        }
-                    }
-                    if (dupLatch)
-                        continue;
-                }
-                if (c.seg.rowMask & usedRows) {
-                    anyRowBlocked = true;
-                    continue;
-                }
-                if (mode == CfdSmeZa::ArrayMode::TwoDBd &&
-                    (c.seg.colMask & usedCols)) {
-                    anyColBlocked = true;
-                    continue;
-                }
-                if (usedLanes + c.activePes > availLanes)
-                    continue;
-                const unsigned needIng = CfdSmeZa::opUsesIngress(c.seg.op) ? 1u : 0u;
-                const unsigned needRd = newReads(idx, false);
-                if (usedIngress + needIng > availIngress ||
-                    pickedReadCount + needRd > availReads) {
-                    anyIngressBlocked |= usedIngress + needIng > availIngress;
-                    anyReadBlocked |= pickedReadCount + needRd > availReads;
-                    continue;
-                }
-                if (bestCand == end || fillerKey(idx) < fillerKey(bestCand))
-                    bestCand = idx;
-            }
-            if (bestCand == end) {
-                if (anyReadBlocked)
-                    smeZa.notePackStallReadPort();
-                else if (anyIngressBlocked)
-                    smeZa.notePackStallIngress();
-                else if (anyColBlocked)
-                    smeZa.notePackStallCol();
-                else if (anyRowBlocked)
-                    smeZa.notePackStallRow();
-                break;
-            }
-            const auto &picked = sme2dOffers[bestCand];
-            chosen[chosenCount++] = bestCand;
-            usedOffer[bestCand] = true;
-            usedRows |= picked.seg.rowMask;
-            usedCols |= picked.seg.colMask;
-            usedLanes += picked.activePes;
-            if (CfdSmeZa::opUsesIngress(picked.seg.op))
-                ++usedIngress;
-            newReads(bestCand, true);
-        }
     }
 
     std::array<CfdSmeZa::Segment2d, 4> bundle{};
-    for (unsigned i = 0; i < chosenCount; ++i)
-        bundle[i] = sme2dOffers[chosen[i]].seg;
-    const bool ok = smeZa.issue2dBundle(bundle.data(), chosenCount);
+    for (unsigned i = 0; i < choice.chosenCount; ++i)
+        bundle[i] = sme2dOfferMetas[choice.chosen[i]].seg;
+    const bool ok = smeZa.issue2dBundle(bundle.data(), choice.chosenCount);
     panic_if(!ok, "CFD SME 2D validated bundle failed to issue");
-    for (unsigned i = 0; i < chosenCount; ++i)
-        sme2dOffers[chosen[i]].commit();
-    sme2dOffers.clear();
+    for (unsigned i = 0; i < choice.chosenCount; ++i)
+        sme2dOfferCommits[choice.chosen[i]]();
+    clearOffers();
 }

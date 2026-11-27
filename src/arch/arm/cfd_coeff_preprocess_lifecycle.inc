@@ -58,9 +58,23 @@ CfdCoeffPreprocessController::abortLine(
     line.status = status;
     if (env.smeContexts && env.traceEnable)
         std::fprintf(stderr, "CFD_SME_ABORT token=%llu cycle=%llu status=%llu "
-            "live=%u cache_hit=%d\n", (unsigned long long)line.token,
+            "live=%u cache_hit=%d live_lu=%u live_rhs=%u live_forward=%u "
+            "live_backward=%u live_reverse_rhs=%u live_lu_lanes=%u "
+            "live_rhs_lanes=%u live_forward_lanes=%u live_backward_lanes=%u "
+            "live_reverse_rhs_lanes=%u\n",
+            (unsigned long long)line.token,
             (unsigned long long)cycle(), (unsigned long long)status,
-            smeZa.pendingReturns(), line.coefficientCacheHit);
+            smeZa.pendingReturns(), line.coefficientCacheHit,
+            smeZa.pendingByPhase(CfdSmeZa::Lu),
+            smeZa.pendingByPhase(CfdSmeZa::Rhs),
+            smeZa.pendingByPhase(CfdSmeZa::Forward),
+            smeZa.pendingByPhase(CfdSmeZa::Backward),
+            smeZa.pendingByPhase(CfdSmeZa::ReverseRhs),
+            smeZa.pendingLanesByPhase(CfdSmeZa::Lu),
+            smeZa.pendingLanesByPhase(CfdSmeZa::Rhs),
+            smeZa.pendingLanesByPhase(CfdSmeZa::Forward),
+            smeZa.pendingLanesByPhase(CfdSmeZa::Backward),
+            smeZa.pendingLanesByPhase(CfdSmeZa::ReverseRhs));
     auto cache = lineCoeffCaches.find(line.desc.lineId);
     if (cache != lineCoeffCaches.end())
         cache->second.valid = false;

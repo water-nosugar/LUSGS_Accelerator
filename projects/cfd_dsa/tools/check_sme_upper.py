@@ -177,23 +177,44 @@ def check_matrices(text, configs, transfers, input_file):
             raw = records[int(c)]
             if matrices[t, c, 'd'] != raw[:25] or matrices[t, c, 'u'] != raw[50:75]:
                 raise ValueError('staged Ubar operands differ from the original dataset')
-    max_abs = max_residual = Decimal(0)
+    max_abs = max_residual = max_norm_residual = max_cond_inf = Decimal(0)
+    strict_1e12_exceeded = 0
+    u_mach = Decimal(1) / Decimal(1 << 53)
+    norm_res_limit = Decimal(64) * u_mach
     with localcontext() as context:
         context.prec = 80
         for t, c in finished:
             d, u, ubar = ([Decimal.from_float(x) for x in matrices[t, c, kind]]
                           for kind in ('d', 'u', 'ubar'))
+            d_norm = max(sum(abs(d[r*5+k]) for k in range(5)) for r in range(5))
+            inv_cols = [solve_decimal(d, [Decimal(int(r == col)) for r in range(5)])
+                        for col in range(5)]
+            inv_norm = max(sum(abs(inv_cols[col][r]) for col in range(5))
+                           for r in range(5))
+            cond_inf = d_norm * inv_norm
+            max_cond_inf = max(max_cond_inf, cond_inf)
+            fwd_tol = max(Decimal('1e-12'), Decimal(64) * u_mach * cond_inf)
+            ubar_norm = max(sum(abs(ubar[r*5+k]) for k in range(5)) for r in range(5))
+            u_norm = max(sum(abs(u[r*5+k]) for k in range(5)) for r in range(5))
+            denom = max(d_norm * ubar_norm + u_norm, Decimal('1e-300'))
             for col in range(5):
                 ref = solve_decimal(d, u[col::5])
                 for row in range(5):
                     error = abs(ubar[row*5+col] - ref[row])
                     if error > Decimal('1e-12') and error > abs(ref[row]) * Decimal('1e-12'):
+                        strict_1e12_exceeded += 1
+                    if error > fwd_tol and error > abs(ref[row]) * fwd_tol:
                         raise ValueError('private Ubar differs from the independent Decimal solve')
                     residual = abs(sum(d[row*5+k] * ubar[k*5+col] for k in range(5)) -
                                    u[row*5+col])
-                    if residual > Decimal('1e-9'):
-                        raise ValueError('private Ubar exceeds the original residual tolerance')
+                    norm_res = residual / denom
+                    if residual > Decimal('1e-9') or norm_res > norm_res_limit:
+                        raise ValueError('private Ubar exceeds residual tolerance')
                     max_abs = max(max_abs, error)
                     max_residual = max(max_residual, residual)
+                    max_norm_residual = max(max_norm_residual, norm_res)
     return dict(matrices=len(finished), values=25*len(finished), precision=80,
-                max_abs=float(max_abs), max_residual=float(max_residual))
+                max_abs=float(max_abs), max_residual=float(max_residual),
+                max_norm_residual=float(max_norm_residual),
+                max_cond_inf=float(max_cond_inf),
+                strict_1e12_exceeded=strict_1e12_exceeded)

@@ -96,10 +96,12 @@ def main() -> int:
         if not source.is_file():
             print(f"missing source: {source}", file=sys.stderr)
             return 2
-        # Keep floating-point association explicit for the CPU comparison.
-        # Report the validated O3 NEON baseline. The SVE compiled LU path
-        # failed independent-oracle checks in this toolchain/simulator.
-        target_flags = ["-ffp-contract=off", "-march=armv8-a"] if target == "cpu-study" else []
+        # Keep floating-point association explicit and avoid buggy compiler SVE
+        # auto-vectorization on scalar reference solves while retaining SVE
+        # inline-assembly encoding support where needed.
+        target_flags = (["-ffp-contract=off", "-march=armv8-a"]
+                        if target == "cpu-study"
+                        else ["-ffp-contract=off", "-fno-tree-vectorize"])
         command = [args.cc, *common_flags, *target_flags, str(source), "-o", str(output),
                    "-lm"]
         print("+", " ".join(command))

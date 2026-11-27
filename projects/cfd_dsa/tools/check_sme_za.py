@@ -377,6 +377,11 @@ def check_sme_za(directory):
                         not 0 <= snap['live'] <= a['peak'] or
                         any(s['last'] > snap['cycle'] for s in p.values())):
                     raise ValueError('SME abort did not stop new arithmetic or drain the owner')
+                if 'live_rhs' in snap:
+                    per_phase_live = sum(snap[f'live_{ph}'] for ph in
+                                         ('lu', 'rhs', 'forward', 'backward', 'reverse_rhs'))
+                    if not snap['live'] <= per_phase_live <= snap['live'] * 4:
+                        raise ValueError('SME abort per-phase live segment count inconsistent with return slots')
                 abort_evidence.append(dict(snap, visible=a['done'],
                                            rhs_lanes=p['rhs']['fma'] + p['rhs']['mul'],
                                            reverse_rhs_lanes=sum(p.get('reverse_rhs', {}).get(k, 0)
@@ -569,6 +574,10 @@ def check_sme_za(directory):
             if (not late['live'] or not late['rhs_lanes'] or not late['forward_lanes'] or
                     late['cache_hit'] != int(actual['coeff_recovery_warm'])):
                 raise ValueError(f'SME late cancellation missed in-flight arithmetic: {late}')
+            if 'live_rhs' in late and (not late['live_rhs'] or not late['live_forward']):
+                raise ValueError(
+                    f'SME late cancellation did not catch simultaneous in-flight RHS and Forward returns: {late}'
+                )
         result['recovery'] = check_recovery(directory, sme_abort=late)
         result['abort_snapshots'] = abort_evidence
     return result

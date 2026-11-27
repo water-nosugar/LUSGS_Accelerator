@@ -209,35 +209,26 @@ class SmeZaTests(unittest.TestCase):
 
     def test_gem5_rtl_writeback_conflict_and_grant_equivalence(self):
         verilator = Path('/home/zyy/.local/bin/verilator-cli')
-        rtl = _support.REPO_ROOT / 'fpga/cfd_lusgs/rtl/sme_za_rs_issue.sv'
-        if not verilator.exists() or not rtl.exists():
-            self.skipTest('verilator-cli or sme_za_rs_issue.sv not available')
+        rtl_issue = _support.REPO_ROOT / 'fpga/cfd_lusgs/rtl/sme_za_rs_issue.sv'
+        rtl_slot = _support.REPO_ROOT / 'fpga/cfd_lusgs/rtl/sme_za_return_slot.sv'
+        if not verilator.exists() or not rtl_issue.exists() or not rtl_slot.exists():
+            self.skipTest('verilator-cli or SME RTL modules not available')
         harness = r'''
 #include <array>
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 #include <random>
 #include <tuple>
 #include <vector>
 #include "arch/arm/cfd_sme_za.hh"
+#include "arch/arm/cfd_sme_2d_arbiter.hh"
 #include "Vsme_za_rs_issue.h"
+#include "Vsme_za_return_slot.h"
 
 using Sme = gem5::ArmISA::CfdSmeZa;
-
-struct Cand {
-    bool valid = false;
-    uint8_t rows = 0, cols = 0;
-    uint8_t kind = 0; // 0=Fma, 1=Mul, 2=Add
-    uint8_t crit = 0;
-    uint8_t prio = 0;
-    uint8_t pes = 0;
-    uint16_t reads = 0;
-    bool ingress = false;
-    bool bypass = false;
-    uint8_t latch = 0;
-    Sme::Phase phase = Sme::Rhs;
-};
+using CandMeta = gem5::ArmISA::Sme2dCandidateMeta;
 
 static void setBits(uint32_t *words, unsigned bitOffset, unsigned width, uint64_t value) {
     for (unsigned i = 0; i < width; ++i) {
@@ -249,27 +240,86 @@ static void setBits(uint32_t *words, unsigned bitOffset, unsigned width, uint64_
     }
 }
 
-static unsigned pop16(uint16_t m) { return __builtin_popcount(m); }
-
 int main() {
     Vsme_za_rs_issue dut;
 
-    // 1. Targeted case: low-priority Rhs Fmopa already booked at cycle 13 on PE row 1,
-    //    cols 1..4; high-priority Forward ScaleRow arrives at cycle 9 (lat 4 -> cyc 13)
-    //    alongside an identical-size non-colliding Forward ScaleRow on row 2.
+    auto driveAndCompare = [&](Sme &mk, const std::vector<CandMeta> &offers) {
+        const unsigned end = std::min<unsigned>(offers.size(), 8u);
+        dut.return_credit = !mk.queueFull();
+        dut.mixed_kind = mk.config().mixedKind;
+        dut.read_credits = mk.freeReads();
+        dut.ingress_credits = mk.freeIngress();
+        for (int w = 0; w < 6; ++w) dut.nominal_writeback[w] = 0;
+        setBits(dut.nominal_writeback.data(), 0, 64, mk.nominalWritebackBitmap2d(Sme::Fma));
+        setBits(dut.nominal_writeback.data(), 64, 64, mk.nominalWritebackBitmap2d(Sme::Mul));
+        setBits(dut.nominal_writeback.data(), 128, 64, mk.nominalWritebackBitmap2d(Sme::Add));
+
+        dut.valid = 0; dut.rows = 0; dut.cols = 0; dut.kind = 0;
+        dut.critical_group = 0; dut.priority_rank = 0; dut.active_pes = 0;
+        for (int w = 0; w < 4; ++w) dut.fresh_reads[w] = 0;
+        dut.uses_ingress = 0; dut.bypass = 0; dut.latch_id = 0;
+
+        // Map unique fresh read slices in the 8-candidate window to 16-bit IDs.
+        std::vector<Sme::ReadSlice> sliceDict;
+        auto sliceBit = [&](const Sme::ReadSlice &s) -> uint16_t {
+            for (unsigned idx = 0; idx < sliceDict.size(); ++idx)
+                if (sliceDict[idx] == s)
+                    return uint16_t(1u << idx);
+            assert(sliceDict.size() < 16);
+            const unsigned idx = sliceDict.size();
+            sliceDict.push_back(s);
+            return uint16_t(1u << idx);
+        };
+
+        for (unsigned i = 0; i < end; ++i) {
+            const auto &o = offers[i];
+            const auto &seg = o.seg;
+            dut.valid |= (1u << i);
+            dut.rows |= (uint64_t(seg.rowMask) << (i * 8));
+            dut.cols |= (uint64_t(seg.colMask) << (i * 8));
+            dut.kind |= (uint32_t(Sme::opKind(seg.op)) << (i * 2));
+            dut.critical_group |= (uint32_t(o.critGroup & 3u) << (i * 2));
+            dut.priority_rank |= (uint32_t(o.priority & 7u) << (i * 3));
+            dut.active_pes |= (uint64_t(o.activePes & 0x7Fu) << (i * 7));
+
+            Sme::SegmentReads slices{};
+            const unsigned n = mk.collectReads2d(seg, slices);
+            uint16_t readMask = 0;
+            for (unsigned r = 0; r < n; ++r)
+                if (!mk.readSliceUsed(slices[r]))
+                    readMask |= sliceBit(slices[r]);
+            setBits(dut.fresh_reads.data(), i * 16, 16, readMask);
+            if (Sme::opUsesIngress(seg.op))
+                dut.uses_ingress |= (1u << i);
+            if (Sme::opIsBypass(seg.op)) {
+                dut.bypass |= (1u << i);
+                dut.latch_id |= (uint64_t(seg.dstTile & 0x3Fu) << (i * 6));
+            }
+        }
+        dut.eval();
+
+        // Call PRODUCTION gem5 2D bundle selector directly!
+        const auto choice = gem5::ArmISA::selectSme2dBundle(
+            mk, offers.data(), offers.size(), 8u);
+        for (unsigned slot = 0; slot < 3; ++slot) {
+            const bool rtlValid = ((dut.grant_valid >> slot) & 1u) != 0;
+            const unsigned rtlIdx = (dut.grant_index >> (slot * 3)) & 7u;
+            assert(rtlValid == (slot < choice.chosenCount));
+            if (rtlValid)
+                assert(rtlIdx == choice.chosen[slot]);
+        }
+        return choice;
+    };
+
+    // 1. Targeted case: low-priority Rhs Fmopa booked at cycle 13 on PE row 1..4;
+    //    high-priority Forward ScaleRow arrives at cycle 9 alongside clean row 5.
     {
         Sme mk;
         Sme::Config cfg;
         cfg.arrayMode = Sme::ArrayMode::TwoDRs;
-        cfg.lanes = 64;
-        cfg.readPorts = 6;
-        cfg.writePorts = 3;
-        cfg.maxSegments = 3;
-        cfg.mixedKind = true;
-        cfg.ingressPorts = 3;
-        cfg.fmaLatency = 5;
-        cfg.mulLatency = 4;
-        cfg.addLatency = 4;
+        cfg.lanes = 64; cfg.readPorts = 6; cfg.writePorts = 3;
+        cfg.maxSegments = 3; cfg.mixedKind = true; cfg.ingressPorts = 3;
+        cfg.fmaLatency = 5; cfg.mulLatency = 4; cfg.addLatency = 4;
         mk.configure(1, cfg);
         for (unsigned r = 0; r < 5; ++r) {
             mk.tick(1 + r);
@@ -289,164 +339,180 @@ int main() {
         fwdCollide.op = Sme::Op2d::ScaleRow; fwdCollide.phase = Sme::Forward;
         fwdCollide.rowMask = 1u << 1; fwdCollide.colMask = 0x1e;
         fwdCollide.dstTile = 1; fwdCollide.dstRow = 1; fwdCollide.useScalar = true; fwdCollide.scalar = 2.0;
-
         Sme::Segment2d fwdClean = fwdCollide;
         fwdClean.rowMask = 1u << 5; fwdClean.dstRow = 5;
 
-        // gem5 says fwdCollide collides (conservative RTL-aligned rule), fwdClean does not.
         assert(mk.willCollideWriteback2d(fwdCollide));
         assert(!mk.willCollideWriteback2d(fwdClean));
 
-        // Drive identical inputs to RTL: nominal_writeback for Mul (op=1, lat=4 -> cyc 13)
-        // has row 1..4 cols 1..4 occupied from rhsOp (fma lat=5 -> cyc 13).
-        uint64_t due13 = 0;
-        for (unsigned r = 1; r <= 4; ++r)
-            due13 |= (uint64_t(0x1eu) << (r * 8));
-        dut.return_credit = 1;
-        dut.mixed_kind = 1;
-        dut.read_credits = 6;
-        dut.ingress_credits = 3;
-        for (int w = 0; w < 6; ++w) dut.nominal_writeback[w] = 0;
-        setBits(dut.nominal_writeback.data(), 64, 64, due13); // op=1 (Mul) due at cyc 9+4=13
-        dut.valid = 0x03; // cand 0 = fwdCollide (row 1), cand 1 = fwdClean (row 5)
-        dut.rows = (uint64_t(1u << 1)) | (uint64_t(1u << 5) << 8);
-        dut.cols = (uint64_t(0x1eu)) | (uint64_t(0x1eu) << 8);
-        dut.kind = (1u) | (1u << 2); // Mul
-        dut.critical_group = 0; // both critical_group=0
-        dut.priority_rank = (1u) | (1u << 3); // both Forward prio=1
-        dut.active_pes = (4ull) | (4ull << 7);
-        for (int w = 0; w < 4; ++w) dut.fresh_reads[w] = 0;
-        dut.uses_ingress = 0;
-        dut.bypass = 0;
-        dut.latch_id = 0;
-        dut.eval();
-        // Anchor must pick cand 1 (fwdClean, no conflict) first, then cand 0 as filler!
-        assert(dut.grant_valid == 0x03);
-        assert((dut.grant_index & 7u) == 1u);
-        assert(((dut.grant_index >> 3) & 7u) == 0u);
+        std::vector<CandMeta> offers = {
+            {fwdCollide, 1, 0, Sme::activePes2d(fwdCollide), 0},
+            {fwdClean, 1, 0, Sme::activePes2d(fwdClean), 1},
+        };
+        const auto choice = driveAndCompare(mk, offers);
+        assert(choice.chosenCount == 2);
+        assert(choice.chosen[0] == 1u && choice.chosen[1] == 0u);
     }
 
-    // 2. 256 randomized 8-candidate mixed-kind lockstep trials comparing
-    //    exact gem5 anchorBefore/fillerKey + conservative writeback conflict against RTL.
-    std::mt19937 rng(20261123);
-    for (int trial = 0; trial < 256; ++trial) {
-        const bool retCredit = (trial % 16 != 0);
-        const bool mixed = (trial & 1) != 0;
-        const unsigned readCredits = 1 + (rng() % 6);
-        const unsigned ingressCredits = rng() % 4;
-        std::array<uint64_t, 3> nomWb{};
-        for (int k = 0; k < 3; ++k)
-            nomWb[k] = (1ull << (rng() % 64)) | (1ull << (rng() % 64)) | (1ull << (rng() % 64));
+    // 2. Multi-cycle stateful lockstep across real CfdSmeZa::tick() + selectSme2dBundle()
+    //    + issue2dBundle() + Verilated sme_za_return_slot retirement (4 configs x 256 cycles).
+    std::mt19937 rng(20261124);
+    unsigned issuedBundles = 0, multiSegBundles = 0, fullQueueCycles = 0;
+    for (unsigned modeIdx = 0; modeIdx < 4; ++modeIdx) {
+        Sme mk;
+        Sme::Config cfg;
+        cfg.arrayMode = Sme::ArrayMode::TwoDRs;
+        cfg.lanes = 64;
+        cfg.readPorts = (modeIdx & 1) ? 4 : 6;
+        cfg.writePorts = 3;
+        cfg.maxSegments = 3;
+        cfg.depth = 4; // small depth so queueFull backpressure is exercised dynamically
+        cfg.mixedKind = (modeIdx < 3);
+        cfg.ingressPorts = (modeIdx == 2) ? 1 : 3;
+        cfg.fmaLatency = 5; cfg.mulLatency = 4; cfg.addLatency = 4;
+        mk.configure(4, cfg, 0, 6);
 
-        std::array<Cand, 8> cands{};
-        dut.return_credit = retCredit;
-        dut.mixed_kind = mixed;
-        dut.read_credits = readCredits;
-        dut.ingress_credits = ingressCredits;
-        for (int w = 0; w < 6; ++w) dut.nominal_writeback[w] = 0;
-        for (int k = 0; k < 3; ++k) setBits(dut.nominal_writeback.data(), k * 64, 64, nomWb[k]);
-        dut.valid = 0; dut.rows = 0; dut.cols = 0; dut.kind = 0;
-        dut.critical_group = 0; dut.priority_rank = 0; dut.active_pes = 0;
-        for (int w = 0; w < 4; ++w) dut.fresh_reads[w] = 0;
-        dut.uses_ingress = 0; dut.bypass = 0; dut.latch_id = 0;
-
-        for (unsigned i = 0; i < 8; ++i) {
-            auto &c = cands[i];
-            c.valid = (rng() % 4) != 0;
-            c.rows = uint8_t(1u << (rng() % 8));
-            if (i & 1) c.rows |= uint8_t(1u << (rng() % 8));
-            c.cols = uint8_t(1u + (rng() % 255));
-            c.kind = rng() % 3;
-            c.crit = rng() % 3;
-            c.prio = rng() % 7;
-            c.pes = __builtin_popcount(c.rows) * __builtin_popcount(c.cols);
-            c.reads = uint16_t((1u << (rng() % 16)) | (1u << (rng() % 16)));
-            c.ingress = (rng() % 3) == 0;
-            c.bypass = (rng() % 4) == 0;
-            c.latch = rng() % 4;
-            if (c.valid) dut.valid |= (1u << i);
-            dut.rows |= (uint64_t(c.rows) << (i * 8));
-            dut.cols |= (uint64_t(c.cols) << (i * 8));
-            dut.kind |= (uint32_t(c.kind) << (i * 2));
-            dut.critical_group |= (uint32_t(c.crit) << (i * 2));
-            dut.priority_rank |= (uint32_t(c.prio) << (i * 3));
-            dut.active_pes |= (uint64_t(c.pes) << (i * 7));
-            setBits(dut.fresh_reads.data(), i * 16, 16, c.reads);
-            if (c.ingress) dut.uses_ingress |= (1u << i);
-            if (c.bypass) dut.bypass |= (1u << i);
-            dut.latch_id |= (uint64_t(c.latch) << (i * 6));
+        uint64_t cyc = 1;
+        // Preload source tiles 0..11 and latches 0..5 with valid operands.
+        for (unsigned t = 0; t < 12; ++t) {
+            for (unsigned r = 0; r < 8; ++r) {
+                mk.tick(cyc++);
+                assert(mk.load({t, r}, 0xff, {1., 2., 3., 4., 5., 6., 7., 8.}, Sme::Lu));
+            }
         }
-        dut.eval();
+        for (unsigned l = 0; l < 6; ++l) {
+            mk.tick(cyc++);
+            Sme::Segment2d ing{};
+            ing.op = Sme::Op2d::IngressBypass; ing.phase = Sme::Forward;
+            ing.dstTile = l; ing.dstRow = l & 7u; ing.rowMask = 1u << (l & 7u);
+            ing.colMask = 0x1f; ing.ingressValues = {1., 1., 1., 1., 1., 0., 0., 0.};
+            ing.scalar = 1.0;
+            assert(mk.issue2dBundle(&ing, 1));
+        }
+        for (unsigned drain = 0; drain < 8; ++drain)
+            mk.tick(cyc++);
 
-        // Exact gem5 commitSme2dBundle selection model over the 8-candidate window.
-        auto wbConflict = [&](unsigned i) {
-            if (!mixed || cands[i].bypass) return false;
-            uint64_t m = 0;
-            for (unsigned r = 0; r < 8; ++r)
-                if (cands[i].rows & (1u << r))
-                    m |= (uint64_t(cands[i].cols) << (r * 8));
-            return (nomWb[cands[i].kind] & m) != 0;
-        };
-        std::array<int, 3> gem5Pick{-1, -1, -1};
-        if (retCredit) {
-            auto anchorBefore = [&](unsigned a, unsigned b) {
-                if (mixed) {
-                    return std::make_tuple(cands[a].crit, cands[a].prio, wbConflict(a), -int(cands[a].pes), a) <
-                           std::make_tuple(cands[b].crit, cands[b].prio, wbConflict(b), -int(cands[b].pes), b);
+        for (unsigned step = 0; step < 256; ++step, ++cyc) {
+            mk.tick(cyc);
+            if (mk.queueFull())
+                ++fullQueueCycles;
+            // Consume 0..2 read slices beforehand on some cycles to exercise readSliceUsed sharing
+            if ((rng() % 3) == 0) {
+                Sme::Row dummy{};
+                mk.read({unsigned(rng() % 4), unsigned(rng() % 8)}, 0x1f, dummy, Sme::Rhs);
+            }
+            std::vector<CandMeta> offers;
+            const unsigned attemptCount = 1 + (rng() % 12); // >8 tests candidateWindow=8 truncation
+            for (unsigned a = 0; a < attemptCount; ++a) {
+                Sme::Segment2d seg{};
+                const unsigned pick = rng() % 6;
+                const Sme::Phase phases[] = {Sme::Backward, Sme::Forward, Sme::Lu, Sme::Rhs};
+                seg.phase = phases[rng() % 4];
+                const unsigned dstTile = 4 + (rng() % 8); // keep tiles 0..3 clean read-only sources
+                const unsigned srcTileA = rng() % 4;
+                const unsigned srcTileB = rng() % 4;
+                const unsigned r0 = rng() % 8;
+                seg.colMask = uint8_t(1u + (rng() % 0x3fu));
+                if (pick == 0 || pick == 1) {
+                    seg.op = Sme::Op2d::Fmopa;
+                    uint8_t rm = uint8_t(1u << r0);
+                    if (rng() & 1) rm |= uint8_t(1u << ((r0 + 1) & 7u));
+                    if ((rng() % 3) == 0) rm |= uint8_t(1u << ((r0 + 2) & 7u));
+                    seg.rowMask = rm;
+                    seg.dstTile = dstTile;
+                    seg.aPos = {srcTileA, 0}; seg.aCol = rng() % 8;
+                    seg.bPos = {srcTileB, unsigned(rng() % 8)};
+                } else if (pick == 2) {
+                    seg.op = Sme::Op2d::ScaleRow;
+                    seg.dstTile = dstTile; seg.dstRow = r0; seg.rowMask = uint8_t(1u << r0);
+                    seg.aPos = {srcTileA, unsigned(rng() % 8)}; seg.aCol = rng() % 8;
+                } else if (pick == 3) {
+                    seg.op = Sme::Op2d::CombineRow;
+                    seg.dstTile = dstTile; seg.dstRow = r0; seg.rowMask = uint8_t(1u << r0);
+                    seg.aPos = {srcTileA, unsigned(rng() % 8)};
+                    seg.bPos = {srcTileB, unsigned(rng() % 8)};
+                } else if (pick == 4) {
+                    seg.op = Sme::Op2d::IngressRow;
+                    seg.dstTile = dstTile; seg.dstRow = r0; seg.rowMask = uint8_t(1u << r0);
+                    seg.ingressValues = {1., 2., 3., 4., 5., 6., 7., 8.}; seg.scalar = 0.5;
+                } else {
+                    seg.op = Sme::Op2d::ScaleRowToBypass;
+                    seg.dstTile = rng() % 6; seg.dstRow = r0; seg.rowMask = uint8_t(1u << r0);
+                    seg.bPos = {srcTileB, unsigned(rng() % 8)}; seg.scalar = 0.25;
                 }
-                return std::tie(cands[a].prio, a) < std::tie(cands[b].prio, b);
-            };
-            int anchor = -1;
-            for (unsigned i = 0; i < 8; ++i) {
-                if (!cands[i].valid || pop16(cands[i].reads) > readCredits ||
-                    (cands[i].ingress && !ingressCredits))
+                if (!mk.ready2d(seg))
                     continue;
-                if (anchor < 0 || anchorBefore(i, unsigned(anchor)))
-                    anchor = int(i);
+                CandMeta meta{};
+                meta.seg = seg;
+                meta.critGroup = rng() % 3;
+                meta.priority = rng() % 7;
+                meta.activePes = Sme::activePes2d(seg);
+                meta.orderIndex = offers.size();
+                offers.push_back(meta);
             }
-            if (anchor >= 0) {
-                gem5Pick[0] = anchor;
-                uint8_t usedRows = cands[anchor].rows;
-                uint16_t usedReads = cands[anchor].reads;
-                unsigned usedIng = cands[anchor].ingress ? 1u : 0u;
-                for (unsigned slot = 1; slot < 3; ++slot) {
-                    int best = -1;
-                    auto fillerKey = [&](unsigned i) {
-                        return std::make_tuple(cands[i].crit, wbConflict(i), -int(cands[i].pes), cands[i].prio, i);
-                    };
-                    for (unsigned i = 0; i < 8; ++i) {
-                        if (!cands[i].valid) continue;
-                        bool used = false, dupLatch = false;
-                        for (unsigned k = 0; k < slot; ++k) {
-                            if (gem5Pick[k] == int(i)) used = true;
-                            if (gem5Pick[k] >= 0 && cands[i].bypass && cands[gem5Pick[k]].bypass &&
-                                cands[i].latch == cands[gem5Pick[k]].latch)
-                                dupLatch = true;
-                        }
-                        if (used || dupLatch) continue;
-                        if (!mixed && cands[i].kind != cands[anchor].kind) continue;
-                        if (cands[i].rows & usedRows) continue;
-                        if (pop16(usedReads | cands[i].reads) > readCredits) continue;
-                        if (usedIng + (cands[i].ingress ? 1u : 0u) > ingressCredits) continue;
-                        if (best < 0 || fillerKey(i) < fillerKey(unsigned(best)))
-                            best = int(i);
-                    }
-                    if (best < 0) break;
-                    gem5Pick[slot] = best;
-                    usedRows |= cands[best].rows;
-                    usedReads |= cands[best].reads;
-                    usedIng += cands[best].ingress ? 1u : 0u;
-                }
+            if (offers.empty())
+                continue;
+            const auto choice = driveAndCompare(mk, offers);
+            if (choice.chosenCount > 0) {
+                std::array<Sme::Segment2d, 4> bundle{};
+                for (unsigned k = 0; k < choice.chosenCount; ++k)
+                    bundle[k] = offers[choice.chosen[k]].seg;
+                assert(mk.issue2dBundle(bundle.data(), choice.chosenCount));
+                ++issuedBundles;
+                if (choice.chosenCount > 1)
+                    ++multiSegBundles;
             }
         }
+    }
+    assert(issuedBundles > 200 && multiSegBundles > 80 && fullQueueCycles > 0);
 
-        for (unsigned slot = 0; slot < 3; ++slot) {
-            const bool rtlValid = ((dut.grant_valid >> slot) & 1u) != 0;
-            const unsigned rtlIdx = (dut.grant_index >> (slot * 3)) & 7u;
-            assert(rtlValid == (gem5Pick[slot] >= 0));
-            if (rtlValid)
-                assert(int(rtlIdx) == gem5Pick[slot]);
-        }
+    // 3. Verilated sme_za_return_slot multi-cycle staggered arrival & stall retirement check.
+    {
+        Vsme_za_return_slot slot;
+        auto stepClk = [&]() {
+            slot.clk = 0; slot.eval();
+            slot.clk = 1; slot.eval();
+        };
+        slot.reset = 1; slot.reserve_valid = 0; slot.result_valid = 0; slot.retire_ready = 0;
+        for (int w = 0; w < 128; ++w) slot.result_data[w] = 0;
+        stepClk();
+        slot.reset = 0; slot.eval();
+        assert(slot.reserve_ready == 1 && slot.retire_valid == 0);
+
+        // Reserve 2 segments: seg0 rows 0x03 (Mul, arrives edge 1), seg1 rows 0x0c (Fma, arrives edge 2)
+        slot.reserve_valid = 1;
+        slot.reserve_segments = 0x3;
+        slot.reserve_rows = 0x03u | (0x0cu << 8);
+        slot.reserve_cols = 0x1fu | (0x1fu << 8);
+        slot.reserve_tags = 0x101u | (0x202u << 12);
+        stepClk();
+        slot.reserve_valid = 0; slot.eval();
+        assert(slot.reserve_ready == 0);
+
+        // Seg 0 arrives, writeback port blocked (retire_ready = 0) -> buffered
+        slot.result_valid = 0x1;
+        slot.result_data[0] = 0xdeadbeefu;
+        slot.retire_ready = 0x0;
+        slot.eval();
+        assert(slot.retire_valid == 0x1);
+        stepClk();
+
+        // Seg 1 arrives while Seg 0 retires and Seg 1 stays buffered, then Seg 1 retires allowing same-edge re-reserve
+        slot.result_valid = 0x2;
+        slot.result_data[32] = 0xcafebabeu;
+        slot.retire_ready = 0x1;
+        slot.eval();
+        assert(slot.retire_valid == 0x3);
+        assert(slot.retire_data[0] == 0xdeadbeefu && slot.retire_data[32] == 0xcafebabeu);
+        stepClk();
+
+        slot.result_valid = 0x0;
+        slot.retire_ready = 0x2;
+        slot.eval();
+        assert(slot.retire_valid == 0x2 && slot.reserve_ready == 1);
+        stepClk();
+        slot.retire_ready = 0; slot.eval();
+        assert(slot.retire_valid == 0 && slot.reserve_ready == 1);
     }
     return 0;
 }
@@ -456,12 +522,14 @@ int main() {
             cpp = out / 'rtl_gem5_equiv.cc'
             cpp.write_text(harness)
             vinc = Path('/home/zyy/.local/lib/python3.10/site-packages/verilator/include')
-            subprocess.run([
-                str(verilator), '--cc',
-                '-Wno-WIDTHEXPAND', '-Wno-UNOPTFLAT',
-                '-Mdir', str(out / 'obj'),
-                str(rtl),
-            ], check=True, capture_output=True)
+            for rtl, prefix in ((rtl_issue, 'Vsme_za_rs_issue'), (rtl_slot, 'Vsme_za_return_slot')):
+                subprocess.run([
+                    str(verilator), '--cc',
+                    '-Wno-WIDTHEXPAND', '-Wno-UNOPTFLAT',
+                    '--prefix', prefix,
+                    '-Mdir', str(out / 'obj'),
+                    str(rtl),
+                ], check=True, capture_output=True)
             v_cpps = sorted(str(p) for p in (out / 'obj').glob('*.cpp'))
             subprocess.run([
                 'g++', '-std=c++17', '-O2',

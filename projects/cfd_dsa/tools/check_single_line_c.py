@@ -146,7 +146,9 @@ def check_numeric(text, cells):
     rows = fields(text, 'CFD_SINGLE_LINE_NUMERIC')
     if len(rows) != len(cells):
         raise ValueError('missing full-sweep numeric validation')
-    for row, n in zip(rows, cells):
+    schedules = fields(text, 'CFD_LINE_SCHEDULE')
+    sched_matching = schedules if len(schedules) == len(rows) else None
+    for idx, (row, n) in enumerate(zip(rows, cells)):
         if 'residual_max' in row and (not math.isfinite(float(row['residual_max'])) or
                                      not 0 <= float(row['residual_max']) <= 1e-10):
             raise ValueError('raw recurrence residual failed')
@@ -154,6 +156,20 @@ def check_numeric(text, cells):
                 not all(math.isfinite(float(row[k])) and float(row[k]) >= 0
                         for k in ('max_abs', 'max_rel')):
             raise ValueError('incorrect y/dq output or missing values')
+        rhash = row.get('result_hash', '')
+        if not re.fullmatch(r'[0-9a-f]{16}', rhash) or int(rhash, 16) in (0, (1 << 64) - 1):
+            raise ValueError(f'invalid or degenerate result_hash: {rhash!r}')
+        if 'output_digest' in row:
+            odig = row['output_digest']
+            if not re.fullmatch(r'[0-9a-f]{16}', odig) or int(odig, 16) in (0, (1 << 64) - 1):
+                raise ValueError(f'invalid or degenerate output_digest: {odig!r}')
+        if sched_matching is not None:
+            sched = sched_matching[idx]
+            if 'result_hash' in sched and sched['result_hash'] != rhash:
+                raise ValueError('guest result_hash disagrees with controller result_hash')
+            if 'output_digest' in sched:
+                if row.get('output_digest') != sched['output_digest']:
+                    raise ValueError('guest output_digest disagrees with controller output_digest')
     return max(float(r['max_abs']) for r in rows)
 
 

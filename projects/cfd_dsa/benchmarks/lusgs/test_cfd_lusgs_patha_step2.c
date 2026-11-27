@@ -6778,41 +6778,57 @@ main(int argc, char **argv)
             1.0e-10, 1.0e-10);
 
     if (cfg.check && raw_reference_valid) {
+        const double raw_tol = dataset_forward_tolerance(&problem);
+        const double raw_res_tol = raw_tol > 1.0e-10 ? 1.0e-12 : 1.0e-10;
+        if (raw_tol > 1.0e-10) {
+            const double ref_res = raw_recurrence_residual(
+                &problem, problem.dq_star_raw_ref, problem.dq_raw_ref);
+            if (!isfinite(ref_res) || ref_res > raw_res_tol)
+                raw_reference_valid = 0;
+        }
         if (cfg.run_step2_trsv5_raw)
             step2_trsv5_raw_cmp = compare_solution(
                 &problem, problem.dq_raw_ref, problem.dq_trsv5_raw,
-                1.0e-10, 1.0e-10);
+                raw_tol, raw_tol);
         if (cfg.run_step2_trsv5_raw_context)
             step2_trsv5_raw_context_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
-                problem.dq_trsv5_raw_context, 1.0e-10, 1.0e-10);
+                problem.dq_trsv5_raw_context, raw_tol, raw_tol);
         if (cfg.run_step2_pretransform_raw)
             step2_pretransform_raw_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
-                problem.dq_pretransform_raw, 1.0e-10, 1.0e-10);
+                problem.dq_pretransform_raw, raw_tol, raw_tol);
         if (cfg.run_step2_pretransform_raw_context)
             step2_pretransform_raw_context_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
-                problem.dq_pretransform_raw_context, 1.0e-10, 1.0e-10);
+                problem.dq_pretransform_raw_context, raw_tol, raw_tol);
         if (cfg.run_step2_pretransform_raw_optprep)
             step2_pretransform_raw_optprep_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
-                problem.dq_pretransform_raw_optprep, 1.0e-10, 1.0e-10);
+                problem.dq_pretransform_raw_optprep, raw_tol, raw_tol);
         if (cfg.run_step2_pretransform_raw_optprep_context)
             step2_pretransform_raw_optprep_context_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
                 problem.dq_pretransform_raw_optprep_context,
-                1.0e-10, 1.0e-10);
-        if (cfg.run_step2_pretransform_raw_stream)
+                raw_tol, raw_tol);
+        if (cfg.run_step2_pretransform_raw_stream) {
             step2_pretransform_raw_stream_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
-                problem.dq_pretransform_raw_stream, 1.0e-10, 1.0e-10);
+                problem.dq_pretransform_raw_stream, raw_tol, raw_tol);
+            if (raw_tol > 1.0e-10) {
+                const double stream_res = raw_recurrence_residual(
+                    &problem, problem.dq_star_pretransform_raw_stream,
+                    problem.dq_pretransform_raw_stream);
+                if (!isfinite(stream_res) || stream_res > raw_res_tol)
+                    step2_pretransform_raw_stream_valid = 0;
+            }
+        }
         if (auto_selection_ran)
             auto_selected_cmp = compare_solution(
                 &problem, problem.dq_raw_ref,
                 auto_selected_pre ? problem.dq_pretransform_raw_optprep :
                                     problem.dq_trsv5_raw,
-                1.0e-10, 1.0e-10);
+                raw_tol, raw_tol);
     }
 
     int config_match = patha_default_config_match(&cfg);

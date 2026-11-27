@@ -6,8 +6,24 @@ import json
 import math
 from pathlib import Path
 
+from decimal import Decimal, localcontext
 from check_single_line_c import fields
-from single_line_dataset import HEADER, fnv64, oracle, read_dataset, sha256
+from single_line_dataset import HEADER, fnv64, oracle, read_dataset, sha256, solve_decimal
+
+
+def max_block_cond_inf(records, precision=80):
+    with localcontext() as ctx:
+        ctx.prec = max(80, precision)
+        kappa_max = Decimal(1)
+        for rec in records:
+            d = [Decimal.from_float(x) for x in rec[:25]]
+            d_norm = max(sum(abs(d[r*5+c]) for c in range(5)) for r in range(5))
+            inv_cols = [solve_decimal(d, [Decimal(int(r == col)) for r in range(5)])
+                        for col in range(5)]
+            inv_norm = max(sum(abs(inv_cols[col][r]) for col in range(5))
+                           for r in range(5))
+            kappa_max = max(kappa_max, d_norm * inv_norm)
+        return float(kappa_max)
 
 
 def check_dataset(directory):
@@ -45,10 +61,23 @@ def check_dataset(directory):
     sweeps = len(schedules)
     if not sweeps or Counter(row['phase'] for row in checks) != {'cpu':1,'accelerator':sweeps}:
         raise ValueError('missing CPU or per-sweep independent oracle comparison')
+    kappa_max = max_block_cond_inf(records, precision)
+    expected_tol = max(1e-10, 64.0 * (2.0 ** -53) * kappa_max)
+    res_limit = 1e-12 if expected_tol > 1e-10 else 1e-10
     for row in checks:
         if int(row['values']) != 10*len(records) or int(row['mismatches']) != 0 or any(
             not math.isfinite(float(row[k])) or float(row[k]) < 0 for k in ('max_abs','max_rel')):
             raise ValueError('independent dataset oracle comparison failed')
+        if 'tol' in row:
+            reported_tol = float(row['tol'])
+            if not math.isfinite(reported_tol) or reported_tol > expected_tol * 1.001:
+                raise ValueError('guest dataset forward tolerance exceeds condition bound')
+        if 'residual_max' in row:
+            reported_res = float(row['residual_max'])
+            if not math.isfinite(reported_res) or not 0.0 <= reported_res <= res_limit:
+                raise ValueError('dataset normalized recurrence residual failed')
+        elif expected_tol > 1e-10:
+            raise ValueError('condition-scaled dataset check requires residual_max evidence')
     conditioning = options.get('coeff_study_cache', 'legacy')
     if conditioning != 'legacy':
         rois = fields(text, 'CFD_STUDY_ACCEL_ROI')
@@ -63,8 +92,12 @@ def check_dataset(directory):
                     condition['cache'] != conditioning or int(roi['cycles']) <= 0 or
                     int(roi['finish'])-int(roi['start']) != int(roi['cycles'])):
                 raise ValueError('invalid accelerator study timing/conditioning')
+    strict_mis = {row['phase']: int(row['strict_1e10_exceeded'])
+                  for row in checks if 'strict_1e10_exceeded' in row}
     return dict(input_sha256=digest, cells=len(records), sweeps=sweeps,
                 oracle=f'{precision}-digit Decimal, partial pivoting; original binary64 inputs',
+                kappa_max=kappa_max, forward_tol=expected_tol,
+                strict_1e10_mismatches=strict_mis,
                 max_abs=max(float(row['max_abs']) for row in checks),
                 max_rel=max(float(row['max_rel']) for row in checks),
                 fnv64=checksum)

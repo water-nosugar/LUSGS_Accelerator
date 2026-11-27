@@ -560,17 +560,53 @@ class CfdSmeZa
     {
         if (!cfg.mixedKind || opIsBypass(seg.op))
             return false;
-        const auto due = writebacksDue.find(cycle + segmentLatency(opKind(seg.op)));
-        if (due == writebacksDue.end())
-            return false;
         const uint64_t mask = peMask(seg.rowMask, seg.colMask);
+        return (nominalWritebackBitmap2d(opKind(seg.op)) & mask) != 0;
+    }
+
+    uint64_t
+    nominalWritebackBitmap2d(Kind kind) const
+    {
+        if (!cfg.mixedKind)
+            return 0;
+        const auto due = writebacksDue.find(cycle + segmentLatency(kind));
+        if (due == writebacksDue.end())
+            return 0;
         // Match sme_za_rs_issue.sv: issue-time writeback conflict checks the
         // phase-agnostic nominal occupancy bitmap, while retirement still
         // arbitrates writeback slots by phase priority.
+        uint64_t combined = 0;
         for (uint64_t booked : due->second)
-            if (booked & mask)
-                return true;
-        return false;
+            combined |= booked;
+        return combined;
+    }
+
+    unsigned
+    pendingByPhase(Phase phase) const
+    {
+        unsigned count = 0;
+        for (const auto &ret : pending)
+            if (ret.phase == phase)
+                ++count;
+        for (const auto &ret : pending2d)
+            for (unsigned i = 0; i < ret.count; ++i)
+                if (!ret.subs[i].retired && ret.subs[i].phase == phase)
+                    ++count;
+        return count;
+    }
+
+    unsigned
+    pendingLanesByPhase(Phase phase) const
+    {
+        unsigned total = 0;
+        for (const auto &ret : pending)
+            if (ret.phase == phase)
+                total += words(ret.mask);
+        for (const auto &ret : pending2d)
+            for (unsigned i = 0; i < ret.count; ++i)
+                if (!ret.subs[i].retired && ret.subs[i].phase == phase)
+                    total += ret.subs[i].activePes;
+        return total;
     }
 
     bool

@@ -110,6 +110,7 @@ CfdCoeffPreprocessController::markLocalTileReady(LineRequest &line,
     panic_if(tile->readyMask[local/64] & bit,"CFD local result published twice");
     tile->readyMask[local/64] |= bit;
     tile->readyCount++;
+    recordForwardOutputDigest(line, cell, tile->y[local]);
     if (env.traceEnable)
         std::fprintf(stderr,"CFD_LOCAL_READY cycle=%llu token=%llu cell=%llu first=%llu storage=%u y_job=%llu u_job=%llu cache_job=%llu\n",
             (unsigned long long)cycle(),(unsigned long long)line.token,

@@ -251,6 +251,8 @@ CfdCoeffPreprocessController::commitTileChild(LineRequest &line, Request &req)
     tile->y[cell-tile->start] = req.dqStar;
     if (!line.tileYOnly)
         tile->u[cell-tile->start] = req.uBar;
+    if (!env.onchipTiming || env.lineOptLevel < 10)
+        recordForwardOutputDigest(line, cell, tile->y[cell-tile->start]);
     tile->retired++;
     line.committedChildren++;
     const uint64_t bytes = VectorBytes + (!line.localUbar && cell+1 < line.cells &&
@@ -387,6 +389,9 @@ CfdCoeffPreprocessController::stepWarmTransfers(LineRequest &line)
         if (slot.y->completed != VectorBytes) continue;
         panic_if(slot.tile->phase != LineTile::Phase::Forward,
                  "CFD warm buffer reused before write response");
+        if (!env.onchipTiming || env.lineOptLevel < 10)
+            recordForwardOutputDigest(
+                line, slot.cell, slot.tile->y[slot.cell - slot.tile->start]);
         slot.tile->retired++;
         slot.tile->lastWriteCycle = std::max(slot.tile->lastWriteCycle, slot.y->lastResponse);
         line.completedChildren++;
@@ -426,6 +431,8 @@ CfdCoeffPreprocessController::drainCachedCell(LineRequest &line)
     }
     const uint64_t cell = line.cachedForwardCell;
     line.previousY = line.tile->y[tileIndex(line, cell)];
+    if (!env.onchipTiming || env.lineOptLevel < 10)
+        recordForwardOutputDigest(line, cell, line.previousY);
     line.tile->retired++;
     line.completedChildren++;
     line.nextCell++;

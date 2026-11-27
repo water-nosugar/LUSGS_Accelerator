@@ -35,6 +35,7 @@
 #include "arch/arm/cfd_rhs_upper_stream.hh"
 #include "arch/arm/cfd_spm_slot_rotation.hh"
 #include "arch/arm/cfd_sme_za.hh"
+#include "arch/arm/cfd_sme_2d_arbiter.hh"
 #include "arch/arm/cfd_rhs_upper.hh"
 #include "arch/arm/cfd_rhs_factor_fanout.hh"
 #include "arch/arm/cfd_tile_stream.hh"
@@ -1442,6 +1443,9 @@ struct LineRequest
     uint64_t outputQueueStalls = 0;
     uint64_t outputOutstandingStalls = 0;
     uint64_t outputLastResponseCycle = 0;
+    uint64_t outputDigest = 0;
+    uint64_t forwardDigestCells = 0;
+    uint64_t backwardDigestCells = 0;
     bool backwardDirect = false;
     bool backwardStarted = false;
     bool earlyBackward = false;
@@ -1784,16 +1788,38 @@ class CfdCoeffPreprocessController
                         const std::array<double, N> &feedback,
                         const std::array<double, N> *base, uint64_t now,
                         CfdSmeZa::Row &result);
-    struct Sme2dOffer
+    static uint64_t outputWordDigest(uint32_t phase, uint64_t cell,
+                                     uint32_t lane, uint64_t bits)
     {
-        CfdSmeZa::Segment2d seg{};
-        unsigned priority = 0;
-        unsigned critGroup = 0;
-        unsigned activePes = 0;
-        unsigned orderIndex = 0;
-        std::function<void()> commit;
-    };
-    std::vector<Sme2dOffer> sme2dOffers;
+        uint64_t x = bits ^ ((uint64_t(phase) + 1ULL) * 0x9e3779b97f4a7c15ULL) ^
+                     ((cell + 1ULL) * 0xbf58476d1ce4e5b9ULL) ^
+                     ((uint64_t(lane) + 1ULL) * 0x94d049bb133111ebULL);
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
+        return x ^ (x >> 31);
+    }
+    void recordForwardOutputDigest(LineRequest &line, uint64_t cell,
+                                   const std::array<double, N> &vec)
+    {
+        for (unsigned lane = 0; lane < N; ++lane) {
+            uint64_t bits = 0;
+            std::memcpy(&bits, &vec[lane], sizeof(bits));
+            line.outputDigest += outputWordDigest(0u, cell, lane, bits);
+        }
+        ++line.forwardDigestCells;
+    }
+    void recordBackwardOutputDigest(LineRequest &line, uint64_t cell,
+                                    const std::array<double, N> &vec)
+    {
+        for (unsigned lane = 0; lane < N; ++lane) {
+            uint64_t bits = 0;
+            std::memcpy(&bits, &vec[lane], sizeof(bits));
+            line.outputDigest += outputWordDigest(1u, cell, lane, bits);
+        }
+        ++line.backwardDigestCells;
+    }
+    std::vector<Sme2dCandidateMeta> sme2dOfferMetas;
+    std::vector<std::function<void()>> sme2dOfferCommits;
     std::unordered_set<uint64_t> sme2dCriticalOffered;
     bool offerSme2d(const CfdSmeZa::Segment2d &, unsigned priority,
                     unsigned critGroup, std::function<void()> commit);
@@ -3974,6 +4000,13 @@ CfdCoeffPreprocessController::finishLineBackward(LineRequest &line)
             (unsigned long long)line.warmWritesMax,(unsigned long long)line.warmInputStalls,
             (unsigned long long)line.warmBaseStalls,(unsigned long long)line.warmTileStalls,
             (unsigned long long)line.warmOutputStalls);
+    if (!line.tile) {
+        for (uint64_t cell = 0; cell < line.cells; ++cell)
+            recordForwardOutputDigest(line, cell, line.dqStar[cell]);
+    }
+    panic_if(line.forwardDigestCells != line.cells ||
+             line.backwardDigestCells != line.cells,
+             "CFD line output digest cell count mismatch");
     if (env.traceEnable) {
         // Hash the actual FP64 bit patterns, not formatted decimal values.
         uint64_t hash = 14695981039346656037ULL;
@@ -3986,12 +4019,16 @@ CfdCoeffPreprocessController::finishLineBackward(LineRequest &line)
                 }
             }
         }
-        char hashField[80];
+        char hashField[128];
         if (line.tile)
-            std::snprintf(hashField, sizeof(hashField), "result_hash_source=guest");
+            std::snprintf(hashField, sizeof(hashField),
+                          "result_hash_source=guest output_digest=%016llx",
+                          (unsigned long long)line.outputDigest);
         else
-            std::snprintf(hashField, sizeof(hashField), "result_hash=%016llx",
-                          (unsigned long long)hash);
+            std::snprintf(hashField, sizeof(hashField),
+                          "result_hash=%016llx output_digest=%016llx",
+                          (unsigned long long)hash,
+                          (unsigned long long)line.outputDigest);
         std::fprintf(stderr, "CFD_LINE_SCHEDULE token=%llu cache_hit=%d "
                      "base_ahead_columns=%llu backward_start=%llu "
                      "backward_done=%llu visible_done=%llu "
@@ -4083,6 +4120,8 @@ void
 CfdCoeffPreprocessController::publishLineOutput(
     LineRequest &line, uint64_t cell)
 {
+    recordBackwardOutputDigest(line, cell,
+                               line.tile ? line.backwardValue : line.dq[cell]);
     if (!env.dmaSpm) {
         proxy().writeBlob(line.desc.reserved[2] + cell * VectorBytes,
                          line.dq[cell].data(), VectorBytes);
@@ -7272,7 +7311,8 @@ CfdCoeffPreprocessController::processTick()
     std::fill(spmBanksUsed.begin(), spmBanksUsed.end(), false);
     if (env.smeContexts) {
         smeZa.tick(now);
-        sme2dOffers.clear();
+        sme2dOfferMetas.clear();
+        sme2dOfferCommits.clear();
         sme2dCriticalOffered.clear();
     }
     completeOps(now);

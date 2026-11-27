@@ -77,46 +77,72 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
     tile_cells = int(config.get('--coeff-line-tile-cells', '0'))
     cells_cfg = int(config.get('--lusgs-cells', '0'))
 
-    # Collect independent external y-write DMA completion cycles per (token, tile_first)
-    # so physical slot reuse is fenced by real write responses, not only forward_commit.
+    # Collect independent per-cell external y-write completion cycles so
+    # physical slot commits and reuses are proven by real write responses,
+    # never by forward_commit alone.
+    cell_writes = {}
     write_responses = {}
     if tile_cells > 0:
         for r in fields(text, 'CFD_CACHE_DMA'):
             if r.get('event') == 'response' and r.get('kind') == 'y':
                 tok = r['token']
-                first = (int(r['cell']) // tile_cells) * tile_cells
+                cell = int(r['cell'])
+                first = (cell // tile_cells) * tile_cells
                 cyc = int(r['cycle'])
-                prev = write_responses.get((tok, first), -1)
-                if cyc > prev:
-                    write_responses[(tok, first)] = cyc
+                per_tok = cell_writes.setdefault(tok, {})
+                per_tok[cell] = max(cyc, per_tok.get(cell, -1))
+                write_responses[(tok, first)] = max(cyc, write_responses.get((tok, first), -1))
         if directory is not None:
             trace_path = Path(directory) / 'coeff_preprocess_trace.csv'
-            if trace_path.exists():
-                windows = []
-                for r in fields(text, 'CFD_SME_CONFIG'):
-                    windows.append((int(r['start']), int(r['done']), r['token']))
-                windows.sort()
-                with trace_path.open(newline='') as src:
-                    for row in csv.DictReader(src):
-                        if row.get('stage') != 'DRAIN_DQSTAR_VECTOR_DONE':
-                            continue
-                        cyc = int(row['cycle'])
-                        cell = int(row['cell'])
-                        first = (cell // tile_cells) * tile_cells
-                        for lo, hi, tok in windows:
-                            if lo <= cyc <= hi:
-                                prev = write_responses.get((tok, first), -1)
-                                if cyc > prev:
-                                    write_responses[(tok, first)] = cyc
-                                break
+            assert trace_path.is_file(), 'missing coeff_preprocess_trace.csv for write-fence verification'
+            windows = []
+            for r in fields(text, 'CFD_SME_CONFIG'):
+                windows.append((int(r['start']), int(r['done']), r['token']))
+            if not windows:
+                for r in fields(text, 'CFD_LINE_SCHEDULE'):
+                    windows.append((0, int(r['visible_done']), r['token']))
+            windows.sort()
+            with trace_path.open(newline='') as src:
+                for row in csv.DictReader(src):
+                    if row.get('stage') != 'DRAIN_DQSTAR_VECTOR_DONE':
+                        continue
+                    cyc = int(row['cycle'])
+                    cell = int(row['cell'])
+                    first = (cell // tile_cells) * tile_cells
+                    matched = [tok for lo, hi, tok in windows if lo <= cyc <= hi]
+                    assert len(matched) == 1, f'ambiguous or orphan write completion at cycle {cyc}'
+                    tok = matched[0]
+                    per_tok = cell_writes.setdefault(tok, {})
+                    per_tok[cell] = max(cyc, per_tok.get(cell, -1))
+                    write_responses[(tok, first)] = max(cyc, write_responses.get((tok, first), -1))
+
+    def verify_spans(spans, expected, partial_ok=False):
+        ordered = sorted(spans)
+        cursor = 0
+        for offset, length in ordered:
+            assert length > 0 and offset >= 0, f'invalid DMA span ({offset}, {length})'
+            if partial_ok:
+                assert offset >= cursor and offset + length <= expected, (
+                    f'overlapping or out-of-bounds aborted DMA span ({offset}, {length})'
+                )
+                cursor = offset + length
+            else:
+                assert offset == cursor, (
+                    f'non-contiguous or duplicate reload DMA offset {offset} (expected {cursor})'
+                )
+                cursor += length
+        if not partial_ok:
+            assert cursor == expected, f'incomplete tile reload coverage {cursor} != {expected}'
 
     local = {}
     ranges = {}
     packets = {}
+    seen_packets = set()
     committed = {}  # (token, str(first)) -> max(commit_cycle, last_write_cycle)
     started = set()
     forward_ranges = {}
     forward_ready = {}
+    forward_max_ready = {}
     allocated_until = {}
     records = re.finditer(r'^(CFD_LOCAL_READY|CFD_TILE_EVENT|CFD_TILE_DMA) ([^\n]*)',
                           text, re.M)
@@ -126,22 +152,39 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
         token = row['token']
         cyc = int(row['cycle']) if 'cycle' in row else None
         is_aborted = token in aborted_tokens
-        if is_aborted and aborted_map.get(token):
-            assert cyc is not None and cyc <= int(aborted_map[token]['cycle']), (
-                'tile lifecycle event escaped aborted sweep fence'
-            )
+        if is_aborted:
+            if aborted_map.get(token):
+                assert cyc is not None and cyc <= int(aborted_map[token]['cycle']), (
+                    'tile lifecycle event escaped aborted sweep fence'
+                )
+            if token in abort_begin:
+                begin_cyc = int(abort_begin[token]['cycle'])
+                is_new_work = (
+                    (prefix == 'CFD_TILE_EVENT' and row['event'] in ('forward_allocate', 'reload_start')) or
+                    (prefix == 'CFD_TILE_DMA' and row['event'] == 'issue')
+                )
+                if is_new_work:
+                    assert cyc is not None and cyc <= begin_cyc, (
+                        f'new tile work {row.get("event")} initiated at {cyc} after abort begin {begin_cyc}'
+                    )
         if prefix == 'CFD_LOCAL_READY':
             storage = int(row['storage'])
             assert 0 <= storage < buffers, 'invalid forward storage slot'
             local[token, storage] = row['first']
             if token in allocated_until:
                 assert (token, storage) in forward_ranges, 'local ready without allocated forward slot'
-                first, count = forward_ranges[token, storage]
+                first, count, alloc_cyc = forward_ranges[token, storage]
                 cell = int(row['cell'])
                 assert int(row['first']) == first and first <= cell < first + count
+                if alloc_cyc is not None and cyc is not None:
+                    assert cyc >= alloc_cyc, 'CFD_LOCAL_READY timestamp preceded forward_allocate'
                 ready = forward_ready.setdefault((token, first), set())
                 assert cell not in ready, 'duplicate forward tile publication'
                 ready.add(cell)
+                if cyc is not None:
+                    forward_max_ready[(token, first)] = max(
+                        forward_max_ready.get((token, first), -1), cyc
+                    )
         elif prefix == 'CFD_TILE_EVENT' and row['event'] == 'forward_allocate':
             first, count, storage = (int(row[k]) for k in ('first', 'cells', 'storage'))
             assert 0 <= storage < buffers, 'invalid forward_allocate storage slot'
@@ -151,7 +194,7 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
             assert storage == (first // tile_cells) % buffers
             key = token, storage
             if key in forward_ranges:
-                old, _ = forward_ranges[key]
+                old, _, _ = forward_ranges[key]
                 old_key = (token, str(old))
                 assert old_key in committed, 'forward tile overwritten before external writes retired'
                 if committed[old_key] is not None:
@@ -163,7 +206,7 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
                     assert cyc is not None and cyc >= last_ext, (
                         'forward tile reused before last external write DMA response'
                     )
-            forward_ranges[key] = first, count
+            forward_ranges[key] = first, count, cyc
             allocated_until[token] = first + count
         elif prefix == 'CFD_TILE_EVENT' and row['event'] == 'forward_commit':
             first_i = int(row['first'])
@@ -172,20 +215,45 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
                 storage = int(row['storage'])
                 assert 0 <= storage < buffers, 'invalid forward_commit storage slot'
                 if token in allocated_until:
-                    first, count = forward_ranges[token, storage]
+                    first, count, alloc_cyc = forward_ranges[token, storage]
                     assert count_i is not None and (first, count) == (first_i, count_i)
                     assert len(forward_ready.pop((token, first), ())) == count
+                    max_rdy = forward_max_ready.pop((token, first), -1)
+                    if alloc_cyc is not None and cyc is not None:
+                        assert cyc >= alloc_cyc, 'forward_commit timestamp preceded forward_allocate'
+                    if max_rdy >= 0 and cyc is not None:
+                        assert cyc >= max_rdy, 'forward_commit timestamp preceded CFD_LOCAL_READY'
             elif token in allocated_until:
                 raise AssertionError('forward_commit missing storage slot in rotated mode')
             fence_cycle = cyc
+            if directory is not None and (require_rotate or token in allocated_until):
+                assert 'last_write' in row, 'forward_commit missing last_write fence in rotated mode'
             if 'last_write' in row:
                 lw = int(row['last_write'])
                 assert cyc is not None and lw <= cyc, 'forward_commit preceded its last recorded write response'
                 fence_cycle = max(fence_cycle, lw)
-            last_ext = write_responses.get((token, first_i), -1)
-            if last_ext >= 0:
-                assert cyc is not None and last_ext <= cyc, 'forward_commit preceded external write DMA response'
-                fence_cycle = max(fence_cycle, last_ext)
+            if directory is not None and tile_cells > 0 and not is_aborted:
+                cells_total = int(layouts[token]['cells']) if token in layouts else cells_cfg
+                span_cells = count_i if count_i is not None else min(tile_cells, cells_total - first_i)
+                per_tok = cell_writes.get(token, {})
+                missing = [c for c in range(first_i, first_i + span_cells) if c not in per_tok]
+                assert not missing, (
+                    f'forward_commit at first={first_i} lacks independent write completion evidence for cells {missing[:4]}'
+                )
+                observed_last = max(per_tok[c] for c in range(first_i, first_i + span_cells))
+                assert cyc is not None and observed_last <= cyc, (
+                    'forward_commit preceded external write DMA response'
+                )
+                if 'last_write' in row:
+                    assert int(row['last_write']) >= observed_last, (
+                        'forward_commit last_write disagrees with observed write completions'
+                    )
+                fence_cycle = max(fence_cycle, observed_last)
+            else:
+                last_ext = write_responses.get((token, first_i), -1)
+                if last_ext >= 0:
+                    assert cyc is not None and last_ext <= cyc, 'forward_commit preceded external write DMA response'
+                    fence_cycle = max(fence_cycle, last_ext)
             committed[(token, row['first'])] = fence_cycle
         elif prefix == 'CFD_TILE_EVENT' and row['event'] == 'reload_start':
             storage = int(row['storage'])
@@ -198,8 +266,10 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
                 assert old['issued'] == old['completed'] == old['expected'], (
                     'tile overwritten before all DMA/SPM landings'
                 )
+                if old['spans'] is not None:
+                    verify_spans(old['spans'], old['expected'])
             elif key in forward_ranges:
-                first, _ = forward_ranges[key]
+                first, _, _ = forward_ranges[key]
                 old_key = (token, str(first))
                 assert old_key in committed, 'forward tile overwritten before external writes retired'
                 if committed[old_key] is not None:
@@ -226,31 +296,67 @@ def check_prefetch_lifetimes(text, config, aborted=(), abort_start=None,
                     )
             tile_y_only = (layouts[token]['tile_y_only'] == '1') if token in layouts else True
             expected = int(row['cells']) * (40 if tile_y_only else 240)
-            ranges[key] = dict(first=row['first'], issued=0, completed=0, expected=expected)
+            ranges[key] = dict(first=row['first'], issued=0, completed=0, expected=expected,
+                               spans=[] if directory is not None else None,
+                               tile_y_only=tile_y_only)
         elif prefix == 'CFD_TILE_DMA':
             owners = [key for key, value in ranges.items()
                       if key[0] == token and value['first'] == row['first']]
             assert len(owners) == 1, 'DMA addresses a nonresident or overwritten tile range'
             owner = owners[0]
             amount = int(row['bytes'])
+            has_offset = 'offset' in row
+            if directory is not None:
+                assert has_offset and 'region' in row and 'job' in row and cyc is not None, (
+                    'missing offset/region/job/cycle on CFD_TILE_DMA'
+                )
+            offset = int(row['offset']) if has_offset else None
+            region = int(row['region']) if 'region' in row else 0
+            job = int(row['job']) if 'job' in row else 0
+            pkt_key = (token, row['packet'])
             if row['event'] == 'issue':
-                assert row['packet'] not in packets
-                packets[row['packet']] = (owner, row['first'], amount)
+                assert pkt_key not in packets and pkt_key not in seen_packets, 'duplicate tile DMA packet ID'
+                seen_packets.add(pkt_key)
+                if ranges[owner]['tile_y_only'] and 'region' in row:
+                    assert region == 0, 'unexpected non-zero region in y-only tile reload'
+                packets[pkt_key] = (owner, row['first'], offset, amount, region, job, cyc)
                 ranges[owner]['issued'] += amount
+                if has_offset:
+                    if ranges[owner]['spans'] is None:
+                        ranges[owner]['spans'] = []
+                    ranges[owner]['spans'].append((offset, amount))
             else:
-                assert packets.pop(row['packet']) == (owner, row['first'], amount)
+                issued = packets.pop(pkt_key, None)
+                assert issued is not None, 'unmatched tile DMA response'
+                exp_owner, exp_first, exp_off, exp_amt, exp_reg, exp_job, issue_cyc = issued
+                assert (owner, row['first'], offset, amount, region, job) == (
+                    exp_owner, exp_first, exp_off, exp_amt, exp_reg, exp_job
+                ), 'mismatched tile DMA response fields'
+                if issue_cyc is not None and cyc is not None:
+                    assert cyc >= issue_cyc, 'tile DMA response preceded issue'
                 ranges[owner]['completed'] += amount
     assert not packets, 'outstanding tile reload DMA packets at sweep end'
     for (tok, _), value in ranges.items():
         if tok in aborted_tokens:
             assert value['issued'] == value['completed']
+            if value['spans'] is not None:
+                verify_spans(value['spans'], value['expected'], partial_ok=True)
         else:
             assert value['issued'] == value['completed'] == value['expected']
+            if value['spans'] is not None:
+                verify_spans(value['spans'], value['expected'], partial_ok=False)
 
     expected_tokens = (
         set(schedules.keys()) if schedules is not None
         else set(layouts.keys()) - aborted_tokens
     )
+    if directory is not None and tile_cells > 0:
+        for tok in expected_tokens:
+            cells_total = int(layouts[tok]['cells']) if tok in layouts else cells_cfg
+            per_tok = cell_writes.get(tok, {})
+            assert len(per_tok) == cells_total and set(per_tok) == set(range(cells_total)), (
+                f'incomplete per-cell external y write evidence for sweep token {tok}'
+            )
     if require_rotate:
         for token in expected_tokens:
             assert token in allocated_until, f'missing forward_allocate events for rotated sweep {token}'

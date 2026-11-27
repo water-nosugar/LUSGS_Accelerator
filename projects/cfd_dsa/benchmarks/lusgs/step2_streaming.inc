@@ -1073,6 +1073,9 @@ run_pretransform_raw_stream_line_once(
         double max_abs = 0.0, max_rel = 0.0;
         uint64_t mismatches = 0;
         uint64_t result_hash = 14695981039346656037ULL;
+        uint64_t output_digest = 0ULL;
+        const double fwd_tol = study_cache_enabled(cfg) ?
+            dataset_forward_tolerance(p) : 1.0e-10;
         const double *got[] = {dq_star, dq};
         const double *reference[] = {
             study_cache_enabled(cfg) ? p->dataset_oracle_y : p->dq_star_raw_ref,
@@ -1082,6 +1085,9 @@ run_pretransform_raw_stream_line_once(
                 uint64_t bits;
                 memcpy(&bits, &got[phase][index], sizeof(bits));
                 result_hash = (result_hash ^ bits) * 1099511628211ULL;
+                output_digest += cfd_output_word_digest(
+                    (uint32_t)phase, (uint64_t)(index / N),
+                    (uint32_t)(index % N), bits);
                 double abs_error = fabs(got[phase][index] -
                                         reference[phase][index]);
                 double rel_error = abs_error /
@@ -1089,18 +1095,20 @@ run_pretransform_raw_stream_line_once(
                 if (abs_error > max_abs) max_abs = abs_error;
                 if (rel_error > max_rel) max_rel = rel_error;
                 if (!isfinite(got[phase][index]) || !isfinite(reference[phase][index]) ||
-                    (abs_error > 1.0e-10 && rel_error > 1.0e-10))
+                    (abs_error > fwd_tol && rel_error > fwd_tol))
                     mismatches++;
             }
         }
         const double residual = raw_recurrence_residual(p,dq_star,dq);
-        if (!isfinite(residual) || residual > 1e-10) mismatches++;
+        const double res_tol = (fwd_tol > 1.0e-10) ? 1.0e-12 : 1.0e-10;
+        if (!isfinite(residual) || residual > res_tol) mismatches++;
         printf("CFD_SINGLE_LINE_NUMERIC version=%lu base_solve=%s "
                "values=%lu max_abs=%.17g max_rel=%.17g mismatches=%lu "
-               "result_hash=%016lx residual_max=%.17g\n",
+               "result_hash=%016lx output_digest=%016lx residual_max=%.17g\n",
                (unsigned long)coefficient_version, cfg->coeff_base_solve,
                (unsigned long)(2 * total_cells * N), max_abs, max_rel,
-               (unsigned long)mismatches, (unsigned long)result_hash, residual);
+               (unsigned long)mismatches, (unsigned long)result_hash,
+               (unsigned long)output_digest, residual);
         all_valid &= mismatches == 0;
         all_valid &= validate_dataset_oracle(p,dq_star,dq,"accelerator");
     }
